@@ -1,4 +1,5 @@
-﻿namespace SpiritualHub.Client.Data;
+﻿namespace SpiritualHub.Data;
+
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
