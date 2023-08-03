@@ -5,17 +5,19 @@ VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritualHub.Client", "SpiritualHub.Client\SpiritualHub.Client.csproj", "{FBEC99D8-3C7D-4031-9880-67F9A2549554}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpiritualHub.Services", "SpiritualHub.Services\SpiritualHub.Services.csproj", "{964B2073-1D38-4DAA-A7F1-77B7D7F30B4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritualHub.Services", "SpiritualHub.Services\SpiritualHub.Services.csproj", "{964B2073-1D38-4DAA-A7F1-77B7D7F30B4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpiritualHub.Data", "SpiritualHub.Data\SpiritualHub.Data.csproj", "{117D2434-39A2-4D0A-81B7-09F96BB73535}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritualHub.Data", "SpiritualHub.Data\SpiritualHub.Data.csproj", "{117D2434-39A2-4D0A-81B7-09F96BB73535}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpiritualHub.Tests", "SpiritualHub.Tests\SpiritualHub.Tests.csproj", "{7FF04396-5F55-40B5-91C7-D360066B5D79}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritualHub.Tests", "SpiritualHub.Tests\SpiritualHub.Tests.csproj", "{7FF04396-5F55-40B5-91C7-D360066B5D79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpiritualHub.Client.ViewModels", "SpiritualHub.Client.ViewModels\SpiritualHub.Client.ViewModels.csproj", "{B64A023C-06AD-489C-A750-B749D40788CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritualHub.Client.ViewModels", "SpiritualHub.Client.ViewModels\SpiritualHub.Client.ViewModels.csproj", "{B64A023C-06AD-489C-A750-B749D40788CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpiritualHub.Client.Infrastructure", "SpiritualHub.Client.Infrastructure\SpiritualHub.Client.Infrastructure.csproj", "{398C7EA0-608B-4062-971C-E8385CF9D5C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritualHub.Client.Infrastructure", "SpiritualHub.Client.Infrastructure\SpiritualHub.Client.Infrastructure.csproj", "{398C7EA0-608B-4062-971C-E8385CF9D5C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpiritualHub.Data.Models", "SpiritualHub.Data.Models\SpiritualHub.Data.Models.csproj", "{28A31B9D-5EFB-4630-9078-35A1B88EDF86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritualHub.Data.Models", "SpiritualHub.Data.Models\SpiritualHub.Data.Models.csproj", "{28A31B9D-5EFB-4630-9078-35A1B88EDF86}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpiritualHub.Common", "SpiritualHub.Common\SpiritualHub.Common.csproj", "{C4CE7067-37EB-4D38-96F4-2EF083813129}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{28A31B9D-5EFB-4630-9078-35A1B88EDF86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28A31B9D-5EFB-4630-9078-35A1B88EDF86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28A31B9D-5EFB-4630-9078-35A1B88EDF86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4CE7067-37EB-4D38-96F4-2EF083813129}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4CE7067-37EB-4D38-96F4-2EF083813129}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4CE7067-37EB-4D38-96F4-2EF083813129}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4CE7067-37EB-4D38-96F4-2EF083813129}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

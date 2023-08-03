@@ -1,5 +1,7 @@
 ﻿namespace SpiritualHub.Data.Models;
 
+using System.ComponentModel.DataAnnotations;
+
 public class Category
 {
     public Category()
@@ -11,8 +13,10 @@ public class Category
         this.Books = new HashSet<Book>();
     }
 
+    [Key]
     public int Id { get; set; }
 
+    [Required]
     public string Name { get; set; }
 
     public virtual ICollection<Author> Authors { get; set; }

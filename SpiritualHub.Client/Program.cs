@@ -3,8 +3,9 @@ namespace SpiritualHub.Client;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-using SpiritualHub.Client.Infrastructure;
+using Infrastructure;
 using SpiritualHub.Data;
+using SpiritualHub.Data.Models;
 
 public class Program
 {
@@ -12,11 +13,13 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+
+        builder.Services.AddDbContext<SpiritsDbContext>(options =>
             options.UseSqlServer(connectionString));
+
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+        builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
         {
             options.SignIn.RequireConfirmedAccount = builder.Configuration.GetValue<bool>("Identity:SignIn:RequireConfirmedAccount");
             options.Password.RequireLowercase = builder.Configuration.GetValue<bool>("Identity:Password:RequireLowercase");
@@ -24,7 +27,7 @@ public class Program
             options.Password.RequireNonAlphanumeric = builder.Configuration.GetValue<bool>("Identity:Password:RequireAlphanumeric");
             options.Password.RequiredLength = builder.Configuration.GetValue<int>("Identity:Password:RequireLength");
         })
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddEntityFrameworkStores<SpiritsDbContext>();
 
         builder.Services.ConfigureServices();
         builder.Services.AddControllersWithViews();
