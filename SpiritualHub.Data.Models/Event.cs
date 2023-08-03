@@ -48,10 +48,14 @@ public class Event
     public Guid AutorID { get; set; }
 
     public virtual Author Author { get; set; }
+
+    public virtual Guid ImageID { get; set; }
+
+    public virtual Image Image { get; set; } = null!;
     
     public Guid OrganizerID { get; set; }
 
-    public virtual Publisher Organizer { get; set; }
+    public virtual Publisher Organizer { get; set; } = null!;
 
     // public virtual ICollection<string> Discounts { get; set; }
 

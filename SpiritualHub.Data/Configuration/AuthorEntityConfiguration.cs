@@ -16,9 +16,7 @@ public class AuthorEntityConfiguration : IEntityTypeConfiguration<Author>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
-            .HasOne(a => a.Publisher)
-            .WithMany(p => p.PublishedAuthors)
-            .HasForeignKey(a => a.PublisherID)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasMany(a => a.Publishers)
+            .WithMany(p => p.PublishedAuthors);
     }
 }

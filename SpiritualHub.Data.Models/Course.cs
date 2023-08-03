@@ -40,7 +40,7 @@ public class Course
 
     public Guid PublisherID { get; set; }
 
-    public virtual Publisher Publisher { get; set; }
+    public virtual Publisher Publisher { get; set; } = null!;
 
     [Required]
     public int CategoryID { get; set; }

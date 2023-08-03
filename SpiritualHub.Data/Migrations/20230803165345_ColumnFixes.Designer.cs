@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SpiritualHub.Data;
 
@@ -11,9 +12,10 @@ using SpiritualHub.Data;
 namespace SpiritualHub.Data.Migrations
 {
     [DbContext(typeof(SpiritsDbContext))]
-    partial class SpiritsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230803165345_ColumnFixes")]
+    partial class ColumnFixes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -312,32 +314,6 @@ namespace SpiritualHub.Data.Migrations
                     b.HasIndex("CategoryID");
 
                     b.ToTable("Authors");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
-                            Alias = "Bashar",
-                            AvatarImageID = new Guid("2a022e06-8c00-435f-93a9-9da816c1b483"),
-                            CategoryID = 2,
-                            Name = "Darryl Anka"
-                        },
-                        new
-                        {
-                            Id = new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"),
-                            Alias = "Cogitality",
-                            AvatarImageID = new Guid("868aaede-674a-44a6-ae21-ec62bd2bec3b"),
-                            CategoryID = 3,
-                            Name = "Cogitality Academy"
-                        },
-                        new
-                        {
-                            Id = new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"),
-                            Alias = "Eckhart Tolle",
-                            AvatarImageID = new Guid("26db05ea-2b5e-44dd-bdef-4e74b9ecaa5f"),
-                            CategoryID = 5,
-                            Name = "Eckhart Tolle"
-                        });
                 });
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Blog", b =>
@@ -425,44 +401,6 @@ namespace SpiritualHub.Data.Migrations
                     b.HasIndex("PublisherID");
 
                     b.ToTable("Books");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("e0aa1a89-c180-4ac0-935d-8efab304b274"),
-                            AuthorID = new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"),
-                            CategoryID = 3,
-                            Description = "All the facts, in the beginning, were puzzle pieces, scattered in vastness - fragmented, incongruous, unordered. They arrived haphazardly in moments when you weren't seeking them and not expecting them... Flashes, illuminating the darkness, which it is fitting to capture in your hands like fireflies - to gather them with patience, inspiration, and dedication. Then, embracing the scattered chaos of your own ignorance, with faith in the Nothingness, you arrange the light of your own Life.",
-                            ImageID = new Guid("c7b99bd1-8188-4277-b937-81ab367b4034"),
-                            Price = 30m,
-                            PublisherID = new Guid("00000000-0000-0000-0000-000000000000"),
-                            ShortDescription = "Bundle of the books You - The Source, You - The Manifestation, You - The Life",
-                            Title = "Encyclopedia Cogitality"
-                        },
-                        new
-                        {
-                            Id = new Guid("12221379-d5c7-4688-8ad8-efbffcaf8d06"),
-                            AuthorID = new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
-                            CategoryID = 2,
-                            Description = "All the facts, in the beginning, were puzzle pieces, scattered in vastness - fragmented, incongruous, unordered. They arrived haphazardly in moments when you weren't seeking them and not expecting them... Flashes, illuminating the darkness, which it is fitting to capture in your hands like fireflies - to gather them with patience, inspiration, and dedication. Then, embracing the scattered chaos of your own ignorance, with faith in the Nothingness, you arrange the light of your own Life.",
-                            ImageID = new Guid("c7b99bd1-8188-4277-b937-81ab367b4034"),
-                            Price = 30m,
-                            PublisherID = new Guid("00000000-0000-0000-0000-000000000000"),
-                            ShortDescription = "Bundle of the books You - The Source, You - The Manifestation, You - The Life",
-                            Title = "The Masters of Limitation"
-                        },
-                        new
-                        {
-                            Id = new Guid("641ae624-efd0-4eb6-87af-05f2cc17bbb7"),
-                            AuthorID = new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"),
-                            CategoryID = 5,
-                            Description = "It's no wonder that The Power of Now has sold over 2 million copies worldwide and has been translated into over 30 foreign languages. Much more than simple principles and platitudes, the book takes readers on an inspiring spiritual journey to find their true and deepest self and reach the ultimate in personal growth and spirituality: the discovery of truth and light.\r\r\n\r\r\nIn the first chapter, Tolle introduces readers to enlightenment and its natural enemy, the mind. He awakens readers to their role as a creator of pain and shows them how to have a pain-free identity by living fully in the present. The journey is thrilling, and along the way, the author shows how to connect to the indestructible essence of our Being, \"the eternal, ever-present One Life beyond the myriad forms of life that are subject to birth and death.\"\r\r\n\r\r\nFeaturing a new preface by the author, this paperback shows that only after regaining awareness of Being, liberated from Mind and intensely in the Now, is there Enlightenment.",
-                            ImageID = new Guid("327b0419-5ff9-4694-a4f8-151cb0a46e6b"),
-                            Price = 30m,
-                            PublisherID = new Guid("00000000-0000-0000-0000-000000000000"),
-                            ShortDescription = "This book shows that only after regaining awareness of Being, liberated from Mind and intensely in the Now, is there Enlightenment",
-                            Title = "The Power Of Now"
-                        });
                 });
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Category", b =>
@@ -480,38 +418,6 @@ namespace SpiritualHub.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Esoteric"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Channeling"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Scientific"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Religious"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Spiritual"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Hindu"
-                        });
                 });
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Comment", b =>
@@ -641,53 +547,6 @@ namespace SpiritualHub.Data.Migrations
                     b.HasIndex("OrganizerID");
 
                     b.ToTable("Events");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("15f326bc-f47f-487f-8764-5fb8fd5c448a"),
-                            AutorID = new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
-                            CategoryID = 2,
-                            CreatedOn = new DateTime(2023, 8, 3, 17, 21, 21, 325, DateTimeKind.Utc).AddTicks(507),
-                            Description = "What if there was one state of being we could adopt that would help us establish better, stronger connections not only with our families and friends on earth, but also with our friends from the stars?\r\r\n\r\r\nIn The Three Behaviors of Connection, Bashar will share how action, timing, and communication are vital concepts for making inroads and connection with the hybrid children that will eventually be living among us. He will expand in detail on these three behaviors and how we might apply them to our lives on Earth as well as to our quest for contact with our extraterrestrial family.",
-                            EndDateTime = new DateTime(2023, 8, 26, 15, 30, 0, 0, DateTimeKind.Unspecified),
-                            ImageID = new Guid("69630e42-a4de-4116-a1a4-38c43faa0b53"),
-                            IsOnline = true,
-                            OrganizerID = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Price = 35m,
-                            StartDateTime = new DateTime(2023, 8, 26, 14, 30, 0, 0, DateTimeKind.Unspecified),
-                            Title = "The 3 Behaviors of Connection"
-                        },
-                        new
-                        {
-                            Id = new Guid("45bb1c09-b50d-4d47-8fdb-fbfb53086922"),
-                            AutorID = new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"),
-                            CategoryID = 5,
-                            CreatedOn = new DateTime(2023, 8, 3, 17, 21, 21, 325, DateTimeKind.Utc).AddTicks(521),
-                            Description = "Join us for this unique opportunity to sit with Eckhart Tolle as he points you to spiritual awakening and the transformation of consciousness. With his hallmark warmth, humour and compassion, this evening will connect you with the peace and serenity that arises from living in the moment.\r\r\n\r\r\nEckhart’s profound, yet simple teachings have helped countless people from around the globe awaken to a vibrantly alive inner peace in their daily lives. Eckhart Tolle’s writings and life-changing public events have touched millions of lives, garnering fans to the likes of Oprah, the Dalai Lama and Deepak Chopra. He is the best-selling author of The Power of Now and A New Earth that are widely regarded as the most transformational books of our time.",
-                            EndDateTime = new DateTime(2023, 9, 26, 22, 0, 0, 0, DateTimeKind.Unspecified),
-                            ImageID = new Guid("13e26f61-5a34-44e0-b9d4-d8ab04b8f342"),
-                            IsOnline = false,
-                            OrganizerID = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Price = 199m,
-                            StartDateTime = new DateTime(2023, 9, 26, 18, 30, 0, 0, DateTimeKind.Unspecified),
-                            Title = "An Evening with Eckhart Tolle in Stockholm"
-                        },
-                        new
-                        {
-                            Id = new Guid("3db097df-7c7c-4c4e-b546-d4555c4c1521"),
-                            AutorID = new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"),
-                            CategoryID = 3,
-                            CreatedOn = new DateTime(2023, 8, 3, 17, 21, 21, 325, DateTimeKind.Utc).AddTicks(569),
-                            Description = "The Cogitality seminars are back - they have already started in the country, and now they are happening at the \"Healing\" campus too! They are pre-planned and organized by the team of cogitalists.\r\r\n\r\r\nThe first seminar at the \"Healing\" campus, which will take place on September 2-3, 2023, is already fully booked. Thank you for the sincere desire to share this experience together!",
-                            EndDateTime = new DateTime(2023, 9, 3, 18, 0, 0, 0, DateTimeKind.Unspecified),
-                            ImageID = new Guid("ab7cfc34-55f4-4ed8-9687-c48a747e9fb4"),
-                            IsOnline = true,
-                            OrganizerID = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Price = 144m,
-                            StartDateTime = new DateTime(2023, 9, 2, 9, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Seminar - Campus \"Healing\""
-                        });
                 });
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Image", b =>
@@ -717,62 +576,6 @@ namespace SpiritualHub.Data.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("Images");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("2a022e06-8c00-435f-93a9-9da816c1b483"),
-                            Name = "BasharAvatar",
-                            URL = "https://1drv.ms/i/s!AtAU7bartlmmgYQEO5c530QekMydnA?e=65X6RK"
-                        },
-                        new
-                        {
-                            Id = new Guid("868aaede-674a-44a6-ae21-ec62bd2bec3b"),
-                            Name = "CogitalityAvatar",
-                            URL = "https://1drv.ms/i/s!AtAU7bartlmmgYRw6O57eiKsf9iNBQ?e=OsdWqo"
-                        },
-                        new
-                        {
-                            Id = new Guid("26db05ea-2b5e-44dd-bdef-4e74b9ecaa5f"),
-                            Name = "EckhartTolleAvatar",
-                            URL = "https://1drv.ms/i/s!AtAU7bartlmmhpxwLMTJsLUEHxnZSQ?e=sln5JF"
-                        },
-                        new
-                        {
-                            Id = new Guid("ab7cfc34-55f4-4ed8-9687-c48a747e9fb4"),
-                            Name = "HealningSeminar",
-                            URL = "https://kogitalnost.net/wp-content/uploads/2023/07/FINALL-Kogitalnost-2-3-09-2023-copy-1024x536.webp"
-                        },
-                        new
-                        {
-                            Id = new Guid("13e26f61-5a34-44e0-b9d4-d8ab04b8f342"),
-                            Name = "An-Evening-with-Eckhart-Tolle-in-Stockholm",
-                            URL = "https://eckharttolle.com/wp-content/uploads/2023/02/Waterfront_november_2019-2048x1460.jpg"
-                        },
-                        new
-                        {
-                            Id = new Guid("69630e42-a4de-4116-a1a4-38c43faa0b53"),
-                            Name = "The-Three-Behaviors-of-Connection",
-                            URL = "https://www.bashar.org/wp-content/uploads/2023/07/THREE-BEHAVIOURS_NEWSPAGE1-1024x576.jpg"
-                        },
-                        new
-                        {
-                            Id = new Guid("c7b99bd1-8188-4277-b937-81ab367b4034"),
-                            Name = "EC",
-                            URL = "https://kogitalnost.net/wp-content/uploads/2023/06/3-te-knigi-1.webp"
-                        },
-                        new
-                        {
-                            Id = new Guid("327b0419-5ff9-4694-a4f8-151cb0a46e6b"),
-                            Name = "PowerOfNow",
-                            URL = "https://1drv.ms/i/s!AtAU7bartlmmhp15puF4kOZMXXn-9w?e=fZECnk"
-                        },
-                        new
-                        {
-                            Id = new Guid("55dc2c91-c81b-40de-ac5b-f7474a7acfdc"),
-                            Name = "MOL",
-                            URL = "https://1drv.ms/i/s!AtAU7bartlmmhp17o6bOmIyxERpgkQ?e=bWhmAO"
-                        });
                 });
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Publisher", b =>
@@ -875,23 +678,6 @@ namespace SpiritualHub.Data.Migrations
                     b.ToTable("SubscriptionTypes");
 
                     b.HasCheckConstraint("CK__PossibleTypes", "Type = 'Monthly' OR Type = 'Quarterly' OR Type = 'Annual'");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Type = "Montly"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Type = "Quarterly"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Type = "Annual"
-                        });
                 });
 
             modelBuilder.Entity("ApplicationUserAuthor", b =>

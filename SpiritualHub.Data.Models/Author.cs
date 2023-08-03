@@ -12,6 +12,7 @@ public class Author
         this.Followers = new HashSet<ApplicationUser>();
         this.Subscriptions = new HashSet<Subscription>();
         this.Ratings = new HashSet<Rating>();
+        this.Publishers = new HashSet<Publisher>();
     }
 
     [Key]
@@ -31,11 +32,9 @@ public class Author
 
     public Guid AvatarImageID { get; set; }
 
-    public virtual Image AvatarImage { get; set; }
+    public virtual Image AvatarImage { get; set; } = null!;
 
-    public Guid PublisherID { get; set; }
-
-    public virtual Publisher Publisher { get; set; }
+    public virtual ICollection<Publisher> Publishers { get; set; }
 
     public virtual ICollection<ApplicationUser> Followers { get; set; }
 
