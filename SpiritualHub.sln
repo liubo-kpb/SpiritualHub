@@ -17,7 +17,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritualHub.Client.Infrast
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritualHub.Data.Models", "SpiritualHub.Data.Models\SpiritualHub.Data.Models.csproj", "{28A31B9D-5EFB-4630-9078-35A1B88EDF86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpiritualHub.Common", "SpiritualHub.Common\SpiritualHub.Common.csproj", "{C4CE7067-37EB-4D38-96F4-2EF083813129}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritualHub.Common", "SpiritualHub.Common\SpiritualHub.Common.csproj", "{C4CE7067-37EB-4D38-96F4-2EF083813129}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{E4980EB8-381A-4351-BCE0-16BB44F32626}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{60EDC872-8E28-47E5-82CF-67565D8B5076}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{8DD63ABC-3DE7-4084-9CB7-CAFA0F4AAFD1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,6 +66,14 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FBEC99D8-3C7D-4031-9880-67F9A2549554} = {60EDC872-8E28-47E5-82CF-67565D8B5076}
+		{964B2073-1D38-4DAA-A7F1-77B7D7F30B4A} = {8DD63ABC-3DE7-4084-9CB7-CAFA0F4AAFD1}
+		{117D2434-39A2-4D0A-81B7-09F96BB73535} = {E4980EB8-381A-4351-BCE0-16BB44F32626}
+		{B64A023C-06AD-489C-A750-B749D40788CF} = {60EDC872-8E28-47E5-82CF-67565D8B5076}
+		{398C7EA0-608B-4062-971C-E8385CF9D5C8} = {60EDC872-8E28-47E5-82CF-67565D8B5076}
+		{28A31B9D-5EFB-4630-9078-35A1B88EDF86} = {E4980EB8-381A-4351-BCE0-16BB44F32626}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0C9D2A04-FB19-4EF4-8760-9D4564C1AB51}

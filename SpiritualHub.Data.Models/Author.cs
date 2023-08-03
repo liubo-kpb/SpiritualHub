@@ -31,11 +31,11 @@ public class Author
 
     public Guid AvatarImageID { get; set; }
 
-    public virtual Image AvatarImage { get; set; }
+    public virtual Image AvatarImage { get; set; } = null!;
 
     public Guid PublisherID { get; set; }
 
-    public virtual Publisher Publisher { get; set; }
+    public virtual Publisher Publisher { get; set; } = null!;
 
     public virtual ICollection<ApplicationUser> Followers { get; set; }
 

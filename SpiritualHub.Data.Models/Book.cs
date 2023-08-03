@@ -23,9 +23,9 @@ public class Book
     [StringLength(TitleMaxLength, MinimumLength = TitleMinLength)]
     public string Title { get; set; }
 
-    public string Description { get; set; }
+    public string Description { get; set; } = null!;
 
-    public string ShortDescription { get; set; }
+    public string ShortDescription { get; set; } = null!;
 
     [Required]
     [Column(TypeName = "decimal(10, 5)")]

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Configuration;
 using Models;
+using SpiritualHub.Data.Configuration.Seed;
 
 public class SpiritsDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
 {
@@ -17,29 +18,29 @@ public class SpiritsDbContext : IdentityDbContext<ApplicationUser, IdentityRole<
         this.seedDb = seedDb;
     }
 
-    public DbSet<Author> Authors { get; set; }
+    public DbSet<Author> Authors { get; set; } = null!;
 
-    public DbSet<Blog> Blogs { get; set; }
+    public DbSet<Blog> Blogs { get; set; } = null!;
 
-    public DbSet<Publisher> Publishers { get; set; }
+    public DbSet<Book> Books { get; set; } = null!;
 
-    public DbSet<Image> Images { get; set; }
+    public DbSet<Category> Categories { get; set; } = null!;
 
-    public DbSet<Subscription> Subscriptions { get; set; }
+    public DbSet<Comment> Comments { get; set; } = null!;
 
-    public DbSet<SubscriptionType> SubscriptionTypes { get; set; }
+    public DbSet<Course> Courses { get; set; } = null!;
 
-    public DbSet<Book> Books { get; set; }
+    public DbSet<Event> Events { get; set; } = null!;
 
-    public DbSet<Rating> Ratings { get; set; }
+    public DbSet<Image> Images { get; set; } = null!;
 
-    public DbSet<Category> Categories { get; set; }
+    public DbSet<Publisher> Publishers { get; set; } = null!;
 
-    public DbSet<Course> Courses { get; set; }
+    public DbSet<Rating> Ratings { get; set; } = null!;
 
-    public DbSet<Comment> Comments { get; set; }
+    public DbSet<Subscription> Subscriptions { get; set; } = null!;
 
-    public DbSet<Event> Events { get; set; }
+    public DbSet<SubscriptionType> SubscriptionTypes { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -55,7 +56,10 @@ public class SpiritsDbContext : IdentityDbContext<ApplicationUser, IdentityRole<
 
         if (seedDb)
         {
-
+            builder.ApplyConfiguration(new SeedCategoryConfiguration());
+            builder.ApplyConfiguration(new SeedSubscriptionTypeConfiguration());
+            builder.ApplyConfiguration(new SeedImageConfiguration());
+            builder.ApplyConfiguration(new SeedAuthorConfiguration());
         }
 
         base.OnModelCreating(builder);

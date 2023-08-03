@@ -14,4 +14,10 @@
     <ProjectReference Include="..\SpiritualHub.Common\SpiritualHub.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="AuthorSeedConfiguration.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+  </ItemGroup>
+
 </Project>

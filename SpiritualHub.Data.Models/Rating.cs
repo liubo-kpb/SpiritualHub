@@ -15,7 +15,7 @@ public class Rating
     [Required]
     public int Stars { get; set; }
 
-    public string Text { get; set; }
+    public string Text { get; set; } = null!;
 
     [Required]
     public Guid UserID { get; set; }
@@ -24,17 +24,17 @@ public class Rating
 
     public Guid AuthorID { get; set; }
 
-    public virtual Author Author { get; set; }
+    public virtual Author Author { get; set; } = null!;
 
     public Guid CourseID { get; set; }
 
-    public virtual Course Course { get; set; }
+    public virtual Course Course { get; set; } = null!;
 
     public Guid EventID { get; set; }
 
-    public virtual Event Event { get; set; }
+    public virtual Event Event { get; set; } = null!;
 
     public Guid BookID { get; set; }
 
-    public virtual Book Book { get; set; }
+    public virtual Book Book { get; set; } = null!;
 }

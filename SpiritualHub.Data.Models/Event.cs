@@ -51,7 +51,7 @@ public class Event
     
     public Guid OrganizerID { get; set; }
 
-    public virtual Publisher Organizer { get; set; }
+    public virtual Publisher Organizer { get; set; } = null!;
 
     // public virtual ICollection<string> Discounts { get; set; }
 
