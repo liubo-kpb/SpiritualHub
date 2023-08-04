@@ -2,6 +2,8 @@
 
 using System.ComponentModel.DataAnnotations;
 
+using static Common.EntityValidationConstants.Publisher;
+
 public class Publisher
 {
     public Publisher()
@@ -12,6 +14,10 @@ public class Publisher
 
     [Key]
     public Guid Id { get; set; }
+
+    [Required]
+    [MaxLength(PhoneNumberMaxLength)]
+    public string PhoneNumber { get; set; } = null!;
 
     public Guid UserID { get; set; }
 

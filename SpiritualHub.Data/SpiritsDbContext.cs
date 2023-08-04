@@ -62,6 +62,8 @@ public class SpiritsDbContext : IdentityDbContext<ApplicationUser, IdentityRole<
             builder.ApplyConfiguration(new SeedAuthorConfiguration());
             builder.ApplyConfiguration(new SeedEventConfiguration());
             builder.ApplyConfiguration(new SeedBookConfiguration());
+            builder.ApplyConfiguration(new SeedUserConfiguration());
+            builder.ApplyConfiguration(new SeedPublisherConfiguration());
         }
 
         base.OnModelCreating(builder);
