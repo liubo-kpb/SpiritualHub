@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SpiritualHub.Client.Infrastructure\SpiritualHub.Client.Infrastructure.csproj" />
     <ProjectReference Include="..\SpiritualHub.Data.Models\SpiritualHub.Data.Models.csproj" />
+    <ProjectReference Include="..\SpiritualHub.Data\SpiritualHub.Data.csproj" />
     <ProjectReference Include="..\SpiritualHub.Services\SpiritualHub.Services.csproj" />
   </ItemGroup>
 

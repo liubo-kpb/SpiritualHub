@@ -3,6 +3,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
+using Data.Models;
+using Data.Repository;
+using Data.Repository.Interface;
+
 public static class DependancyContainer
 {
     /// <summary>
@@ -38,4 +42,13 @@ public static class DependancyContainer
         }
     }
 
+    /// <summary>
+    /// This method registers all repositories with their interfaces in the given assembly. Basic CRUD operations are
+    /// located in a generic repository pattern. Manual addition of new repositories is mandatory for this method.
+    /// </summary>
+    /// <param name="services"></param>
+    public static void AddApplicationRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IRepository<Author>, Repository<Author>>();
+    }
 }

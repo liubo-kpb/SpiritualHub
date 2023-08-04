@@ -30,6 +30,7 @@ public class Program
             .AddEntityFrameworkStores<SpiritsDbContext>();
 
         builder.Services.AddApplicationServices(typeof(IUserService));
+        builder.Services.AddApplicationRepositories();
         builder.Services.AddControllersWithViews();
 
         var app = builder.Build();
