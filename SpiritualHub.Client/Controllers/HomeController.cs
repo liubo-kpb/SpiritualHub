@@ -1,14 +1,16 @@
 ﻿namespace SpiritualHub.Client.Controllers;
-using Microsoft.AspNetCore.Mvc;
-using SpiritualHub.Client.Models;
+
 using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+
+using ViewModels.Home;
 
 public class HomeController : Controller
 {
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        return View(new IndexViewModel());
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

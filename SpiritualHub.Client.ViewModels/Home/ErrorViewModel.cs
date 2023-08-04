@@ -1,4 +1,4 @@
-namespace SpiritualHub.Client.Models;
+namespace SpiritualHub.Client.ViewModels.Home;
 
 public class ErrorViewModel
 {

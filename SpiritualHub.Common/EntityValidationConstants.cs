@@ -51,4 +51,10 @@ public static class EntityValidationConstants
 
         public const int DescriptionMinLength = 30;
     }
+
+    public static class Publisher
+    {
+        public const int PhoneNumberMaxLength = 15;
+        public const int PhoneNumberMinLength = 7;
+    }
 }

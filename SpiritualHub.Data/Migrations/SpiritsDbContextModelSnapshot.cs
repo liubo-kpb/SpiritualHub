@@ -281,6 +281,38 @@ namespace SpiritualHub.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("194974cd-73f0-4946-ba85-710d4061472d"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "06ca63e5-fba7-40ee-bddd-d82eca9e4ee6",
+                            Email = "publisher@spirits.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "PUBLISHER@SPIRITS.COM",
+                            NormalizedUserName = "PUBLISHER",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKqKNt/Y3SJd5fbAiWrWk1gz5IrawQ4nvHZ23mVoECOXXvjsh/neD/6P3Py2FBoxTg==",
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "publisher"
+                        },
+                        new
+                        {
+                            Id = new Guid("1fd95f69-4f9d-4671-b126-cefcf4b8a95e"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "10490887-f13a-4ee7-99a2-687a12bbd68b",
+                            Email = "user@mail.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "USER@MAIL.COM",
+                            NormalizedUserName = "USER",
+                            PasswordHash = "AQAAAAEAACcQAAAAEH8DjtzPbVnCGPiNXahJAMuZzHnfxu1f+LT3eJIjLMkcFe2Ml6X2pZV36W1dZSFLBw==",
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "user"
+                        });
                 });
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Author", b =>
@@ -648,7 +680,7 @@ namespace SpiritualHub.Data.Migrations
                             Id = new Guid("15f326bc-f47f-487f-8764-5fb8fd5c448a"),
                             AutorID = new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
                             CategoryID = 2,
-                            CreatedOn = new DateTime(2023, 8, 3, 17, 21, 21, 325, DateTimeKind.Utc).AddTicks(507),
+                            CreatedOn = new DateTime(2023, 8, 4, 13, 7, 52, 752, DateTimeKind.Utc).AddTicks(2990),
                             Description = "What if there was one state of being we could adopt that would help us establish better, stronger connections not only with our families and friends on earth, but also with our friends from the stars?\r\r\n\r\r\nIn The Three Behaviors of Connection, Bashar will share how action, timing, and communication are vital concepts for making inroads and connection with the hybrid children that will eventually be living among us. He will expand in detail on these three behaviors and how we might apply them to our lives on Earth as well as to our quest for contact with our extraterrestrial family.",
                             EndDateTime = new DateTime(2023, 8, 26, 15, 30, 0, 0, DateTimeKind.Unspecified),
                             ImageID = new Guid("69630e42-a4de-4116-a1a4-38c43faa0b53"),
@@ -663,7 +695,7 @@ namespace SpiritualHub.Data.Migrations
                             Id = new Guid("45bb1c09-b50d-4d47-8fdb-fbfb53086922"),
                             AutorID = new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"),
                             CategoryID = 5,
-                            CreatedOn = new DateTime(2023, 8, 3, 17, 21, 21, 325, DateTimeKind.Utc).AddTicks(521),
+                            CreatedOn = new DateTime(2023, 8, 4, 13, 7, 52, 752, DateTimeKind.Utc).AddTicks(3006),
                             Description = "Join us for this unique opportunity to sit with Eckhart Tolle as he points you to spiritual awakening and the transformation of consciousness. With his hallmark warmth, humour and compassion, this evening will connect you with the peace and serenity that arises from living in the moment.\r\r\n\r\r\nEckhart’s profound, yet simple teachings have helped countless people from around the globe awaken to a vibrantly alive inner peace in their daily lives. Eckhart Tolle’s writings and life-changing public events have touched millions of lives, garnering fans to the likes of Oprah, the Dalai Lama and Deepak Chopra. He is the best-selling author of The Power of Now and A New Earth that are widely regarded as the most transformational books of our time.",
                             EndDateTime = new DateTime(2023, 9, 26, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             ImageID = new Guid("13e26f61-5a34-44e0-b9d4-d8ab04b8f342"),
@@ -678,7 +710,7 @@ namespace SpiritualHub.Data.Migrations
                             Id = new Guid("3db097df-7c7c-4c4e-b546-d4555c4c1521"),
                             AutorID = new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"),
                             CategoryID = 3,
-                            CreatedOn = new DateTime(2023, 8, 3, 17, 21, 21, 325, DateTimeKind.Utc).AddTicks(569),
+                            CreatedOn = new DateTime(2023, 8, 4, 13, 7, 52, 752, DateTimeKind.Utc).AddTicks(3059),
                             Description = "The Cogitality seminars are back - they have already started in the country, and now they are happening at the \"Healing\" campus too! They are pre-planned and organized by the team of cogitalists.\r\r\n\r\r\nThe first seminar at the \"Healing\" campus, which will take place on September 2-3, 2023, is already fully booked. Thank you for the sincere desire to share this experience together!",
                             EndDateTime = new DateTime(2023, 9, 3, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             ImageID = new Guid("ab7cfc34-55f4-4ed8-9687-c48a747e9fb4"),
@@ -781,6 +813,11 @@ namespace SpiritualHub.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
                     b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");
 
@@ -789,6 +826,14 @@ namespace SpiritualHub.Data.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("Publishers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("d99242d9-3db2-4675-87e3-da7743c6b526"),
+                            PhoneNumber = "+359888888888",
+                            UserID = new Guid("194974cd-73f0-4946-ba85-710d4061472d")
+                        });
                 });
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Rating", b =>
@@ -880,7 +925,7 @@ namespace SpiritualHub.Data.Migrations
                         new
                         {
                             Id = 1,
-                            Type = "Montly"
+                            Type = "Monthly"
                         },
                         new
                         {
