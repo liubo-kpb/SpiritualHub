@@ -6,6 +6,7 @@ using Infrastructure;
 using SpiritualHub.Data;
 using SpiritualHub.Data.Models;
 using SpiritualHub.Services.Interfaces;
+using SpiritualHub.Services.Mappings;
 
 public class Program
 {
@@ -29,6 +30,7 @@ public class Program
         })
             .AddEntityFrameworkStores<SpiritsDbContext>();
 
+        builder.Services.AddAutoMapper(typeof(ApplicationProfile));
         builder.Services.AddApplicationServices(typeof(IUserService));
         builder.Services.AddApplicationRepositories();
         builder.Services.AddControllersWithViews();
