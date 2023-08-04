@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using Models;
 
-public class SubscriptionTypeEntityConfiguration : IEntityTypeConfiguration<SubscriptionType>
+public class SubscriptionTypeEntityConfiguration : IEntityTypeConfiguration<Subscription>
 {
-    public void Configure(EntityTypeBuilder<SubscriptionType> builder)
+    public void Configure(EntityTypeBuilder<Subscription> builder)
     {
         builder
             .HasCheckConstraint("CK__PossibleTypes", "Type = 'Monthly' OR " +

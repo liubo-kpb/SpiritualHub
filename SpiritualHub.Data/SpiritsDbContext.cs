@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Configuration;
 using Configuration.Seed;
 using Models;
+using SpiritualHub.Data.Configuration.Seed;
 
 public class SpiritsDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
 {

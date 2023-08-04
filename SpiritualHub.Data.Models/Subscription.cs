@@ -22,7 +22,7 @@ public class Subscription
     [Required]
     public int SubscriptionTypeID { get; set; }
 
-    public virtual SubscriptionType SubscriptionType { get; set; }
+    public virtual Subscription SubscriptionType { get; set; }
 
     [Required]
     public Guid AuthorID { get; set; }

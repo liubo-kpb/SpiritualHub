@@ -1,6 +1,8 @@
 ﻿namespace SpiritualHub.Data.Configuration.Seed;
 
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SpiritualHub.Data.Configuration.Seed.Interface;
+using SpiritualHub.Data.Models;
 
 using Configuration.Seed.Interface;
 using Models;
