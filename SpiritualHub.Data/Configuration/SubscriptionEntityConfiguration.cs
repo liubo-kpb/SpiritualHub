@@ -11,7 +11,7 @@ public class SubscriptionEntityConfiguration : IEntityTypeConfiguration<Subscrip
     {
         builder
             .HasOne(s => s.SubscriptionType)
-            .WithMany(s => s.Subscriptions)
+            .WithMany(st => st.Subscriptions)
             .HasForeignKey(s => s.SubscriptionTypeID)
             .OnDelete(DeleteBehavior.NoAction);
 

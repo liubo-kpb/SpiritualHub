@@ -2,15 +2,7 @@
 
 public class AllAuthorsQueryModel
 {
-    public Guid Id { get; set; }
+    public IEnumerable<string> Categories { get; set; }
 
-    public string Alias { get; set; } = null!;
-
-    public string Name { get; set; } = null!;
-
-    public int CategoryId { get; set; }
-
-    public string CategoryName { get; set; } = null!;
-
-    public string AvatarUrl { get; set; } = null!;
+    public IEnumerable<AuthorViewModel> Authors { get; set; }
 }

@@ -1,14 +1,15 @@
 ﻿namespace SpiritualHub.Services.Mappings;
 
 using AutoMapper;
-using SpiritualHub.Client.ViewModels.Author;
-using SpiritualHub.Data.Models;
+
+using Client.ViewModels.Author;
+using Data.Models;
 
 public class ApplicationProfile : Profile
 {
     public ApplicationProfile()
     {
         // source --> destination
-        CreateMap<Author, AllAuthorsQueryModel>();
+        CreateMap<Author, AuthorViewModel>();
     }
 }

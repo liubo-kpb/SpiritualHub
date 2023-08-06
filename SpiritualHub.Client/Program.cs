@@ -3,10 +3,10 @@ namespace SpiritualHub.Client;
 using Microsoft.EntityFrameworkCore;
 
 using Infrastructure;
-using SpiritualHub.Data;
-using SpiritualHub.Data.Models;
-using SpiritualHub.Services.Interfaces;
-using SpiritualHub.Services.Mappings;
+using Data;
+using Data.Models;
+using Services.Interfaces;
+using Services.Mappings;
 
 public class Program
 {
