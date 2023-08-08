@@ -2,7 +2,7 @@ namespace SpiritualHub.Client;
 
 using Microsoft.EntityFrameworkCore;
 
-using Infrastructure;
+using Infrastructure.Extensions;
 using Data;
 using Data.Models;
 using Services.Interfaces;
@@ -30,9 +30,9 @@ public class Program
         })
             .AddEntityFrameworkStores<SpiritsDbContext>();
 
-        builder.Services.AddAutoMapper(typeof(ApplicationProfile));
         builder.Services.AddApplicationServices(typeof(IUserService));
         builder.Services.AddApplicationRepositories();
+        builder.Services.AddAutoMapper(typeof(ApplicationProfile));
         builder.Services.AddControllersWithViews();
 
         var app = builder.Build();

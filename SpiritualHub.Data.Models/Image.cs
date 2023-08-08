@@ -6,10 +6,9 @@ public class Image
 {
     public Image()
     {
-        this.Id = Guid.NewGuid();
+        Id = Guid.NewGuid();
     }
 
-    [Key]
     public Guid Id { get; set; }
 
     public string Name { get; set; } = null!;

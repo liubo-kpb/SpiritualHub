@@ -30,6 +30,8 @@ public class Book
     [Column(TypeName = "decimal(10, 5)")]
     public decimal Price { get; set; }
 
+    public DateTime AddedOn { get; set; }
+
     public Guid AuthorID { get; set; }
 
     public virtual Author Author { get; set; }

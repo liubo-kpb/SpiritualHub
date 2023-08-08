@@ -10,6 +10,7 @@ public class ApplicationProfile : Profile
     public ApplicationProfile()
     {
         // source --> destination
-        CreateMap<Author, AuthorViewModel>();
+        CreateMap<Author, AuthorViewModel>().ReverseMap();
+        CreateMap<Author, AuthorIndexViewModel>().ReverseMap();
     }
 }

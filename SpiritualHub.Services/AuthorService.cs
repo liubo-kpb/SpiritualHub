@@ -11,26 +11,39 @@ using AutoMapper;
 
 public class AuthorService : IAuthorService
 {
-    private readonly IRepository<Author> _repository;
+    private readonly IAuthorRepository _authorRepository;
     private readonly IMapper _mapper;
 
-    public AuthorService(IRepository<Author> repository, IMapper mapper)
+    public AuthorService(IAuthorRepository repository, IMapper mapper)
     {
-        _repository = repository;
+        _authorRepository = repository;
         _mapper = mapper;
     }
 
     public async Task<IEnumerable<AuthorViewModel>> GetAllAuthorsAsync()
     {
-        IEnumerable<Author> authors = await _repository.AllAsNoTrackingAsync();
+        IEnumerable<Author> authors = await _authorRepository.AllAsNoTrackingAsync();
         ICollection<AuthorViewModel> allAuthorsModel = new List<AuthorViewModel>();
-
-        foreach (var author in authors)
-        {
-            AuthorViewModel authorViewModel = _mapper.Map<AuthorViewModel>(author);
-            allAuthorsModel.Add(authorViewModel);
-        }
+        MapListToViewModel<AuthorViewModel>(authors, allAuthorsModel);
 
         return allAuthorsModel;
+    }
+
+    public async Task<IEnumerable<AuthorIndexViewModel>> LastThreeAuthors()
+    {
+        IEnumerable<Author> authors = await _authorRepository.LastThreeAuthors();
+        ICollection<AuthorIndexViewModel> allAuthorsModel = new List<AuthorIndexViewModel>();
+        MapListToViewModel<AuthorIndexViewModel>(authors, allAuthorsModel);
+
+        return allAuthorsModel;
+    }
+ 
+    private void MapListToViewModel<T>(IEnumerable<Author> authors, ICollection<T> allAuthorsModel)
+    {
+        foreach (var author in authors)
+        {
+            T authorViewModel = _mapper.Map<T>(author);
+            allAuthorsModel.Add(authorViewModel);
+        }
     }
 }

@@ -25,6 +25,8 @@ public class Author
     [StringLength(AliasMaxLength, MinimumLength = AliasMinLength)]
     public string Name { get; set; }
 
+    public DateTime AddedOn { get; set; }
+
     [Required]
     public int CategoryID { get; set; }
 

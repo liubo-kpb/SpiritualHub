@@ -1,4 +1,4 @@
-﻿namespace SpiritualHub.Client.Infrastructure;
+﻿namespace SpiritualHub.Client.Infrastructure.Extensions;
 
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -49,6 +49,8 @@ public static class DependancyContainer
     /// <param name="services"></param>
     public static void AddApplicationRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IRepository<Author>, Repository<Author>>();
+        services.AddScoped<IAuthorRepository, AuthorRepository>();
+        services.AddScoped<IRepository<Publisher>, Repository<Publisher>>();
+        services.AddScoped<IRepository<Subscription>, Repository<Subscription>>();
     }
 }

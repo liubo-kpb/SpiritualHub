@@ -3,6 +3,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
 using static SpiritualHub.Common.EntityValidationConstants.Course;
 
 public class Course
@@ -32,6 +33,8 @@ public class Course
     [Required]
     [Column(TypeName = "decimal(10, 5)")]
     public decimal Price { get; set; }
+
+    public DateTime AddedOn { get; set; }
 
     [Required]
     public Guid AuthorID { get; set; }
