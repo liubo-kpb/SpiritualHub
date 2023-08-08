@@ -69,7 +69,16 @@ public class PublisherController : Controller
             return View(model);
         }
 
-        await _publisherService.Create(userId, model.PhoneNumber);
+        try
+        {
+            await _publisherService.Create(userId, model.PhoneNumber);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = "An unexpected error occurred when attempting to make you an agent. Please try again later!";
+
+            return View(model);
+        }
 
         return RedirectToAction(nameof(AuthorController.All), "Author");
     }
