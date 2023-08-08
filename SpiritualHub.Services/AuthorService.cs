@@ -3,24 +3,45 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using AutoMapper;
+
 using Interfaces;
 using Client.ViewModels.Author;
 using Data.Repository.Interface;
 using Data.Models;
-using AutoMapper;
 
 public class AuthorService : IAuthorService
 {
     private readonly IAuthorRepository _authorRepository;
     private readonly IMapper _mapper;
 
-    public AuthorService(IAuthorRepository repository, IMapper mapper)
+    public AuthorService(IAuthorRepository repository,
+                         IMapper mapper)
     {
         _authorRepository = repository;
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<AuthorViewModel>> GetAllAuthorsAsync()
+    public async Task<string> CreateAuthor(AuthorFormModel newAuthor, Publisher publisher)
+    {
+        var avatarImage = new Image
+        {
+            Name = newAuthor.Name,
+            URL = newAuthor.AvatarImageUrl,
+        };
+
+        var author = _mapper.Map<Author>(newAuthor);
+        author.AvatarImage = avatarImage;
+        author.Publishers.Add(publisher);
+
+        await _authorRepository.AddAsync(author);
+
+        await _authorRepository.SaveChangesAsync();
+
+        return author.Id.ToString();
+    }
+
+    public async Task<IEnumerable<AuthorViewModel>> GetAllAsync()
     {
         IEnumerable<Author> authors = await _authorRepository.AllAsNoTrackingAsync();
         ICollection<AuthorViewModel> allAuthorsModel = new List<AuthorViewModel>();

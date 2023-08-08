@@ -5,22 +5,29 @@ using Microsoft.AspNetCore.Mvc;
 
 using Client.ViewModels.Author;
 using Services.Interfaces;
+using SpiritualHub.Client.Infrastructure.Extensions;
+
+using static Common.NotificationMessagesConstants;
 
 [Authorize]
 public class AuthorController : Controller
 {
     private readonly IAuthorService _authorService;
+    private readonly ICategoryService _categoryService;
+    private readonly IPublisherService _publisherService;
 
-    public AuthorController(IAuthorService authorService)
+    public AuthorController(IAuthorService authorService, ICategoryService categoryService, IPublisherService publisherService)
     {
         _authorService = authorService;
+        _categoryService = categoryService;
+        _publisherService = publisherService;
     }
 
     [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> All()
     {
-        IEnumerable<AuthorViewModel> authors = await _authorService.GetAllAuthorsAsync();
+        IEnumerable<AuthorViewModel> authors = await _authorService.GetAllAsync();
 
         AllAuthorsQueryModel queryModel = new AllAuthorsQueryModel()
         {
@@ -45,13 +52,62 @@ public class AuthorController : Controller
     [HttpGet]
     public async Task<IActionResult> Add()
     {
-        return View();
+        var userId = User.GetId();
+        var isPublisher = await _publisherService.ExistsById(userId);
+        if (!isPublisher)
+        {
+            TempData[ErrorMessage] = "You need to become a publisher to be able to add more authors.";
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        return View(new AuthorFormModel
+                        {
+                            Categories = await _categoryService.GetAllAsync()
+                        });
     }
 
     [HttpPost]
     public async Task<IActionResult> Add(AuthorFormModel newAuthor)
     {
-        return RedirectToAction(nameof(Details), new { id = 1 });
+        var userId = User.GetId();
+        var isPublisher = await _publisherService.ExistsById(userId);
+        if (!isPublisher)
+        {
+            TempData[ErrorMessage] = "You need to become a publisher to be able to add more authors.";
+
+            return RedirectToAction(nameof(PublisherController.Become), "Publisher");
+        }
+
+        var isExistingCategory = await _categoryService.ExistsAsync(newAuthor.CategoryId);
+        if (!isExistingCategory)
+        {
+            ModelState.AddModelError(nameof(newAuthor.CategoryId), "Category doesn't exist. Please select a valid category");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            newAuthor.Categories = await _categoryService.GetAllAsync();
+
+            return View(newAuthor);
+        }
+
+        var publisher = await _publisherService.GetPublisher(userId);
+
+        string authorId;
+        try
+        {
+            authorId = await _authorService.CreateAuthor(newAuthor, publisher);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = "An unexpected error occurred when attempting to add a new author. Please try again later!";
+            newAuthor.Categories = await _categoryService.GetAllAsync();
+
+            return View(newAuthor);
+        }
+
+        return RedirectToAction(nameof(Details), new { id = authorId });
     }
 
     [HttpGet]

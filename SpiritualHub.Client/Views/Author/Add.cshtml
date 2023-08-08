@@ -1,6 +1,13 @@
-﻿@{
+﻿@model AuthorFormModel
+@{
     ViewBag.Title = "Add Author";
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
 <hr />
+
+<partial name="_AuthorFormPartial" model="@Model"; />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

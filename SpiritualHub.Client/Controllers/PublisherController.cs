@@ -8,8 +8,6 @@ using Infrastructure.Extensions;
 using SpiritualHub.Services.Interfaces;
 
 using static Common.NotificationMessagesConstants;
-using SpiritualHub.Data.Repository;
-using SpiritualHub.Data.Models;
 
 [Authorize]
 public class PublisherController : Controller

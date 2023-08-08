@@ -10,7 +10,7 @@ using Data.Repository.Interface;
 public class PublisherService : IPublisherService
 {
     private readonly IRepository<Publisher> _publisherRepository;
-    IRepository<Subscription> _subscriptionRepository;
+    private readonly IRepository<Subscription> _subscriptionRepository;
 
     public PublisherService(IRepository<Publisher> publisherRepository, IRepository<Subscription> subscriptionRepository)
     {
@@ -33,6 +33,13 @@ public class PublisherService : IPublisherService
     public async Task<bool> ExistsById(string Id)
     {
         return await _publisherRepository.AnyAsync(u => u.UserID.ToString() == Id);
+    }
+
+    public async Task<Publisher> GetPublisher(string userId)
+    {
+        var publishers = await _publisherRepository.AllAsNoTrackingAsync();
+                                            
+        return publishers.FirstOrDefault(a => a.UserID.ToString() == userId);
     }
 
     public async Task<bool> UserHasSubscriptions(string userId)

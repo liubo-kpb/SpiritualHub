@@ -1,7 +1,6 @@
 ﻿namespace SpiritualHub.Services.Interfaces;
 
 using SpiritualHub.Data.Models;
-using SpiritualHub.Data.Repository.Interface;
 
 public interface IPublisherService
 {
@@ -12,4 +11,6 @@ public interface IPublisherService
     Task<bool> UserHasSubscriptions(string userId);
 
     Task Create(string userId, string phoneNumber);
+
+    Task<Publisher> GetPublisher(string agentId);
 }

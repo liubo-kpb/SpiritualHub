@@ -18,7 +18,7 @@ public class AuthorRepository : DeletableRepository<Author>, IAuthorRepository
     {
         return await DbSet
                         .Include(a => a.AvatarImage)
-                        .OrderByDescending(a => a.AddedOn)
+                        .OrderBy(a => a.AddedOn)
                         .Take(3)
                         .ToArrayAsync();
     }
