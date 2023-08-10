@@ -12,8 +12,8 @@ using SpiritualHub.Data;
 namespace SpiritualHub.Data.Migrations
 {
     [DbContext(typeof(SpiritsDbContext))]
-    [Migration("20230807210618_AddEntityCreationDates")]
-    partial class AddEntityCreationDates
+    [Migration("20230810070633_CourseAndBlogImageSolution")]
+    partial class CourseAndBlogImageSolution
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -289,13 +289,13 @@ namespace SpiritualHub.Data.Migrations
                         {
                             Id = new Guid("194974cd-73f0-4946-ba85-710d4061472d"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "644cef2f-ed7e-4f8a-b21b-e00c4cfb2da0",
+                            ConcurrencyStamp = "8ad2d23d-7c63-4165-9961-a7aa94604bbd",
                             Email = "publisher@spirits.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "PUBLISHER@SPIRITS.COM",
                             NormalizedUserName = "PUBLISHER",
-                            PasswordHash = "AQAAAAEAACcQAAAAEB5jsi+09LSZUQBjghjvUbeCbkRw4JJcYgdGsafhLVduj3mdy8sOpupveSnSfSuz4Q==",
+                            PasswordHash = "AQAAAAEAACcQAAAAENVnXn5EaOiEP+DSMciwms46PNpyLAjmlMh+ZkyzPDluFYkbBuIb9BVqEudwYMZdKQ==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "publisher"
@@ -304,13 +304,13 @@ namespace SpiritualHub.Data.Migrations
                         {
                             Id = new Guid("1fd95f69-4f9d-4671-b126-cefcf4b8a95e"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "bab93638-5a3e-486f-a0ee-78f2ef8164ba",
+                            ConcurrencyStamp = "3cffc673-f405-47f7-b44a-694cc4cd6f15",
                             Email = "user@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@MAIL.COM",
                             NormalizedUserName = "USER",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJnjieSk6r1uj08uD+dBIx2aaKkwGjRPENzMCvQujBub15hcloYhn3avu4ZLI3oZQQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAsH4y/dFAzbuUrqpbH9zAZwJ4aSOFBwOBfjDIKzpy1+YFmNxw2e8LKrqqkHYc3SCw==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "user"
@@ -324,7 +324,9 @@ namespace SpiritualHub.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("AddedOn")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("Alias")
                         .IsRequired()
@@ -420,6 +422,21 @@ namespace SpiritualHub.Data.Migrations
                     b.ToTable("Blogs");
                 });
 
+            modelBuilder.Entity("SpiritualHub.Data.Models.BlogPostImage", b =>
+                {
+                    b.Property<Guid>("ImageID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BlogID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ImageID", "BlogID");
+
+                    b.HasIndex("BlogID");
+
+                    b.ToTable("BlogPostImage");
+                });
+
             modelBuilder.Entity("SpiritualHub.Data.Models.Book", b =>
                 {
                     b.Property<Guid>("Id")
@@ -427,7 +444,9 @@ namespace SpiritualHub.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("AddedOn")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<Guid>("AuthorID")
                         .HasColumnType("uniqueidentifier");
@@ -598,7 +617,9 @@ namespace SpiritualHub.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("AddedOn")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<Guid>("AuthorID")
                         .HasColumnType("uniqueidentifier");
@@ -609,6 +630,9 @@ namespace SpiritualHub.Data.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ImageID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -631,6 +655,8 @@ namespace SpiritualHub.Data.Migrations
                     b.HasIndex("AuthorID");
 
                     b.HasIndex("CategoryID");
+
+                    b.HasIndex("ImageID");
 
                     b.HasIndex("PublisherID");
 
@@ -697,7 +723,7 @@ namespace SpiritualHub.Data.Migrations
                             Id = new Guid("15f326bc-f47f-487f-8764-5fb8fd5c448a"),
                             AutorID = new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
                             CategoryID = 2,
-                            CreatedOn = new DateTime(2023, 8, 7, 21, 6, 17, 237, DateTimeKind.Utc).AddTicks(6248),
+                            CreatedOn = new DateTime(2023, 8, 10, 7, 6, 32, 528, DateTimeKind.Utc).AddTicks(465),
                             Description = "What if there was one state of being we could adopt that would help us establish better, stronger connections not only with our families and friends on earth, but also with our friends from the stars?\r\r\n\r\r\nIn The Three Behaviors of Connection, Bashar will share how action, timing, and communication are vital concepts for making inroads and connection with the hybrid children that will eventually be living among us. He will expand in detail on these three behaviors and how we might apply them to our lives on Earth as well as to our quest for contact with our extraterrestrial family.",
                             EndDateTime = new DateTime(2023, 8, 26, 15, 30, 0, 0, DateTimeKind.Unspecified),
                             ImageID = new Guid("69630e42-a4de-4116-a1a4-38c43faa0b53"),
@@ -712,7 +738,7 @@ namespace SpiritualHub.Data.Migrations
                             Id = new Guid("45bb1c09-b50d-4d47-8fdb-fbfb53086922"),
                             AutorID = new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"),
                             CategoryID = 5,
-                            CreatedOn = new DateTime(2023, 8, 7, 21, 6, 17, 237, DateTimeKind.Utc).AddTicks(6278),
+                            CreatedOn = new DateTime(2023, 8, 10, 7, 6, 32, 528, DateTimeKind.Utc).AddTicks(482),
                             Description = "Join us for this unique opportunity to sit with Eckhart Tolle as he points you to spiritual awakening and the transformation of consciousness. With his hallmark warmth, humour and compassion, this evening will connect you with the peace and serenity that arises from living in the moment.\r\r\n\r\r\nEckhart’s profound, yet simple teachings have helped countless people from around the globe awaken to a vibrantly alive inner peace in their daily lives. Eckhart Tolle’s writings and life-changing public events have touched millions of lives, garnering fans to the likes of Oprah, the Dalai Lama and Deepak Chopra. He is the best-selling author of The Power of Now and A New Earth that are widely regarded as the most transformational books of our time.",
                             EndDateTime = new DateTime(2023, 9, 26, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             ImageID = new Guid("13e26f61-5a34-44e0-b9d4-d8ab04b8f342"),
@@ -727,7 +753,7 @@ namespace SpiritualHub.Data.Migrations
                             Id = new Guid("3db097df-7c7c-4c4e-b546-d4555c4c1521"),
                             AutorID = new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"),
                             CategoryID = 3,
-                            CreatedOn = new DateTime(2023, 8, 7, 21, 6, 17, 237, DateTimeKind.Utc).AddTicks(6296),
+                            CreatedOn = new DateTime(2023, 8, 10, 7, 6, 32, 528, DateTimeKind.Utc).AddTicks(490),
                             Description = "The Cogitality seminars are back - they have already started in the country, and now they are happening at the \"Healing\" campus too! They are pre-planned and organized by the team of cogitalists.\r\r\n\r\r\nThe first seminar at the \"Healing\" campus, which will take place on September 2-3, 2023, is already fully booked. Thank you for the sincere desire to share this experience together!",
                             EndDateTime = new DateTime(2023, 9, 3, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             ImageID = new Guid("ab7cfc34-55f4-4ed8-9687-c48a747e9fb4"),
@@ -745,12 +771,6 @@ namespace SpiritualHub.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("BlogId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("CourseId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -760,10 +780,6 @@ namespace SpiritualHub.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BlogId");
-
-                    b.HasIndex("CourseId");
 
                     b.ToTable("Images");
 
@@ -1113,6 +1129,25 @@ namespace SpiritualHub.Data.Migrations
                     b.Navigation("Publisher");
                 });
 
+            modelBuilder.Entity("SpiritualHub.Data.Models.BlogPostImage", b =>
+                {
+                    b.HasOne("SpiritualHub.Data.Models.Blog", "Blog")
+                        .WithMany("Images")
+                        .HasForeignKey("BlogID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SpiritualHub.Data.Models.Image", "Image")
+                        .WithMany()
+                        .HasForeignKey("ImageID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Blog");
+
+                    b.Navigation("Image");
+                });
+
             modelBuilder.Entity("SpiritualHub.Data.Models.Book", b =>
                 {
                     b.HasOne("SpiritualHub.Data.Models.Author", "Author")
@@ -1185,6 +1220,12 @@ namespace SpiritualHub.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("SpiritualHub.Data.Models.Image", "Image")
+                        .WithMany()
+                        .HasForeignKey("ImageID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SpiritualHub.Data.Models.Publisher", "Publisher")
                         .WithMany("Courses")
                         .HasForeignKey("PublisherID")
@@ -1194,6 +1235,8 @@ namespace SpiritualHub.Data.Migrations
                     b.Navigation("Author");
 
                     b.Navigation("Category");
+
+                    b.Navigation("Image");
 
                     b.Navigation("Publisher");
                 });
@@ -1231,17 +1274,6 @@ namespace SpiritualHub.Data.Migrations
                     b.Navigation("Image");
 
                     b.Navigation("Organizer");
-                });
-
-            modelBuilder.Entity("SpiritualHub.Data.Models.Image", b =>
-                {
-                    b.HasOne("SpiritualHub.Data.Models.Blog", null)
-                        .WithMany("Images")
-                        .HasForeignKey("BlogId");
-
-                    b.HasOne("SpiritualHub.Data.Models.Course", null)
-                        .WithMany("Images")
-                        .HasForeignKey("CourseId");
                 });
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Publisher", b =>
@@ -1368,8 +1400,6 @@ namespace SpiritualHub.Data.Migrations
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Course", b =>
                 {
-                    b.Navigation("Images");
-
                     b.Navigation("Ratings");
                 });
 

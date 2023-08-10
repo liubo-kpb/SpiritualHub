@@ -46,6 +46,7 @@ public class SpiritsDbContext : IdentityDbContext<ApplicationUser, IdentityRole<
     {
         builder.ApplyConfiguration(new AuthorEntityConfiguration());
         builder.ApplyConfiguration(new BlogEntityConfiguration());
+        builder.ApplyConfiguration(new BlogPostImageConfiguration());
         builder.ApplyConfiguration(new BookEntityConfiguration());
         builder.ApplyConfiguration(new CommentEntityConfiguration());
         builder.ApplyConfiguration(new CourseEntityConfiguration());

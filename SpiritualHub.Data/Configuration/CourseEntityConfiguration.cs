@@ -10,6 +10,10 @@ public class CourseEntityConfiguration : IEntityTypeConfiguration<Course>
     public void Configure(EntityTypeBuilder<Course> builder)
     {
         builder
+                .Property(h => h.AddedOn)
+                .HasDefaultValueSql("GETDATE()");
+
+        builder
             .HasOne(c => c.Author)
             .WithMany(a => a.Courses)
             .HasForeignKey(c => c.AuthorID)

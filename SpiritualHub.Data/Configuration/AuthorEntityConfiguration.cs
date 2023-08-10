@@ -10,6 +10,10 @@ public class AuthorEntityConfiguration : IEntityTypeConfiguration<Author>
     public void Configure(EntityTypeBuilder<Author> builder)
     {
         builder
+                .Property(h => h.AddedOn)
+                .HasDefaultValueSql("GETDATE()");
+
+        builder
             .HasOne(a => a.Category)
             .WithMany(c => c.Authors)
             .HasForeignKey(a => a.CategoryID)

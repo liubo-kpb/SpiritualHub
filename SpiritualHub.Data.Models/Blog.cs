@@ -9,7 +9,7 @@ public class Blog
     {
         this.Id = Guid.NewGuid();
         this.Comments = new HashSet<Comment>();
-        this.Images = new HashSet<Image>();
+       this.Images = new HashSet<BlogPostImage>();
     }
 
     [Key]
@@ -43,5 +43,5 @@ public class Blog
 
     public virtual ICollection<Comment> Comments { get; set; }
 
-    public virtual ICollection<Image> Images { get; set; }
+    public virtual ICollection<BlogPostImage> Images { get; set; }
 }

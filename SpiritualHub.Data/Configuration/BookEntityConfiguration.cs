@@ -10,6 +10,10 @@ public class BookEntityConfiguration : IEntityTypeConfiguration<Book>
     public void Configure(EntityTypeBuilder<Book> builder)
     {
         builder
+                .Property(h => h.AddedOn)
+                .HasDefaultValueSql("GETDATE()");
+
+        builder
             .HasOne(b => b.Category)
             .WithMany(c => c.Books)
             .HasForeignKey(b => b.CategoryID)
