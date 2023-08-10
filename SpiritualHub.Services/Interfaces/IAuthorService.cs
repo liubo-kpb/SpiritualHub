@@ -25,4 +25,6 @@ public interface IAuthorService
     Task<bool> HasConnectedPublisher(string authorId, string userId);
 
     Task<AuthorFormModel> GetAuthorAsync(string authorId);
+
+    Task DisableAsync(string authorId);
 }

@@ -11,6 +11,7 @@ public class AuthorFormModel
     public AuthorFormModel()
     {
         this.Categories = new HashSet<CategoryServiceModel>();
+        IsActive = true;
     }
     public Guid Id { get; set; }
 
@@ -22,6 +23,9 @@ public class AuthorFormModel
     public string Name { get; set; } = null!;
 
     public string Description { get; set; } = null!;
+
+    [Display(Name = "Activate Author")]
+    public bool IsActive { get; set; }
 
     [Required]
     [Display(Name = "Author Image URL")]

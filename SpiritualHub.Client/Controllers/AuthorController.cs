@@ -203,14 +203,53 @@ public class AuthorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Disable(string id)
     {
-        return View(new AuthorFormModel());
+        bool exists = await _authorService.Exists(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = "No such author found. Please try again!";
+
+            return RedirectToAction("All");
+        }
+
+        string userId = this.User.GetId()!;
+        bool isConnectedPublisher = await _authorService.HasConnectedPublisher(id, userId);
+        if (!isConnectedPublisher)
+        {
+            TempData[ErrorMessage] = "You need to be a publisher of this author to be able to make changes.";
+
+            return RedirectToAction(nameof(Mine));
+        }
+
+        var author = await _authorService.GetAuthorAsync(id);
+
+        return View(author);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Delete(AuthorDetailsViewModel author)
+    public async Task<IActionResult> Disable(AuthorDetailsViewModel author)
     {
+        string authorId = author.Id.ToString();
+        bool exists = await _authorService.Exists(authorId);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = "No such author found. Please try again!";
+
+            return RedirectToAction("All");
+        }
+
+        string userId = this.User.GetId()!;
+        bool isConnectedPublisher = await _authorService.HasConnectedPublisher(authorId, userId);
+        if (!isConnectedPublisher)
+        {
+            TempData[ErrorMessage] = "You need to be a publisher of this author to be able to make changes.";
+
+            return RedirectToAction(nameof(Mine));
+        }
+
+        await _authorService.DisableAsync(authorId);
+
         return RedirectToAction(nameof(All));
     }
 

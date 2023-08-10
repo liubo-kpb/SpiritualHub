@@ -29,6 +29,8 @@ public class Author
 
     public DateTime AddedOn { get; set; }
 
+    public bool IsActive { get; set; }
+
     [Required]
     public int CategoryID { get; set; }
 

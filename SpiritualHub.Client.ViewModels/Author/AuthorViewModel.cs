@@ -23,6 +23,8 @@ public class AuthorViewModel
 
     public string Description { get; set; } = null!;
 
+    public bool IsActive { get; set; }
+
     [Display(Name = "Category")]
     public string CategoryName { get; set; } = null!;
 

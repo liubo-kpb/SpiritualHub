@@ -72,6 +72,14 @@ public class AuthorService : IAuthorService
         return author.Id.ToString();
     }
 
+    public async Task DisableAsync(string authorId)
+    {
+        var author = await _authorRepository.GetSingleByIdAsync(Guid.Parse(authorId));
+        author.IsActive = false;
+
+        await _authorRepository.SaveChangesAsync();
+    }
+
     public async Task Edit(AuthorFormModel editedAuthor)
     {
         var authorEntity = await _authorRepository.GetAuthorDetailsByIdAsync(editedAuthor.Id.ToString());
@@ -79,6 +87,7 @@ public class AuthorService : IAuthorService
         authorEntity.Alias = editedAuthor.Alias;
         authorEntity.Name = editedAuthor.Name;
         authorEntity.Description = editedAuthor.Description;
+        authorEntity.IsActive = editedAuthor.IsActive;
         authorEntity.CategoryID = editedAuthor.CategoryId;
         authorEntity.AvatarImage.URL = editedAuthor.AvatarImageUrl;
 
@@ -116,8 +125,9 @@ public class AuthorService : IAuthorService
             AuthorSorting.FollowersAscending => authorsQuery.OrderBy(a => a.Followers.Count),
             AuthorSorting.SubscribersDescending => authorsQuery.OrderByDescending(a => a.Subscriptions.Count),
             AuthorSorting.SubscribersAscending => authorsQuery.OrderBy(a => a.Subscriptions.Count),
-            _ => authorsQuery.OrderByDescending(a => a.Followers.Count)
-                                                               .ThenByDescending(a => a.AddedOn)
+            _ => authorsQuery.Where(a => a.IsActive)
+                             .OrderByDescending(a => a.Followers.Count)
+                             .ThenByDescending(a => a.AddedOn)
         };
 
         IEnumerable<Author> authors = await authorsQuery
@@ -141,7 +151,7 @@ public class AuthorService : IAuthorService
 
     public async Task<AuthorFormModel> GetAuthorAsync(string authorId)
     {
-        var author = await _authorRepository.GetAuthorById(authorId);
+        var author = await _authorRepository.GetAuthorByIdWithAvatar(authorId);
         return _mapper.Map<AuthorFormModel>(author);
     }
 
@@ -156,10 +166,6 @@ public class AuthorService : IAuthorService
     public async Task<bool> HasConnectedPublisher(string authorId, string userId)
     {
         var author = await _authorRepository.GetAuthorWithPublishersAsync(authorId);
-        if (author == null)
-        {
-            return false;
-        }
 
         if (!author.Publishers.Any(p => p.UserID.ToString() == userId))
         {

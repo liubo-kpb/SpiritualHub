@@ -18,6 +18,7 @@ public class AuthorRepository : DeletableRepository<Author>, IAuthorRepository
     {
         return await DbSet
                         .Include(a => a.AvatarImage)
+                        .Where(a => a.IsActive)
                         .OrderByDescending(a => a.AddedOn)
                         .Take(3)
                         .ToArrayAsync();
@@ -33,7 +34,7 @@ public class AuthorRepository : DeletableRepository<Author>, IAuthorRepository
                         .FirstOrDefaultAsync(a => a.Id.ToString() == id);
     }
 
-    public async Task<Author> GetAuthorById(string id)
+    public async Task<Author> GetAuthorByIdWithAvatar(string id)
     {
         return await DbSet
             .Include(a => a.AvatarImage)

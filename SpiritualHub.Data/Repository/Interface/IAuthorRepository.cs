@@ -8,7 +8,7 @@ public interface IAuthorRepository : IDeletableRepository<Author>
 
     Task<Author> GetAuthorDetailsByIdAsync(string id);
 
-    Task<Author> GetAuthorById(string id);
+    Task<Author> GetAuthorByIdWithAvatar(string id);
 
     Task<Author> GetAuthorWithPublishersAsync(string id);
 }

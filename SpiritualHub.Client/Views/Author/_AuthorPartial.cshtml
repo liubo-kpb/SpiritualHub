@@ -13,6 +13,7 @@
                 Subscribers:
                 <b>@Model.SubscriberCount</b>
             </h6>
+            <h6>(@(Model.IsActive ? "Currently active" : "Not currently active"))</h6>
             <br />
             <a asp-controller="Author" asp-action="Details" asp-route-id="@Model.Id"
                class="btn btn-success">Details</a>
@@ -20,8 +21,8 @@
             {
                 <a asp-controller="Author" asp-action="Edit" asp-route-id="@Model.Id"
                    class="btn btn-warning">Edit</a>
-                <a asp-controller="Author" asp-action="Delete" asp-route-id="@Model.Id"
-                   class="btn btn-danger">Delete</a>
+                <a asp-controller="Author" asp-action="Disable" asp-route-id="@Model.Id"
+                   class="btn btn-danger">Disable</a>
                 <p></p>
                 @if (Model.Followers.Any(f => f.Id.ToString() == this.User.GetId()))
                 {
