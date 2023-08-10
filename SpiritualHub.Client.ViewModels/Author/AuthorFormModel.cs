@@ -1,7 +1,8 @@
 ﻿namespace SpiritualHub.Client.ViewModels.Author;
 
-using SpiritualHub.Client.ViewModels.Category;
 using System.ComponentModel.DataAnnotations;
+
+using Category;
 
 using static Common.EntityValidationConstants.Author;
 

@@ -28,7 +28,7 @@ public class CategoryService : ICategoryService
 
     public async Task<ICollection<CategoryServiceModel>> GetAllAsync()
     {
-        var categoryEntities = await _categoryRepository.AllAsNoTrackingAsync();
+        var categoryEntities = _categoryRepository.AllAsNoTracking();
         var categoryModels = new List<CategoryServiceModel>();
 
         foreach (var category in categoryEntities)

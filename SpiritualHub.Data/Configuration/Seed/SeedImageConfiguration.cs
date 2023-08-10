@@ -23,7 +23,7 @@ public class SeedImageConfiguration : IEntitySeedConfiguration<Image>
         {
             Id = Guid.Parse("2a022e06-8c00-435f-93a9-9da816c1b483"),
             Name = "BasharAvatar",
-            URL = "https://1drv.ms/i/s!AtAU7bartlmmgYQEO5c530QekMydnA?e=65X6RK"
+            URL = "https://www.bashar.org/wp-content/uploads/2017/02/Bashar_purple2.jpg"
         };
         images.Add(image);
 
@@ -31,7 +31,7 @@ public class SeedImageConfiguration : IEntitySeedConfiguration<Image>
         {
             Id = Guid.Parse("868aaede-674a-44a6-ae21-ec62bd2bec3b"),
             Name = "CogitalityAvatar",
-            URL = "https://1drv.ms/i/s!AtAU7bartlmmgYRw6O57eiKsf9iNBQ?e=OsdWqo"
+            URL = "https://i.ytimg.com/vi/XvV8rllMh6c/maxresdefault.jpg"
         };
         images.Add(image);
 
@@ -39,7 +39,7 @@ public class SeedImageConfiguration : IEntitySeedConfiguration<Image>
         {
             Id = Guid.Parse("26db05ea-2b5e-44dd-bdef-4e74b9ecaa5f"),
             Name = "EckhartTolleAvatar",
-            URL = "https://1drv.ms/i/s!AtAU7bartlmmhpxwLMTJsLUEHxnZSQ?e=sln5JF"
+            URL = "https://eckharttolle.com/wp-content/uploads/2021/03/PHOTO-Eckhart_EDITEDIMG_5197-scaled.jpg"
         };
         images.Add(image);
 
@@ -82,7 +82,7 @@ public class SeedImageConfiguration : IEntitySeedConfiguration<Image>
         {
             Id = Guid.Parse("327b0419-5ff9-4694-a4f8-151cb0a46e6b"),
             Name = "PowerOfNow",
-            URL = "https://1drv.ms/i/s!AtAU7bartlmmhp15puF4kOZMXXn-9w?e=fZECnk"
+            URL = "https://m.media-amazon.com/images/I/714FbKtXS+L._AC_UF1000,1000_QL80_.jpg"
         };
         images.Add(image);
 
@@ -90,7 +90,7 @@ public class SeedImageConfiguration : IEntitySeedConfiguration<Image>
         {
             Id = Guid.Parse("55dc2c91-c81b-40de-ac5b-f7474a7acfdc"),
             Name = "MOL",
-            URL = "https://1drv.ms/i/s!AtAU7bartlmmhp17o6bOmIyxERpgkQ?e=bWhmAO"
+            URL = "https://images-na.ssl-images-amazon.com/images/I/61oU5+vqzwL._AC_UL750_SR750,750_.jpg"
         };
         images.Add(image);
 

@@ -12,5 +12,5 @@ public interface IPublisherService
 
     Task Create(string userId, string phoneNumber);
 
-    Task<Publisher> GetPublisher(string agentId);
+    Task<Publisher> GetPublisher(string userId);
 }

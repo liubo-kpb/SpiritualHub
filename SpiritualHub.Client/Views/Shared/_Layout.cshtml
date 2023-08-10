@@ -27,16 +27,16 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Author" asp-action="Index">Authors</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Author" asp-action="All">Authors</a>
                         </li>
                         <li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Event" asp-action="Index">Events</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Event" asp-action="All">Events</a>
                         </li>
                         <li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Index">Courses</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="All">Courses</a>
                         </li>
                         <li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Book" asp-action="Index">Books</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Book" asp-action="All">Books</a>
                         </li>
                         @if (this.User.Identity?.IsAuthenticated ?? false)
                         {

@@ -1,0 +1,57 @@
+﻿@model AuthorViewModel
+<div class="col-md-4">
+    <div class="card mb-3">
+        <img class="card-img-top" src="@Model.AvatarImageUrl" alt="House Image">
+        <div class="card-body text-center">
+            <h4>@Model.Alias</h4>
+            <h6>Name: <b>@Model.Name</b></h6>
+            <h6>
+                Followers:
+                <b>@Model.FollowerCount</b>
+            </h6>
+            <h6>
+                Subscribers:
+                <b>@Model.SubscriberCount</b>
+            </h6>
+            <br />
+            <a asp-controller="House" asp-action="Details" asp-route-id="@Model.Id"
+               class="btn btn-success">Details</a>
+            @if (this.User.Identity?.IsAuthenticated ?? false)
+            {
+                <a asp-controller="Author" asp-action="Edit" asp-route-id="@Model.Id"
+                   class="btn btn-warning">Edit</a>
+                <a asp-controller="Author" asp-action="Delete" asp-route-id="@Model.Id"
+                   class="btn btn-danger">Delete</a>
+                <p></p>
+                @if (Model.Followers.Any(f => f.Id.ToString() == this.User.GetId()))
+                {
+                    <form asp-controller="Author" asp-action="Unfollow"
+                          asp-route-id="@Model.Id" method="post">
+                        <input class="btn btn-primary mb-1" type="submit" value="Unfollow" />
+                    </form>
+                }
+                else
+                {
+                    <form class="input-group-sm " asp-controller="Author"
+                          asp-action="Follow" asp-route-id="@Model.Id" method="post">
+                        <input class="btn btn-primary mb-1" type="submit" value="Follow" />
+                    </form>
+                }
+                @if (Model.Subscribers.Any(f => f.Id.ToString() == this.User.GetId()))
+                {
+                    <form asp-controller="Author" asp-action="Unsubscribe"
+                          asp-route-id="@Model.Id" method="post">
+                        <input class="btn btn-primary mb-1" type="submit" value="Unsubscribe" />
+                    </form>
+                }
+                else
+                {
+                    <form class="input-group-sm" asp-controller="Author"
+                          asp-action="Subscribe" asp-route-id="@Model.Id" method="post">
+                        <input class="btn btn-primary mb-1" type="submit" value="Subscribe" />
+                    </form>
+                }
+            }
+        </div>
+    </div>
+</div>

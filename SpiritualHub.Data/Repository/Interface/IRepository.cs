@@ -5,11 +5,11 @@ using System.Linq.Expressions;
 public interface IRepository<TEntity> : IDisposable
         where TEntity : class
 {
-    Task<IQueryable<TEntity>> GetAllAsync();
+    IQueryable<TEntity> GetAll();
 
     Task<TEntity?> GetSingleAsync(Guid? id);
 
-    Task<IQueryable<TEntity>> AllAsNoTrackingAsync();
+    IQueryable<TEntity> AllAsNoTracking();
 
     Task<bool> AddAsync(TEntity entity);
 

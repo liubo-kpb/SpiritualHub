@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 using Client.ViewModels.Author;
 using Services.Interfaces;
-using SpiritualHub.Client.Infrastructure.Extensions;
+using Infrastructure.Extensions;
+using ViewModels.Category;
 
 using static Common.NotificationMessagesConstants;
 
@@ -25,13 +26,15 @@ public class AuthorController : Controller
 
     [AllowAnonymous]
     [HttpGet]
-    public async Task<IActionResult> All()
+    public async Task<IActionResult> All([FromQuery] AllAuthorsQueryModel queryModel)
     {
-        IEnumerable<AuthorViewModel> authors = await _authorService.GetAllAsync();
+        var filteredAuthors = await _authorService.GetAllAsync(queryModel);
+        IEnumerable<CategoryServiceModel> categories = await _categoryService.GetAllAsync();
 
-        AllAuthorsQueryModel queryModel = new AllAuthorsQueryModel()
+        queryModel = new AllAuthorsQueryModel()
         {
-            Authors = authors
+            Authors = filteredAuthors.Authors,
+            Categories = categories.Select(c => c.Name)
         };
 
         return View(queryModel);
@@ -40,7 +43,22 @@ public class AuthorController : Controller
     [HttpGet]
     public async Task<IActionResult> Mine()
     {
-        return View(new AllAuthorsQueryModel());
+        IEnumerable<AuthorViewModel> myAuthors = null;
+
+        string userId = this.User.GetId();
+        bool isPublisher = await _publisherService.ExistsById(userId);
+        if (isPublisher)
+        {
+            var publisherId = (await _publisherService.GetPublisher(userId)).Id;
+
+            myAuthors = await _authorService.AllAuthorsByPublisherId(userId);
+        }
+        else
+        {
+            myAuthors = await _authorService.AllAuthorsByUserId(userId);
+        }
+
+        return View(myAuthors);
     }
 
     [HttpGet]
@@ -62,9 +80,9 @@ public class AuthorController : Controller
         }
 
         return View(new AuthorFormModel
-                        {
-                            Categories = await _categoryService.GetAllAsync()
-                        });
+        {
+            Categories = await _categoryService.GetAllAsync()
+        });
     }
 
     [HttpPost]

@@ -4,9 +4,9 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 using Interface;
-using Microsoft.EntityFrameworkCore;
 using SpiritualHub.Data;
 
 public class Repository<TEntity> : IRepository<TEntity>
@@ -22,10 +22,9 @@ public class Repository<TEntity> : IRepository<TEntity>
 
     protected SpiritsDbContext Context { get; set; }
 
-    public virtual async Task<IQueryable<TEntity>> GetAllAsync()
+    public virtual IQueryable<TEntity> GetAll()
     {
-        return new List<TEntity>(await DbSet.ToArrayAsync())
-                                .AsQueryable();
+        return DbSet;
     }
 
     public virtual async Task<TEntity?> GetSingleAsync(Guid? id)
@@ -33,11 +32,9 @@ public class Repository<TEntity> : IRepository<TEntity>
         return await DbSet.FindAsync(id);
     }
 
-    public virtual async Task<IQueryable<TEntity>> AllAsNoTrackingAsync()
+    public virtual IQueryable<TEntity> AllAsNoTracking()
     {
-        return new List<TEntity>(await DbSet.ToArrayAsync())
-                                .AsQueryable()
-                                .AsNoTracking();
+        return DbSet.AsNoTracking();
     }
 
     public virtual async Task<bool> AddAsync(TEntity entity)

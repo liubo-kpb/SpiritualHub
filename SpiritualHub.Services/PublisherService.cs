@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Interfaces;
 using Data.Models;
 using Data.Repository.Interface;
+using Microsoft.EntityFrameworkCore;
 
 public class PublisherService : IPublisherService
 {
@@ -37,9 +38,9 @@ public class PublisherService : IPublisherService
 
     public async Task<Publisher> GetPublisher(string userId)
     {
-        var publishers = await _publisherRepository.AllAsNoTrackingAsync();
-                                            
-        return publishers.FirstOrDefault(a => a.UserID.ToString() == userId);
+        return await _publisherRepository
+            .AllAsNoTracking()
+            .FirstOrDefaultAsync(a => a.UserID.ToString() == userId);
     }
 
     public async Task<bool> UserHasSubscriptions(string userId)
