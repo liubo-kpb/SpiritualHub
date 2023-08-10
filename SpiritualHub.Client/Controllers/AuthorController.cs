@@ -62,9 +62,19 @@ public class AuthorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Details(Guid id)
+    public async Task<IActionResult> Details(string id)
     {
-        return View(new AuthorDetailsViewModel());
+        bool exists = await _authorService.Exists(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = "No such author found. Please try again!";
+
+            return RedirectToAction("All");
+        }
+
+        var authorModel = await _authorService.GetAuthorDetailsAsync(id);
+
+        return View(authorModel);
     }
 
     [HttpGet]

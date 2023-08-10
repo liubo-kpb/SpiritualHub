@@ -2,6 +2,74 @@
 @{
     ViewBag.Title = "Author Details";
 }
-
 <h2 class="text-center">@ViewBag.Title</h2>
 <hr />
+<div class="container" style="display:inline">
+    <div class="row">
+        <div class="col-4">
+            <img class="card-img-top" style="width: 20rem;"
+                 src="@Model.AvatarImageUrl" alt="House Image">
+        </div>
+        <div class="card col-8 border-0">
+            <p style="font-size:25px;"><u>@Model.Name</u></p>
+            <p>Alias: <b>@Model.Alias</b></p>
+            <p>
+                Followers:
+                <b>@Model.FollowerCount</b>
+            </p>
+            <p>
+                Subscribers:
+                <b>@Model.SubscriberCount</b>
+            </p>
+            <p>Category: <b>@Model.CategoryName</b></p>
+            <div class="form-inline">
+                @if (this.User.Identity?.IsAuthenticated ?? false)
+                {
+                    <a class="btn btn-warning mb-1" asp-controller="House" asp-action="Edit"
+                       asp-route-id="@Model.Id">Edit</a>
+                    <a class="ml-2 btn btn-danger mb-1" asp-controller="House" asp-action="Delete"
+                       asp-route-id="@Model.Id">Delete</a>
+                    @if (Model.Followers.Any(f => f.Id.ToString() == this.User.GetId()))
+                    {
+                        <form asp-controller="Author" asp-action="Unfollow"
+                              asp-route-id="@Model.Id" method="post">
+                            <input class="btn btn-primary mb-1" type="submit" value="Unfollow" />
+                        </form>
+                    }
+                    else
+                    {
+                        <form class="input-group-sm " asp-controller="Author"
+                              asp-action="Follow" asp-route-id="@Model.Id" method="post">
+                            <input class="btn btn-primary mb-1" type="submit" value="Follow" />
+                        </form>
+                    }
+                    @if (Model.Subscribers.Any(f => f.Id.ToString() == this.User.GetId()))
+                    {
+                        <form asp-controller="Author" asp-action="Unsubscribe"
+                              asp-route-id="@Model.Id" method="post">
+                            <input class="btn btn-primary mb-1" type="submit" value="Unsubscribe" />
+                        </form>
+                    }
+                    else
+                    {
+                        <form class="input-group-sm" asp-controller="Author"
+                              asp-action="Subscribe" asp-route-id="@Model.Id" method="post">
+                            <input class="btn btn-primary mb-1" type="submit" value="Subscribe" />
+                        </form>
+                    }
+                }
+            </div>
+            <p></p>
+            <h5 class="card-title">Publishers</h5>
+            @foreach (var publisher in Model.Publishers)
+            {
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <p class="card-text">Email: @publisher.Email</p>
+                        <p class="card-text">Phone Number: @publisher.PhoneNumber</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

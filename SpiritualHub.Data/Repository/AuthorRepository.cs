@@ -22,4 +22,14 @@ public class AuthorRepository : DeletableRepository<Author>, IAuthorRepository
                         .Take(3)
                         .ToArrayAsync();
     }
+
+    public async Task<Author> GetAuthorDetailsByIdAsync(string id)
+    {
+        return await DbSet
+                        .Include(a => a.AvatarImage)
+                        .Include(a => a.Category)
+                        .Include(a => a.Publishers)
+                        .ThenInclude(p => p.User)
+                        .FirstOrDefaultAsync(a => a.Id.ToString() == id);
+    }
 }

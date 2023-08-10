@@ -2,9 +2,10 @@
 
 using AutoMapper;
 
+using Data.Models;
 using Client.ViewModels.Author;
 using Client.ViewModels.Category;
-using Data.Models;
+using Client.ViewModels.Publisher;
 
 public class ApplicationProfile : Profile
 {
@@ -15,8 +16,14 @@ public class ApplicationProfile : Profile
         CreateMap<Author, AuthorViewModel>().ReverseMap();
         CreateMap<Author, AuthorIndexViewModel>().ReverseMap();
         CreateMap<AuthorFormModel, Author>();
+        CreateMap<Author, AuthorDetailsViewModel>().ReverseMap();
 
         //Category
         CreateMap<Category, CategoryServiceModel>().ReverseMap();
+
+        //Publisher
+        CreateMap<Publisher, PublisherInfoViewModel>()
+            .ForMember(p => p.Email, opt => opt.MapFrom(op => op.User.Email))
+            .ForMember(p => p.PhoneNumber, opt => opt.MapFrom(op => op.PhoneNumber));
     }
 }

@@ -71,6 +71,11 @@ public class AuthorService : IAuthorService
         return author.Id.ToString();
     }
 
+    public async Task<bool> Exists(string authorId)
+    {
+        return await _authorRepository.AnyAsync(a => a.Id.ToString() == authorId.ToUpper());
+    }
+
     public async Task<FilteredAuthorsServiceModel> GetAllAsync(AllAuthorsQueryModel queryModel)
     {
         IQueryable<Author> authorsQuery = _authorRepository.GetAll();
@@ -117,6 +122,14 @@ public class AuthorService : IAuthorService
             Authors = allAuthorsModel,
             TotalAuthorsCount = allAuthorsModel.Count,
         };
+    }
+
+    public async Task<AuthorDetailsViewModel> GetAuthorDetailsAsync(string authorId)
+    {
+        var author = await _authorRepository.GetAuthorDetailsByIdAsync(authorId);
+        var authorModel = _mapper.Map<AuthorDetailsViewModel>(author);
+
+        return authorModel;
     }
 
     public async Task<IEnumerable<AuthorIndexViewModel>> LastThreeAuthors()

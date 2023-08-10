@@ -1,6 +1,6 @@
 ﻿namespace SpiritualHub.Services.Interfaces;
 
-using SpiritualHub.Data.Models;
+using Data.Models;
 
 public interface IPublisherService
 {
