@@ -27,9 +27,9 @@ public class Repository<TEntity> : IRepository<TEntity>
         return DbSet;
     }
 
-    public virtual async Task<TEntity?> GetSingleAsync(Guid? id)
+    public virtual async Task<TEntity?> GetSingleByAsync(Expression<Func<TEntity, bool>> func)
     {
-        return await DbSet.FindAsync(id);
+        return await DbSet.FindAsync(func);
     }
 
     public virtual IQueryable<TEntity> AllAsNoTracking()

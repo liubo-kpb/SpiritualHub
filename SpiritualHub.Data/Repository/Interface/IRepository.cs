@@ -7,7 +7,7 @@ public interface IRepository<TEntity> : IDisposable
 {
     IQueryable<TEntity> GetAll();
 
-    Task<TEntity?> GetSingleAsync(Guid? id);
+    Task<TEntity?> GetSingleByAsync(Expression<Func<TEntity, bool>> func);
 
     IQueryable<TEntity> AllAsNoTracking();
 
