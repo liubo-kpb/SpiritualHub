@@ -32,4 +32,18 @@ public class AuthorRepository : DeletableRepository<Author>, IAuthorRepository
                         .ThenInclude(p => p.User)
                         .FirstOrDefaultAsync(a => a.Id.ToString() == id);
     }
+
+    public async Task<Author> GetAuthorById(string id)
+    {
+        return await DbSet
+            .Include(a => a.AvatarImage)
+            .FirstOrDefaultAsync(a => a.Id.ToString() == id);
+    }
+
+    public async Task<Author> GetAuthorWithPublishersAsync(string id)
+    {
+        return await DbSet
+            .Include(a => a.Publishers)
+            .FirstOrDefaultAsync(a => a.Id.ToString() == id);
+    }
 }

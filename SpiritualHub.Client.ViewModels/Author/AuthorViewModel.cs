@@ -21,6 +21,8 @@ public class AuthorViewModel
 
     public string Name { get; set; } = null!;
 
+    public string Description { get; set; } = null!;
+
     [Display(Name = "Category")]
     public string CategoryName { get; set; } = null!;
 

@@ -14,10 +14,14 @@
                 <span asp-validation-for="Name" class="small text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" rows="4" class="form-control" placeholder="This author..."></textarea>
+                <span asp-validation-for="Description" class="small text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="AvatarImageUrl"></label>
-                    <input asp-for="AvatarImageUrl" class="form-control" placeholder="Your fine URL here...">
-                    <span asp-validation-for="AvatarImageUrl" class="small text-danger"></span>
+                <input asp-for="AvatarImageUrl" class="form-control" placeholder="Your fine URL here...">
+                <span asp-validation-for="AvatarImageUrl" class="small text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CategoryId"></label>

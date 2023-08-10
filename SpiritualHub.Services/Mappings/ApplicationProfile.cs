@@ -13,10 +13,10 @@ public class ApplicationProfile : Profile
     {
         // source --> destination
         //Author
-        CreateMap<Author, AuthorViewModel>().ReverseMap();
-        CreateMap<Author, AuthorIndexViewModel>().ReverseMap();
-        CreateMap<AuthorFormModel, Author>();
-        CreateMap<Author, AuthorDetailsViewModel>().ReverseMap();
+        CreateMap<Author, AuthorViewModel>();
+        CreateMap<Author, AuthorIndexViewModel>();
+        CreateMap<Author, AuthorFormModel>().ReverseMap();
+        CreateMap<Author, AuthorDetailsViewModel>();
 
         //Category
         CreateMap<Category, CategoryServiceModel>().ReverseMap();

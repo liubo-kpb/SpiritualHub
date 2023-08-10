@@ -49,9 +49,9 @@ public class AuthorController : Controller
         bool isPublisher = await _publisherService.ExistsById(userId);
         if (isPublisher)
         {
-            var publisherId = (await _publisherService.GetPublisher(userId)).Id;
+            var publisherId = (await _publisherService.GetPublisher(userId)).Id.ToString();
 
-            myAuthors = await _authorService.AllAuthorsByPublisherId(userId);
+            myAuthors = await _authorService.AllAuthorsByPublisherId(publisherId);
         }
         else
         {
@@ -107,10 +107,10 @@ public class AuthorController : Controller
             return RedirectToAction(nameof(PublisherController.Become), "Publisher");
         }
 
-        var isExistingCategory = await _categoryService.ExistsAsync(newAuthor.CategoryId);
+        bool isExistingCategory = await _categoryService.ExistsAsync(newAuthor.CategoryId);
         if (!isExistingCategory)
         {
-            ModelState.AddModelError(nameof(newAuthor.CategoryId), "Category doesn't exist. Please select a valid category");
+            ModelState.AddModelError(nameof(newAuthor.CategoryId), "Category doesn't exist. Please select a valid category!");
         }
 
         if (!ModelState.IsValid)
@@ -139,15 +139,67 @@ public class AuthorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Edit()
+    public async Task<IActionResult> Edit(string id)
     {
-        return View(new AuthorFormModel());
+        bool exists = await _authorService.Exists(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = "No such author found. Please try again!";
+
+            return RedirectToAction("All");
+        }
+
+        string userId = this.User.GetId()!;
+        bool isConnectedPublisher = await _authorService.HasConnectedPublisher(id, userId);
+        if (!isConnectedPublisher)
+        {
+            TempData[ErrorMessage] = "You need to be a publisher of this author to be able to make changes.";
+
+            return RedirectToAction(nameof(Mine));
+        }
+
+        var author = await _authorService.GetAuthorAsync(id);
+        author.Categories = await _categoryService.GetAllAsync();
+
+        return View(author);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit(Guid id, AuthorFormModel author)
+    public async Task<IActionResult> Edit(string id, AuthorFormModel author)
     {
-        return RedirectToAction(nameof(Details), new { id = 1 });
+        bool exists = await _authorService.Exists(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = "No such author found. Please try again!";
+
+            return RedirectToAction(nameof(Mine));
+        }
+
+        string userId = this.User.GetId()!;
+        bool isConnectedPublisher = await _authorService.HasConnectedPublisher(id, userId);
+        if (!isConnectedPublisher)
+        {
+            TempData[ErrorMessage] = "You need to be a publisher of this author to be able to make changes.";
+
+            return RedirectToAction(nameof(Mine));
+        }
+
+        bool isExistingCategory = await _categoryService.ExistsAsync(author.CategoryId);
+        if (!isExistingCategory)
+        {
+            ModelState.AddModelError(nameof(author.CategoryId), "Category doesn't exist. Please select a valid category!");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            author.Categories = await _categoryService.GetAllAsync();
+
+            return View(author);
+        }
+
+        await _authorService.Edit(author);
+
+        return RedirectToAction(nameof(Details), new { id = author.Id });
     }
 
     [HttpGet]

@@ -32,7 +32,7 @@ public class SeedAuthorConfiguration : IEntitySeedConfiguration<Author>
         author = new Author()
         {
             Id = Guid.Parse("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"),
-            Alias = "Cogitality",
+            Alias = "Cogitality - Everything that IS!",
             Name = "Cogitality Academy",
             Description = "With its unique integration of scientific principles and spiritual insights, the Academy provides access to new horizons in understanding oneself and the surrounding world. The thesis that everything is interconnected is not just a theory or esoteric belief but a practical principle of Existence!\r\n\r\nIn the Academy, you pave the path towards your synchronized unfolding of thought, information, and energy, receiving tools and knowledge to consciously create your gracious and grateful world.\r\n\r\nCogitality Academy is the culmination of years of effort, exploration, practice, and mistakes, through which you now gain the fastest and easiest access to this extraordinary realm of wisdom and Life, beyond the confines of time!",
             CategoryID = 3,

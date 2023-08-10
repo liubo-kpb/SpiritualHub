@@ -19,11 +19,13 @@ public class Author
     public Guid Id { get; set; }
 
     [StringLength(AliasMaxLength, MinimumLength = AliasMinLength)]
-    public string Alias { get; set; }
+    public string Alias { get; set; } = null!;
 
     [Required]
     [StringLength(AliasMaxLength, MinimumLength = AliasMinLength)]
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
+
+    public string Description { get; set; } = null!;
 
     public DateTime AddedOn { get; set; }
 

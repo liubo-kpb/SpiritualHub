@@ -19,4 +19,10 @@ public interface IAuthorService
     Task<AuthorDetailsViewModel> GetAuthorDetailsAsync(string authorId);
 
     Task<bool> Exists(string authorId);
+
+    Task Edit(AuthorFormModel editedAuthor);
+
+    Task<bool> HasConnectedPublisher(string authorId, string userId);
+
+    Task<AuthorFormModel> GetAuthorAsync(string authorId);
 }

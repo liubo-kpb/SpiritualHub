@@ -2,12 +2,11 @@
 
 using System;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 using Interfaces;
 using Data.Models;
 using Data.Repository.Interface;
-using Microsoft.EntityFrameworkCore;
-using SpiritualHub.Client.ViewModels.Publisher;
 
 public class PublisherService : IPublisherService
 {

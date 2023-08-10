@@ -6,5 +6,9 @@ public interface IAuthorRepository : IDeletableRepository<Author>
 {
     Task<IEnumerable<Author>> LastThreeAuthors();
 
-    public Task<Author> GetAuthorDetailsByIdAsync(string id);
+    Task<Author> GetAuthorDetailsByIdAsync(string id);
+
+    Task<Author> GetAuthorById(string id);
+
+    Task<Author> GetAuthorWithPublishersAsync(string id);
 }

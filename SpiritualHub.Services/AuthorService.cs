@@ -29,6 +29,7 @@ public class AuthorService : IAuthorService
     {
         var authors = await _authorRepository
             .GetAll()
+            .Include(a => a.AvatarImage)
             .Where(a => a.Publishers.Any(p => p.Id.ToString() == publisherId))
             .ToListAsync();
 
@@ -42,7 +43,8 @@ public class AuthorService : IAuthorService
     {
         var authors = await _authorRepository
             .GetAll()
-            .Where(a => a.Followers.Any(u => u.Id.ToString() == userId) 
+            .Include(a => a.AvatarImage)
+            .Where(a => a.Followers.Any(u => u.Id.ToString() == userId)
                     || a.Subscriptions.Any(s => s.Subscribers.Any(ss => ss.Id.ToString() == userId)))
             .ToListAsync();
 
@@ -65,15 +67,27 @@ public class AuthorService : IAuthorService
         author.Publishers.Add(publisher);
 
         await _authorRepository.AddAsync(author);
-
         await _authorRepository.SaveChangesAsync();
 
         return author.Id.ToString();
     }
 
+    public async Task Edit(AuthorFormModel editedAuthor)
+    {
+        var authorEntity = await _authorRepository.GetAuthorDetailsByIdAsync(editedAuthor.Id.ToString());
+
+        authorEntity.Alias = editedAuthor.Alias;
+        authorEntity.Name = editedAuthor.Name;
+        authorEntity.Description = editedAuthor.Description;
+        authorEntity.CategoryID = editedAuthor.CategoryId;
+        authorEntity.AvatarImage.URL = editedAuthor.AvatarImageUrl;
+
+        await _authorRepository.SaveChangesAsync();
+    }
+
     public async Task<bool> Exists(string authorId)
     {
-        return await _authorRepository.AnyAsync(a => a.Id.ToString() == authorId.ToUpper());
+        return await _authorRepository.AnyAsync(a => a.Id.ToString() == authorId);
     }
 
     public async Task<FilteredAuthorsServiceModel> GetAllAsync(AllAuthorsQueryModel queryModel)
@@ -90,7 +104,8 @@ public class AuthorService : IAuthorService
             string wildCard = $"%{queryModel.SearchTerm.ToLower()}%";
 
             authorsQuery = authorsQuery.Where(a => EF.Functions.Like(a.Alias, wildCard)
-                                      || EF.Functions.Like(a.Name, wildCard));
+                                      || EF.Functions.Like(a.Name, wildCard)
+                                      || EF.Functions.Like(a.Description, wildCard));
         }
 
         authorsQuery = queryModel.SortingOption switch
@@ -124,12 +139,34 @@ public class AuthorService : IAuthorService
         };
     }
 
+    public async Task<AuthorFormModel> GetAuthorAsync(string authorId)
+    {
+        var author = await _authorRepository.GetAuthorById(authorId);
+        return _mapper.Map<AuthorFormModel>(author);
+    }
+
     public async Task<AuthorDetailsViewModel> GetAuthorDetailsAsync(string authorId)
     {
         var author = await _authorRepository.GetAuthorDetailsByIdAsync(authorId);
         var authorModel = _mapper.Map<AuthorDetailsViewModel>(author);
 
         return authorModel;
+    }
+
+    public async Task<bool> HasConnectedPublisher(string authorId, string userId)
+    {
+        var author = await _authorRepository.GetAuthorWithPublishersAsync(authorId);
+        if (author == null)
+        {
+            return false;
+        }
+
+        if (!author.Publishers.Any(p => p.UserID.ToString() == userId))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public async Task<IEnumerable<AuthorIndexViewModel>> LastThreeAuthors()

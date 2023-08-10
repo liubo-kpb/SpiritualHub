@@ -5,7 +5,7 @@ public static class EntityValidationConstants
 
     public static class Author
     {
-        public const int AliasMaxLength = 20;
+        public const int AliasMaxLength = 50;
         public const int AliasMinLength = 3;
 
         public const int NameMaxLength = 50;

@@ -8,11 +8,12 @@
     <div class="row">
         <div class="col-4">
             <img class="card-img-top" style="width: 20rem;"
-                 src="@Model.AvatarImageUrl" alt="House Image">
+                 src="@Model.AvatarImageUrl" alt="Author Image">
         </div>
         <div class="card col-8 border-0">
             <p style="font-size:25px;"><u>@Model.Name</u></p>
             <p>Alias: <b>@Model.Alias</b></p>
+            <p>@Model.Description</p>
             <p>
                 Followers:
                 <b>@Model.FollowerCount</b>
@@ -25,9 +26,9 @@
             <div class="form-inline">
                 @if (this.User.Identity?.IsAuthenticated ?? false)
                 {
-                    <a class="btn btn-warning mb-1" asp-controller="House" asp-action="Edit"
+                    <a class="btn btn-warning mb-1" asp-controller="Author" asp-action="Edit"
                        asp-route-id="@Model.Id">Edit</a>
-                    <a class="ml-2 btn btn-danger mb-1" asp-controller="House" asp-action="Delete"
+                    <a class="ml-2 btn btn-danger mb-1" asp-controller="Author" asp-action="Delete"
                        asp-route-id="@Model.Id">Delete</a>
                     @if (Model.Followers.Any(f => f.Id.ToString() == this.User.GetId()))
                     {

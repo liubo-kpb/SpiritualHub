@@ -12,6 +12,7 @@ public class AuthorFormModel
     {
         this.Categories = new HashSet<CategoryServiceModel>();
     }
+    public Guid Id { get; set; }
 
     [StringLength(AliasMaxLength, MinimumLength = AliasMinLength)]
     public string Alias { get; set; } = null!;
@@ -19,6 +20,8 @@ public class AuthorFormModel
     [Required]
     [StringLength(AliasMaxLength, MinimumLength = AliasMinLength)]
     public string Name { get; set; } = null!;
+
+    public string Description { get; set; } = null!;
 
     [Required]
     [Display(Name = "Author Image URL")]
