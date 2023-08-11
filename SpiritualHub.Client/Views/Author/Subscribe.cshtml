@@ -1,0 +1,36 @@
+﻿@model AuthorSubscribeFormModel
+@{
+    ViewBag.Title = $"Subscribe to {Model.Alias}";
+}
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+<form class="form" method="post">
+    <div class="container" style="display:inline">
+        <div class="row">
+            <div class="col-4">
+                <img class="card-img-top" style="width: 20rem;"
+                     src="@Model.AvatarImageUrl" alt="Author Image">
+            </div>
+            <div class="card col-8 border-0">
+                <p style="font-size:25px;"><u>@Model.Name</u></p>
+                <p>@Model.Description</p>
+                <p>Category: <b>@Model.CategoryName</b></p>
+                <div class="form-inline">
+                    <h5 class="card-title row">Subscription Options:</h5>
+                    <div class="form-group">
+                        <select asp-for="SubscriptionId" class="form-control">
+                            @foreach (var subscription in Model.Subscriptions.OrderBy(s => s.Price))
+                            {
+                                <option value="@subscription.Id">@($"{subscription.SubscriptionType}: ${subscription.Price:F2}")</option>
+                            }
+                        </select>
+                        <span asp-validation-for="SubscriptionId" class="small text-danger"></span>
+                    </div>
+                    <div class="text-center">
+                        <input class="btn btn-primary mt-3" type="submit" value="Subscribe" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

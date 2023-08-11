@@ -41,7 +41,7 @@
                     else
                     {
                         <form class="input-group-sm " asp-controller="Author"
-                              asp-action="Follow" asp-route-id="@Model.Id" method="post">
+                              asp-action="Follow" asp-route-id="@Model.Id" method="get">
                             <input class="btn btn-primary mb-1" type="submit" value="Follow" />
                         </form>
                     }
@@ -55,7 +55,7 @@
                     else
                     {
                         <form class="input-group-sm" asp-controller="Author"
-                              asp-action="Subscribe" asp-route-id="@Model.Id" method="post">
+                              asp-action="Subscribe" asp-route-id="@Model.Id" method="get">
                             <input class="btn btn-primary mb-1" type="submit" value="Subscribe" />
                         </form>
                     }

@@ -13,4 +13,6 @@ public interface IAuthorRepository : IDeletableRepository<Author>
     Task<Author> GetAuthorWithPublishersAsync(string id);
 
     Task<Author> GetAuthorWithSubscriptionsAndSubscribersAsync(string id);
+
+    Task<Author> GetAuthorWithSubscriptions(string id);
 }

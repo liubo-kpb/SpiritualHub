@@ -6,8 +6,8 @@ public class SubscriptionViewModel
 {
     public string Id { get; set; }
 
-    public string Price { get; set; }
+    public decimal Price { get; set; }
 
     [Display(Name = "Type of Subscription")]
-    public string SubscriptionTypeName { get; set; }
+    public string SubscriptionType { get; set; }
 }

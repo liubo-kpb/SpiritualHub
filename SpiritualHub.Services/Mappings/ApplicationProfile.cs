@@ -6,6 +6,7 @@ using Data.Models;
 using Client.ViewModels.Author;
 using Client.ViewModels.Category;
 using Client.ViewModels.Publisher;
+using Client.ViewModels.Subscription;
 
 public class ApplicationProfile : Profile
 {
@@ -25,6 +26,11 @@ public class ApplicationProfile : Profile
         CreateMap<Publisher, PublisherInfoViewModel>()
             .ForMember(p => p.Email, opt => opt.MapFrom(op => op.User.Email))
             .ForMember(p => p.PhoneNumber, opt => opt.MapFrom(op => op.PhoneNumber));
+
+        // Subscription
+        CreateMap<Subscription, SubscriptionViewModel>()
+            .ForMember(s => s.SubscriptionType,
+            opt => opt.MapFrom(st => st.SubscriptionType.Type));
     }
 
     private void SpecificAuthorMaps()

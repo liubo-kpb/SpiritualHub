@@ -197,7 +197,7 @@ public class AuthorService : IAuthorService
 
     public async Task<AuthorSubscribeFormModel> GetAuthorSubscribtionsAsync(string authorId)
     {
-        var authorEntity = await _authorRepository.GetAuthorWithSubscriptionsAndSubscribersAsync(authorId);
+        var authorEntity = await _authorRepository.GetAuthorWithSubscriptions(authorId); 
 
         return _mapper.Map<AuthorSubscribeFormModel>(authorEntity);
     }
