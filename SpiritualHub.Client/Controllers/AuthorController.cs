@@ -17,7 +17,9 @@ public class AuthorController : Controller
     private readonly ICategoryService _categoryService;
     private readonly IPublisherService _publisherService;
 
-    public AuthorController(IAuthorService authorService, ICategoryService categoryService, IPublisherService publisherService)
+    public AuthorController(IAuthorService authorService,
+                            ICategoryService categoryService,
+                            IPublisherService publisherService)
     {
         _authorService = authorService;
         _categoryService = categoryService;
@@ -28,7 +30,7 @@ public class AuthorController : Controller
     [HttpGet]
     public async Task<IActionResult> All([FromQuery] AllAuthorsQueryModel queryModel)
     {
-        var filteredAuthors = await _authorService.GetAllAsync(queryModel);
+        var filteredAuthors = await _authorService.GetAllAsync(queryModel, this.User.GetId());
         IEnumerable<CategoryServiceModel> categories = await _categoryService.GetAllAsync();
 
         queryModel = new AllAuthorsQueryModel()
@@ -47,18 +49,27 @@ public class AuthorController : Controller
 
         string userId = this.User.GetId();
         bool isPublisher = await _publisherService.ExistsById(userId);
-        if (isPublisher)
-        {
-            var publisherId = (await _publisherService.GetPublisher(userId)).Id.ToString();
 
-            myAuthors = await _authorService.AllAuthorsByPublisherId(publisherId);
-        }
-        else
+        try
         {
-            myAuthors = await _authorService.AllAuthorsByUserId(userId);
-        }
+            if (isPublisher)
+            {
+                var publisherId = (await _publisherService.GetPublisher(userId)).Id.ToString();
 
-        return View(myAuthors);
+                myAuthors = await _authorService.AllAuthorsByPublisherId(userId, publisherId);
+            }
+            else
+            {
+                myAuthors = await _authorService.AllAuthorsByUserId(userId);
+            }
+
+            return View(myAuthors);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = "An unexpected error occurred when attempting to load your authors. Please try again later! ";
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     [HttpGet]
@@ -72,9 +83,18 @@ public class AuthorController : Controller
             return RedirectToAction("All");
         }
 
-        var authorModel = await _authorService.GetAuthorDetailsAsync(id);
+        try
+        {
+            var authorModel = await _authorService.GetAuthorDetailsAsync(id, this.User.GetId());
 
-        return View(authorModel);
+            return View(authorModel);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = "An unexpected error occurred when attempting to get the author. Please try again later!";
+
+            return RedirectToAction(nameof(All));
+        }
     }
 
     [HttpGet]
@@ -89,10 +109,19 @@ public class AuthorController : Controller
             return RedirectToAction("Index", "Home");
         }
 
-        return View(new AuthorFormModel
+        try
         {
-            Categories = await _categoryService.GetAllAsync()
-        });
+            return View(new AuthorFormModel
+            {
+                Categories = await _categoryService.GetAllAsync()
+            });
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = "An unexpected error occurred when attempting to load the page. Please try again later!";
+
+            return RedirectToAction(nameof(All));
+        }
     }
 
     [HttpPost]
@@ -158,10 +187,20 @@ public class AuthorController : Controller
             return RedirectToAction(nameof(Mine));
         }
 
-        var author = await _authorService.GetAuthorAsync(id);
-        author.Categories = await _categoryService.GetAllAsync();
+        try
+        {
+            var author = await _authorService.GetAuthorAsync(id);
+            author.Categories = await _categoryService.GetAllAsync();
 
-        return View(author);
+            return View(author);
+        }
+        catch (Exception)
+        {
+
+            TempData[ErrorMessage] = "An unexpected error occurred when attempting to get the author. Please try again later!";
+
+            return RedirectToAction(nameof(Details), new { id = id});
+        }
     }
 
     [HttpPost]
@@ -254,25 +293,79 @@ public class AuthorController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Follow(Guid id)
+    public async Task<IActionResult> Follow(string id)
     {
+        bool exists = await _authorService.Exists(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = "No such author found. Please try again!";
+
+            return RedirectToAction("All");
+        }
+
+        await _authorService.FollowAsync(id, this.User.GetId());
+
         return RedirectToAction(nameof(Mine));
     }
 
     [HttpPost]
-    public async Task<IActionResult> Unfollow(Guid id)
+    public async Task<IActionResult> Unfollow(string id)
     {
         return RedirectToAction(nameof(Mine));
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Subscribe(Guid id)
+    [HttpGet]
+    public async Task<IActionResult> Subscribe(string id)
     {
+        bool exists = await _authorService.Exists(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = "No such author found. Please try again!";
+
+            return RedirectToAction("All");
+        }
+
+        string userId = this.User.GetId();
+        bool isPublisher = await _publisherService.ExistsById(userId);
+        if (isPublisher)
+        {
+            TempData[ErrorMessage] = "Publishers cannot subscribe to authors.";
+
+            return RedirectToAction("All");
+        }
+
+        var authorModel = await _authorService.GetAuthorSubscribtionsAsync(id);
+
+        return View(authorModel);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Subscribe(AuthorSubscribeFormModel authorSubscriptionForm)
+    {
+        bool exists = await _authorService.Exists(authorSubscriptionForm.Id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = "No such author found. Please try again!";
+
+            return RedirectToAction("All");
+        }
+
+        string userId = this.User.GetId();
+        bool isPublisher = await _publisherService.ExistsById(userId);
+        if (isPublisher)
+        {
+            TempData[ErrorMessage] = "Publishers cannot subscribe to authors.";
+
+            return RedirectToAction("All");
+        }
+
+        await _authorService.SubscribeAsync(authorSubscriptionForm.Id, authorSubscriptionForm.SubscriptionId, userId);
+
         return RedirectToAction(nameof(Mine));
     }
 
     [HttpPost]
-    public async Task<IActionResult> Unsubscribe(Guid id)
+    public async Task<IActionResult> Unsubscribe(string id)
     {
         return RedirectToAction(nameof(Mine));
     }

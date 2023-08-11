@@ -6,16 +6,7 @@ using Data.Models;
 
 public class AuthorViewModel
 {
-    public AuthorViewModel()
-    {
-        this.Followers = new HashSet<ApplicationUser>();
-        this.Subscribers = new HashSet<ApplicationUser>();
-
-        this.FollowerCount = this.Followers.Count;
-        this.SubscriberCount = this.Subscribers.Count;
-    }
-
-    public Guid Id { get; set; }
+    public string Id { get; set; }
 
     public string Alias { get; set; } = null!;
 
@@ -34,10 +25,10 @@ public class AuthorViewModel
     [Display(Name = "Followers")]
     public int FollowerCount { get; set; }
 
-    public ICollection<ApplicationUser> Followers { get; set; }
+    public bool IsUserFollowing { get; set; }
 
     [Display(Name = "Subscribers")]
     public int SubscriberCount { get; set; }
 
-    public ICollection<ApplicationUser> Subscribers { get; set; }
+    public bool IsUserSubscribed { get; set; }
 }

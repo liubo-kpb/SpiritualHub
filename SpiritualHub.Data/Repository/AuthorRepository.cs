@@ -31,6 +31,9 @@ public class AuthorRepository : DeletableRepository<Author>, IAuthorRepository
                         .Include(a => a.Category)
                         .Include(a => a.Publishers)
                         .ThenInclude(p => p.User)
+                        .Include(a => a.Followers)
+                        .Include(a => a.Subscriptions)
+                        .ThenInclude(s => s.Subscribers)
                         .FirstOrDefaultAsync(a => a.Id.ToString() == id);
     }
 
@@ -45,6 +48,14 @@ public class AuthorRepository : DeletableRepository<Author>, IAuthorRepository
     {
         return await DbSet
             .Include(a => a.Publishers)
+            .FirstOrDefaultAsync(a => a.Id.ToString() == id);
+    }
+
+    public async Task<Author> GetAuthorWithSubscriptionsAndSubscribersAsync(string id)
+    {
+        return await DbSet
+            .Include(a => a.Subscriptions)
+            .ThenInclude(s => s.Subscribers)
             .FirstOrDefaultAsync(a => a.Id.ToString() == id);
     }
 }

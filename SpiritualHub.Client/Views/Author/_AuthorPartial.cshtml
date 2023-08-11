@@ -24,7 +24,7 @@
                 <a asp-controller="Author" asp-action="Disable" asp-route-id="@Model.Id"
                    class="btn btn-danger">Disable</a>
                 <p></p>
-                @if (Model.Followers.Any(f => f.Id.ToString() == this.User.GetId()))
+                @if (Model.IsUserFollowing)
                 {
                     <form asp-controller="Author" asp-action="Unfollow"
                           asp-route-id="@Model.Id" method="post">
@@ -38,7 +38,7 @@
                         <input class="btn btn-primary mb-1" type="submit" value="Follow" />
                     </form>
                 }
-                @if (Model.Subscribers.Any(f => f.Id.ToString() == this.User.GetId()))
+                @if (Model.IsUserSubscribed)
                 {
                     <form asp-controller="Author" asp-action="Unsubscribe"
                           asp-route-id="@Model.Id" method="post">

@@ -13,10 +13,10 @@ public class ApplicationProfile : Profile
     {
         // source --> destination
         //Author
-        CreateMap<Author, AuthorViewModel>();
         CreateMap<Author, AuthorIndexViewModel>();
+        CreateMap<Author, AuthorSubscribeFormModel>();
         CreateMap<Author, AuthorFormModel>().ReverseMap();
-        CreateMap<Author, AuthorDetailsViewModel>();
+        SpecificAuthorMaps();
 
         //Category
         CreateMap<Category, CategoryServiceModel>().ReverseMap();
@@ -25,5 +25,24 @@ public class ApplicationProfile : Profile
         CreateMap<Publisher, PublisherInfoViewModel>()
             .ForMember(p => p.Email, opt => opt.MapFrom(op => op.User.Email))
             .ForMember(p => p.PhoneNumber, opt => opt.MapFrom(op => op.PhoneNumber));
+    }
+
+    private void SpecificAuthorMaps()
+    {
+        CreateMap<Author, AuthorDetailsViewModel>()
+            .ForMember(a => a.SubscriberCount,
+                       opt => opt.MapFrom(
+                           au => au.Subscriptions.Sum(
+                               s => s.Subscribers.Count)))
+            .ForMember(a => a.FollowerCount,
+                       opt => opt.MapFrom(f => f.Followers.Count));
+
+        CreateMap<Author, AuthorViewModel>()
+            .ForMember(a => a.SubscriberCount,
+                       opt => opt.MapFrom(
+                           au => au.Subscriptions.Sum(
+                               s => s.Subscribers.Count)))
+            .ForMember(a => a.FollowerCount,
+                       opt => opt.MapFrom(f => f.Followers.Count));
     }
 }

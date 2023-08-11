@@ -1,22 +1,22 @@
 ﻿namespace SpiritualHub.Services.Interfaces;
 
 using Client.ViewModels.Author;
-using SpiritualHub.Services.Models.Author;
-using SpiritualHub.Data.Models;
+using Services.Models.Author;
+using Data.Models;
 
 public interface IAuthorService
 {
-    Task<FilteredAuthorsServiceModel> GetAllAsync(AllAuthorsQueryModel queryModel);
+    Task<FilteredAuthorsServiceModel> GetAllAsync(AllAuthorsQueryModel queryModel, string userId);
 
     Task<IEnumerable<AuthorIndexViewModel>> LastThreeAuthors();
 
     Task<string> CreateAuthor(AuthorFormModel newAuthor, Publisher publisher);
 
-    Task<IEnumerable<AuthorViewModel>> AllAuthorsByPublisherId(string publisherId);
+    Task<IEnumerable<AuthorViewModel>> AllAuthorsByPublisherId(string userId, string publisherId);
 
     Task<IEnumerable<AuthorViewModel>> AllAuthorsByUserId(string userId);
 
-    Task<AuthorDetailsViewModel> GetAuthorDetailsAsync(string authorId);
+    Task<AuthorDetailsViewModel> GetAuthorDetailsAsync(string authorId, string userId);
 
     Task<bool> Exists(string authorId);
 
@@ -27,4 +27,14 @@ public interface IAuthorService
     Task<AuthorFormModel> GetAuthorAsync(string authorId);
 
     Task DisableAsync(string authorId);
+
+    Task<bool> IsFollowedByUserWithId(string authorId, string userId);
+
+    Task<bool> IsSubscribedByUserWithId(string authorId, string userId);
+
+    Task FollowAsync(string authorId, string userId);
+
+    Task SubscribeAsync(string authorId, string subscriptionId, string userId);
+
+    Task<AuthorSubscribeFormModel> GetAuthorSubscribtionsAsync(string authorId);
 }
