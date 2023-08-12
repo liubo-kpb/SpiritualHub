@@ -1,0 +1,11 @@
+﻿namespace SpiritualHub.Common;
+
+public static class ErrorMessagesConstants
+{
+    public const string UnexpectedErrorMessage = "An unexpected error occurred when attempting to {0}. Please try again later!";
+
+    public const string NoEntityFoundErrorMessage = "No such {0} found. Please try again with a valid {0}!";
+    public const string NotAPublisherErrorMessage = "You need to be a publisher of this author to be able to make changes.";
+
+    public const string PublishersCannotSubscribeErrorMessage = "Publishers cannot subscribe to authors.";
+}

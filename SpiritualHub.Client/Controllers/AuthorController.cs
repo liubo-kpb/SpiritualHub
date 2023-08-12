@@ -9,6 +9,7 @@ using Infrastructure.Extensions;
 using ViewModels.Category;
 
 using static Common.NotificationMessagesConstants;
+using static Common.ErrorMessagesConstants;
 
 [Authorize]
 public class AuthorController : Controller
@@ -17,6 +18,8 @@ public class AuthorController : Controller
     private readonly ICategoryService _categoryService;
     private readonly IPublisherService _publisherService;
     private readonly ISubscriptionService _subscriptionService;
+
+    private const string entityName = "author";
 
     public AuthorController(IAuthorService authorService,
                             ICategoryService categoryService,
@@ -68,7 +71,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = "An unexpected error occurred when attempting to load your authors. Please try again later later! ";
+            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "load your authors");
 
             return RedirectToAction("Index", "Home");
         }
@@ -81,7 +84,7 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
+            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, entityName);
 
             return RedirectToAction(nameof(All));
         }
@@ -94,7 +97,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = "An unexpected error occurred when attempting to get the author. Please try again later later!";
+            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "get the author");
 
             return RedirectToAction(nameof(All));
         }
@@ -106,7 +109,7 @@ public class AuthorController : Controller
         var isPublisher = await _publisherService.ExistsById(User.GetId()!);
         if (!isPublisher)
         {
-            TempData[ErrorMessage] = "You need to become a publisher to be able to add more authors.";
+            TempData[ErrorMessage] = NotAPublisherErrorMessage;
 
             return RedirectToAction("Index", "Home");
         }
@@ -120,7 +123,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = "An unexpected error occurred when attempting to load the page. Please try again later later!";
+            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "load the page");
 
             return RedirectToAction(nameof(All));
         }
@@ -133,7 +136,7 @@ public class AuthorController : Controller
         var isPublisher = await _publisherService.ExistsById(userId);
         if (!isPublisher)
         {
-            TempData[ErrorMessage] = "You need to become a publisher to be able to add more authors.";
+            TempData[ErrorMessage] = NotAPublisherErrorMessage;
 
             return RedirectToAction(nameof(PublisherController.Become), "Publisher");
         }
@@ -141,7 +144,7 @@ public class AuthorController : Controller
         bool isExistingCategory = await _categoryService.ExistsAsync(newAuthor.CategoryId);
         if (!isExistingCategory)
         {
-            ModelState.AddModelError(nameof(newAuthor.CategoryId), "Category doesn't exist. Please select a valid category!");
+            ModelState.AddModelError(nameof(newAuthor.CategoryId), String.Format(NoEntityFoundErrorMessage, "category"));
         }
 
         if (!ModelState.IsValid)
@@ -160,7 +163,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = "An unexpected error occurred when attempting to add a new author. Please try again later later!";
+            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "add a new author");
             newAuthor.Categories = await _categoryService.GetAllAsync();
 
             return View(newAuthor);
@@ -175,7 +178,7 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
+            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, entityName);
 
             return RedirectToAction(nameof(All));
         }
@@ -184,7 +187,7 @@ public class AuthorController : Controller
         bool isConnectedPublisher = await _authorService.HasConnectedPublisher(id, userId);
         if (!isConnectedPublisher)
         {
-            TempData[ErrorMessage] = "You need to be a publisher of this author to be able to make changes.";
+            TempData[ErrorMessage] = NotAPublisherErrorMessage;
 
             return RedirectToAction(nameof(Mine));
         }
@@ -199,7 +202,7 @@ public class AuthorController : Controller
         catch (Exception)
         {
 
-            TempData[ErrorMessage] = "An unexpected error occurred when attempting to get the author. Please try again later later!";
+            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "get the author");
 
             return RedirectToAction(nameof(Details), new { id = id });
         }
@@ -211,7 +214,7 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
+            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, entityName);
 
             return RedirectToAction(nameof(Mine));
         }
@@ -220,7 +223,7 @@ public class AuthorController : Controller
         bool isConnectedPublisher = await _authorService.HasConnectedPublisher(id, userId);
         if (!isConnectedPublisher)
         {
-            TempData[ErrorMessage] = "You need to be a publisher of this author to be able to make changes.";
+            TempData[ErrorMessage] = NotAPublisherErrorMessage;
 
             return RedirectToAction(nameof(Mine));
         }
@@ -228,7 +231,7 @@ public class AuthorController : Controller
         bool isExistingCategory = await _categoryService.ExistsAsync(author.CategoryId);
         if (!isExistingCategory)
         {
-            ModelState.AddModelError(nameof(author.CategoryId), "Category doesn't exist. Please select a valid category!");
+            ModelState.AddModelError(nameof(author.CategoryId), String.Format(NoEntityFoundErrorMessage, "category"));
         }
 
         if (!ModelState.IsValid)
@@ -249,7 +252,7 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
+            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, entityName);
 
             return RedirectToAction(nameof(All));
         }
@@ -258,7 +261,7 @@ public class AuthorController : Controller
         bool isConnectedPublisher = await _authorService.HasConnectedPublisher(id, userId);
         if (!isConnectedPublisher)
         {
-            TempData[ErrorMessage] = "You need to be a publisher of this author to be able to make changes.";
+            TempData[ErrorMessage] = NotAPublisherErrorMessage;
 
             return RedirectToAction(nameof(Mine));
         }
@@ -275,7 +278,7 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(authorId);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
+            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, entityName);
 
             return RedirectToAction(nameof(All));
         }
@@ -284,7 +287,7 @@ public class AuthorController : Controller
         bool isConnectedPublisher = await _authorService.HasConnectedPublisher(authorId, userId);
         if (!isConnectedPublisher)
         {
-            TempData[ErrorMessage] = "You need to be a publisher of this author to be able to make changes.";
+            TempData[ErrorMessage] = NotAPublisherErrorMessage;
 
             return RedirectToAction(nameof(Mine));
         }
@@ -300,7 +303,7 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
+            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, entityName);
 
             return RedirectToAction(nameof(All));
         }
@@ -321,7 +324,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = "An unexpected error occurred wthen attempting to update your followings list. Please try again later!";
+            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "update your followings list");
 
             return RedirectToAction(nameof(All));
         }
@@ -333,7 +336,7 @@ public class AuthorController : Controller
         var exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
+            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, entityName);
 
             return RedirectToAction(nameof(All));
         }
@@ -344,7 +347,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = "An unexpected error occurred when attempting to unfollow the author. Please try again later!";
+            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "unfollow the author");
         }
 
         return RedirectToAction(nameof(Mine));
@@ -356,7 +359,7 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
+            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, entityName);
 
             return RedirectToAction(nameof(All));
         }
@@ -364,7 +367,7 @@ public class AuthorController : Controller
         bool isPublisher = await _publisherService.ExistsById(this.User.GetId()!);
         if (isPublisher)
         {
-            TempData[ErrorMessage] = "Publishers cannot subscribe to authors.";
+            TempData[ErrorMessage] = PublishersCannotSubscribeErrorMessage;
 
             return RedirectToAction(nameof(All));
         }
@@ -377,7 +380,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = "An unexpected error occurred wthen attempting to create your subscription. Please try again later!";
+            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "create your subscription");
 
             return RedirectToAction(nameof(All));
         }
@@ -390,7 +393,7 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(authorSubscriptionForm.Id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
+            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, entityName);
 
             return RedirectToAction(nameof(All));
         }
@@ -407,7 +410,7 @@ public class AuthorController : Controller
         bool isPublisher = await _publisherService.ExistsById(userId);
         if (isPublisher)
         {
-            TempData[ErrorMessage] = "Publishers cannot subscribe to authors.";
+            TempData[ErrorMessage] = PublishersCannotSubscribeErrorMessage;
 
             return RedirectToAction(nameof(All));
         }
@@ -426,7 +429,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = "An unexpected error occurred when attempting to create your subscription. Please try again later later!";
+            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "create your subscription");
 
             return RedirectToAction(nameof(All));
         }
@@ -438,7 +441,7 @@ public class AuthorController : Controller
         var exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
+            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, entityName);
 
             return RedirectToAction(nameof(All));
         }
@@ -449,7 +452,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = "An unexpected error occurred when attempting to unsubscribe from the author. Please try again later!";
+            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "unsubscribe from the author");
         }
 
         return RedirectToAction(nameof(Mine));
