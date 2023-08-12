@@ -40,6 +40,10 @@
                 }
                 @if (Model.IsUserSubscribed)
                 {
+                    <form class="input-group-sm" asp-controller="Author"
+                          asp-action="Subscribe" asp-route-id="@Model.Id" method="get">
+                        <input class="btn btn-primary mb-1" type="submit" value="Change Subscription" />
+                    </form>
                     <form asp-controller="Author" asp-action="Unsubscribe"
                           asp-route-id="@Model.Id" method="post">
                         <input class="btn btn-primary mb-1" type="submit" value="Unsubscribe" />

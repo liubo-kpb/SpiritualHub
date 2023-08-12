@@ -33,7 +33,7 @@ public class AuthorController : Controller
     [HttpGet]
     public async Task<IActionResult> All([FromQuery] AllAuthorsQueryModel queryModel)
     {
-        var filteredAuthors = await _authorService.GetAllAsync(queryModel, this.User.GetId());
+        var filteredAuthors = await _authorService.GetAllAsync(queryModel, this.User.GetId()!);
         IEnumerable<CategoryServiceModel> categories = await _categoryService.GetAllAsync();
 
         queryModel = new AllAuthorsQueryModel()
@@ -50,7 +50,7 @@ public class AuthorController : Controller
     {
         IEnumerable<AuthorViewModel> myAuthors = null;
 
-        string userId = this.User.GetId();
+        string userId = this.User.GetId()!;
         bool isPublisher = await _publisherService.ExistsById(userId);
 
         try
@@ -70,31 +70,33 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = "An unexpected error occurred when attempting to load your authors. Please try again later! ";
+            TempData[ErrorMessage] = "An unexpected error occurred when attempting to load your authors. Please try again later later! ";
+
             return RedirectToAction("Index", "Home");
         }
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> Details(string id)
     {
         bool exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again!";
+            TempData[ErrorMessage] = "No such author found. Please try again later!";
 
             return RedirectToAction("All");
         }
 
         try
         {
-            var authorModel = await _authorService.GetAuthorDetailsAsync(id, this.User.GetId());
+            var authorModel = await _authorService.GetAuthorDetailsAsync(id, this.User.GetId()!);
 
             return View(authorModel);
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = "An unexpected error occurred when attempting to get the author. Please try again later!";
+            TempData[ErrorMessage] = "An unexpected error occurred when attempting to get the author. Please try again later later!";
 
             return RedirectToAction(nameof(All));
         }
@@ -103,8 +105,7 @@ public class AuthorController : Controller
     [HttpGet]
     public async Task<IActionResult> Add()
     {
-        var userId = User.GetId();
-        var isPublisher = await _publisherService.ExistsById(userId);
+        var isPublisher = await _publisherService.ExistsById(User.GetId()!);
         if (!isPublisher)
         {
             TempData[ErrorMessage] = "You need to become a publisher to be able to add more authors.";
@@ -121,7 +122,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = "An unexpected error occurred when attempting to load the page. Please try again later!";
+            TempData[ErrorMessage] = "An unexpected error occurred when attempting to load the page. Please try again later later!";
 
             return RedirectToAction(nameof(All));
         }
@@ -130,7 +131,7 @@ public class AuthorController : Controller
     [HttpPost]
     public async Task<IActionResult> Add(AuthorFormModel newAuthor)
     {
-        var userId = User.GetId();
+        var userId = User.GetId()!;
         var isPublisher = await _publisherService.ExistsById(userId);
         if (!isPublisher)
         {
@@ -161,7 +162,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = "An unexpected error occurred when attempting to add a new author. Please try again later!";
+            TempData[ErrorMessage] = "An unexpected error occurred when attempting to add a new author. Please try again later later!";
             newAuthor.Categories = await _categoryService.GetAllAsync();
 
             return View(newAuthor);
@@ -176,7 +177,7 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again!";
+            TempData[ErrorMessage] = "No such author found. Please try again later!";
 
             return RedirectToAction("All");
         }
@@ -200,9 +201,9 @@ public class AuthorController : Controller
         catch (Exception)
         {
 
-            TempData[ErrorMessage] = "An unexpected error occurred when attempting to get the author. Please try again later!";
+            TempData[ErrorMessage] = "An unexpected error occurred when attempting to get the author. Please try again later later!";
 
-            return RedirectToAction(nameof(Details), new { id = id});
+            return RedirectToAction(nameof(Details), new { id = id });
         }
     }
 
@@ -212,7 +213,7 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again!";
+            TempData[ErrorMessage] = "No such author found. Please try again later!";
 
             return RedirectToAction(nameof(Mine));
         }
@@ -250,7 +251,7 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again!";
+            TempData[ErrorMessage] = "No such author found. Please try again later!";
 
             return RedirectToAction("All");
         }
@@ -276,7 +277,7 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(authorId);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again!";
+            TempData[ErrorMessage] = "No such author found. Please try again later!";
 
             return RedirectToAction("All");
         }
@@ -301,20 +302,20 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again!";
+            TempData[ErrorMessage] = "No such author found. Please try again later!";
 
             return RedirectToAction(nameof(All));
         }
 
-        bool isFollowing = await _authorService.IsFollowedByUserWithId(id, this.User.GetId());
+        bool isFollowing = await _authorService.IsFollowedByUserWithId(id, this.User.GetId()!);
         if (isFollowing)
         {
-            TempData[ErrorMessage] = "You are already following this author";
+            TempData[ErrorMessage] = "You are already following this author.";
 
             return RedirectToAction(nameof(Mine));
         }
 
-        await _authorService.FollowAsync(id, this.User.GetId());
+        await _authorService.FollowAsync(id, this.User.GetId()!);
 
         return RedirectToAction(nameof(Mine));
     }
@@ -331,21 +332,12 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again!";
+            TempData[ErrorMessage] = "No such author found. Please try again later!";
 
             return RedirectToAction("All");
         }
 
-        string userId = this.User.GetId();
-        bool isSubscribed = await _authorService.IsSubscribedByUserWithId(id, userId);
-        if (isSubscribed)
-        {
-            TempData[ErrorMessage] = "You already have a subscription for this author";
-
-            return RedirectToAction(nameof(Mine));
-        }
-
-        bool isPublisher = await _publisherService.ExistsById(userId);
+        bool isPublisher = await _publisherService.ExistsById(this.User.GetId()!);
         if (isPublisher)
         {
             TempData[ErrorMessage] = "Publishers cannot subscribe to authors.";
@@ -353,9 +345,19 @@ public class AuthorController : Controller
             return RedirectToAction(nameof(All));
         }
 
-        var authorModel = await _authorService.GetAuthorSubscribtionsAsync(id);
+        try
+        {
+            var authorModel = await _authorService.GetAuthorSubscribtionsAsync(id);
 
-        return View(authorModel);
+            return View(authorModel);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = "An unexpected error occurred wthen attempting to create your subscription. Please try again later!";
+
+            return RedirectToAction(nameof(All));
+        }
+
     }
 
     [HttpPost]
@@ -364,7 +366,7 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(authorSubscriptionForm.Id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again!";
+            TempData[ErrorMessage] = "No such author found. Please try again later!";
 
             return RedirectToAction("All");
         }
@@ -377,15 +379,7 @@ public class AuthorController : Controller
             return View(await _authorService.GetAuthorSubscribtionsAsync(authorSubscriptionForm.Id));
         }
 
-        string userId = this.User.GetId();
-        bool isSubscribed = await _authorService.IsSubscribedByUserWithId(authorSubscriptionForm.Id, userId);
-        if (isSubscribed)
-        {
-            TempData[ErrorMessage] = "You already have a subscription for this author.";
-
-            return RedirectToAction(nameof(Mine));
-        }
-
+        string userId = this.User.GetId()!;
         bool isPublisher = await _publisherService.ExistsById(userId);
         if (isPublisher)
         {
@@ -394,9 +388,24 @@ public class AuthorController : Controller
             return RedirectToAction("All");
         }
 
-        await _authorService.SubscribeAsync(authorSubscriptionForm.Id, authorSubscriptionForm.SubscriptionId, userId);
+        try
+        {
+            await _authorService.SubscribeAsync(authorSubscriptionForm.Id, authorSubscriptionForm.SubscriptionId, userId);
 
-        return RedirectToAction(nameof(Mine));
+            return RedirectToAction(nameof(Mine));
+        }
+        catch (ArgumentException e)
+        {
+            TempData[ErrorMessage] = e.Message;
+
+            return RedirectToAction(nameof(Mine));
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = "An unexpected error occurred when attempting to create your subscription. Please try again later later!";
+
+            return RedirectToAction(nameof(All));
+        }
     }
 
     [HttpPost]

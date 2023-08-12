@@ -12,6 +12,7 @@
         </div>
         <div class="card col-8 border-0">
             <p style="font-size:25px;"><u>@Model.Name</u></p>
+            <p>(@(Model.IsActive ? "Currently active" : "Not currently active"))</p>
             <p>Alias: <b>@Model.Alias</b></p>
             <p>@Model.Description</p>
             <p>
@@ -23,7 +24,6 @@
                 <b>@Model.SubscriberCount</b>
             </p>
             <p>Category: <b>@Model.CategoryName</b></p>
-            <p>(@(Model.IsActive ? "Currently active" : "Not currently active"))</p>
             <div class="form-inline">
                 @if (this.User.Identity?.IsAuthenticated ?? false)
                 {
@@ -47,6 +47,10 @@
                     }
                     @if (Model.IsUserSubscribed)
                     {
+                        <form class="input-group-sm" asp-controller="Author"
+                              asp-action="Subscribe" asp-route-id="@Model.Id" method="get">
+                            <input class="btn btn-primary mb-1" type="submit" value="Change Subscription" />
+                        </form>
                         <form asp-controller="Author" asp-action="Unsubscribe"
                               asp-route-id="@Model.Id" method="post">
                             <input class="btn btn-primary mb-1" type="submit" value="Unsubscribe" />

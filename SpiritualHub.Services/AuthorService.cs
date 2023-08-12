@@ -54,7 +54,7 @@ public class AuthorService : IAuthorService
             .GetAll()
             .Include(a => a.AvatarImage)
             .Include(a => a.Followers)
-            .Include (a => a.Subscriptions)
+            .Include(a => a.Subscriptions)
             .ThenInclude(s => s.Subscribers)
             .Where(a => a.Followers.Any(u => u.Id.ToString() == userId)
                     || a.Subscriptions.Any(s => s.Subscribers.Any(ss => ss.Id.ToString() == userId)))
@@ -197,7 +197,7 @@ public class AuthorService : IAuthorService
 
     public async Task<AuthorSubscribeFormModel> GetAuthorSubscribtionsAsync(string authorId)
     {
-        var authorEntity = await _authorRepository.GetAuthorWithSubscriptions(authorId); 
+        var authorEntity = await _authorRepository.GetAuthorWithSubscriptions(authorId);
 
         return _mapper.Map<AuthorSubscribeFormModel>(authorEntity);
     }
@@ -220,13 +220,6 @@ public class AuthorService : IAuthorService
         return author.Followers.Any(a => a.Id.ToString() == userId);
     }
 
-    public async Task<bool> IsSubscribedByUserWithId(string authorId, string userId)
-    {
-        var author = await _authorRepository.GetAuthorWithSubscriptionsAndSubscribersAsync(authorId);
-        return author.Subscriptions.Any(
-            s => s.Subscribers.Any(
-                u => u.Id.ToString() == userId));
-    }
 
     public async Task<IEnumerable<AuthorIndexViewModel>> LastThreeAuthors()
     {
@@ -240,7 +233,21 @@ public class AuthorService : IAuthorService
     public async Task SubscribeAsync(string authorId, string subscriptionId, string userId)
     {
         var author = await _authorRepository.GetAuthorWithSubscriptionsAndSubscribersAsync(authorId);
+
+        if (HasSubscriptionWithUserIdAndSubscriptionId(author, subscriptionId, userId))
+        {
+            throw new ArgumentException("Your plan is already set with this subscription.");
+        }
+
         var user = await _userRepository.GetSingleByIdAsync(Guid.Parse(userId));
+        string oldSubscription = IsSubscribedWithUserId(author, userId);
+        if (!string.IsNullOrWhiteSpace(oldSubscription))
+        {
+            author.Subscriptions
+            .FirstOrDefault(s => s.Id.ToString() == oldSubscription)
+            .Subscribers
+            .Remove(user);
+        }
 
         author.Subscriptions
             .FirstOrDefault(s => s.Id.ToString() == subscriptionId)
@@ -274,5 +281,24 @@ public class AuthorService : IAuthorService
     {
         authorModel.IsUserFollowing = author.Followers.Any(u => u.Id.ToString() == userId);
         authorModel.IsUserSubscribed = author.Subscriptions.Any(s => s.Subscribers.Any(ss => ss.Id.ToString() == userId));
+    }
+
+    private bool HasSubscriptionWithUserIdAndSubscriptionId(Author author, string subscriptionId, string userId)
+    {
+        return author
+            .Subscriptions
+            .FirstOrDefault(s => s.Id.ToString() == subscriptionId)
+            .Subscribers
+            .Any(sub => sub.Id.ToString() == userId);
+    }
+
+    private string IsSubscribedWithUserId(Author author, string userId)
+    {
+        return author
+            .Subscriptions.FirstOrDefault(
+                s => s.Subscribers.Any(
+                    sub => sub.Id.ToString() == userId))
+            .Id
+            .ToString();
     }
 }

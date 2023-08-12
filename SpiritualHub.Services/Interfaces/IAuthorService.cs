@@ -30,8 +30,6 @@ public interface IAuthorService
 
     Task<bool> IsFollowedByUserWithId(string authorId, string userId);
 
-    Task<bool> IsSubscribedByUserWithId(string authorId, string userId);
-
     Task FollowAsync(string authorId, string userId);
 
     Task SubscribeAsync(string authorId, string subscriptionId, string userId);
