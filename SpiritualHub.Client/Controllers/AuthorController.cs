@@ -48,13 +48,11 @@ public class AuthorController : Controller
     [HttpGet]
     public async Task<IActionResult> Mine()
     {
-        IEnumerable<AuthorViewModel> myAuthors = null;
-
         string userId = this.User.GetId()!;
-        bool isPublisher = await _publisherService.ExistsById(userId);
-
         try
         {
+            IEnumerable<AuthorViewModel> myAuthors = null;
+            bool isPublisher = await _publisherService.ExistsById(userId);
             if (isPublisher)
             {
                 var publisherId = (await _publisherService.GetPublisher(userId)).Id.ToString();
@@ -83,9 +81,9 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again later!";
+            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
 
-            return RedirectToAction("All");
+            return RedirectToAction(nameof(All));
         }
 
         try
@@ -177,9 +175,9 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again later!";
+            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
 
-            return RedirectToAction("All");
+            return RedirectToAction(nameof(All));
         }
 
         string userId = this.User.GetId()!;
@@ -213,7 +211,7 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again later!";
+            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
 
             return RedirectToAction(nameof(Mine));
         }
@@ -251,9 +249,9 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again later!";
+            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
 
-            return RedirectToAction("All");
+            return RedirectToAction(nameof(All));
         }
 
         string userId = this.User.GetId()!;
@@ -277,9 +275,9 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(authorId);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again later!";
+            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
 
-            return RedirectToAction("All");
+            return RedirectToAction(nameof(All));
         }
 
         string userId = this.User.GetId()!;
@@ -302,7 +300,7 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again later!";
+            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
 
             return RedirectToAction(nameof(All));
         }
@@ -315,14 +313,40 @@ public class AuthorController : Controller
             return RedirectToAction(nameof(Mine));
         }
 
-        await _authorService.FollowAsync(id, this.User.GetId()!);
+        try
+        {
+            await _authorService.FollowAsync(id, this.User.GetId()!);
 
-        return RedirectToAction(nameof(Mine));
+            return RedirectToAction(nameof(Mine));
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = "An unexpected error occurred wthen attempting to update your followings list. Please try again later!";
+
+            return RedirectToAction(nameof(All));
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> Unfollow(string id)
     {
+        var exists = await _authorService.Exists(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
+
+            return RedirectToAction(nameof(All));
+        }
+
+        try
+        {
+            await _authorService.UnfollowAsync(id, this.User.GetId()!);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = "An unexpected error occurred when attempting to unfollow the author. Please try again later!";
+        }
+
         return RedirectToAction(nameof(Mine));
     }
 
@@ -332,9 +356,9 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again later!";
+            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
 
-            return RedirectToAction("All");
+            return RedirectToAction(nameof(All));
         }
 
         bool isPublisher = await _publisherService.ExistsById(this.User.GetId()!);
@@ -366,9 +390,9 @@ public class AuthorController : Controller
         bool exists = await _authorService.Exists(authorSubscriptionForm.Id);
         if (!exists)
         {
-            TempData[ErrorMessage] = "No such author found. Please try again later!";
+            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
 
-            return RedirectToAction("All");
+            return RedirectToAction(nameof(All));
         }
 
         bool isExistingSubscription = await _subscriptionService.ExistsByIdAsync(authorSubscriptionForm.SubscriptionId);
@@ -385,7 +409,7 @@ public class AuthorController : Controller
         {
             TempData[ErrorMessage] = "Publishers cannot subscribe to authors.";
 
-            return RedirectToAction("All");
+            return RedirectToAction(nameof(All));
         }
 
         try
@@ -411,6 +435,23 @@ public class AuthorController : Controller
     [HttpPost]
     public async Task<IActionResult> Unsubscribe(string id)
     {
+        var exists = await _authorService.Exists(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = "No such author found. Please try again with a valid author!";
+
+            return RedirectToAction(nameof(All));
+        }
+
+        try
+        {
+            await _authorService.UnsubscribeAsync(id, this.User.GetId()!);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = "An unexpected error occurred when attempting to unsubscribe from the author. Please try again later!";
+        }
+
         return RedirectToAction(nameof(Mine));
     }
 }

@@ -36,7 +36,7 @@ public interface IAuthorService
 
     Task<AuthorSubscribeFormModel> GetAuthorSubscribtionsAsync(string authorId);
 
-    Task UnfollowAsync(string authorId, string useerId);
+    Task UnfollowAsync(string authorId, string userId);
 
-    Task UnsubscribeAsync(string authorId, string useerId);
+    Task UnsubscribeAsync(string authorId, string userId);
 }
