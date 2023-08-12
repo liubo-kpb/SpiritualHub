@@ -8,6 +8,7 @@ public class AuthorSubscribeFormModel
     {
         this.Subscriptions = new HashSet<SubscriptionViewModel>();
     }
+
     public string Id { get; set; } = null!;
 
     public string Alias { get; set; } = null!;

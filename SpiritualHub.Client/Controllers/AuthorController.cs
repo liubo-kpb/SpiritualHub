@@ -16,14 +16,17 @@ public class AuthorController : Controller
     private readonly IAuthorService _authorService;
     private readonly ICategoryService _categoryService;
     private readonly IPublisherService _publisherService;
+    private readonly ISubscriptionService _subscriptionService;
 
     public AuthorController(IAuthorService authorService,
                             ICategoryService categoryService,
-                            IPublisherService publisherService)
+                            IPublisherService publisherService,
+                            ISubscriptionService subscriptionService)
     {
         _authorService = authorService;
         _categoryService = categoryService;
         _publisherService = publisherService;
+        _subscriptionService = subscriptionService;
     }
 
     [AllowAnonymous]
@@ -300,7 +303,15 @@ public class AuthorController : Controller
         {
             TempData[ErrorMessage] = "No such author found. Please try again!";
 
-            return RedirectToAction("All");
+            return RedirectToAction(nameof(All));
+        }
+
+        bool isFollowing = await _authorService.IsFollowedByUserWithId(id, this.User.GetId());
+        if (isFollowing)
+        {
+            TempData[ErrorMessage] = "You are already following this author";
+
+            return RedirectToAction(nameof(Mine));
         }
 
         await _authorService.FollowAsync(id, this.User.GetId());
@@ -326,12 +337,20 @@ public class AuthorController : Controller
         }
 
         string userId = this.User.GetId();
+        bool isSubscribed = await _authorService.IsSubscribedByUserWithId(id, userId);
+        if (isSubscribed)
+        {
+            TempData[ErrorMessage] = "You already have a subscription for this author";
+
+            return RedirectToAction(nameof(Mine));
+        }
+
         bool isPublisher = await _publisherService.ExistsById(userId);
         if (isPublisher)
         {
             TempData[ErrorMessage] = "Publishers cannot subscribe to authors.";
 
-            return RedirectToAction("All");
+            return RedirectToAction(nameof(All));
         }
 
         var authorModel = await _authorService.GetAuthorSubscribtionsAsync(id);
@@ -350,7 +369,23 @@ public class AuthorController : Controller
             return RedirectToAction("All");
         }
 
+        bool isExistingSubscription = await _subscriptionService.ExistsByIdAsync(authorSubscriptionForm.SubscriptionId);
+        if (!isExistingSubscription)
+        {
+            TempData[ErrorMessage] = "Please select a valid subscription plan!";
+
+            return View(await _authorService.GetAuthorSubscribtionsAsync(authorSubscriptionForm.Id));
+        }
+
         string userId = this.User.GetId();
+        bool isSubscribed = await _authorService.IsSubscribedByUserWithId(authorSubscriptionForm.Id, userId);
+        if (isSubscribed)
+        {
+            TempData[ErrorMessage] = "You already have a subscription for this author.";
+
+            return RedirectToAction(nameof(Mine));
+        }
+
         bool isPublisher = await _publisherService.ExistsById(userId);
         if (isPublisher)
         {

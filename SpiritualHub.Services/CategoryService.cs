@@ -2,13 +2,14 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 using AutoMapper;
 
 using Client.ViewModels.Category;
+using Interfaces;
 using Data.Models;
 using Data.Repository.Interface;
-using Services.Interfaces;
 
 public class CategoryService : ICategoryService
 {
@@ -28,7 +29,10 @@ public class CategoryService : ICategoryService
 
     public async Task<ICollection<CategoryServiceModel>> GetAllAsync()
     {
-        var categoryEntities = _categoryRepository.AllAsNoTracking();
+        var categoryEntities = await _categoryRepository
+            .AllAsNoTracking()
+            .ToListAsync();
+
         var categoryModels = new List<CategoryServiceModel>();
 
         foreach (var category in categoryEntities)

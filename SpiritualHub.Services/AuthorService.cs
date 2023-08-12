@@ -216,16 +216,16 @@ public class AuthorService : IAuthorService
 
     public async Task<bool> IsFollowedByUserWithId(string authorId, string userId)
     {
-        var author = await _authorRepository.GetSingleByIdAsync(Guid.Parse(authorId));
-
-        return author.Followers.Any(f => f.Id.ToString() == userId);
+        var author = await _authorRepository.GetAuthorWithFollowers(authorId);
+        return author.Followers.Any(a => a.Id.ToString() == userId);
     }
 
     public async Task<bool> IsSubscribedByUserWithId(string authorId, string userId)
     {
-        var author = await _authorRepository.GetSingleByIdAsync(Guid.Parse(authorId));
-
-        return author.Subscriptions.Any(s => s.Subscribers.Any(sub => sub.Id.ToString() == userId));
+        var author = await _authorRepository.GetAuthorWithSubscriptionsAndSubscribersAsync(authorId);
+        return author.Subscriptions.Any(
+            s => s.Subscribers.Any(
+                u => u.Id.ToString() == userId));
     }
 
     public async Task<IEnumerable<AuthorIndexViewModel>> LastThreeAuthors()
@@ -248,6 +248,16 @@ public class AuthorService : IAuthorService
             .Add(user);
 
         await _authorRepository.SaveChangesAsync();
+    }
+
+    public async Task UnfollowAsync(string authorId, string useerId)
+    {
+        // var author = await _authorRepository
+    }
+
+    public Task UnsubscribeAsync(string authorId, string useerId)
+    {
+        throw new NotImplementedException();
     }
 
     private void MapListToViewModel<T>(IEnumerable<Author> authors, ICollection<T> allAuthorsModel)
