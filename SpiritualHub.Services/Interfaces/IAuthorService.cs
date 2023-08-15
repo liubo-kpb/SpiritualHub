@@ -39,4 +39,6 @@ public interface IAuthorService
     Task UnfollowAsync(string authorId, string userId);
 
     Task UnsubscribeAsync(string authorId, string userId);
+
+    Task<int> GetAllCountAsync();
 }

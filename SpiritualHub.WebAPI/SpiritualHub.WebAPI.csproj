@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>cab60fb8-5366-4923-bcb3-7d03abf36dea</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SpiritualHub.Client.Infrastructure\SpiritualHub.Client.Infrastructure.csproj" />
+    <ProjectReference Include="..\SpiritualHub.Client.ViewModels\SpiritualHub.Client.ViewModels.csproj" />
+    <ProjectReference Include="..\SpiritualHub.Services\SpiritualHub.Services.csproj" />
+  </ItemGroup>
+
+</Project>

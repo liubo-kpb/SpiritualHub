@@ -1,7 +1,6 @@
 ﻿namespace SpiritualHub.Services;
 
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 using AutoMapper;
@@ -314,5 +313,13 @@ public class AuthorService : IAuthorService
                 sub => sub.Id.ToString() == userId));
 
         return oldSubscription == null ? null : oldSubscription.Id.ToString();
+    }
+
+    public async Task<int> GetAllCountAsync()
+    {
+        return await _authorRepository
+            .AllAsNoTracking()
+            .Where(a => a.IsActive)
+            .CountAsync();
     }
 }

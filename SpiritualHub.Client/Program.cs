@@ -7,6 +7,7 @@ using Data;
 using Data.Models;
 using Services.Interfaces;
 using Services.Mappings;
+using Microsoft.AspNetCore.Mvc;
 
 public class Program
 {
@@ -30,22 +31,26 @@ public class Program
         })
             .AddEntityFrameworkStores<SpiritsDbContext>();
 
-        builder.Services.AddApplicationServices(typeof(IUserService));
+        builder.Services.AddApplicationServices(typeof(IAuthorService));
         builder.Services.AddApplicationRepositories();
         builder.Services.AddAutoMapper(typeof(ApplicationProfile));
-        builder.Services.AddControllersWithViews();
+        builder.Services.AddControllersWithViews(options =>
+        {
+            options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
+        });
 
         var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
         {
+            app.UseDeveloperExceptionPage();
             app.UseMigrationsEndPoint();
             app.UseDeveloperExceptionPage();
         }
         else
         {
-            app.UseExceptionHandler("/Home/Error");
-
+            app.UseExceptionHandler("/Home/Error/500");
+            app.UseStatusCodePagesWithRedirects("/Home/Error?statusCode={0}");
             app.UseHsts();
         }
 

@@ -2,8 +2,9 @@
 
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using SpiritualHub.Services.Interfaces;
+
 using ViewModels.Home;
+using Services.Interfaces;
 
 public class HomeController : Controller
 {
@@ -22,8 +23,17 @@ public class HomeController : Controller
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
+    public IActionResult Error(int statusCode)
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        if (statusCode == 400)
+        {
+            return View("Error400");
+        }
+        else if (statusCode == 401)
+        {
+            return View("Error401");
+        }
+
+        return View("Error");
     }
 }

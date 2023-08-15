@@ -30,11 +30,11 @@
             var Author = Authors[i];
             <div class="carousel-item @(i == 0 ? "active" : string.Empty)">
                 <img class="d-block w-100" style="height:500px"
-                     src="@Author.AvatarImageUrl" alt="@Author.Name">
+                     src="@Author.AvatarImageUrl" alt="@Author.Alias">
                 <div class="carousel-caption d-none d-md-block">
                     <h5>
                         <a class="btn btn-primary" asp-controller="Author" asp-action="Details"
-                           asp-route-id="@Author.Id"> @Author.Name</a>
+                           asp-route-id="@Author.Id"> @Author.Alias</a>
                     </h5>
                 </div>
             </div>
@@ -49,3 +49,28 @@
         <span class="visually-hidden">Next</span>
     </button>
 </div>
+
+<div class="mb-5"></div>
+
+<div class="row">
+    <div class="col-12 text-center">
+        <button class="btn btn-primary" id="statistics_btn">Show Statistics</button>
+    </div>
+</div>
+
+<div class="mt-4 p-5 bg-light d-none" id="statistics_box">
+    <div class="row">
+        <h2 class="col-md-4 text-center" id="total_authors"></h2>
+        <h2 class="col-md-4 text-center" id="total_events"></h2>
+        <h2 class="col-md-4 text-center" id="total_courses"></h2>
+        <br />
+        <h2 class="col-md-4 text-center" id="total_books"></h2>
+        <h2 class="col-md-4 text-center" id="total_blog-posts"></h2>
+        <h2 class="col-md-4 text-center" id="total_users"></h2>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>statistics();</script>
+}

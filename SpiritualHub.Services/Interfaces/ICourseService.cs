@@ -1,6 +1,6 @@
 ﻿namespace SpiritualHub.Services.Interfaces;
 
-public interface IUserService
+public interface ICourseService
 {
     Task<int> GetAllCountAsync();
 }

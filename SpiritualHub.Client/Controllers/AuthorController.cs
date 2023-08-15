@@ -3,23 +3,23 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using Client.ViewModels.Author;
+using ViewModels.Author;
+using ViewModels.Category;
 using Services.Interfaces;
 using Infrastructure.Extensions;
-using ViewModels.Category;
 
-using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
+using static Common.NotificationMessagesConstants;
 
 [Authorize]
 public class AuthorController : Controller
 {
+    private const string entityName = "author";
+
     private readonly IAuthorService _authorService;
     private readonly ICategoryService _categoryService;
     private readonly IPublisherService _publisherService;
     private readonly ISubscriptionService _subscriptionService;
-
-    private const string entityName = "author";
 
     public AuthorController(IAuthorService authorService,
                             ICategoryService categoryService,
@@ -71,7 +71,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "load your authors");
+            TempData[ErrorMessage] = String.Format(GeneralUnexpectedErrorMessage, "load your authors");
 
             return RedirectToAction("Index", "Home");
         }
@@ -97,7 +97,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "get the author");
+            TempData[ErrorMessage] = String.Format(GeneralUnexpectedErrorMessage, "get the author");
 
             return RedirectToAction(nameof(All));
         }
@@ -123,7 +123,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "load the page");
+            TempData[ErrorMessage] = String.Format(GeneralUnexpectedErrorMessage, "load the page");
 
             return RedirectToAction(nameof(All));
         }
@@ -163,7 +163,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "add a new author");
+            TempData[ErrorMessage] = String.Format(GeneralUnexpectedErrorMessage, "add a new author");
             newAuthor.Categories = await _categoryService.GetAllAsync();
 
             return View(newAuthor);
@@ -202,7 +202,7 @@ public class AuthorController : Controller
         catch (Exception)
         {
 
-            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "get the author");
+            TempData[ErrorMessage] = String.Format(GeneralUnexpectedErrorMessage, "get the author");
 
             return RedirectToAction(nameof(Details), new { id = id });
         }
@@ -324,7 +324,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "update your followings list");
+            TempData[ErrorMessage] = String.Format(GeneralUnexpectedErrorMessage, "update your followings list");
 
             return RedirectToAction(nameof(All));
         }
@@ -347,7 +347,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "unfollow the author");
+            TempData[ErrorMessage] = String.Format(GeneralUnexpectedErrorMessage, "unfollow the author");
         }
 
         return RedirectToAction(nameof(Mine));
@@ -380,7 +380,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "create your subscription");
+            TempData[ErrorMessage] = String.Format(GeneralUnexpectedErrorMessage, "create your subscription");
 
             return RedirectToAction(nameof(All));
         }
@@ -429,7 +429,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "create your subscription");
+            TempData[ErrorMessage] = String.Format(GeneralUnexpectedErrorMessage, "create your subscription");
 
             return RedirectToAction(nameof(All));
         }
@@ -452,7 +452,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = String.Format(UnexpectedErrorMessage, "unsubscribe from the author");
+            TempData[ErrorMessage] = String.Format(GeneralUnexpectedErrorMessage, "unsubscribe from the author");
         }
 
         return RedirectToAction(nameof(Mine));

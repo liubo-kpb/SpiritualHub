@@ -55,5 +55,9 @@ public static class DependancyContainer
         services.AddScoped<IRepository<Category>, Repository<Category>>();
         services.AddScoped<IRepository<Image>, Repository<Image>>();
         services.AddScoped<IRepository<ApplicationUser>, Repository<ApplicationUser>>();
+        services.AddScoped<IRepository<Event>, Repository<Event>>();
+        services.AddScoped<IRepository<Course>, Repository<Course>>();
+        services.AddScoped<IRepository<Book>, Repository<Book>>();
+        services.AddScoped<IRepository<Blog>, Repository<Blog>>();
     }
 }
