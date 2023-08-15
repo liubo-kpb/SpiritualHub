@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
+using Models;
 using Configuration;
 using Configuration.Seed;
-using Models;
 
 public class SpiritsDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
 {

@@ -1,13 +1,14 @@
 namespace SpiritualHub.Client;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
 using Infrastructure.Extensions;
+using Infrastructure.ModelBinder;
 using Data;
 using Data.Models;
 using Services.Interfaces;
 using Services.Mappings;
-using Microsoft.AspNetCore.Mvc;
 
 public class Program
 {
@@ -36,6 +37,7 @@ public class Program
         builder.Services.AddAutoMapper(typeof(ApplicationProfile));
         builder.Services.AddControllersWithViews(options =>
         {
+            options.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
             options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
         });
 
