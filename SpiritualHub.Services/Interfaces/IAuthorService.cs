@@ -22,7 +22,7 @@ public interface IAuthorService
 
     Task Edit(AuthorFormModel editedAuthor);
 
-    Task<bool> HasConnectedPublisher(string authorId, string userId);
+    Task<bool> IsConnectedPublisher(string authorId, string userId);
 
     Task<AuthorFormModel> GetAuthorAsync(string authorId);
 

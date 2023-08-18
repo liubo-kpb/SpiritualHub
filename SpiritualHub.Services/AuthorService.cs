@@ -127,6 +127,7 @@ public class AuthorService : IAuthorService
     public async Task<FilteredAuthorsServiceModel> GetAllAsync(AllAuthorsQueryModel queryModel, string userId)
     {
         IQueryable<Author> authorsQuery = _authorRepository.GetAll();
+        int totalAuthors = authorsQuery.Count();
 
         if (!string.IsNullOrWhiteSpace(queryModel.CategoryName))
         {
@@ -175,7 +176,7 @@ public class AuthorService : IAuthorService
         return new FilteredAuthorsServiceModel()
         {
             Authors = authorsModel,
-            TotalAuthorsCount = authorsModel.Count,
+            TotalAuthorsCount = totalAuthors,
         };
     }
 
@@ -201,7 +202,7 @@ public class AuthorService : IAuthorService
         return _mapper.Map<AuthorSubscribeFormModel>(authorEntity);
     }
 
-    public async Task<bool> HasConnectedPublisher(string authorId, string userId)
+    public async Task<bool> IsConnectedPublisher(string authorId, string userId)
     {
         var author = await _authorRepository.GetAuthorWithPublishersAsync(authorId);
 

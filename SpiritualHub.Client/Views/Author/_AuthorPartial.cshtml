@@ -1,4 +1,19 @@
 ﻿@model AuthorViewModel
+@inject IPublisherService _publisherService
+@inject IAuthorService _authorService
+@{
+    bool isUserLoggedIn = this.User.Identity?.IsAuthenticated ?? false;
+    bool isUserPublisher = false;
+    bool isUserConnectedPublisher = false;
+
+    if (isUserLoggedIn)
+    {
+        string userId = this.User.GetId()!;
+        isUserPublisher = await _publisherService.ExistsById(userId);
+        isUserConnectedPublisher = await _authorService.IsConnectedPublisher(Model.Id, userId);
+    }
+}
+
 <div class="col-md-4">
     <div class="card mb-3">
         <img class="card-img-top" src="@Model.AvatarImageUrl" alt="Author Image">
@@ -17,12 +32,16 @@
             <br />
             <a asp-controller="Author" asp-action="Details" asp-route-id="@Model.Id"
                class="btn btn-success">Details</a>
-            @if (this.User.Identity?.IsAuthenticated ?? false)
+            @if (isUserLoggedIn)
             {
-                <a asp-controller="Author" asp-action="Edit" asp-route-id="@Model.Id"
-                   class="btn btn-warning">Edit</a>
-                <a asp-controller="Author" asp-action="Disable" asp-route-id="@Model.Id"
-                   class="btn btn-danger">Disable</a>
+                @if (isUserPublisher && isUserConnectedPublisher)
+                {
+                    <a asp-controller="Author" asp-action="Edit" asp-route-id="@Model.Id"
+                       class="btn btn-warning">Edit</a>
+                    <a asp-controller="Author" asp-action="Disable" asp-route-id="@Model.Id"
+                       class="btn btn-danger">Disable</a>
+                }
+
                 <p></p>
                 @if (Model.IsUserFollowing)
                 {
@@ -38,23 +57,27 @@
                         <input class="btn btn-primary mb-1" type="submit" value="Follow" />
                     </form>
                 }
-                @if (Model.IsUserSubscribed)
+
+                @if (!isUserPublisher)
                 {
-                    <form class="input-group-sm" asp-controller="Author"
-                          asp-action="Subscribe" asp-route-id="@Model.Id" method="get">
-                        <input class="btn btn-primary mb-1" type="submit" value="Change Subscription" />
-                    </form>
-                    <form asp-controller="Author" asp-action="Unsubscribe"
-                          asp-route-id="@Model.Id" method="post">
-                        <input class="btn btn-primary mb-1" type="submit" value="Unsubscribe" />
-                    </form>
-                }
-                else
-                {
-                    <form class="input-group-sm" asp-controller="Author"
-                          asp-action="Subscribe" asp-route-id="@Model.Id" method="get">
-                        <input class="btn btn-primary mb-1" type="submit" value="Subscribe" />
-                    </form>
+                    @if (Model.IsUserSubscribed)
+                    {
+                        <form class="input-group-sm" asp-controller="Author"
+                              asp-action="Subscribe" asp-route-id="@Model.Id" method="get">
+                            <input class="btn btn-primary mb-1" type="submit" value="Change Subscription" />
+                        </form>
+                        <form asp-controller="Author" asp-action="Unsubscribe"
+                              asp-route-id="@Model.Id" method="post">
+                            <input class="btn btn-primary mb-1" type="submit" value="Unsubscribe" />
+                        </form>
+                    }
+                    else
+                    {
+                        <form class="input-group-sm" asp-controller="Author"
+                              asp-action="Subscribe" asp-route-id="@Model.Id" method="get">
+                            <input class="btn btn-primary mb-1" type="submit" value="Subscribe" />
+                        </form>
+                    }
                 }
             }
         </div>

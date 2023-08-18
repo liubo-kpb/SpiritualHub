@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@inject IPublisherService _publisherService
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -60,6 +61,43 @@
                                     </li>
                                 </ul>
                             </li>
+                            @if(await _publisherService.ExistsById(this.User.GetId()!))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-dark dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Publisher Space<span class="caret"></span></a>
+                                    <ul class="dropdown-menu realign">
+                                        <li>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Author" asp-action="MyPublishings">My Authors</a>
+                                        </li>
+                                        <li>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Event" asp-action="MyPublishings">My Events</a>
+                                        </li>
+                                        <li>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="MyPublishings">My Courses</a>
+                                        </li>
+                                        <li>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Book" asp-action="MyPublishings">My Books</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-dark dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add<span class="caret"></span></a>
+                                    <ul class="dropdown-menu realign">
+                                        <li>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Author" asp-action="Add">Author</a>
+                                        </li>
+                                        <li>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Event" asp-action="Add">Event</a>
+                                        </li>
+                                        <li>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Add">Course</a>
+                                        </li>
+                                        <li>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Book" asp-action="Add">Book</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
                         }
                     </ul>
                     <partial name="_LoginPartial" />

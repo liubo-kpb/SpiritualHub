@@ -39,11 +39,9 @@ public class AuthorController : Controller
         var filteredAuthors = await _authorService.GetAllAsync(queryModel, this.User.GetId()!);
         IEnumerable<CategoryServiceModel> categories = await _categoryService.GetAllAsync();
 
-        queryModel = new AllAuthorsQueryModel()
-        {
-            Authors = filteredAuthors.Authors,
-            Categories = categories.Select(c => c.Name)
-        };
+        queryModel.Authors = filteredAuthors.Authors;
+        queryModel.Categories = categories.Select(c => c.Name);
+        queryModel.TotalAutrhosCount = filteredAuthors.TotalAuthorsCount;
 
         return View(queryModel);
     }
@@ -55,17 +53,8 @@ public class AuthorController : Controller
         try
         {
             IEnumerable<AuthorViewModel> myAuthors = null;
-            bool isPublisher = await _publisherService.ExistsById(userId);
-            if (isPublisher)
-            {
-                var publisherId = (await _publisherService.GetPublisher(userId)).Id.ToString();
 
-                myAuthors = await _authorService.AllAuthorsByPublisherId(userId, publisherId);
-            }
-            else
-            {
-                myAuthors = await _authorService.AllAuthorsByUserId(userId);
-            }
+            myAuthors = await _authorService.AllAuthorsByUserId(userId);
 
             return View(myAuthors);
         }
@@ -75,6 +64,24 @@ public class AuthorController : Controller
 
             return RedirectToAction("Index", "Home");
         }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> MyPublishings()
+    {
+        string userId = this.User.GetId();
+        bool isPublisher = await _publisherService.ExistsById(userId);
+        if (!isPublisher)
+        {
+            TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+            return RedirectToAction(nameof(PublisherController.Become), "Publisher");
+        }
+
+        string publisherId = (await _publisherService.GetPublisher(userId)).Id.ToString();
+        var model = await _authorService.AllAuthorsByPublisherId(userId, publisherId);
+
+        return View(model);
     }
 
     [AllowAnonymous]
@@ -184,7 +191,7 @@ public class AuthorController : Controller
         }
 
         string userId = this.User.GetId()!;
-        bool isConnectedPublisher = await _authorService.HasConnectedPublisher(id, userId);
+        bool isConnectedPublisher = await _authorService.IsConnectedPublisher(id, userId);
         if (!isConnectedPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -220,7 +227,7 @@ public class AuthorController : Controller
         }
 
         string userId = this.User.GetId()!;
-        bool isConnectedPublisher = await _authorService.HasConnectedPublisher(id, userId);
+        bool isConnectedPublisher = await _authorService.IsConnectedPublisher(id, userId);
         if (!isConnectedPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -258,7 +265,7 @@ public class AuthorController : Controller
         }
 
         string userId = this.User.GetId()!;
-        bool isConnectedPublisher = await _authorService.HasConnectedPublisher(id, userId);
+        bool isConnectedPublisher = await _authorService.IsConnectedPublisher(id, userId);
         if (!isConnectedPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -284,7 +291,7 @@ public class AuthorController : Controller
         }
 
         string userId = this.User.GetId()!;
-        bool isConnectedPublisher = await _authorService.HasConnectedPublisher(authorId, userId);
+        bool isConnectedPublisher = await _authorService.IsConnectedPublisher(authorId, userId);
         if (!isConnectedPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
