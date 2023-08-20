@@ -2,8 +2,6 @@
 
 using System.ComponentModel.DataAnnotations;
 
-using Data.Models;
-
 public class AuthorViewModel
 {
     public string Id { get; set; }

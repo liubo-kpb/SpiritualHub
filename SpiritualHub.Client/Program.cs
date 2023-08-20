@@ -64,8 +64,17 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapDefaultControllerRoute();
-        app.MapRazorPages();
+
+        app.UseEndpoints(endpoints =>
+        {
+            //endpoints.MapControllerRoute(
+            //    name: "ProtectedUrlPattern",
+            //    pattern: "/{controller}/{action}/{id}/{information}",
+            //    defaults: new {Controller = "Category", Action = "Details"});
+
+            endpoints.MapDefaultControllerRoute();
+            endpoints.MapRazorPages();
+        });
 
         app.Run();
     }

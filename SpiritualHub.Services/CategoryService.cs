@@ -6,10 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 using AutoMapper;
 
-using Client.ViewModels.Category;
 using Interfaces;
+using Mappings;
 using Data.Models;
 using Data.Repository.Interface;
+using Client.ViewModels.Category;
 
 public class CategoryService : ICategoryService
 {
@@ -35,11 +36,7 @@ public class CategoryService : ICategoryService
 
         var categoryModels = new List<CategoryServiceModel>();
 
-        foreach (var category in categoryEntities)
-        {
-            var model = _mapper.Map<CategoryServiceModel>(category);
-            categoryModels.Add(model);
-        }
+        GeneralMapping.MapListToViewModel(_mapper, categoryEntities, categoryModels);
 
         return categoryModels;
     }

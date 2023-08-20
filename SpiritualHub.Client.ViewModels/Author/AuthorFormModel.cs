@@ -2,7 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-using Category;
+using SpiritualHub.Client.ViewModels.Category;
 
 using static Common.EntityValidationConstants.Author;
 

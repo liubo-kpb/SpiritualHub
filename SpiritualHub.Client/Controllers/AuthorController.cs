@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using ViewModels.Author;
-using ViewModels.Category;
 using Services.Interfaces;
+using Client.ViewModels.Category;
 using Infrastructure.Extensions;
 
 using static Common.ErrorMessagesConstants;
@@ -211,7 +211,7 @@ public class AuthorController : Controller
 
             TempData[ErrorMessage] = String.Format(GeneralUnexpectedErrorMessage, "get the author");
 
-            return RedirectToAction(nameof(Details), new { id = id });
+            return RedirectToAction(nameof(Details), new { id });
         }
     }
 

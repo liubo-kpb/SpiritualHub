@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 
 using Interfaces;
+using Mappings;
 using Models.Author;
 using Data.Repository.Interface;
 using Data.Models;
@@ -37,7 +38,7 @@ public class AuthorService : IAuthorService
             .ToListAsync();
 
         List<AuthorViewModel> authorsModel = new List<AuthorViewModel>();
-        MapListToViewModel<AuthorViewModel>(authors, authorsModel);
+        GeneralMapping.MapListToViewModel<Author, AuthorViewModel>(_mapper, authors, authorsModel);
 
         for (int i = 0; i < authors.Count; i++)
         {
@@ -60,7 +61,7 @@ public class AuthorService : IAuthorService
             .ToListAsync();
 
         List<AuthorViewModel> authorsModel = new List<AuthorViewModel>();
-        MapListToViewModel<AuthorViewModel>(authors, authorsModel);
+        GeneralMapping.MapListToViewModel<Author, AuthorViewModel>(_mapper, authors, authorsModel);
 
         for (int i = 0; i < authors.Count; i++)
         {
@@ -166,7 +167,7 @@ public class AuthorService : IAuthorService
             .ToListAsync();
 
         List<AuthorViewModel> authorsModel = new List<AuthorViewModel>();
-        MapListToViewModel<AuthorViewModel>(authors, authorsModel);
+        GeneralMapping.MapListToViewModel<Author, AuthorViewModel>(_mapper, authors, authorsModel);
 
         for (int i = 0; i < authors.Count; i++)
         {
@@ -225,7 +226,7 @@ public class AuthorService : IAuthorService
     {
         IEnumerable<Author> authors = await _authorRepository.LastThreeAuthors();
         ICollection<AuthorIndexViewModel> allAuthorsModel = new List<AuthorIndexViewModel>();
-        MapListToViewModel<AuthorIndexViewModel>(authors, allAuthorsModel);
+        GeneralMapping.MapListToViewModel<Author, AuthorIndexViewModel>(_mapper, authors, allAuthorsModel);
 
         return allAuthorsModel;
     }
@@ -279,16 +280,6 @@ public class AuthorService : IAuthorService
 
         await _authorRepository.SaveChangesAsync();
     }
-
-    private void MapListToViewModel<T>(IEnumerable<Author> authors, ICollection<T> allAuthorsModel)
-    {
-        foreach (var author in authors)
-        {
-            T authorViewModel = _mapper.Map<T>(author);
-            allAuthorsModel.Add(authorViewModel);
-        }
-    }
-
 
     private void SetIsUserFollowingAndSubscribed(string userId, Author author, AuthorViewModel authorModel)
     {

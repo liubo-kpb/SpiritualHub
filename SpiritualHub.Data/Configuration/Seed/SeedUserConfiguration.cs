@@ -23,6 +23,8 @@ public class SeedUserConfiguration : IEntitySeedConfiguration<ApplicationUser>
         user = new ApplicationUser()
         {
             Id = Guid.Parse("194974cd-73f0-4946-ba85-710d4061472d"),
+            FirstName = "Pablo",
+            LastName = "Publish",
             UserName = "publisher",
             NormalizedUserName = "PUBLISHER",
             Email = "publisher@spirits.com",
@@ -34,6 +36,8 @@ public class SeedUserConfiguration : IEntitySeedConfiguration<ApplicationUser>
         user = new ApplicationUser()
         {
             Id = Guid.Parse("1fd95f69-4f9d-4671-b126-cefcf4b8a95e"),
+            FirstName = "Martin",
+            LastName = "User",
             UserName = "user",
             NormalizedUserName = "USER",
             Email = "user@mail.com",

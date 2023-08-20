@@ -1,6 +1,6 @@
 ﻿namespace SpiritualHub.Services.Interfaces;
 
-using SpiritualHub.Client.ViewModels.Category;
+using Client.ViewModels.Category;
 
 public interface ICategoryService
 {

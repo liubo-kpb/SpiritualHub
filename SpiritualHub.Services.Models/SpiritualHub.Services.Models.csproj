@@ -9,5 +9,5 @@
   <ItemGroup>
     <ProjectReference Include="..\SpiritualHub.Client.ViewModels\SpiritualHub.Client.ViewModels.csproj" />
   </ItemGroup>
-
+	
 </Project>

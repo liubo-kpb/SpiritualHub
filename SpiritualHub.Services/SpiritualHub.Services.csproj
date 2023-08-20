@@ -12,11 +12,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SpiritialHub.Services.Models\SpiritualHub.Services.Models.csproj" />
     <ProjectReference Include="..\SpiritualHub.Client.Infrastructure\SpiritualHub.Client.Infrastructure.csproj" />
     <ProjectReference Include="..\SpiritualHub.Client.ViewModels\SpiritualHub.Client.ViewModels.csproj" />
     <ProjectReference Include="..\SpiritualHub.Data.Models\SpiritualHub.Data.Models.csproj" />
     <ProjectReference Include="..\SpiritualHub.Data\SpiritualHub.Data.csproj" />
+    <ProjectReference Include="..\SpiritualHub.Services.Models\SpiritualHub.Services.Models.csproj" />
   </ItemGroup>
 
 </Project>

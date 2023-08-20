@@ -20,7 +20,7 @@ public class ApplicationProfile : Profile
         SpecificAuthorMaps();
 
         //Category
-        CreateMap<Category, CategoryServiceModel>().ReverseMap();
+        CreateMap<Category, CategoryServiceModel>();
 
         //Publisher
         CreateMap<Publisher, PublisherInfoViewModel>()
@@ -35,6 +35,8 @@ public class ApplicationProfile : Profile
 
     private void SpecificAuthorMaps()
     {
+        //------------------------------------------------------------------------------------------------------------------------
+        //Basicall the same logic since Automapper doesn't seem to recognize the pattern on its own
         CreateMap<Author, AuthorDetailsViewModel>()
             .ForMember(a => a.SubscriberCount,
                        opt => opt.MapFrom(
@@ -50,5 +52,6 @@ public class ApplicationProfile : Profile
                                s => s.Subscribers.Count)))
             .ForMember(a => a.FollowerCount,
                        opt => opt.MapFrom(f => f.Followers.Count));
+        //------------------------------------------------------------------------------------------------------------------------
     }
 }
