@@ -254,6 +254,56 @@ public class AuthorController : Controller
     }
 
     [HttpGet]
+    public async Task<IActionResult> Activate(string id)
+    {
+        bool exists = await _authorService.Exists(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, entityName);
+
+            return RedirectToAction(nameof(All));
+        }
+
+        string userId = this.User.GetId()!;
+        bool isConnectedPublisher = await _authorService.IsConnectedPublisher(id, userId);
+        if (!isConnectedPublisher)
+        {
+            TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
+
+            return RedirectToAction(nameof(Mine));
+        }
+
+        var author = await _authorService.GetAuthorAsync(id);
+
+        return View(author);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Activate(AuthorDetailsViewModel author)
+    {
+        bool exists = await _authorService.Exists(author.Id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, entityName);
+
+            return RedirectToAction(nameof(All));
+        }
+
+        string userId = this.User.GetId()!;
+        bool isConnectedPublisher = await _authorService.IsConnectedPublisher(author.Id, userId);
+        if (!isConnectedPublisher)
+        {
+            TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+            return RedirectToAction(nameof(Mine));
+        }
+
+        await _authorService.ActivateAsync(author.Id);
+
+        return RedirectToAction(nameof(All));
+    }
+
+    [HttpGet]
     public async Task<IActionResult> Disable(string id)
     {
         bool exists = await _authorService.Exists(id);
@@ -268,7 +318,7 @@ public class AuthorController : Controller
         bool isConnectedPublisher = await _authorService.IsConnectedPublisher(id, userId);
         if (!isConnectedPublisher)
         {
-            TempData[ErrorMessage] = NotAPublisherErrorMessage;
+            TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
 
             return RedirectToAction(nameof(Mine));
         }
@@ -281,8 +331,7 @@ public class AuthorController : Controller
     [HttpPost]
     public async Task<IActionResult> Disable(AuthorDetailsViewModel author)
     {
-        string authorId = author.Id.ToString();
-        bool exists = await _authorService.Exists(authorId);
+        bool exists = await _authorService.Exists(author.Id);
         if (!exists)
         {
             TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, entityName);
@@ -291,7 +340,7 @@ public class AuthorController : Controller
         }
 
         string userId = this.User.GetId()!;
-        bool isConnectedPublisher = await _authorService.IsConnectedPublisher(authorId, userId);
+        bool isConnectedPublisher = await _authorService.IsConnectedPublisher(author.Id, userId);
         if (!isConnectedPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -299,7 +348,7 @@ public class AuthorController : Controller
             return RedirectToAction(nameof(Mine));
         }
 
-        await _authorService.DisableAsync(authorId);
+        await _authorService.DisableAsync(author.Id);
 
         return RedirectToAction(nameof(All));
     }

@@ -26,6 +26,8 @@ public interface IAuthorService
 
     Task<AuthorFormModel>                   GetAuthorAsync(string authorId);
 
+    Task                                    ActivateAsync(string authorId);
+
     Task                                    DisableAsync(string authorId);
 
     Task<bool>                              IsFollowedByUserWithId(string authorId, string userId);

@@ -43,7 +43,14 @@
                     @if (isUserPublisher && isUserConnectedPublisher)
                     {
                         <a asp-controller="Author" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
-                        <a asp-controller="Author" asp-action="Disable" asp-route-id="@Model.Id" class="btn btn-danger">Disable</a>
+                        @if (Model.IsActive)
+                        {
+                            <a asp-controller="Author" asp-action="Disable" asp-route-id="@Model.Id" class="btn btn-danger">Disable</a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Author" asp-action="Activate" asp-route-id="@Model.Id" class="btn btn-warning">Activate</a>
+                        }
                         <form asp-controller="Author" asp-action="RemoveConnectedPublisher" asp-route-id="@Model.Id" method="post">
                             <input class="btn btn-danger mt-2" type="submit" value="Remove Affiliation" />
                         </form>

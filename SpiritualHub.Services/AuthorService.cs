@@ -88,6 +88,13 @@ public class AuthorService : IAuthorService
 
         return author.Id.ToString();
     }
+    public async Task ActivateAsync(string authorId)
+    {
+        var author = await _authorRepository.GetSingleByIdAsync(Guid.Parse(authorId));
+        author.IsActive = true;
+
+        await _authorRepository.SaveChangesAsync();
+    }
 
     public async Task DisableAsync(string authorId)
     {
@@ -331,4 +338,5 @@ public class AuthorService : IAuthorService
         author.Publishers.Remove(publisherInstance);
         await _authorRepository.SaveChangesAsync();
     }
+
 }

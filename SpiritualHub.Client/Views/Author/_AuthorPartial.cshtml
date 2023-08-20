@@ -38,8 +38,14 @@
                 {
                     <a asp-controller="Author" asp-action="Edit" asp-route-id="@Model.Id"
                        class="btn btn-warning">Edit</a>
-                    <a asp-controller="Author" asp-action="Disable" asp-route-id="@Model.Id"
-                       class="btn btn-danger">Disable</a>
+                    @if (Model.IsActive)
+                    {
+                        <a asp-controller="Author" asp-action="Disable" asp-route-id="@Model.Id" class="btn btn-danger">Disable</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Author" asp-action="Activate" asp-route-id="@Model.Id" class="btn btn-warning">Activate</a>
+                    }
                 }
 
                 <p></p>
