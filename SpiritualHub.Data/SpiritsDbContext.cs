@@ -44,6 +44,7 @@ public class SpiritsDbContext : IdentityDbContext<ApplicationUser, IdentityRole<
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        builder.ApplyConfiguration(new ApplicationUserConfiguration());
         builder.ApplyConfiguration(new AuthorEntityConfiguration());
         builder.ApplyConfiguration(new BlogEntityConfiguration());
         builder.ApplyConfiguration(new BlogPostImageConfiguration());

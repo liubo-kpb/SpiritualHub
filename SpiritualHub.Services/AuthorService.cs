@@ -314,4 +314,21 @@ public class AuthorService : IAuthorService
             .Where(a => a.IsActive)
             .CountAsync();
     }
+
+    public async Task AddPublisherAsync(string authorId, Publisher publisher)
+    {
+        var author = await _authorRepository.GetSingleByIdAsync(Guid.Parse(authorId));
+
+        author.Publishers.Add(publisher);
+        await _authorRepository.SaveChangesAsync();
+    }
+
+    public async Task RemovePublisherAsync(string authorId, Guid publisherId)
+    {
+        var author = await _authorRepository.GetAuthorWithPublishersAsync(authorId);
+        var publisherInstance = author.Publishers.FirstOrDefault(p => p.Id == publisherId);
+
+        author.Publishers.Remove(publisherInstance);
+        await _authorRepository.SaveChangesAsync();
+    }
 }

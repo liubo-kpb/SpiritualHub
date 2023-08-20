@@ -42,12 +42,18 @@
                 {
                     @if (isUserPublisher && isUserConnectedPublisher)
                     {
-                        <a asp-controller="Author" asp-action="Edit" asp-route-id="@Model.Id"
-                           class="btn btn-warning">Edit</a>
-                        <a asp-controller="Author" asp-action="Disable" asp-route-id="@Model.Id"
-                           class="btn btn-danger">Disable</a>
+                        <a asp-controller="Author" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                        <a asp-controller="Author" asp-action="Disable" asp-route-id="@Model.Id" class="btn btn-danger">Disable</a>
+                        <form asp-controller="Author" asp-action="RemoveConnectedPublisher" asp-route-id="@Model.Id" method="post">
+                            <input class="btn btn-danger mt-2" type="submit" value="Remove Affiliation" />
+                        </form>
                     }
-
+                    else if (isUserPublisher)
+                    {
+                        <form asp-controller="Author" asp-action="BecomeConnectedPublisher" asp-route-id="@Model.Id" method="post">
+                            <input class="btn btn-warning" type="submit" value="Become a Connected Publisher" />
+                        </form>
+                    }
                     <p></p>
                     @if (Model.IsUserFollowing)
                     {
@@ -93,7 +99,7 @@
             {
                 <div class="card" style="width: 18rem;">
                     <div class="card-body">
-                        @if (publisher.FullName != null)
+                        @if (!string.IsNullOrWhiteSpace(publisher.FullName))
                         {
                             <p class="card-text">Name: @publisher.FullName</p>
                         }

@@ -78,7 +78,7 @@ public class AuthorController : Controller
             return RedirectToAction(nameof(PublisherController.Become), "Publisher");
         }
 
-        string publisherId = (await _publisherService.GetPublisher(userId)).Id.ToString();
+        string publisherId = (await _publisherService.GetPublisherAsync(userId)).Id.ToString();
         var model = await _authorService.AllAuthorsByPublisherId(userId, publisherId);
 
         return View(model);
@@ -161,7 +161,7 @@ public class AuthorController : Controller
             return View(newAuthor);
         }
 
-        var publisher = await _publisherService.GetPublisher(userId);
+        var publisher = await _publisherService.GetPublisherAsync(userId);
 
         string authorId;
         try
@@ -465,4 +465,55 @@ public class AuthorController : Controller
         return RedirectToAction(nameof(Mine));
     }
 
+    [HttpPost]
+    public async Task<IActionResult> BecomeConnectedPublisher(string id)
+    {
+        string userId = this.User.GetId()!;
+        bool isPublisher = await _publisherService.ExistsById(userId);
+        if (!isPublisher)
+        {
+            TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+            RedirectToAction(nameof(PublisherController.Become), "Publisher");
+        }
+
+        bool isConnectedPublisher = await _authorService.IsConnectedPublisher(id, userId);
+        if (isConnectedPublisher)
+        {
+            TempData[ErrorMessage] = AlreadyAConnectedPublisherErrorMessage;
+        }
+        else
+        {
+            var publisher = await _publisherService.GetPublisherAsync(userId);
+            await _authorService.AddPublisherAsync(id, publisher);
+        }
+
+        return RedirectToAction(nameof(MyPublishings));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> RemoveConnectedPublisher(string id)
+    {
+        string userId = this.User.GetId()!;
+        bool isPublisher = await _publisherService.ExistsById(userId);
+        if (!isPublisher)
+        {
+            TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+            RedirectToAction(nameof(PublisherController.Become), "Publisher");
+        }
+
+        bool isConnectedPublisher = await _authorService.IsConnectedPublisher(id, userId);
+        if (!isConnectedPublisher)
+        {
+            TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
+        }
+        else
+        {
+            var publisher = await _publisherService.GetPublisherAsync(userId);
+            await _authorService.RemovePublisherAsync(id, publisher.Id);
+        }
+
+        return RedirectToAction(nameof(MyPublishings));
+    }
 }

@@ -22,7 +22,7 @@ public class PublisherController : Controller
     [HttpGet]
     public async Task<IActionResult> Become()
     {
-        string userId = User.GetId()!.ToUpper();
+        string userId = User.GetId()!;
         bool isPublisher = await _publisherService.ExistsById(userId);
 
         if (isPublisher)

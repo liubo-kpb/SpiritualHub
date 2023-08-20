@@ -36,7 +36,7 @@ public class PublisherService : IPublisherService
         return await _publisherRepository.AnyAsync(u => u.UserID.ToString() == Id);
     }
 
-    public async Task<Publisher> GetPublisher(string userId)
+    public async Task<Publisher> GetPublisherAsync(string userId)
     {
         return await _publisherRepository
             .AllAsNoTracking()
@@ -45,9 +45,7 @@ public class PublisherService : IPublisherService
 
     public async Task<bool> UserHasSubscriptions(string userId)
     {
-
         return await _subscriptionRepository.AnyAsync(s => s.Subscribers.Any(u => u.Id.ToString() == userId));
-
     }
 
     public async Task<bool> UserWithPhoneNumberExists(string phoneNumber)
