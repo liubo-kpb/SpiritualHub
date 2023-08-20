@@ -93,6 +93,10 @@
             {
                 <div class="card" style="width: 18rem;">
                     <div class="card-body">
+                        @if (publisher.FullName != null)
+                        {
+                            <p class="card-text">Name: @publisher.FullName</p>
+                        }
                         <p class="card-text">Email: @publisher.Email</p>
                         <p class="card-text">Phone Number: @publisher.PhoneNumber</p>
                     </div>

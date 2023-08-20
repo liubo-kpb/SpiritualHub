@@ -19,10 +19,10 @@ public class ApplicationUser : IdentityUser<Guid>
     }
 
     [StringLength(FirstNameMaxLength, MinimumLength = FirstNameMinLength)]
-    public string FirstName { get; set; }
+    public string FirstName { get; set; } = null!;
 
     [StringLength(LastNameMaxLength, MinimumLength = LastNameMinLength)]
-    public string LastName { get; set; }
+    public string LastName { get; set; } = null!;
 
     public virtual ICollection<Comment> Comments { get; set; }
 

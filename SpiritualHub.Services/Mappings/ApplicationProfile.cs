@@ -24,6 +24,7 @@ public class ApplicationProfile : Profile
 
         //Publisher
         CreateMap<Publisher, PublisherInfoViewModel>()
+            .ForMember(p => p.FullName, opt => opt.MapFrom(op => op.User.FirstName + " " + op.User.LastName))
             .ForMember(p => p.Email, opt => opt.MapFrom(op => op.User.Email))
             .ForMember(p => p.PhoneNumber, opt => opt.MapFrom(op => op.PhoneNumber));
 
