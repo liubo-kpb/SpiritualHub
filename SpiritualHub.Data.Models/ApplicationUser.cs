@@ -1,6 +1,7 @@
 ﻿namespace SpiritualHub.Data.Models;
 
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
 using static Common.EntityValidationConstants.ApplicationUser;
@@ -18,10 +19,10 @@ public class ApplicationUser : IdentityUser<Guid>
     }
 
     [StringLength(FirstNameMaxLength, MinimumLength = FirstNameMinLength)]
-    public string FirstName { get; set; } = null!;
+    public string FirstName { get; set; }
 
     [StringLength(LastNameMaxLength, MinimumLength = LastNameMinLength)]
-    public string LastName { get; set; } = null!;
+    public string LastName { get; set; }
 
     public virtual ICollection<Comment> Comments { get; set; }
 

@@ -27,7 +27,7 @@ public class Repository<TEntity> : IRepository<TEntity>
         return DbSet;
     }
 
-    public virtual async Task<TEntity?> GetSingleByIdAsync(Guid id)
+    public virtual async Task<TEntity> GetSingleByIdAsync(Guid id)
     {
         return await DbSet.FindAsync(id);
     }
