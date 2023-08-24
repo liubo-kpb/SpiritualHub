@@ -38,7 +38,7 @@ public class AuthorService : IAuthorService
             .ToListAsync();
 
         List<AuthorViewModel> authorsModel = new List<AuthorViewModel>();
-        GeneralMapping.MapListToViewModel<Author, AuthorViewModel>(_mapper, authors, authorsModel);
+        _mapper.MapListToViewModel(authors, authorsModel);
 
         for (int i = 0; i < authors.Count; i++)
         {
@@ -61,7 +61,7 @@ public class AuthorService : IAuthorService
             .ToListAsync();
 
         List<AuthorViewModel> authorsModel = new List<AuthorViewModel>();
-        GeneralMapping.MapListToViewModel<Author, AuthorViewModel>(_mapper, authors, authorsModel);
+        _mapper.MapListToViewModel(authors, authorsModel);
 
         for (int i = 0; i < authors.Count; i++)
         {
@@ -108,7 +108,7 @@ public class AuthorService : IAuthorService
     {
         var authorEntity = await _authorRepository.GetAuthorDetailsByIdAsync(editedAuthor.Id.ToString());
 
-        authorEntity.Alias = editedAuthor.Alias;
+        authorEntity!.Alias = editedAuthor.Alias;
         authorEntity.Name = editedAuthor.Name;
         authorEntity.Description = editedAuthor.Description;
         authorEntity.IsActive = editedAuthor.IsActive;
@@ -174,7 +174,7 @@ public class AuthorService : IAuthorService
             .ToListAsync();
 
         List<AuthorViewModel> authorsModel = new List<AuthorViewModel>();
-        GeneralMapping.MapListToViewModel<Author, AuthorViewModel>(_mapper, authors, authorsModel);
+        _mapper.MapListToViewModel(authors, authorsModel);
 
         for (int i = 0; i < authors.Count; i++)
         {
@@ -233,7 +233,7 @@ public class AuthorService : IAuthorService
     {
         IEnumerable<Author> authors = await _authorRepository.LastThreeAuthors();
         ICollection<AuthorIndexViewModel> allAuthorsModel = new List<AuthorIndexViewModel>();
-        GeneralMapping.MapListToViewModel<Author, AuthorIndexViewModel>(_mapper, authors, allAuthorsModel);
+        _mapper.MapListToViewModel(authors, allAuthorsModel);
 
         return allAuthorsModel;
     }
@@ -242,7 +242,7 @@ public class AuthorService : IAuthorService
     {
         var author = await _authorRepository.GetAuthorWithSubscriptionsAndSubscribersAsync(authorId);
 
-        if (HasSubscriptionWithUserIdAndSubscriptionId(author, subscriptionId, userId))
+        if (HasSubscriptionWithUserIdAndSubscriptionId(author!, subscriptionId, userId))
         {
             throw new ArgumentException("Your plan is already set with this subscription.");
         }
@@ -252,13 +252,13 @@ public class AuthorService : IAuthorService
         if (!string.IsNullOrWhiteSpace(oldSubscriptionId))
         {
             author.Subscriptions
-            .FirstOrDefault(s => s.Id.ToString() == oldSubscriptionId)
+            .FirstOrDefault(s => s.Id.ToString() == oldSubscriptionId)!
             .Subscribers
             .Remove(user);
         }
 
         author.Subscriptions
-            .FirstOrDefault(s => s.Id.ToString() == subscriptionId)
+            .FirstOrDefault(s => s.Id.ToString() == subscriptionId)!
             .Subscribers
             .Add(user);
 
@@ -270,7 +270,7 @@ public class AuthorService : IAuthorService
         var author = await _authorRepository.GetAuthorWithFollowersAsync(authorId);
         var user = await _userRepository.GetSingleByIdAsync(Guid.Parse(userId));
 
-        author.Followers.Remove(user);
+        author!.Followers.Remove(user);
         await _authorRepository.SaveChangesAsync();
     }
 
@@ -279,9 +279,9 @@ public class AuthorService : IAuthorService
         var author = await _authorRepository.GetAuthorWithSubscriptionsAndSubscribersAsync(authorId);
         var user = await _userRepository.GetSingleByIdAsync(Guid.Parse(userId));
 
-        author
+        author!
             .Subscriptions
-            .FirstOrDefault(s => s.Subscribers.Any(sub => sub.Id.ToString() == userId))
+            .FirstOrDefault(s => s.Subscribers.Any(sub => sub.Id.ToString() == userId))!
             .Subscribers
             .Remove(user);
 
@@ -298,18 +298,18 @@ public class AuthorService : IAuthorService
     {
         return author
             .Subscriptions
-            .FirstOrDefault(s => s.Id.ToString() == subscriptionId)
+            .FirstOrDefault(s => s.Id.ToString() == subscriptionId)!
             .Subscribers
             .Any(sub => sub.Id.ToString() == userId);
     }
 
-    private string IsSubscribedWithUserId(Author author, string userId)
+    private string? IsSubscribedWithUserId(Author author, string userId)
     {
         Subscription oldSubscription = author
             .Subscriptions
             .FirstOrDefault(
             s => s.Subscribers.Any(
-                sub => sub.Id.ToString() == userId));
+                sub => sub.Id.ToString() == userId))!;
 
         return oldSubscription == null ? null : oldSubscription.Id.ToString();
     }
@@ -333,9 +333,9 @@ public class AuthorService : IAuthorService
     public async Task RemovePublisherAsync(string authorId, Guid publisherId)
     {
         var author = await _authorRepository.GetAuthorWithPublishersAsync(authorId);
-        var publisherInstance = author.Publishers.FirstOrDefault(p => p.Id == publisherId);
+        var publisherInstance = author!.Publishers.FirstOrDefault(p => p.Id == publisherId);
 
-        author.Publishers.Remove(publisherInstance);
+        author.Publishers.Remove(publisherInstance!);
         await _authorRepository.SaveChangesAsync();
     }
 

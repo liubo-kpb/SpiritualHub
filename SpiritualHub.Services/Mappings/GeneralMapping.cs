@@ -2,9 +2,9 @@
 
 using AutoMapper;
 
-internal class GeneralMapping
+internal static class GeneralMapping
 {
-    public static void MapListToViewModel<TEntity, TModel>(IMapper mapper, IEnumerable<TEntity> entities, ICollection<TModel> allEntitiesModel)
+    public static void MapListToViewModel<TEntity, TModel>(this IMapper mapper, IEnumerable<TEntity> entities, ICollection<TModel> allEntitiesModel)
     {
         foreach (var entity in entities)
         {
