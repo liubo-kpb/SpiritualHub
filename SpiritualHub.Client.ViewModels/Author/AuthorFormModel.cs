@@ -24,7 +24,7 @@ public class AuthorFormModel
 
     public string Description { get; set; } = null!;
 
-    [Display(Name = "Activate Author")]
+    [Display(Name = "Is Author Active")]
     public bool IsActive { get; set; }
 
     [Required]

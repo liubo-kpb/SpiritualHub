@@ -26,6 +26,14 @@ public class SeedPublisherConfiguration : IEntitySeedConfiguration<Publisher>
         };
         publishers.Add(publisher);
 
+        publisher = new Publisher()
+        {
+            Id = Guid.Parse("4779b556-cbb5-45d2-a16c-d8a83501198a"),
+            PhoneNumber = "+359883588888",
+            UserID = Guid.Parse("bcb4f072-ecca-43c9-ab26-c060c6f364e4") // admin user
+        };
+        publishers.Add(publisher);
+
         return publishers.ToArray();
     }
 }

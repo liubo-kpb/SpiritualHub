@@ -9,6 +9,7 @@ using Data;
 using Data.Models;
 using Services.Interfaces;
 using Services.Mappings;
+using Microsoft.AspNetCore.Identity;
 
 public class Program
 {
@@ -30,6 +31,7 @@ public class Program
             options.Password.RequireNonAlphanumeric = builder.Configuration.GetValue<bool>("Identity:Password:RequireAlphanumeric");
             options.Password.RequiredLength = builder.Configuration.GetValue<int>("Identity:Password:RequireLength");
         })
+            .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<SpiritsDbContext>();
 
         builder.Services.AddApplicationServices(typeof(IAuthorService));
@@ -48,6 +50,7 @@ public class Program
             app.UseDeveloperExceptionPage();
             app.UseMigrationsEndPoint();
             app.UseDeveloperExceptionPage();
+            app.SeedAdmin();
         }
         else
         {

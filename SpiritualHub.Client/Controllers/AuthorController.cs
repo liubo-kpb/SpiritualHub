@@ -69,7 +69,7 @@ public class AuthorController : Controller
     [HttpGet]
     public async Task<IActionResult> MyPublishings()
     {
-        string userId = this.User.GetId();
+        string userId = this.User.GetId()!;
         bool isPublisher = await _publisherService.ExistsById(userId);
         if (!isPublisher)
         {
@@ -192,7 +192,7 @@ public class AuthorController : Controller
 
         string userId = this.User.GetId()!;
         bool isConnectedPublisher = await _authorService.IsConnectedPublisher(id, userId);
-        if (!isConnectedPublisher)
+        if (!isConnectedPublisher && !this.User.IsAdmin())
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
 
@@ -228,7 +228,7 @@ public class AuthorController : Controller
 
         string userId = this.User.GetId()!;
         bool isConnectedPublisher = await _authorService.IsConnectedPublisher(id, userId);
-        if (!isConnectedPublisher)
+        if (!isConnectedPublisher && !this.User.IsAdmin())
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
 
@@ -266,7 +266,7 @@ public class AuthorController : Controller
 
         string userId = this.User.GetId()!;
         bool isConnectedPublisher = await _authorService.IsConnectedPublisher(id, userId);
-        if (!isConnectedPublisher)
+        if (!isConnectedPublisher && !this.User.IsAdmin())
         {
             TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
 
@@ -291,9 +291,9 @@ public class AuthorController : Controller
 
         string userId = this.User.GetId()!;
         bool isConnectedPublisher = await _authorService.IsConnectedPublisher(author.Id, userId);
-        if (!isConnectedPublisher)
+        if (!isConnectedPublisher && !this.User.IsAdmin())
         {
-            TempData[ErrorMessage] = NotAPublisherErrorMessage;
+            TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
 
             return RedirectToAction(nameof(Mine));
         }
@@ -316,7 +316,7 @@ public class AuthorController : Controller
 
         string userId = this.User.GetId()!;
         bool isConnectedPublisher = await _authorService.IsConnectedPublisher(id, userId);
-        if (!isConnectedPublisher)
+        if (!isConnectedPublisher && !this.User.IsAdmin())
         {
             TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
 
@@ -341,9 +341,9 @@ public class AuthorController : Controller
 
         string userId = this.User.GetId()!;
         bool isConnectedPublisher = await _authorService.IsConnectedPublisher(author.Id, userId);
-        if (!isConnectedPublisher)
+        if (!isConnectedPublisher && !this.User.IsAdmin())
         {
-            TempData[ErrorMessage] = NotAPublisherErrorMessage;
+            TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
 
             return RedirectToAction(nameof(Mine));
         }
@@ -421,7 +421,7 @@ public class AuthorController : Controller
         }
 
         bool isPublisher = await _publisherService.ExistsById(this.User.GetId()!);
-        if (isPublisher)
+        if (isPublisher && !this.User.IsAdmin())
         {
             TempData[ErrorMessage] = PublishersCannotSubscribeErrorMessage;
 
@@ -464,7 +464,7 @@ public class AuthorController : Controller
 
         string userId = this.User.GetId()!;
         bool isPublisher = await _publisherService.ExistsById(userId);
-        if (isPublisher)
+        if (isPublisher && !this.User.IsAdmin())
         {
             TempData[ErrorMessage] = PublishersCannotSubscribeErrorMessage;
 

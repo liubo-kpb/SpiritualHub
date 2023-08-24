@@ -40,7 +40,7 @@
             <div class="form-inline">
                 @if (isUserLoggedIn)
                 {
-                    @if (isUserPublisher && isUserConnectedPublisher)
+                    @if (isUserConnectedPublisher || this.User.IsAdmin())
                     {
                         <a asp-controller="Author" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
                         @if (Model.IsActive)
@@ -55,7 +55,7 @@
                             <input class="btn btn-danger mt-2" type="submit" value="Remove Affiliation" />
                         </form>
                     }
-                    else if (isUserPublisher)
+                    else if (isUserPublisher || this.User.IsAdmin())
                     {
                         <form asp-controller="Author" asp-action="BecomeConnectedPublisher" asp-route-id="@Model.Id" method="post">
                             <input class="btn btn-warning" type="submit" value="Become a Connected Publisher" />
@@ -77,7 +77,7 @@
                         </form>
                     }
 
-                    @if (!isUserPublisher)
+                    @if (!isUserPublisher || this.User.IsAdmin())
                     {
                         @if (Model.IsUserSubscribed)
                         {

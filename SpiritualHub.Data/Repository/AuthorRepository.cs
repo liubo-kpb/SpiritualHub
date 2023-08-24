@@ -24,7 +24,7 @@ public class AuthorRepository : DeletableRepository<Author>, IAuthorRepository
                         .ToArrayAsync();
     }
 
-    public async Task<Author> GetAuthorDetailsByIdAsync(string id)
+    public async Task<Author?> GetAuthorDetailsByIdAsync(string id)
     {
         return await DbSet
                         .Include(a => a.AvatarImage)
@@ -37,21 +37,21 @@ public class AuthorRepository : DeletableRepository<Author>, IAuthorRepository
                         .FirstOrDefaultAsync(a => a.Id.ToString() == id);
     }
 
-    public async Task<Author> GetAuthorByIdWithAvatar(string id)
+    public async Task<Author?> GetAuthorByIdWithAvatar(string id)
     {
         return await DbSet
             .Include(a => a.AvatarImage)
             .FirstOrDefaultAsync(a => a.Id.ToString() == id);
     }
 
-    public async Task<Author> GetAuthorWithPublishersAsync(string id)
+    public async Task<Author?> GetAuthorWithPublishersAsync(string id)
     {
         return await DbSet
             .Include(a => a.Publishers)
             .FirstOrDefaultAsync(a => a.Id.ToString() == id);
     }
 
-    public async Task<Author> GetAuthorWithSubscriptionsAndSubscribersAsync(string id)
+    public async Task<Author?> GetAuthorWithSubscriptionsAndSubscribersAsync(string id)
     {
         return await DbSet
             .Include(a => a.Subscriptions)
@@ -59,14 +59,14 @@ public class AuthorRepository : DeletableRepository<Author>, IAuthorRepository
             .FirstOrDefaultAsync(a => a.Id.ToString() == id);
     }
 
-    public async Task<Author> GetAuthorWithFollowersAsync(string id)
+    public async Task<Author?> GetAuthorWithFollowersAsync(string id)
     {
         return await DbSet
             .Include(a => a.Followers)
             .FirstOrDefaultAsync(a => a.Id.ToString() == id);
     }
 
-    public async Task<Author> GetAuthorWithSubscriptionsAsync(string id)
+    public async Task<Author?> GetAuthorWithSubscriptionsAsync(string id)
     {
         return await DbSet
             .Include(a => a.AvatarImage)

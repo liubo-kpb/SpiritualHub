@@ -34,7 +34,7 @@
                class="btn btn-success">Details</a>
             @if (isUserLoggedIn)
             {
-                @if (isUserPublisher && isUserConnectedPublisher)
+                @if (isUserConnectedPublisher || this.User.IsAdmin())
                 {
                     <a asp-controller="Author" asp-action="Edit" asp-route-id="@Model.Id"
                        class="btn btn-warning">Edit</a>
@@ -64,7 +64,7 @@
                     </form>
                 }
 
-                @if (!isUserPublisher)
+                @if (!isUserPublisher || this.User.IsAdmin())
                 {
                     @if (Model.IsUserSubscribed)
                     {
