@@ -47,7 +47,7 @@ public class UserService : IUserService
 
         allUsers.AddRange(users);
 
-        return allUsers;
+        return allUsers.OrderBy(u => u.Email);
     }
 
     public async Task<int> GetAllCountAsync()
