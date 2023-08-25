@@ -198,7 +198,7 @@ public class AuthorService : IAuthorService
     {
         var author = await _authorRepository.GetAuthorDetailsByIdAsync(authorId);
         var authorModel = _mapper.Map<AuthorDetailsViewModel>(author);
-        SetIsUserFollowingAndSubscribed(userId, author, authorModel);
+        SetIsUserFollowingAndSubscribed(userId, author!, authorModel);
 
         return authorModel;
     }
@@ -214,7 +214,7 @@ public class AuthorService : IAuthorService
     {
         var author = await _authorRepository.GetAuthorWithPublishersAsync(authorId);
 
-        if (!author.Publishers.Any(p => p.UserID.ToString() == userId))
+        if (!author!.Publishers.Any(p => p.UserID.ToString() == userId))
         {
             return false;
         }
@@ -225,13 +225,13 @@ public class AuthorService : IAuthorService
     public async Task<bool> IsFollowedByUserWithId(string authorId, string userId)
     {
         var author = await _authorRepository.GetAuthorWithFollowersAsync(authorId);
-        return author.Followers.Any(a => a.Id.ToString() == userId);
+        return author!.Followers.Any(a => a.Id.ToString() == userId);
     }
 
 
     public async Task<IEnumerable<AuthorIndexViewModel>> LastThreeAuthors()
     {
-        IEnumerable<Author> authors = await _authorRepository.LastThreeAuthors();
+        IEnumerable<Author> authors = (await _authorRepository.LastThreeAuthors())!;
         ICollection<AuthorIndexViewModel> allAuthorsModel = new List<AuthorIndexViewModel>();
         _mapper.MapListToViewModel(authors, allAuthorsModel);
 
@@ -248,16 +248,16 @@ public class AuthorService : IAuthorService
         }
 
         var user = await _userRepository.GetSingleByIdAsync(Guid.Parse(userId));
-        string oldSubscriptionId = IsSubscribedWithUserId(author, userId);
+        string? oldSubscriptionId = IsSubscribedWithUserId(author!, userId);
         if (!string.IsNullOrWhiteSpace(oldSubscriptionId))
         {
-            author.Subscriptions
+            author!.Subscriptions
             .FirstOrDefault(s => s.Id.ToString() == oldSubscriptionId)!
             .Subscribers
             .Remove(user);
         }
 
-        author.Subscriptions
+        author!.Subscriptions
             .FirstOrDefault(s => s.Id.ToString() == subscriptionId)!
             .Subscribers
             .Add(user);

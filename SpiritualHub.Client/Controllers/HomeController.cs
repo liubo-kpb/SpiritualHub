@@ -1,10 +1,10 @@
 ﻿namespace SpiritualHub.Client.Controllers;
 
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-using ViewModels.Home;
 using Services.Interfaces;
+
+using static Common.GeneralApplicationConstants;
 
 public class HomeController : Controller
 {
@@ -17,6 +17,11 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
+        if (this.User.IsInRole(AdminRoleName))
+        {
+            return RedirectToAction("Index", "Home", new {area = "Admin"});
+        }
+
         var authorsModel = await _authorService.LastThreeAuthors();
 
         return View(authorsModel);

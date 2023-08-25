@@ -28,4 +28,8 @@
     <ProjectReference Include="..\SpiritualHub.Services\SpiritualHub.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Admin\ViewModels\" />
+  </ItemGroup>
+
 </Project>

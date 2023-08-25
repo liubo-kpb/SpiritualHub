@@ -7,6 +7,7 @@ using Client.ViewModels.Author;
 using Client.ViewModels.Category;
 using Client.ViewModels.Publisher;
 using Client.ViewModels.Subscription;
+using SpiritualHub.Client.ViewModels.User;
 
 public class ApplicationProfile : Profile
 {
@@ -22,8 +23,18 @@ public class ApplicationProfile : Profile
         //Category
         CreateMap<Category, CategoryServiceModel>();
 
+        //User
+        CreateMap<ApplicationUser, UserServiceModel>()
+            .ForMember(p => p.FullName, opt => opt.MapFrom(op => op.FirstName + " " + op.LastName))
+            .ForMember(p => p.Email, opt => opt.MapFrom(op => op.Email));
+
         //Publisher
         CreateMap<Publisher, PublisherInfoViewModel>()
+            .ForMember(p => p.FullName, opt => opt.MapFrom(op => op.User.FirstName + " " + op.User.LastName))
+            .ForMember(p => p.Email, opt => opt.MapFrom(op => op.User.Email))
+            .ForMember(p => p.PhoneNumber, opt => opt.MapFrom(op => op.PhoneNumber));
+
+        CreateMap<Publisher, UserServiceModel>()
             .ForMember(p => p.FullName, opt => opt.MapFrom(op => op.User.FirstName + " " + op.User.LastName))
             .ForMember(p => p.Email, opt => opt.MapFrom(op => op.User.Email))
             .ForMember(p => p.PhoneNumber, opt => opt.MapFrom(op => op.PhoneNumber));

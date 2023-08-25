@@ -14,7 +14,7 @@ public class AuthorRepository : DeletableRepository<Author>, IAuthorRepository
     {
     }
 
-    public async Task<IEnumerable<Author>> LastThreeAuthors()
+    public async Task<IEnumerable<Author>?> LastThreeAuthors()
     {
         return await DbSet
                         .Include(a => a.AvatarImage)

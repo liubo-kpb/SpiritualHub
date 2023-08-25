@@ -52,7 +52,7 @@ public class AuthorController : Controller
         string userId = this.User.GetId()!;
         try
         {
-            IEnumerable<AuthorViewModel> myAuthors = null;
+            IEnumerable<AuthorViewModel> myAuthors = null!;
 
             myAuthors = await _authorService.AllAuthorsByUserId(userId);
 

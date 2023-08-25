@@ -14,14 +14,15 @@ public class StatisticsController : ControllerBase
     private readonly ICourseService _courseService;
     private readonly IBookService _bookService;
     private readonly IBlogService _blogService;
-    private readonly IApplicationUserService _userService;
+    private readonly IUserService _userService;
 
-    public StatisticsController(IAuthorService authorService,
+    public StatisticsController(
+        IAuthorService authorService,
         IEventService eventService,
         ICourseService courseService,
         IBookService bookService,
         IBlogService blogService,
-        IApplicationUserService userService)
+        IUserService userService)
     {
         _authorService = authorService;
         _eventService = eventService;
