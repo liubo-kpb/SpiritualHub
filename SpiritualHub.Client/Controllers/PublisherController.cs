@@ -59,7 +59,7 @@ public class PublisherController : Controller
         bool hasSubscriptions = await _publisherService.UserHasSubscriptions(userId);
         if (hasSubscriptions)
         {
-            TempData[ErrorMessage] = AlreadyAPublisherErrorMessage;
+            TempData[ErrorMessage] = UserHasSubscriptionErrorMessage;
 
             return RedirectToAction(nameof(AuthorController.Mine), "Author");
         }

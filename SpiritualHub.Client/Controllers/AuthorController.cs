@@ -312,6 +312,7 @@ public class AuthorController : Controller
         }
 
         await _authorService.ActivateAsync(author.Id);
+        TempData[SuccessMessage] = AuthorActivatedSuccessfullyMessage;
 
         return RedirectToAction(nameof(All));
     }
@@ -362,6 +363,7 @@ public class AuthorController : Controller
         }
 
         await _authorService.DisableAsync(author.Id);
+        TempData[SuccessMessage] = AuthorDeactivatedSuccessfullyMessage;
 
         return RedirectToAction(nameof(All));
     }
@@ -388,7 +390,7 @@ public class AuthorController : Controller
         try
         {
             await _authorService.FollowAsync(id, this.User.GetId()!);
-
+            
             return RedirectToAction(nameof(Mine));
         }
         catch (Exception)
@@ -444,6 +446,7 @@ public class AuthorController : Controller
         try
         {
             var authorModel = await _authorService.GetAuthorSubscribtionsAsync(id);
+
 
             return View(authorModel);
         }
@@ -518,6 +521,7 @@ public class AuthorController : Controller
         try
         {
             await _authorService.UnsubscribeAsync(id, this.User.GetId()!);
+            TempData[SuccessMessage] = AuthorUnsubscriptionSuccessMessage;
         }
         catch (Exception)
         {
@@ -548,6 +552,8 @@ public class AuthorController : Controller
         {
             var publisher = await _publisherService.GetPublisherAsync(userId);
             await _authorService.AddPublisherAsync(id, publisher);
+
+            TempData[SuccessMessage] = AuthorConnectedPublisherSuccessMessage;
         }
 
         return RedirectToAction(nameof(MyPublishings));
@@ -574,6 +580,8 @@ public class AuthorController : Controller
         {
             var publisher = await _publisherService.GetPublisherAsync(userId);
             await _authorService.RemovePublisherAsync(id, publisher.Id);
+
+            TempData[SuccessMessage] = AuthorRemoveAffilicationSuccessMessage;
         }
 
         return RedirectToAction(nameof(MyPublishings));
