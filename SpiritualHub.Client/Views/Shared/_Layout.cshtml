@@ -41,6 +41,12 @@
                         </li>
                         @if (this.User.Identity?.IsAuthenticated ?? false)
                         {
+                            @if (this.User.IsAdmin())
+                            {
+                                <li>
+                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="User" asp-action="All">Users</a>
+                                </li>
+                            }
                             <li class="nav-item dropdown">
                                 <a class="nav-link text-dark dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" asp-area="" asp-controller="User" asp-action="Index">My Space <span class="caret"></span></a>
                                 <ul class="dropdown-menu realign">
@@ -61,7 +67,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            @if(await _publisherService.ExistsById(this.User.GetId()!))
+                            @if (await _publisherService.ExistsById(this.User.GetId()!))
                             {
                                 <li class="nav-item dropdown">
                                     <a class="nav-link text-dark dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Publisher Space<span class="caret"></span></a>

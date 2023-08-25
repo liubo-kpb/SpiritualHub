@@ -8,6 +8,8 @@ using Infrastructure.Extensions;
 using SpiritualHub.Services.Interfaces;
 
 using static Common.NotificationMessagesConstants;
+using static Common.SuccessMessageConstants;
+using static Common.ErrorMessagesConstants;
 
 [Authorize]
 public class PublisherController : Controller
@@ -27,7 +29,7 @@ public class PublisherController : Controller
 
         if (isPublisher)
         {
-            TempData[ErrorMessage] = "You are already a publisher!";
+            TempData[ErrorMessage] = AlreadyAPublisherErrorMessage;
 
             return RedirectToAction("Index", "Home");
         }
@@ -43,7 +45,7 @@ public class PublisherController : Controller
         bool isAgent = await _publisherService.ExistsById(userId);
         if (isAgent)
         {
-            TempData[ErrorMessage] = "You are already a publisher!";
+            TempData[ErrorMessage] = AlreadyAPublisherErrorMessage;
 
             return RedirectToAction("Index", "Home");
         }
@@ -51,15 +53,15 @@ public class PublisherController : Controller
         bool isPhoneNumberTaken = await _publisherService.UserWithPhoneNumberExists(model.PhoneNumber);
         if (isPhoneNumberTaken)
         {
-            ModelState.AddModelError(nameof(model.PhoneNumber), "Phone number is already registered for a publisher!");
+            ModelState.AddModelError(nameof(model.PhoneNumber), PhoneAlreadyRegisteredErrorMessage);
         }
 
         bool hasSubscriptions = await _publisherService.UserHasSubscriptions(userId);
         if (hasSubscriptions)
         {
-            TempData[ErrorMessage] = "You are already a publisher!";
+            TempData[ErrorMessage] = AlreadyAPublisherErrorMessage;
 
-            return RedirectToAction("Mine", "Author");
+            return RedirectToAction(nameof(AuthorController.Mine), "Author");
         }
 
         if (!ModelState.IsValid)
@@ -73,11 +75,12 @@ public class PublisherController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = "An unexpected error occurred when attempting to make you an agent. Please try again later!";
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, "make you a publisher");
 
             return View(model);
         }
 
+        TempData[SuccessMessage] = BecomePublisherSuccessfulMessage;
         return RedirectToAction(nameof(AuthorController.All), "Author");
     }
 }

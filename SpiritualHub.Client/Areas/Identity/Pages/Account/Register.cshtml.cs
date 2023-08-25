@@ -10,10 +10,11 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-
+using Microsoft.Extensions.Caching.Memory;
 using SpiritualHub.Data.Models;
 
 using static SpiritualHub.Common.EntityValidationConstants.ApplicationUser;
+using static SpiritualHub.Common.GeneralApplicationConstants;
 
 namespace SpiritualHub.Client.Areas.Identity.Pages.Account
 {
@@ -24,18 +25,21 @@ namespace SpiritualHub.Client.Areas.Identity.Pages.Account
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly IEmailSender _emailSender;
+        private readonly IMemoryCache _memoryCache;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IMemoryCache memoryCache)
         {
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _memoryCache = memoryCache;
         }
 
         /// <summary>
@@ -137,6 +141,8 @@ namespace SpiritualHub.Client.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
+                        _memoryCache.Remove(UserCacheKey);
+
                         return LocalRedirect(returnUrl);
                     }
                 }

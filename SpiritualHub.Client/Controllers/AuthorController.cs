@@ -9,6 +9,7 @@ using Client.ViewModels.Category;
 using Infrastructure.Extensions;
 
 using static Common.ErrorMessagesConstants;
+using static Common.SuccessMessageConstants;
 using static Common.NotificationMessagesConstants;
 
 [Authorize]
@@ -167,6 +168,7 @@ public class AuthorController : Controller
         try
         {
             authorId = await _authorService.CreateAuthor(newAuthor, publisher);
+            TempData[SuccessMessage] = string.Format(CreationSuccessfulMessage, entityName);
         }
         catch (Exception)
         {
@@ -248,9 +250,20 @@ public class AuthorController : Controller
             return View(author);
         }
 
-        await _authorService.Edit(author);
+        try
+        {
+            await _authorService.Edit(author);
+            TempData[SuccessMessage] = string.Format(EditSuccessfulMessage, entityName);
 
-        return RedirectToAction(nameof(Details), new { id = author.Id });
+            return RedirectToAction(nameof(Details), new { id = author.Id });
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = String.Format(GeneralUnexpectedErrorMessage, "editting the author");
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
+        
     }
 
     [HttpGet]
