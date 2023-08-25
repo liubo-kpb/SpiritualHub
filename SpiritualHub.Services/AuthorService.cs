@@ -81,10 +81,10 @@ public class AuthorService : IAuthorService
 
         var author = _mapper.Map<Author>(newAuthor);
         author.AvatarImage = avatarImage;
-        author.Publishers.Add(publisher);
-
+        
         await _authorRepository.AddAsync(author);
         await _authorRepository.SaveChangesAsync();
+        await AddPublisherAsync(author, publisher);
 
         return author.Id.ToString();
     }
@@ -288,6 +288,30 @@ public class AuthorService : IAuthorService
         await _authorRepository.SaveChangesAsync();
     }
 
+    public async Task<int> GetAllCountAsync()
+    {
+        return await _authorRepository
+            .AllAsNoTracking()
+            .Where(a => a.IsActive)
+            .CountAsync();
+    }
+
+    public async Task AddPublisherAsync(string authorId, Publisher publisher)
+    {
+        var author = await _authorRepository.GetSingleByIdAsync(Guid.Parse(authorId));
+
+        author.Publishers.Add(publisher);
+        await _authorRepository.SaveChangesAsync();
+    }
+
+    public async Task RemovePublisherAsync(string authorId, Guid publisherId)
+    {
+        var author = await _authorRepository.GetAuthorWithPublishersAsync(authorId);
+        var publisherInstance = author!.Publishers.FirstOrDefault(p => p.Id == publisherId);
+
+        author.Publishers.Remove(publisherInstance!);
+        await _authorRepository.SaveChangesAsync();
+    }
     private void SetIsUserFollowingAndSubscribed(string userId, Author author, AuthorViewModel authorModel)
     {
         authorModel.IsUserFollowing = author.Followers.Any(u => u.Id.ToString() == userId);
@@ -313,30 +337,9 @@ public class AuthorService : IAuthorService
 
         return oldSubscription == null ? null : oldSubscription.Id.ToString();
     }
-
-    public async Task<int> GetAllCountAsync()
+    private async Task AddPublisherAsync(Author author, Publisher publisher)
     {
-        return await _authorRepository
-            .AllAsNoTracking()
-            .Where(a => a.IsActive)
-            .CountAsync();
-    }
-
-    public async Task AddPublisherAsync(string authorId, Publisher publisher)
-    {
-        var author = await _authorRepository.GetSingleByIdAsync(Guid.Parse(authorId));
-
         author.Publishers.Add(publisher);
         await _authorRepository.SaveChangesAsync();
     }
-
-    public async Task RemovePublisherAsync(string authorId, Guid publisherId)
-    {
-        var author = await _authorRepository.GetAuthorWithPublishersAsync(authorId);
-        var publisherInstance = author!.Publishers.FirstOrDefault(p => p.Id == publisherId);
-
-        author.Publishers.Remove(publisherInstance!);
-        await _authorRepository.SaveChangesAsync();
-    }
-
 }
