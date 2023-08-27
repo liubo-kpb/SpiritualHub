@@ -1,5 +1,7 @@
 ﻿namespace SpiritualHub.Client.ViewModels.Event;
 
+using Author;
+
 public class EventViewModel
 {
     public string Id { get; set; } = null!;
@@ -20,5 +22,5 @@ public class EventViewModel
 
     public string ImageURL { get; set; } = null!;
 
-    public string AuthorAlias { get; set; } = null!;
+    public AuthorInfoViewModel AuthorAlias { get; set; } = null!;
 }
