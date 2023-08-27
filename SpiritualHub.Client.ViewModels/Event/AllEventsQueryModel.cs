@@ -1,4 +1,4 @@
-﻿namespace SpiritualHub.Client.ViewModels.Author;
+﻿namespace SpiritualHub.Client.ViewModels.Event;
 
 using System.ComponentModel.DataAnnotations;
 
@@ -6,15 +6,15 @@ using Infrastructure.Enums;
 
 using static Common.GeneralApplicationConstants;
 
-public class AllAuthorsQueryModel
+public class AllEventsQueryModel
 {
-    public AllAuthorsQueryModel()
+    public AllEventsQueryModel()
     {
         this.Categories = new HashSet<string>();
-        this.Authors = new HashSet<AuthorViewModel>();
+        this.Events = new HashSet<EventViewModel>();
 
         CurrentPage = DefaultPage;
-        AuthorsPerPage = EntitiesPerPage;
+        EventsPerPage = EntitiesPerPage;
     }
 
     [Display(Name = "Category")]
@@ -24,16 +24,16 @@ public class AllAuthorsQueryModel
     public string SearchTerm { get; set; } = null!;
 
     [Display(Name = "Sort by")]
-    public AuthorSorting SortingOption { get; set; }
+    public EventSorting SortingOption { get; set; }
 
     public int CurrentPage { get; set; }
 
     [Display(Name = "Show on Page")]
-    public int AuthorsPerPage { get; set; }
+    public int EventsPerPage { get; set; }
 
-    public int TotalAutrhorsCount { get; set; }
+    public int TotalEventsCount { get; set; }
 
     public IEnumerable<string> Categories { get; set; }
 
-    public IEnumerable<AuthorViewModel> Authors { get; set; }
+    public IEnumerable<EventViewModel> Events { get; set; }
 }

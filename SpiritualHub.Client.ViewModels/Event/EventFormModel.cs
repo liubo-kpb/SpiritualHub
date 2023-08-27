@@ -1,4 +1,4 @@
-﻿namespace SpiritualHub.Client.ViewModels.Author;
+﻿namespace SpiritualHub.Client.ViewModels.Event;
 
 using System.ComponentModel.DataAnnotations;
 
@@ -6,9 +6,9 @@ using Category;
 
 using static Common.EntityValidationConstants.Author;
 
-public class AuthorFormModel
+public class EventFormModel
 {
-    public AuthorFormModel()
+    public EventFormModel()
     {
         this.Categories = new HashSet<CategoryServiceModel>();
         IsActive = true;

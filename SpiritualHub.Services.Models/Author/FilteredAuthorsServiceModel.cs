@@ -1,6 +1,6 @@
 ﻿namespace SpiritualHub.Services.Models.Author;
 
-using SpiritualHub.Client.ViewModels.Author;
+using Client.ViewModels.Author;
 
 public class FilteredAuthorsServiceModel
 {

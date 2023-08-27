@@ -1,0 +1,27 @@
+﻿@* @model EventFormModel
+@{
+    ViewBag.Title = "Disable Author";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+<form asp-action="Disable">
+    <div class="row">
+        <div class="col-md-4">
+            <img class="card-img-top" src="@Model.AvatarImageUrl" alt="House Image">
+        </div>
+        <div class="col-md-8">
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" disabled="disabled" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Alias" class="control-label"></label>
+                <input asp-for="Alias" class="form-control" disabled="disabled" />
+            </div>
+            <div class="form-group mt-3">
+                <input type="submit" value="Disable" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</form> *@

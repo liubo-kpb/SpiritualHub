@@ -42,7 +42,7 @@ public class AuthorController : Controller
 
         queryModel.Authors = filteredAuthors.Authors;
         queryModel.Categories = categories.Select(c => c.Name);
-        queryModel.TotalAutrhosCount = filteredAuthors.TotalAuthorsCount;
+        queryModel.TotalAutrhorsCount = filteredAuthors.TotalAuthorsCount;
 
         return View(queryModel);
     }

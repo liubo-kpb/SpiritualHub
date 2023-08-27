@@ -1,0 +1,120 @@
+﻿@* @model EventDetailsViewModel
+@inject IPublisherService _publisherService
+@inject IAuthorService _authorService
+@{
+    ViewBag.Title = "Author Details";
+
+    bool isUserLoggedIn = this.User.Identity?.IsAuthenticated ?? false;
+    bool isUserPublisher = false;
+    bool isUserConnectedPublisher = false;
+
+    if (isUserLoggedIn)
+    {
+        string userId = this.User.GetId()!;
+        isUserPublisher = await _publisherService.ExistsById(userId);
+        isUserConnectedPublisher = await _authorService.IsConnectedPublisher(Model.Id, userId);
+    }
+}
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+<div class="container" style="display:inline">
+    <div class="row">
+        <div class="col-4">
+            <img class="card-img-top" style="width: 20rem;"
+                 src="@Model.AvatarImageUrl" alt="Author Image">
+        </div>
+        <div class="card col-8 border-0">
+            <p style="font-size:25px;"><u>@Model.Name</u></p>
+            <p>(@(Model.IsActive ? "Currently active" : "Not currently active"))</p>
+            <p>Alias: <b>@Model.Alias</b></p>
+            <p>@Model.Description</p>
+            <p>
+                Followers:
+                <b>@Model.FollowerCount</b>
+            </p>
+            <p>
+                Subscribers:
+                <b>@Model.SubscriberCount</b>
+            </p>
+            <p>Category: <b>@Model.CategoryName</b></p>
+            <div class="form-inline">
+                @if (isUserLoggedIn)
+                {
+                    @if (isUserConnectedPublisher || this.User.IsAdmin())
+                    {
+                        <a asp-controller="Author" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                        @if (Model.IsActive)
+                        {
+                            <a asp-controller="Author" asp-action="Disable" asp-route-id="@Model.Id" class="btn btn-danger">Disable</a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Author" asp-action="Activate" asp-route-id="@Model.Id" class="btn btn-warning">Activate</a>
+                        }
+                        <form asp-controller="Author" asp-action="RemoveConnectedPublisher" asp-route-id="@Model.Id" method="post">
+                            <input class="btn btn-danger mt-2" type="submit" value="Remove Affiliation" />
+                        </form>
+                    }
+                    else if (isUserPublisher || this.User.IsAdmin())
+                    {
+                        <form asp-controller="Author" asp-action="BecomeConnectedPublisher" asp-route-id="@Model.Id" method="post">
+                            <input class="btn btn-warning" type="submit" value="Become a Connected Publisher" />
+                        </form>
+                    }
+                    <p></p>
+                    @if (Model.IsUserFollowing)
+                    {
+                        <form asp-controller="Author" asp-action="Unfollow"
+                              asp-route-id="@Model.Id" method="post">
+                            <input class="btn btn-primary mb-1" type="submit" value="Unfollow" />
+                        </form>
+                    }
+                    else
+                    {
+                        <form class="input-group-sm " asp-controller="Author"
+                              asp-action="Follow" asp-route-id="@Model.Id" method="post">
+                            <input class="btn btn-primary mb-1" type="submit" value="Follow" />
+                        </form>
+                    }
+
+                    @if (!isUserPublisher || this.User.IsAdmin())
+                    {
+                        @if (Model.IsUserSubscribed)
+                        {
+                            <form class="input-group-sm" asp-controller="Author"
+                                  asp-action="Subscribe" asp-route-id="@Model.Id" method="get">
+                                <input class="btn btn-primary mb-1" type="submit" value="Change Subscription" />
+                            </form>
+                            <form asp-controller="Author" asp-action="Unsubscribe"
+                                  asp-route-id="@Model.Id" method="post">
+                                <input class="btn btn-primary mb-1" type="submit" value="Unsubscribe" />
+                            </form>
+                        }
+                        else
+                        {
+                            <form class="input-group-sm" asp-controller="Author"
+                                  asp-action="Subscribe" asp-route-id="@Model.Id" method="get">
+                                <input class="btn btn-primary mb-1" type="submit" value="Subscribe" />
+                            </form>
+                        }
+                    }
+                }
+            </div>
+            <p></p>
+            <h5 class="card-title">Publishers</h5>
+            @foreach (var publisher in Model.Publishers)
+            {
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        @if (!string.IsNullOrWhiteSpace(publisher.FullName))
+                        {
+                            <p class="card-text">Name: @publisher.FullName</p>
+                        }
+                        <p class="card-text">Email: @publisher.Email</p>
+                        <p class="card-text">Phone Number: @publisher.PhoneNumber</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div> *@
