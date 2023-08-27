@@ -3,7 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using SpiritualHub.Data.Models;
+using Models;
 
 public class EventEntityConfiguration : IEntityTypeConfiguration<Event>
 {
@@ -22,10 +22,17 @@ public class EventEntityConfiguration : IEntityTypeConfiguration<Event>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
-            .HasOne(e => e.Organizer)
+            .HasOne(e => e.Publisher)
             .WithMany(u => u.Events)
-            .HasForeignKey(e => e.OrganizerID)
+            .HasForeignKey(e => e.PublisherID)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder
+            .Property(e => e.LocationName)
+            .IsRequired(false);
+
+        builder
+            .Property(e => e.LocationUrl)
+            .IsRequired(false);
     }
 }

@@ -12,6 +12,7 @@ public class Event
         this.Id             = Guid.NewGuid();
         // this.Discounts      = new HashSet<string>();
         this.Participants   = new HashSet<ApplicationUser>();
+        this.Ratings   = new HashSet<Rating>();
     }
 
     [Key]
@@ -19,13 +20,12 @@ public class Event
 
     [Required]
     [StringLength(TitleMaxLength, MinimumLength = TitleMinLength)]
-    public string Title { get; set; }
+    public string Title { get; set; } = null!;
 
     [Required]
     [MinLength(DescriptionMinLength)]
-    public string Description { get; set; }
+    public string Description { get; set; } = null!;
 
-    [Required]
     [Column(TypeName = "decimal(10, 5)")]
     public decimal Price { get; set; }
 
@@ -37,26 +37,30 @@ public class Event
     [Required]
     public DateTime EndDateTime { get; set;}
 
+    public string LocationName { get; set; } = null!;
+
+    public string LocationUrl { get; set; } = null!;
+
     [Required]
     public bool IsOnline { get; set; }
 
     [Required]
     public int CategoryID { get; set; }
 
-    public virtual Category Category { get; set; }
+    public virtual Category Category { get; set; } = null!;
 
     [Required]
     public Guid AutorID { get; set; }
 
-    public virtual Author Author { get; set; }
+    public virtual Author Author { get; set; } = null!;
 
     public virtual Guid ImageID { get; set; }
 
     public virtual Image Image { get; set; } = null!;
     
-    public Guid OrganizerID { get; set; }
+    public Guid PublisherID { get; set; }
 
-    public virtual Publisher Organizer { get; set; } = null!;
+    public virtual Publisher Publisher { get; set; } = null!;
 
     // public virtual ICollection<string> Discounts { get; set; }
 
