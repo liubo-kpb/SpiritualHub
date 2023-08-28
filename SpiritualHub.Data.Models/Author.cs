@@ -13,6 +13,11 @@ public class Author
         this.Subscriptions = new HashSet<Subscription>();
         this.Ratings = new HashSet<Rating>();
         this.Publishers = new HashSet<Publisher>();
+        this.Books = new HashSet<Book>();
+        this.Events = new HashSet<Event>();
+        this.Courses = new HashSet<Course>();
+        this.Blogs = new HashSet<Blog>();
+        this.Comments = new HashSet<Comment>();
     }
 
     [Key]
@@ -34,7 +39,7 @@ public class Author
     [Required]
     public int CategoryID { get; set; }
 
-    public virtual Category Category { get; set; }
+    public virtual Category Category { get; set; } = null!;
 
     public Guid AvatarImageID { get; set; }
 

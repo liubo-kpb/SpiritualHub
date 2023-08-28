@@ -1,27 +1,27 @@
-﻿@* @model EventFormModel
+﻿@model EventFormModel
 @{
-    ViewBag.Title = "Disable Author";
+    ViewBag.Title = "Delete Event";
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
 <hr />
-<form asp-action="Disable">
+<form asp-action="Delete">
     <div class="row">
         <div class="col-md-4">
-            <img class="card-img-top" src="@Model.AvatarImageUrl" alt="House Image">
+            <img class="card-img-top" src="@Model.ImageUrl" alt="Event Image">
         </div>
         <div class="col-md-8">
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" disabled="disabled" />
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" disabled="disabled" />
             </div>
             <div class="form-group">
-                <label asp-for="Alias" class="control-label"></label>
-                <input asp-for="Alias" class="form-control" disabled="disabled" />
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" disabled="disabled" />
             </div>
             <div class="form-group mt-3">
-                <input type="submit" value="Disable" class="btn btn-primary" />
+                <input type="submit" value="Delete" class="btn btn-primary" />
             </div>
         </div>
     </div>
-</form> *@
+</form>

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 public class AuthorViewModel
 {
-    public string Id { get; set; }
+    public string Id { get; set; } = null!;
 
     public string Alias { get; set; } = null!;
 

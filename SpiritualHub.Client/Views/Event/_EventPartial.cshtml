@@ -1,91 +1,57 @@
-﻿@* @model EventViewModel
+﻿@model EventViewModel
 @inject IPublisherService _publisherService
-@inject IAuthorService _authorService
 @{
     bool isUserLoggedIn = this.User.Identity?.IsAuthenticated ?? false;
-    bool isUserPublisher = false;
     bool isUserConnectedPublisher = false;
 
     if (isUserLoggedIn)
     {
         string userId = this.User.GetId()!;
-        isUserPublisher = await _publisherService.ExistsById(userId);
-        isUserConnectedPublisher = await _authorService.IsConnectedPublisher(Model.Id, userId);
+        isUserConnectedPublisher = await _publisherService.IsConnectedToEntity<Author>(userId, Model.Id);
     }
 }
 
 <div class="col-md-4">
     <div class="card mb-3">
-        <img class="card-img-top" src="@Model.AvatarImageUrl" alt="Author Image">
+        <img class="card-img-top" src="@Model.ImageURL" alt="Event Image">
         <div class="card-body text-center">
-            <h4>@Model.Alias</h4>
-            <h6>Name: <b>@Model.Name</b></h6>
-            <h6>
-                Followers:
-                <b>@Model.FollowerCount</b>
-            </h6>
-            <h6>
-                Subscribers:
-                <b>@Model.SubscriberCount</b>
-            </h6>
-            <h6>(@(Model.IsActive ? "Currently active" : "Not currently active"))</h6>
+            <h4>@Model.Title</h4>
+            @* <h6>
+            Participants:
+            <b>@Model.ParticipantCount</b>
+            </h6> *@
+            <h6>(@Model.Participation)</h6>
+            <h6>Presenter: <b><a asp-controller="Author" asp-action="Details" asp-route-id="@Model.Author.Id">@Model.Author.Alias</a></b></h6>
+            <p>Beginning: @Model.StartDateTime.ToString("yy-mm-dd hh:mm")</p>
+            <p>End: @Model.EndDateTime.ToString("yy-mm-dd hh:mm")</p>
+            <p>Price: @Model.Price</p>
             <br />
-            <a asp-controller="Author" asp-action="Details" asp-route-id="@Model.Id"
+            <a asp-controller="Event" asp-action="Details" asp-route-id="@Model.Id"
                class="btn btn-success">Details</a>
             @if (isUserLoggedIn)
             {
                 @if (isUserConnectedPublisher || this.User.IsAdmin())
                 {
-                    <a asp-controller="Author" asp-action="Edit" asp-route-id="@Model.Id"
+                    <a asp-controller="Event" asp-action="Edit" asp-route-id="@Model.Id"
                        class="btn btn-warning">Edit</a>
-                    @if (Model.IsActive)
-                    {
-                        <a asp-controller="Author" asp-action="Disable" asp-route-id="@Model.Id" class="btn btn-danger">Disable</a>
-                    }
-                    else
-                    {
-                        <a asp-controller="Author" asp-action="Activate" asp-route-id="@Model.Id" class="btn btn-warning">Activate</a>
-                    }
+                    <a asp-controller="Event" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
                 }
-
                 <p></p>
-                @if (Model.IsUserFollowing)
+                @if (Model.IsUserJoined)
                 {
-                    <form asp-controller="Author" asp-action="Unfollow"
+                    <form asp-controller="Event" asp-action="Leave"
                           asp-route-id="@Model.Id" method="post">
-                        <input class="btn btn-primary mb-1" type="submit" value="Unfollow" />
+                        <input class="btn btn-primary mb-1" type="submit" value="Leave" />
                     </form>
                 }
                 else
                 {
-                    <form class="input-group-sm " asp-controller="Author"
-                          asp-action="Follow" asp-route-id="@Model.Id" method="post">
-                        <input class="btn btn-primary mb-1" type="submit" value="Follow" />
+                    <form class="input-group-sm " asp-controller="Event"
+                          asp-action="Join" asp-route-id="@Model.Id" method="post">
+                        <input class="btn btn-primary mb-1" type="submit" value="Join" />
                     </form>
-                }
-
-                @if (!isUserPublisher || this.User.IsAdmin())
-                {
-                    @if (Model.IsUserSubscribed)
-                    {
-                        <form class="input-group-sm" asp-controller="Author"
-                              asp-action="Subscribe" asp-route-id="@Model.Id" method="get">
-                            <input class="btn btn-primary mb-1" type="submit" value="Change Subscription" />
-                        </form>
-                        <form asp-controller="Author" asp-action="Unsubscribe"
-                              asp-route-id="@Model.Id" method="post">
-                            <input class="btn btn-primary mb-1" type="submit" value="Unsubscribe" />
-                        </form>
-                    }
-                    else
-                    {
-                        <form class="input-group-sm" asp-controller="Author"
-                              asp-action="Subscribe" asp-route-id="@Model.Id" method="get">
-                            <input class="btn btn-primary mb-1" type="submit" value="Subscribe" />
-                        </form>
-                    }
                 }
             }
         </div>
     </div>
-</div> *@
+</div>
