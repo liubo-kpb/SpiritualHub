@@ -2,7 +2,7 @@
 
 using SpiritualHub.Data.Models;
 
-public interface IAuthorRepository : IDeletableRepository<Author>
+public interface IAuthorRepository : IRepository<Author>
 {
     Task<IEnumerable<Author>?> LastThreeAuthors();
     

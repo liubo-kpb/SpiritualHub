@@ -21,6 +21,6 @@ public class AuthorEntityConfiguration : IEntityTypeConfiguration<Author>
 
         builder
             .HasMany(a => a.Publishers)
-            .WithMany(p => p.PublishedAuthors);
+            .WithMany(p => p.Authors);
     }
 }

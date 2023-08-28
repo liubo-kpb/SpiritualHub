@@ -13,4 +13,6 @@ public interface IPublisherService
     Task Create(string userId, string phoneNumber);
 
     Task<Publisher> GetPublisherAsync(string userId);
+
+    Task<bool> IsConnectedToEntity<TEntityType>(string userId, string entityId);
 }

@@ -1,6 +1,5 @@
 ﻿@model AuthorDetailsViewModel
 @inject IPublisherService _publisherService
-@inject IAuthorService _authorService
 @{
     ViewBag.Title = "Author Details";
 
@@ -12,7 +11,7 @@
     {
         string userId = this.User.GetId()!;
         isUserPublisher = await _publisherService.ExistsById(userId);
-        isUserConnectedPublisher = await _authorService.IsConnectedPublisher(Model.Id, userId);
+        isUserConnectedPublisher = await _publisherService.IsConnectedToEntity<Author>(userId, Model.Id);
     }
 }
 <h2 class="text-center">@ViewBag.Title</h2>

@@ -14,12 +14,12 @@ using Client.ViewModels.User;
 public class UserService : IUserService
 {
     private readonly IRepository<ApplicationUser> _userRepository;
-    private readonly IRepository<Publisher> _publisherRepository;
+    private readonly IPublisherRepository _publisherRepository;
     private readonly IMapper _mapper;
 
     public UserService(
         IRepository<ApplicationUser> userRepository,
-        IRepository<Publisher> publisherRepository,
+        IPublisherRepository publisherRepository,
         IMapper mapper)
     {
         _userRepository = userRepository;

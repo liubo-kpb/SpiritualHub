@@ -50,7 +50,7 @@ public static class DependancyContainer
     public static void AddApplicationRepositories(this IServiceCollection services)
     {
         services.AddScoped<IAuthorRepository, AuthorRepository>();
-        services.AddScoped<IRepository<Publisher>, Repository<Publisher>>();
+        services.AddScoped<IPublisherRepository, PublisherRepository>();
         services.AddScoped<IRepository<Subscription>, Repository<Subscription>>();
         services.AddScoped<IRepository<Category>, Repository<Category>>();
         services.AddScoped<IRepository<Image>, Repository<Image>>();

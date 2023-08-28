@@ -210,18 +210,6 @@ public class AuthorService : IAuthorService
         return _mapper.Map<AuthorSubscribeFormModel>(authorEntity);
     }
 
-    public async Task<bool> IsConnectedPublisher(string authorId, string userId)
-    {
-        var author = await _authorRepository.GetAuthorWithPublishersAsync(authorId);
-
-        if (!author!.Publishers.Any(p => p.UserID.ToString() == userId))
-        {
-            return false;
-        }
-
-        return true;
-    }
-
     public async Task<bool> IsFollowedByUserWithId(string authorId, string userId)
     {
         var author = await _authorRepository.GetAuthorWithFollowersAsync(authorId);

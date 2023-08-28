@@ -5,7 +5,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 using Interface;
-using SpiritualHub.Data;
+using Data;
 
 public class DeletableRepository<TEntity> : Repository<TEntity>, IDeletableRepository<TEntity>
     where TEntity : class

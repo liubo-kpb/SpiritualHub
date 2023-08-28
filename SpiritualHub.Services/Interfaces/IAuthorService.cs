@@ -22,8 +22,6 @@ public interface IAuthorService
 
     Task                                    Edit(AuthorFormModel editedAuthor);
 
-    Task<bool>                              IsConnectedPublisher(string authorId, string userId);
-
     Task<AuthorFormModel>                   GetAuthorAsync(string authorId);
 
     Task                                    ActivateAsync(string authorId);

@@ -1,6 +1,5 @@
 ﻿@model AuthorViewModel
 @inject IPublisherService _publisherService
-@inject IAuthorService _authorService
 @{
     bool isUserLoggedIn = this.User.Identity?.IsAuthenticated ?? false;
     bool isUserPublisher = false;
@@ -10,7 +9,7 @@
     {
         string userId = this.User.GetId()!;
         isUserPublisher = await _publisherService.ExistsById(userId);
-        isUserConnectedPublisher = await _authorService.IsConnectedPublisher(Model.Id, userId);
+        isUserConnectedPublisher = await _publisherService.IsConnectedToEntity<Author>(userId, Model.Id);
     }
 }
 
