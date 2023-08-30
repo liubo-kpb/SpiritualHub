@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Data.Models;
 using Repository.Interface;
 
-public class AuthorRepository : DeletableRepository<Author>, IAuthorRepository
+public class AuthorRepository : Repository<Author>, IAuthorRepository
 {
     public AuthorRepository(SpiritsDbContext context) : base(context)
     {
