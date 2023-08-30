@@ -18,7 +18,7 @@ public class EventEntityConfiguration : IEntityTypeConfiguration<Event>
         builder
             .HasOne(e => e.Author)
             .WithMany(a => a.Events)
-            .HasForeignKey(e => e.AutorID)
+            .HasForeignKey(e => e.AuthorID)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder

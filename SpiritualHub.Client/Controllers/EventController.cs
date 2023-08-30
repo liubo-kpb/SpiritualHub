@@ -3,13 +3,19 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using Services.Interfaces;
 using Client.Infrastructure.Extensions;
 using Client.ViewModels.Event;
+using Services.Interfaces;
+using Data.Models;
+
+using static Common.NotificationMessagesConstants;
+using static Common.ErrorMessagesConstants;
 
 [Authorize]
 public class EventController : Controller
 {
+    private readonly string entityName = nameof(Event).ToLower();
+
     private readonly IEventService _eventService;
     private readonly ICategoryService _categoryService;
 
@@ -47,10 +53,31 @@ public class EventController : Controller
         return null;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> Details(string id)
     {
-        return null;
+        bool exists = await _eventService.ExistsAsync(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
+
+            return RedirectToAction(nameof(All));
+        }
+
+        try
+        {
+            var eventModel = await _eventService.GetEventDetailsAsync(id, this.User.GetId()!);
+
+            return View(eventModel);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"loading {entityName}");
+
+            return RedirectToAction(nameof(All));
+        }
+        
     }
 
     [HttpGet]

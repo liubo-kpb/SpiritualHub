@@ -24,6 +24,7 @@ public class ApplicationProfile : Profile
 
         // Event
         CreateMap<Event, EventViewModel>();
+        CreateMap<Event, EventDetailsViewModel>();
 
         // Category
         CreateMap<Category, CategoryServiceModel>();

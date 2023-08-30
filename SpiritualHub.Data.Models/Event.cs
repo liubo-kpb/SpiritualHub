@@ -50,7 +50,7 @@ public class Event
     public virtual Category Category { get; set; } = null!;
 
     [Required]
-    public Guid AutorID { get; set; }
+    public Guid AuthorID { get; set; }
 
     public virtual Author Author { get; set; } = null!;
 

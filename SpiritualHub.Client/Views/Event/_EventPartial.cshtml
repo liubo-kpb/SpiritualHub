@@ -22,8 +22,8 @@
             <h6>(@Model.Participation)</h6>
             <h6>Presenter: <b><a asp-controller="Author" asp-action="Details" asp-route-id="@Model.Author.Id">@Model.Author.Alias</a></b></h6>
             <p></p>
-            <p>Begins: @Model.StartDateTime.ToString("yy-mm-dd, hh:mm")</p>
-            <p>Ends: @Model.EndDateTime.ToString("yy-mm-dd, hh:mm")</p>
+            <p>Begins: @Model.StartDateTime.ToString("yy-MM-dd, hh:mm tt")</p>
+            <p>Ends: @Model.EndDateTime.ToString("yy-MM-dd, hh:mm tt")</p>
             <p>Price: $@($"{Model.Price:F2}")</p>
             <br />
             <a asp-controller="Event" asp-action="Details" asp-route-id="@Model.Id"

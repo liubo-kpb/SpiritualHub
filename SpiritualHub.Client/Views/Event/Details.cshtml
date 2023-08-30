@@ -8,8 +8,7 @@
 
     if (isUserLoggedIn)
     {
-        string userId = this.User.GetId()!;
-        isUserConnectedPublisher = await _publisherService.IsConnectedToEntity<Author>(userId, Model.Id);
+        isUserConnectedPublisher = await _publisherService.IsConnectedToEntity<Author>(this.User.GetId()!, Model.Id);
     }
 }
 <h2 class="text-center">@ViewBag.Title</h2>
@@ -25,11 +24,11 @@
             <p>Presenter: <b><a asp-controller="Author" asp-action="Details" asp-route-id="@Model.Author.Id">@Model.Author.Alias</a></b></p>
             <p>Category: <b>@Model.CategoryName</b></p>
             <p>Participation: @Model.Participation</p>
-            <p>Beginning: @Model.StartDateTime.ToString("yy-mm-dd hh:mm")</p>
-            <p>End: @Model.EndDateTime.ToString("yy-mm-dd hh:mm")</p>
+            <p>Beginning: @Model.StartDateTime.ToString("yy-MM-dd, hh:mm tt")</p>
+            <p>End: @Model.EndDateTime.ToString("yy-MM-dd, hh:mm tt")</p>
             @if (!string.IsNullOrEmpty(Model.LocationName))
             {
-                <p>Location: <b><a href="@Model.LocationUrl">@Model.LocationName</a></b></p>
+                <p>Location: <b><a href="@Model.LocationUrl" target="_blank">@Model.LocationName</a></b></p>
             }
             <p>@Model.Description</p>
             <p>Price: $@($"{Model.Price:F2}")</p>
@@ -63,10 +62,13 @@
                 }
             </div>
             <p></p>
-            <h5 class="card-title">Publisher</h5>
+            <h5 class="card-title">Organizer</h5>
             <div class="card" style="width: 18rem;">
                 <div class="card-body">
-                    <p class="card-text">Name: @Model.Publisher.FullName</p>
+                    @if (!string.IsNullOrEmpty(Model.Publisher.FullName))
+                    {
+                        <p class="card-text">Name: @Model.Publisher.FullName</p>
+                    }
                     <p class="card-text">Email: @Model.Publisher.Email</p>
                     <p class="card-text">Phone Number: @Model.Publisher.PhoneNumber</p>
                 </div>

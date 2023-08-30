@@ -15,11 +15,11 @@ using Client.ViewModels.Event;
 
 public class EventService : IEventService
 {
-    private readonly IRepository<Event> _eventRepository;
+    private readonly IEventRepository _eventRepository;
     private readonly IMapper _mapper;
 
     public EventService(
-        IRepository<Event> eventRepository,
+        IEventRepository eventRepository,
         IMapper mapper)
     {
         _eventRepository = eventRepository;
@@ -89,6 +89,17 @@ public class EventService : IEventService
         };
     }
 
+    public async Task<EventDetailsViewModel> GetEventDetailsAsync(string id, string userId)
+    {
+        var eventEntity = await _eventRepository.GetFullEventDetails(id);
+        var eventModel = _mapper.Map<EventDetailsViewModel>(eventEntity);
+        
+        SetEventParticipationType (eventModel);
+        SetIsUserJoined(userId, eventEntity!, eventModel);
+
+        return eventModel;
+    }
+
     public async Task<int> GetAllCountAsync()
     {
         return await _eventRepository
@@ -116,4 +127,7 @@ public class EventService : IEventService
             eventModel.Participation = "In Person only";
         }
     }
+
+    public async Task<bool> ExistsAsync(string id)
+        => await _eventRepository.AnyAsync(e => e.Id.ToString() == id);
 }

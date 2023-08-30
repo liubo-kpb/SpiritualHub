@@ -50,14 +50,17 @@
                         {
                             <a asp-controller="Author" asp-action="Activate" asp-route-id="@Model.Id" class="btn btn-warning">Activate</a>
                         }
+                    }
+                    @if (isUserConnectedPublisher)
+                    {
                         <form asp-controller="Author" asp-action="RemoveConnectedPublisher" asp-route-id="@Model.Id" method="post">
                             <input class="btn btn-danger mt-2" type="submit" value="Remove Affiliation" />
                         </form>
                     }
-                    else if (isUserPublisher || this.User.IsAdmin())
+                    else if (isUserPublisher)
                     {
                         <form asp-controller="Author" asp-action="BecomeConnectedPublisher" asp-route-id="@Model.Id" method="post">
-                            <input class="btn btn-warning" type="submit" value="Become a Connected Publisher" />
+                            <input class="btn btn-warning mt-2" type="submit" value="Become a Connected Publisher" />
                         </form>
                     }
                     <p></p>
