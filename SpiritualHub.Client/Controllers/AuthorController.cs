@@ -38,14 +38,24 @@ public class AuthorController : Controller
     [HttpGet]
     public async Task<IActionResult> All([FromQuery] AllAuthorsQueryModel queryModel)
     {
-        var filteredAuthors = await _authorService.GetAllAsync(queryModel, this.User.GetId()!);
-        IEnumerable<CategoryServiceModel> categories = await _categoryService.GetAllAsync();
+        try
+        {
+            var filteredAuthors = await _authorService.GetAllAsync(queryModel, this.User.GetId()!);
+            IEnumerable<CategoryServiceModel> categories = await _categoryService.GetAllAsync();
 
-        queryModel.Authors = filteredAuthors.Authors;
-        queryModel.Categories = categories.Select(c => c.Name);
-        queryModel.TotalAutrhorsCount = filteredAuthors.TotalAuthorsCount;
+            queryModel.Authors = filteredAuthors.Authors;
+            queryModel.Categories = categories.Select(c => c.Name);
+            queryModel.TotalAutrhorsCount = filteredAuthors.TotalAuthorsCount;
 
-        return View(queryModel);
+            return View(queryModel);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, "loading authors");
+
+            return RedirectToAction("Index", "Home");
+        }
+        
     }
 
     [HttpGet]
