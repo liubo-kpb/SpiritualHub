@@ -38,10 +38,10 @@ public class PublisherService : IPublisherService
         return await _publisherRepository.AnyAsync(u => u.UserID.ToString() == Id);
     }
 
-    public async Task<Publisher> GetPublisherAsync(string userId)
+    public async Task<Publisher?> GetPublisherAsync(string userId)
     {
         return await _publisherRepository
-            .AllAsNoTracking()
+            .GetAll()
             .FirstOrDefaultAsync(a => a.UserID.ToString() == userId);
     }
 

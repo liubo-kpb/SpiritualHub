@@ -81,10 +81,10 @@ public class AuthorService : IAuthorService
 
         var author = _mapper.Map<Author>(newAuthor);
         author.AvatarImage = avatarImage;
+        author.Publishers.Add(publisher);
 
         await _authorRepository.AddAsync(author);
         await _authorRepository.SaveChangesAsync();
-        await AddPublisherAsync(author, publisher);
 
         return author.Id.ToString();
     }
@@ -285,9 +285,9 @@ public class AuthorService : IAuthorService
 
     public async Task AddPublisherAsync(string authorId, Publisher publisher)
     {
-        var author = await _authorRepository.GetSingleByIdAsync(Guid.Parse(authorId));
+        var author = await _authorRepository.GetAuthorWithPublishersAsync(authorId);
 
-        author.Publishers.Add(publisher);
+        author!.Publishers.Add(publisher);
         await _authorRepository.SaveChangesAsync();
     }
 
@@ -323,10 +323,5 @@ public class AuthorService : IAuthorService
                 sub => sub.Id.ToString() == userId))!;
 
         return oldSubscription == null ? null : oldSubscription.Id.ToString();
-    }
-    private async Task AddPublisherAsync(Author author, Publisher publisher)
-    {
-        author.Publishers.Add(publisher);
-        await _authorRepository.SaveChangesAsync();
     }
 }
