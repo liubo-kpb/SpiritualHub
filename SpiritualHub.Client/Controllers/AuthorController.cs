@@ -87,7 +87,7 @@ public class AuthorController : Controller
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
 
-            return RedirectToAction(nameof(PublisherController.Become), "Publisher");
+            return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
         }
 
         string publisherId = (await _publisherService.GetPublisherAsync(userId))!.Id.ToString();
@@ -157,7 +157,7 @@ public class AuthorController : Controller
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
 
-            return RedirectToAction(nameof(PublisherController.Become), "Publisher");
+            return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
         }
 
         bool isExistingCategory = await _categoryService.ExistsAsync(newAuthor.CategoryId);
@@ -551,7 +551,7 @@ public class AuthorController : Controller
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
 
-            RedirectToAction(nameof(PublisherController.Become), "Publisher");
+            RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
         }
 
         bool isConnectedPublisher = await _publisherService.IsConnectedToEntity<Author>(userId, id);
@@ -562,7 +562,7 @@ public class AuthorController : Controller
         else
         {
             var publisher = await _publisherService.GetPublisherAsync(userId);
-            await _authorService.AddPublisherAsync(id, publisher);
+            await _authorService.AddPublisherAsync(id, publisher!);
 
             TempData[SuccessMessage] = AuthorConnectedPublisherSuccessMessage;
         }
@@ -590,7 +590,7 @@ public class AuthorController : Controller
         else
         {
             var publisher = await _publisherService.GetPublisherAsync(userId);
-            await _authorService.RemovePublisherAsync(id, publisher.Id);
+            await _authorService.RemovePublisherAsync(id, publisher!.Id);
 
             TempData[SuccessMessage] = AuthorRemoveAffilicationSuccessMessage;
         }
