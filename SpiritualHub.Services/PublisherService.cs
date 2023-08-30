@@ -1,24 +1,31 @@
 ﻿namespace SpiritualHub.Services;
 
 using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+
+using AutoMapper;
 
 using Interfaces;
 using Data.Models;
 using Data.Repository.Interface;
+using Client.ViewModels.Author;
+using SpiritualHub.Services.Mappings;
 
 public class PublisherService : IPublisherService
 {
     private readonly IPublisherRepository _publisherRepository;
     private readonly IRepository<Subscription> _subscriptionRepository;
+    private readonly IMapper _mapper;
 
     public PublisherService(
         IPublisherRepository publisherRepository,
-        IRepository<Subscription> subscriptionRepository)
+        IRepository<Subscription> subscriptionRepository,
+        IMapper mapper)
     {
         _publisherRepository = publisherRepository;
         _subscriptionRepository = subscriptionRepository;
+        _mapper = mapper;
     }
 
     public async Task Create(string userId, string phoneNumber)
@@ -36,6 +43,15 @@ public class PublisherService : IPublisherService
     public async Task<bool> ExistsById(string Id)
     {
         return await _publisherRepository.AnyAsync(u => u.UserID.ToString() == Id);
+    }
+
+    public async Task<IEnumerable<AuthorInfoViewModel>> GetConnectedAuthorsAsync(string userId)
+    {
+        var authors = await _publisherRepository.GetConnectedAuthorsAsync(userId);
+        var authorsModel = new List<AuthorInfoViewModel>();
+        _mapper.MapListToViewModel(authors, authorsModel);
+
+        return authorsModel;
     }
 
     public async Task<Publisher?> GetPublisherAsync(string userId)

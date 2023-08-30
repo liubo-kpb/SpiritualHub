@@ -90,8 +90,8 @@ public class AuthorController : Controller
             return RedirectToAction(nameof(PublisherController.Become), "Publisher");
         }
 
-        string publisherId = (await _publisherService.GetPublisherAsync(userId)).Id.ToString();
-        var model = await _authorService.AllAuthorsByPublisherId(userId, publisherId);
+        string publisherId = (await _publisherService.GetPublisherAsync(userId))!.Id.ToString();
+        var model = await _authorService.AllAuthorsByPublisherIdAsync(userId, publisherId);
 
         return View(model);
     }

@@ -28,7 +28,7 @@ public class AuthorService : IAuthorService
         _userRepository = userRepository;
     }
 
-    public async Task<IEnumerable<AuthorViewModel>> AllAuthorsByPublisherId(string userId, string publisherId)
+    public async Task<IEnumerable<AuthorViewModel>> AllAuthorsByPublisherIdAsync(string userId, string publisherId)
     {
         var authors = await _authorRepository
             .GetAll()

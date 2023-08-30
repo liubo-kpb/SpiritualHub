@@ -3,8 +3,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using Client.Infrastructure.Extensions;
-using Client.ViewModels.Event;
+using Infrastructure.Extensions;
+using ViewModels.Event;
 using Services.Interfaces;
 using Data.Models;
 
@@ -17,13 +17,16 @@ public class EventController : Controller
     private readonly string entityName = nameof(Event).ToLower();
 
     private readonly IEventService _eventService;
+    private readonly IPublisherService _publisherService;
     private readonly ICategoryService _categoryService;
 
     public EventController(
         IEventService eventService,
+        IPublisherService publisherService,
         ICategoryService categoryService)
     {
         _eventService = eventService;
+        _publisherService = publisherService;
         _categoryService = categoryService;
     }
 
@@ -42,13 +45,35 @@ public class EventController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Add(string id)
+    public async Task<IActionResult> Add()
     {
-        return null;
+        string userId = this.User.GetId()!;
+        bool isPublisher = await _publisherService.ExistsById(userId);
+        if (!isPublisher)
+        {
+            TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+            return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+        }
+
+        var eventForm = new EventFormModel()
+        {
+            Categories = await _categoryService.GetAllAsync(),
+            Authors = await _publisherService.GetConnectedAuthorsAsync(userId),
+        };
+
+        if (!eventForm.Authors.Any())
+        {
+            TempData[ErrorMessage] = NoConnectedAuthorsErrorMessage;
+
+            return RedirectToAction(nameof(AuthorController.All), nameof(Author));
+        }
+
+        return View(eventForm);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Add()
+    public async Task<IActionResult> Add(EventFormModel newEvent)
     {
         return null;
     }

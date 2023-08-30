@@ -25,7 +25,7 @@ public class EventFormModel
     [MinLength(DescriptionMinLength)]
     public string Description { get; set; } = null!;
 
-    [Display(Name = "Is Event Online")]
+    [Display(Name = "Will there be a Livestream?")]
     public bool IsOnline { get; set; }
 
     public decimal Price { get; set; }
