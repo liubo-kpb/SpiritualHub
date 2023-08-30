@@ -32,7 +32,7 @@
                 <p>Location: <b><a href="@Model.LocationUrl">@Model.LocationName</a></b></p>
             }
             <p>@Model.Description</p>
-            <p>Price: $@Model.Price</p>
+            <p>Price: $@($"{Model.Price:F2}")</p>
             @* <p>
             Participants:
             <b>@Model.ParticipantsCount</b>

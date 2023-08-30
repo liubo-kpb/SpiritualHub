@@ -59,57 +59,57 @@ namespace SpiritualHub.Data.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("194974cd-73f0-4946-ba85-710d4061472d"),
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "57e0c5ad-893f-4017-90db-3cab36b8dd96", "AQAAAAEAACcQAAAAEEsockSELBhN4J2Xo0yfPEvNsttMSFulUQSYhBhQIY/G3QmCS5189k+pHOzod+F0sg==", "a671f7ea-6361-4702-8198-dbd33a64146d" });
+                values: new object[] { "a1dc8436-64bb-4e64-be67-dfd8c350d769", "AQAAAAEAACcQAAAAEOesKCAL+m50U5Ds1MbPW6GmI5tXyNNs0WW2qZREWRix4x7kNFYd37YKi79Unfnnkw==", "d8a68382-4cb8-4584-b53f-abc2f2719454" });
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: new Guid("1fd95f69-4f9d-4671-b126-cefcf4b8a95e"),
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "58d52dba-be40-4144-950a-c38e7d1845ea", "AQAAAAEAACcQAAAAEJc79p/mYdyQQNHDFT/SenVjpPaBFIgvvNU3UvtzovPRbHu1qXTNsROK1o9C7TYKFg==", "965d05ac-6073-4a33-bb00-d212405e919c" });
+                values: new object[] { "adeabec1-5944-4405-b18e-ca34e372fddc", "AQAAAAEAACcQAAAAEBorEgrmm0Eg1S3bP46poSr+1vysUpNc0eAHjp7Whb464WtJiG1NiKTmYnXF4uP33Q==", "b8c7aab9-c408-4f1b-bb10-712d7bea47d6" });
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: new Guid("bcb4f072-ecca-43c9-ab26-c060c6f364e4"),
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "b292e632-94f0-4a8c-ae65-05ce71d3f257", "AQAAAAEAACcQAAAAEIfbhW4Klo9lCYF580TuidvQZndHOO/lw9HmNkiEkXn8X9YJZDrYxnWq/+tRkiAcIQ==", "2c9bdf47-d41e-4f39-a1e9-d8a800e04f32" });
+                values: new object[] { "5f327ff6-0284-4084-b052-5109d53d5802", "AQAAAAEAACcQAAAAEFDVHR9Ffwq335ozbNVXdICrVrtjWMmQW/Q8ezICO32RuRXXBm/jOSOKis1vtKHplw==", "f0016e66-f2c3-4dc4-8404-cd60f167dde9" });
 
             migrationBuilder.UpdateData(
                 table: "Events",
                 keyColumn: "Id",
                 keyValue: new Guid("15f326bc-f47f-487f-8764-5fb8fd5c448a"),
                 columns: new[] { "CreatedOn", "PublisherID" },
-                values: new object[] { new DateTime(2023, 8, 30, 13, 8, 22, 932, DateTimeKind.Utc).AddTicks(6582), new Guid("4779b556-cbb5-45d2-a16c-d8a83501198a") });
+                values: new object[] { new DateTime(2023, 8, 30, 13, 38, 3, 287, DateTimeKind.Utc).AddTicks(9170), new Guid("4779b556-cbb5-45d2-a16c-d8a83501198a") });
 
             migrationBuilder.UpdateData(
                 table: "Events",
                 keyColumn: "Id",
                 keyValue: new Guid("3db097df-7c7c-4c4e-b546-d4555c4c1521"),
-                columns: new[] { "CreatedOn", "PublisherID" },
-                values: new object[] { new DateTime(2023, 8, 30, 13, 8, 22, 932, DateTimeKind.Utc).AddTicks(6606), new Guid("4779b556-cbb5-45d2-a16c-d8a83501198a") });
+                columns: new[] { "CreatedOn", "LocationName", "LocationUrl", "PublisherID" },
+                values: new object[] { new DateTime(2023, 8, 30, 13, 38, 3, 287, DateTimeKind.Utc).AddTicks(9202), "Campus \"Healing\"", "https://www.google.com/maps/place/%D0%9A%D0%B0%D0%BC%D0%BF%D1%83%D1%81+%D0%98%D0%B7%D1%86%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@42.2625195,25.2288508,17z/data=!3m1!4b1!4m6!3m5!1s0x40a82595106658b3:0x4dc3df5ed0a4ca00!8m2!3d42.2625156!4d25.2314257!16s%2Fg%2F11ry_fh0ry?entry=ttu", new Guid("4779b556-cbb5-45d2-a16c-d8a83501198a") });
 
             migrationBuilder.UpdateData(
                 table: "Events",
                 keyColumn: "Id",
                 keyValue: new Guid("45bb1c09-b50d-4d47-8fdb-fbfb53086922"),
-                columns: new[] { "CreatedOn", "PublisherID" },
-                values: new object[] { new DateTime(2023, 8, 30, 13, 8, 22, 932, DateTimeKind.Utc).AddTicks(6597), new Guid("4779b556-cbb5-45d2-a16c-d8a83501198a") });
+                columns: new[] { "CreatedOn", "LocationName", "LocationUrl", "PublisherID" },
+                values: new object[] { new DateTime(2023, 8, 30, 13, 38, 3, 287, DateTimeKind.Utc).AddTicks(9190), "Stockholm", "https://www.google.com/maps/place/Stockholm,+Sweden/@59.3262131,17.8172495,11z/data=!3m1!4b1!4m6!3m5!1s0x465f763119640bcb:0xa80d27d3679d7766!8m2!3d59.3293235!4d18.0685808!16zL20vMDZteHM?entry=ttu", new Guid("4779b556-cbb5-45d2-a16c-d8a83501198a") });
 
             migrationBuilder.InsertData(
                 table: "Subscriptions",
                 columns: new[] { "Id", "AuthorID", "Price", "SubscriptionTypeID" },
                 values: new object[,]
                 {
-                    { new Guid("08453641-4fbb-4012-8cfc-07269d520ab9"), new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"), 55m, 2 },
-                    { new Guid("23dca6f5-edc9-4f1e-a865-ace009b8c10f"), new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"), 65m, 2 },
-                    { new Guid("3648c022-a59d-4523-bee7-45ab06f87239"), new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"), 189m, 3 },
-                    { new Guid("38dddb59-80e4-44ed-8cac-15124a12a793"), new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"), 70m, 2 },
-                    { new Guid("73d1d7ad-1fa5-44f7-8112-c4d36c9f27f8"), new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"), 21m, 1 },
-                    { new Guid("a5067781-1299-48ab-9b01-3916cac7668a"), new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"), 200m, 3 },
-                    { new Guid("b7ec74ba-030d-491b-a453-13567d1ce629"), new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"), 25m, 1 },
-                    { new Guid("c72d9e64-2a03-4d4b-ab41-bef007661d22"), new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"), 150m, 3 },
-                    { new Guid("de1a875f-c7d0-4121-9a95-98580f899417"), new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"), 25m, 1 }
+                    { new Guid("1be042e3-6b50-4d17-b9b9-f5a5d7f144a3"), new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"), 21m, 1 },
+                    { new Guid("26fac86e-c18b-49f0-883a-27e9caf952fb"), new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"), 150m, 3 },
+                    { new Guid("28fbdb15-a187-4e2b-8ca8-307f0f905c3e"), new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"), 200m, 3 },
+                    { new Guid("520ca37d-98cc-4d1c-b052-0dae71c8c1dd"), new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"), 25m, 1 },
+                    { new Guid("6c433b0d-87b5-45c9-9ce5-9e9f0d210b0d"), new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"), 65m, 2 },
+                    { new Guid("790489e3-fbd4-4d32-ada1-061d93334a66"), new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"), 55m, 2 },
+                    { new Guid("a24a8894-ed9e-43fe-8fa4-c42d034376f2"), new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"), 189m, 3 },
+                    { new Guid("c9d0e00e-106d-4039-9287-1f066040f347"), new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"), 25m, 1 },
+                    { new Guid("d465c46b-d5c4-4f75-9d0c-062dfbbd4532"), new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"), 70m, 2 }
                 });
         }
 
@@ -118,47 +118,47 @@ namespace SpiritualHub.Data.Migrations
             migrationBuilder.DeleteData(
                 table: "Subscriptions",
                 keyColumn: "Id",
-                keyValue: new Guid("08453641-4fbb-4012-8cfc-07269d520ab9"));
+                keyValue: new Guid("1be042e3-6b50-4d17-b9b9-f5a5d7f144a3"));
 
             migrationBuilder.DeleteData(
                 table: "Subscriptions",
                 keyColumn: "Id",
-                keyValue: new Guid("23dca6f5-edc9-4f1e-a865-ace009b8c10f"));
+                keyValue: new Guid("26fac86e-c18b-49f0-883a-27e9caf952fb"));
 
             migrationBuilder.DeleteData(
                 table: "Subscriptions",
                 keyColumn: "Id",
-                keyValue: new Guid("3648c022-a59d-4523-bee7-45ab06f87239"));
+                keyValue: new Guid("28fbdb15-a187-4e2b-8ca8-307f0f905c3e"));
 
             migrationBuilder.DeleteData(
                 table: "Subscriptions",
                 keyColumn: "Id",
-                keyValue: new Guid("38dddb59-80e4-44ed-8cac-15124a12a793"));
+                keyValue: new Guid("520ca37d-98cc-4d1c-b052-0dae71c8c1dd"));
 
             migrationBuilder.DeleteData(
                 table: "Subscriptions",
                 keyColumn: "Id",
-                keyValue: new Guid("73d1d7ad-1fa5-44f7-8112-c4d36c9f27f8"));
+                keyValue: new Guid("6c433b0d-87b5-45c9-9ce5-9e9f0d210b0d"));
 
             migrationBuilder.DeleteData(
                 table: "Subscriptions",
                 keyColumn: "Id",
-                keyValue: new Guid("a5067781-1299-48ab-9b01-3916cac7668a"));
+                keyValue: new Guid("790489e3-fbd4-4d32-ada1-061d93334a66"));
 
             migrationBuilder.DeleteData(
                 table: "Subscriptions",
                 keyColumn: "Id",
-                keyValue: new Guid("b7ec74ba-030d-491b-a453-13567d1ce629"));
+                keyValue: new Guid("a24a8894-ed9e-43fe-8fa4-c42d034376f2"));
 
             migrationBuilder.DeleteData(
                 table: "Subscriptions",
                 keyColumn: "Id",
-                keyValue: new Guid("c72d9e64-2a03-4d4b-ab41-bef007661d22"));
+                keyValue: new Guid("c9d0e00e-106d-4039-9287-1f066040f347"));
 
             migrationBuilder.DeleteData(
                 table: "Subscriptions",
                 keyColumn: "Id",
-                keyValue: new Guid("de1a875f-c7d0-4121-9a95-98580f899417"));
+                keyValue: new Guid("d465c46b-d5c4-4f75-9d0c-062dfbbd4532"));
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
@@ -192,15 +192,15 @@ namespace SpiritualHub.Data.Migrations
                 table: "Events",
                 keyColumn: "Id",
                 keyValue: new Guid("3db097df-7c7c-4c4e-b546-d4555c4c1521"),
-                columns: new[] { "CreatedOn", "PublisherID" },
-                values: new object[] { new DateTime(2023, 8, 28, 8, 47, 50, 850, DateTimeKind.Utc).AddTicks(33), new Guid("00000000-0000-0000-0000-000000000000") });
+                columns: new[] { "CreatedOn", "LocationName", "LocationUrl", "PublisherID" },
+                values: new object[] { new DateTime(2023, 8, 28, 8, 47, 50, 850, DateTimeKind.Utc).AddTicks(33), null, null, new Guid("00000000-0000-0000-0000-000000000000") });
 
             migrationBuilder.UpdateData(
                 table: "Events",
                 keyColumn: "Id",
                 keyValue: new Guid("45bb1c09-b50d-4d47-8fdb-fbfb53086922"),
-                columns: new[] { "CreatedOn", "PublisherID" },
-                values: new object[] { new DateTime(2023, 8, 28, 8, 47, 50, 850, DateTimeKind.Utc).AddTicks(24), new Guid("00000000-0000-0000-0000-000000000000") });
+                columns: new[] { "CreatedOn", "LocationName", "LocationUrl", "PublisherID" },
+                values: new object[] { new DateTime(2023, 8, 28, 8, 47, 50, 850, DateTimeKind.Utc).AddTicks(24), null, null, new Guid("00000000-0000-0000-0000-000000000000") });
 
             migrationBuilder.InsertData(
                 table: "Subscriptions",

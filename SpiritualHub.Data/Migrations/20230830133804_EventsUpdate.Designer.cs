@@ -12,7 +12,7 @@ using SpiritualHub.Data;
 namespace SpiritualHub.Data.Migrations
 {
     [DbContext(typeof(SpiritsDbContext))]
-    [Migration("20230830130823_EventsUpdate")]
+    [Migration("20230830133804_EventsUpdate")]
     partial class EventsUpdate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -297,7 +297,7 @@ namespace SpiritualHub.Data.Migrations
                         {
                             Id = new Guid("bcb4f072-ecca-43c9-ab26-c060c6f364e4"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b292e632-94f0-4a8c-ae65-05ce71d3f257",
+                            ConcurrencyStamp = "5f327ff6-0284-4084-b052-5109d53d5802",
                             Email = "admin@mail.com",
                             EmailConfirmed = false,
                             FirstName = "Great",
@@ -305,9 +305,9 @@ namespace SpiritualHub.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MAIL.COM",
                             NormalizedUserName = "ADMIN@MAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEIfbhW4Klo9lCYF580TuidvQZndHOO/lw9HmNkiEkXn8X9YJZDrYxnWq/+tRkiAcIQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFDVHR9Ffwq335ozbNVXdICrVrtjWMmQW/Q8ezICO32RuRXXBm/jOSOKis1vtKHplw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2c9bdf47-d41e-4f39-a1e9-d8a800e04f32",
+                            SecurityStamp = "f0016e66-f2c3-4dc4-8404-cd60f167dde9",
                             TwoFactorEnabled = false,
                             UserName = "admin@mail.com"
                         },
@@ -315,7 +315,7 @@ namespace SpiritualHub.Data.Migrations
                         {
                             Id = new Guid("194974cd-73f0-4946-ba85-710d4061472d"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "57e0c5ad-893f-4017-90db-3cab36b8dd96",
+                            ConcurrencyStamp = "a1dc8436-64bb-4e64-be67-dfd8c350d769",
                             Email = "publisher@spirits.com",
                             EmailConfirmed = false,
                             FirstName = "Pablo",
@@ -323,9 +323,9 @@ namespace SpiritualHub.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "PUBLISHER@SPIRITS.COM",
                             NormalizedUserName = "PUBLISHER@SPIRITS.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEsockSELBhN4J2Xo0yfPEvNsttMSFulUQSYhBhQIY/G3QmCS5189k+pHOzod+F0sg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOesKCAL+m50U5Ds1MbPW6GmI5tXyNNs0WW2qZREWRix4x7kNFYd37YKi79Unfnnkw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a671f7ea-6361-4702-8198-dbd33a64146d",
+                            SecurityStamp = "d8a68382-4cb8-4584-b53f-abc2f2719454",
                             TwoFactorEnabled = false,
                             UserName = "publisher@spirits.com"
                         },
@@ -333,7 +333,7 @@ namespace SpiritualHub.Data.Migrations
                         {
                             Id = new Guid("1fd95f69-4f9d-4671-b126-cefcf4b8a95e"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "58d52dba-be40-4144-950a-c38e7d1845ea",
+                            ConcurrencyStamp = "adeabec1-5944-4405-b18e-ca34e372fddc",
                             Email = "user@mail.com",
                             EmailConfirmed = false,
                             FirstName = "Martin",
@@ -341,9 +341,9 @@ namespace SpiritualHub.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@MAIL.COM",
                             NormalizedUserName = "USER@MAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJc79p/mYdyQQNHDFT/SenVjpPaBFIgvvNU3UvtzovPRbHu1qXTNsROK1o9C7TYKFg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBorEgrmm0Eg1S3bP46poSr+1vysUpNc0eAHjp7Whb464WtJiG1NiKTmYnXF4uP33Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "965d05ac-6073-4a33-bb00-d212405e919c",
+                            SecurityStamp = "b8c7aab9-c408-4f1b-bb10-712d7bea47d6",
                             TwoFactorEnabled = false,
                             UserName = "user@mail.com"
                         });
@@ -774,7 +774,7 @@ namespace SpiritualHub.Data.Migrations
                             Id = new Guid("15f326bc-f47f-487f-8764-5fb8fd5c448a"),
                             AutorID = new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
                             CategoryID = 2,
-                            CreatedOn = new DateTime(2023, 8, 30, 13, 8, 22, 932, DateTimeKind.Utc).AddTicks(6582),
+                            CreatedOn = new DateTime(2023, 8, 30, 13, 38, 3, 287, DateTimeKind.Utc).AddTicks(9170),
                             Description = "What if there was one state of being we could adopt that would help us establish better, stronger connections not only with our families and friends on earth, but also with our friends from the stars?\r\r\n\r\r\nIn The Three Behaviors of Connection, Bashar will share how action, timing, and communication are vital concepts for making inroads and connection with the hybrid children that will eventually be living among us. He will expand in detail on these three behaviors and how we might apply them to our lives on Earth as well as to our quest for contact with our extraterrestrial family.",
                             EndDateTime = new DateTime(2023, 8, 26, 15, 30, 0, 0, DateTimeKind.Unspecified),
                             ImageID = new Guid("69630e42-a4de-4116-a1a4-38c43faa0b53"),
@@ -789,11 +789,13 @@ namespace SpiritualHub.Data.Migrations
                             Id = new Guid("45bb1c09-b50d-4d47-8fdb-fbfb53086922"),
                             AutorID = new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"),
                             CategoryID = 5,
-                            CreatedOn = new DateTime(2023, 8, 30, 13, 8, 22, 932, DateTimeKind.Utc).AddTicks(6597),
+                            CreatedOn = new DateTime(2023, 8, 30, 13, 38, 3, 287, DateTimeKind.Utc).AddTicks(9190),
                             Description = "Join us for this unique opportunity to sit with Eckhart Tolle as he points you to spiritual awakening and the transformation of consciousness. With his hallmark warmth, humour and compassion, this evening will connect you with the peace and serenity that arises from living in the moment.\r\r\n\r\r\nEckhart’s profound, yet simple teachings have helped countless people from around the globe awaken to a vibrantly alive inner peace in their daily lives. Eckhart Tolle’s writings and life-changing public events have touched millions of lives, garnering fans to the likes of Oprah, the Dalai Lama and Deepak Chopra. He is the best-selling author of The Power of Now and A New Earth that are widely regarded as the most transformational books of our time.",
                             EndDateTime = new DateTime(2023, 9, 26, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             ImageID = new Guid("13e26f61-5a34-44e0-b9d4-d8ab04b8f342"),
                             IsOnline = false,
+                            LocationName = "Stockholm",
+                            LocationUrl = "https://www.google.com/maps/place/Stockholm,+Sweden/@59.3262131,17.8172495,11z/data=!3m1!4b1!4m6!3m5!1s0x465f763119640bcb:0xa80d27d3679d7766!8m2!3d59.3293235!4d18.0685808!16zL20vMDZteHM?entry=ttu",
                             Price = 199m,
                             PublisherID = new Guid("4779b556-cbb5-45d2-a16c-d8a83501198a"),
                             StartDateTime = new DateTime(2023, 9, 26, 18, 30, 0, 0, DateTimeKind.Unspecified),
@@ -804,11 +806,13 @@ namespace SpiritualHub.Data.Migrations
                             Id = new Guid("3db097df-7c7c-4c4e-b546-d4555c4c1521"),
                             AutorID = new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"),
                             CategoryID = 3,
-                            CreatedOn = new DateTime(2023, 8, 30, 13, 8, 22, 932, DateTimeKind.Utc).AddTicks(6606),
+                            CreatedOn = new DateTime(2023, 8, 30, 13, 38, 3, 287, DateTimeKind.Utc).AddTicks(9202),
                             Description = "The Cogitality seminars are back - they have already started in the country, and now they are happening at the \"Healing\" campus too! They are pre-planned and organized by the team of cogitalists.\r\r\n\r\r\nThe first seminar at the \"Healing\" campus, which will take place on September 2-3, 2023, is already fully booked. Thank you for the sincere desire to share this experience together!",
                             EndDateTime = new DateTime(2023, 9, 3, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             ImageID = new Guid("ab7cfc34-55f4-4ed8-9687-c48a747e9fb4"),
                             IsOnline = true,
+                            LocationName = "Campus \"Healing\"",
+                            LocationUrl = "https://www.google.com/maps/place/%D0%9A%D0%B0%D0%BC%D0%BF%D1%83%D1%81+%D0%98%D0%B7%D1%86%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@42.2625195,25.2288508,17z/data=!3m1!4b1!4m6!3m5!1s0x40a82595106658b3:0x4dc3df5ed0a4ca00!8m2!3d42.2625156!4d25.2314257!16s%2Fg%2F11ry_fh0ry?entry=ttu",
                             Price = 144m,
                             PublisherID = new Guid("4779b556-cbb5-45d2-a16c-d8a83501198a"),
                             StartDateTime = new DateTime(2023, 9, 2, 9, 0, 0, 0, DateTimeKind.Unspecified),
@@ -997,63 +1001,63 @@ namespace SpiritualHub.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("de1a875f-c7d0-4121-9a95-98580f899417"),
+                            Id = new Guid("520ca37d-98cc-4d1c-b052-0dae71c8c1dd"),
                             AuthorID = new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"),
                             Price = 25m,
                             SubscriptionTypeID = 1
                         },
                         new
                         {
-                            Id = new Guid("23dca6f5-edc9-4f1e-a865-ace009b8c10f"),
+                            Id = new Guid("6c433b0d-87b5-45c9-9ce5-9e9f0d210b0d"),
                             AuthorID = new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"),
                             Price = 65m,
                             SubscriptionTypeID = 2
                         },
                         new
                         {
-                            Id = new Guid("c72d9e64-2a03-4d4b-ab41-bef007661d22"),
+                            Id = new Guid("26fac86e-c18b-49f0-883a-27e9caf952fb"),
                             AuthorID = new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"),
                             Price = 150m,
                             SubscriptionTypeID = 3
                         },
                         new
                         {
-                            Id = new Guid("b7ec74ba-030d-491b-a453-13567d1ce629"),
+                            Id = new Guid("c9d0e00e-106d-4039-9287-1f066040f347"),
                             AuthorID = new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
                             Price = 25m,
                             SubscriptionTypeID = 1
                         },
                         new
                         {
-                            Id = new Guid("38dddb59-80e4-44ed-8cac-15124a12a793"),
+                            Id = new Guid("d465c46b-d5c4-4f75-9d0c-062dfbbd4532"),
                             AuthorID = new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
                             Price = 70m,
                             SubscriptionTypeID = 2
                         },
                         new
                         {
-                            Id = new Guid("a5067781-1299-48ab-9b01-3916cac7668a"),
+                            Id = new Guid("28fbdb15-a187-4e2b-8ca8-307f0f905c3e"),
                             AuthorID = new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
                             Price = 200m,
                             SubscriptionTypeID = 3
                         },
                         new
                         {
-                            Id = new Guid("73d1d7ad-1fa5-44f7-8112-c4d36c9f27f8"),
+                            Id = new Guid("1be042e3-6b50-4d17-b9b9-f5a5d7f144a3"),
                             AuthorID = new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"),
                             Price = 21m,
                             SubscriptionTypeID = 1
                         },
                         new
                         {
-                            Id = new Guid("08453641-4fbb-4012-8cfc-07269d520ab9"),
+                            Id = new Guid("790489e3-fbd4-4d32-ada1-061d93334a66"),
                             AuthorID = new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"),
                             Price = 55m,
                             SubscriptionTypeID = 2
                         },
                         new
                         {
-                            Id = new Guid("3648c022-a59d-4523-bee7-45ab06f87239"),
+                            Id = new Guid("a24a8894-ed9e-43fe-8fa4-c42d034376f2"),
                             AuthorID = new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"),
                             Price = 189m,
                             SubscriptionTypeID = 3

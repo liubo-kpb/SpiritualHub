@@ -57,11 +57,11 @@ public class EventService : IEventService
             EventSorting.PriceDescending => eventsQuery.OrderByDescending(e => e.Price),
             EventSorting.Soonest => eventsQuery.OrderBy(e => e.StartDateTime),
             EventSorting.Latest => eventsQuery.OrderBy(e => e.EndDateTime),
-            EventSorting.TopRated => eventsQuery.OrderByDescending(e => (e.Ratings.Sum(r => r.Stars) / (e.Ratings.Count * 1.0))),
-            EventSorting.LeastRated => eventsQuery.OrderBy(e => (e.Ratings.Sum(r => r.Stars) / (e.Ratings.Count * 1.0))),
+            EventSorting.TopRated => eventsQuery.OrderByDescending(e => e.Ratings.Count == 0 ? 0 : (e.Ratings.Sum(r => r.Stars) / (e.Ratings.Count * 1.0))),
+            EventSorting.LeastRated => eventsQuery.OrderBy(e => e.Ratings.Count == 0 ? 0 : (e.Ratings.Sum(r => r.Stars) / (e.Ratings.Count * 1.0))),
             _ => eventsQuery
                     .OrderBy(e => e.StartDateTime)
-                    .ThenByDescending(e => (e.Ratings.Sum(r => r.Stars) / (e.Ratings.Count * 1.0)))
+                    .ThenByDescending(e => e.Ratings.Count == 0 ? 0 : (e.Ratings.Sum(r => r.Stars) / (e.Ratings.Count * 1.0)))
                     .ThenBy(e => e.Price)
         };
 
@@ -79,6 +79,7 @@ public class EventService : IEventService
         for (int i = 0; i < events.Count; i++)
         {
             SetIsUserJoined(userId, events[i], eventsModel[i]);
+            SetEventParticipationType(eventsModel[i]);
         }
 
         return new FilteredEventsServiceModel()
@@ -98,5 +99,21 @@ public class EventService : IEventService
     private void SetIsUserJoined(string userId, Event eventEntity, EventViewModel eventModel)
     {
         eventModel.IsUserJoined = eventEntity.Participants.Any(p => p.Id.ToString() == userId);
+    }
+
+    private void SetEventParticipationType(EventViewModel eventModel)
+    {
+        if (!string.IsNullOrEmpty(eventModel.LocationName) && eventModel.IsOnline)
+        {
+            eventModel.Participation = "In Person and Online";
+        }
+        else if (eventModel.IsOnline)
+        {
+            eventModel.Participation = "Online only";
+        }
+        else
+        {
+            eventModel.Participation = "In Person only";
+        }
     }
 }
