@@ -3,7 +3,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-using static SpiritualHub.Common.EntityValidationConstants.Event;
+using static Common.EntityValidationConstants.Event;
 
 public class Event
 {

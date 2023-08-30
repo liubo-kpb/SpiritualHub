@@ -44,7 +44,7 @@ public class EventViewModel
 
     public string ImageURL { get; set; } = null!;
 
-    public string Participation { get; set; } = null!;
+    public string Participation { get; set; }
 
     public AuthorInfoViewModel Author { get; set; } = null!;
 }

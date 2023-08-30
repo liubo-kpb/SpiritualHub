@@ -65,4 +65,10 @@ public static class EntityValidationConstants
         public const int PhoneNumberMaxLength = 15;
         public const int PhoneNumberMinLength = 7;
     }
+
+    public static class Rating
+    {
+        public const int RatingMaxStar = 10;
+        public const int RatingMinStar = 0;
+    }
 }

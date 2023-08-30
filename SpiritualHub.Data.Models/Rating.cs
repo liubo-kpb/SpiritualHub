@@ -2,6 +2,8 @@
 
 using System.ComponentModel.DataAnnotations;
 
+using static Common.EntityValidationConstants.Rating;
+
 public class Rating
 {
     public Rating()
@@ -13,6 +15,7 @@ public class Rating
     public Guid Id { get; set; }
 
     [Required]
+    [Range(RatingMinStar, RatingMaxStar)]
     public int Stars { get; set; }
 
     public string Text { get; set; } = null!;
@@ -20,7 +23,7 @@ public class Rating
     [Required]
     public Guid UserID { get; set; }
 
-    public virtual ApplicationUser User { get; set; }
+    public virtual ApplicationUser User { get; set; } = null!;
 
     public Guid AuthorID { get; set; }
 

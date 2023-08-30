@@ -81,7 +81,7 @@ public class AuthorService : IAuthorService
 
         var author = _mapper.Map<Author>(newAuthor);
         author.AvatarImage = avatarImage;
-        
+
         await _authorRepository.AddAsync(author);
         await _authorRepository.SaveChangesAsync();
         await AddPublisherAsync(author, publisher);
@@ -135,7 +135,6 @@ public class AuthorService : IAuthorService
     public async Task<FilteredAuthorsServiceModel> GetAllAsync(AllAuthorsQueryModel queryModel, string userId)
     {
         IQueryable<Author> authorsQuery = _authorRepository.GetAll();
-        int totalAuthors = authorsQuery.Count();
 
         if (!string.IsNullOrWhiteSpace(queryModel.CategoryName))
         {
@@ -184,7 +183,7 @@ public class AuthorService : IAuthorService
         return new FilteredAuthorsServiceModel()
         {
             Authors = authorsModel,
-            TotalAuthorsCount = totalAuthors,
+            TotalAuthorsCount = authorsQuery.Count(),
         };
     }
 

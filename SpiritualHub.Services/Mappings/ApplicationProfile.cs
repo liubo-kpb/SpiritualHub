@@ -5,6 +5,7 @@ using AutoMapper;
 using Data.Models;
 using Client.ViewModels.Author;
 using Client.ViewModels.Category;
+using Client.ViewModels.Event;
 using Client.ViewModels.Publisher;
 using Client.ViewModels.Subscription;
 using Client.ViewModels.User;
@@ -17,8 +18,12 @@ public class ApplicationProfile : Profile
         // Author
         CreateMap<Author, AuthorIndexViewModel>();
         CreateMap<Author, AuthorSubscribeFormModel>();
+        CreateMap<Author, AuthorInfoViewModel>();
         CreateMap<Author, AuthorFormModel>().ReverseMap();
         SpecificAuthorMaps();
+
+        // Event
+        CreateMap<Event, EventViewModel>();
 
         // Category
         CreateMap<Category, CategoryServiceModel>();

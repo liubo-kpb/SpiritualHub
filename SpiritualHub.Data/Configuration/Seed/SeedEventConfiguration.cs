@@ -29,6 +29,7 @@ public class SeedEventConfiguration : IEntitySeedConfiguration<Event>
             EndDateTime = new DateTime(2023, 08, 26, 15, 30, 00),
             IsOnline = true,
             CategoryID = 2,
+            PublisherID = Guid.Parse("4779b556-cbb5-45d2-a16c-d8a83501198a"),
             AutorID = Guid.Parse("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
             ImageID = Guid.Parse("69630e42-a4de-4116-a1a4-38c43faa0b53"),
         };
@@ -45,6 +46,7 @@ public class SeedEventConfiguration : IEntitySeedConfiguration<Event>
             EndDateTime = new DateTime(2023, 09, 26, 22, 00, 00),
             IsOnline = false,
             CategoryID = 5,
+            PublisherID = Guid.Parse("4779b556-cbb5-45d2-a16c-d8a83501198a"),
             AutorID = Guid.Parse("8c8bd426-2974-4bad-aa33-0e045ca86a54"),
             ImageID = Guid.Parse("13e26f61-5a34-44e0-b9d4-d8ab04b8f342"),
         };
@@ -61,6 +63,7 @@ public class SeedEventConfiguration : IEntitySeedConfiguration<Event>
             EndDateTime = new DateTime(2023, 09, 03, 18, 00, 00),
             IsOnline = true,
             CategoryID = 3,
+            PublisherID = Guid.Parse("4779b556-cbb5-45d2-a16c-d8a83501198a"),
             AutorID = Guid.Parse("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"),
             ImageID = Guid.Parse("ab7cfc34-55f4-4ed8-9687-c48a747e9fb4"),
         };
