@@ -25,6 +25,7 @@ public class ApplicationProfile : Profile
         // Event
         CreateMap<Event, EventViewModel>();
         CreateMap<Event, EventDetailsViewModel>();
+        CreateMap<Event, EventFormModel>().ReverseMap();
 
         // Category
         CreateMap<Category, CategoryServiceModel>();

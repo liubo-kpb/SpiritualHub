@@ -12,4 +12,6 @@ public interface IEventService
     Task<bool> ExistsAsync(string id);
 
     Task<FilteredEventsServiceModel> GetAllAsync(AllEventsQueryModel queryModel, string userId);
+
+    Task<string> CreateEventAsync(EventFormModel newEvent, string publisherId);
 }

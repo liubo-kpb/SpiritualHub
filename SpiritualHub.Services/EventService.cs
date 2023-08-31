@@ -93,8 +93,8 @@ public class EventService : IEventService
     {
         var eventEntity = await _eventRepository.GetFullEventDetails(id);
         var eventModel = _mapper.Map<EventDetailsViewModel>(eventEntity);
-        
-        SetEventParticipationType (eventModel);
+
+        SetEventParticipationType(eventModel);
         SetIsUserJoined(userId, eventEntity!, eventModel);
 
         return eventModel;
@@ -130,4 +130,16 @@ public class EventService : IEventService
 
     public async Task<bool> ExistsAsync(string id)
         => await _eventRepository.AnyAsync(e => e.Id.ToString() == id);
+
+    public async Task<string> CreateEventAsync(EventFormModel newEvent, string publisherId)
+    {
+        var newEventEntity = _mapper.Map<Event>(newEvent);
+        newEventEntity.Image.Name = newEvent.Title;
+        newEventEntity.PublisherID = Guid.Parse(publisherId);
+        
+        await _eventRepository.AddAsync(newEventEntity);
+        await _eventRepository.SaveChangesAsync();
+
+        return newEventEntity.Id.ToString();
+    }
 }

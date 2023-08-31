@@ -23,9 +23,9 @@
             <p style="font-size:25px;"><u>@Model.Title</u></p>
             <p>Presenter: <b><a asp-controller="Author" asp-action="Details" asp-route-id="@Model.Author.Id">@Model.Author.Alias</a></b></p>
             <p>Category: <b>@Model.CategoryName</b></p>
-            <p>Participation: @Model.Participation</p>
-            <p>Beginning: @Model.StartDateTime.ToString("yy-MM-dd, hh:mm tt")</p>
-            <p>End: @Model.EndDateTime.ToString("yy-MM-dd, hh:mm tt")</p>
+            <p>Participation: <b>@Model.Participation</b></p>
+            <p>Start: <b>@Model.StartDateTime.ToString("yy-MM-dd, hh:mm tt")</b></p>
+            <p>End: <b>@Model.EndDateTime.ToString("yy-MM-dd, hh:mm tt")</b></p>
             @if (!string.IsNullOrEmpty(Model.LocationName))
             {
                 <p>Location: <b><a href="@Model.LocationUrl" target="_blank">@Model.LocationName</a></b></p>

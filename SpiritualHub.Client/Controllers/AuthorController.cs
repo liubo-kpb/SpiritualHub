@@ -178,7 +178,7 @@ public class AuthorController : Controller
         string authorId;
         try
         {
-            authorId = await _authorService.CreateAuthor(newAuthor, publisher);
+            authorId = await _authorService.CreateAuthor(newAuthor, publisher!);
             TempData[SuccessMessage] = string.Format(CreationSuccessfulMessage, entityName);
         }
         catch (Exception)

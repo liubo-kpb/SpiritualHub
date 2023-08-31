@@ -10,6 +10,7 @@ using Data.Models;
 
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
+using static Common.SuccessMessageConstants;
 
 [Authorize]
 public class EventController : Controller
@@ -60,6 +61,8 @@ public class EventController : Controller
         {
             Categories = await _categoryService.GetAllAsync(),
             Authors = await _publisherService.GetConnectedAuthorsAsync(userId),
+            StartDateTime = DateTime.Now.Date,
+            EndDateTime = DateTime.Now.Date,
         };
 
         if (!eventForm.Authors.Any())
@@ -73,9 +76,63 @@ public class EventController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Add(EventFormModel newEvent)
+    public async Task<IActionResult> Add(EventFormModel newEventForm)
     {
-        return null;
+        string userId = this.User.GetId()!;
+        bool isPublisher = await _publisherService.ExistsById(userId);
+        if (!isPublisher)
+        {
+            TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+            return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+        }
+
+        bool isConnectedPublisher = await _publisherService.IsConnectedToEntity<Author>(userId, newEventForm.AuthorId);
+        if (!isConnectedPublisher)
+        {
+            ModelState.AddModelError(nameof(newEventForm.AuthorId), string.Format(NoEntityFoundErrorMessage, "affiliated author"));
+        }
+
+        bool isExistingCategory = await _categoryService.ExistsAsync(newEventForm.CategoryId);
+        if (!isExistingCategory)
+        {
+            ModelState.AddModelError(nameof(newEventForm.CategoryId), string.Format(NoEntityFoundErrorMessage, "category"));
+        }
+
+        if (!newEventForm.IsOnline && 
+            (string.IsNullOrEmpty(newEventForm.LocationName) || string.IsNullOrEmpty(newEventForm.LocationUrl)))
+        {
+            ModelState.AddModelError(nameof(newEventForm.IsOnline), string.Format(SpecifyParticipationErrorMessage));
+            ModelState.AddModelError(nameof(newEventForm.LocationName), string.Format(SpecifyParticipationErrorMessage));
+            ModelState.AddModelError(nameof(newEventForm.LocationUrl), string.Format(SpecifyParticipationErrorMessage));
+        }
+
+        if (!ModelState.IsValid)
+        {
+            newEventForm.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
+            newEventForm.Categories = await _categoryService.GetAllAsync();
+
+            return View(newEventForm);
+        }
+
+        try
+        {
+            string publisherId = (await _publisherService.GetPublisherAsync(userId))!.Id.ToString();
+            string id = await _eventService.CreateEventAsync(newEventForm, publisherId);
+            TempData[SuccessMessage] = string.Format(CreationSuccessfulMessage, entityName);
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"create {entityName}");
+
+            newEventForm.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
+            newEventForm.Categories = await _categoryService.GetAllAsync();
+
+            return View(newEventForm);
+        }
+
     }
 
     [AllowAnonymous]
@@ -102,7 +159,7 @@ public class EventController : Controller
 
             return RedirectToAction(nameof(All));
         }
-        
+
     }
 
     [HttpGet]

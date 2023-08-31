@@ -39,10 +39,10 @@ public class EventFormModel
     public DateTime EndDateTime { get; set; }
 
     [Display(Name = "Provide location name")]
-    public string LocationName { get; set; } = null!;
+    public string? LocationName { get; set; }
 
     [Display(Name = "Link to Location")]
-    public string LocationUrl { get; set; } = null!;
+    public string? LocationUrl { get; set; }
 
     [Required]
     [Display(Name = "Event Image URL")]
