@@ -6,5 +6,5 @@ public interface ICategoryService
 {
     Task<ICollection<CategoryServiceModel>> GetAllAsync();
 
-    Task<bool> ExistsAsync(int id);
+    Task<bool>                              ExistsAsync(int id);
 }

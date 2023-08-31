@@ -5,13 +5,13 @@ using Client.ViewModels.Event;
 
 public interface IEventService
 {
-    Task<int> GetAllCountAsync();
+    Task<int>                           GetAllCountAsync();
 
-    Task<EventDetailsViewModel> GetEventDetailsAsync(string id, string userId);
+    Task<EventDetailsViewModel>         GetEventDetailsAsync(string id, string userId);
 
-    Task<bool> ExistsAsync(string id);
+    Task<bool>                          ExistsAsync(string id);
 
-    Task<FilteredEventsServiceModel> GetAllAsync(AllEventsQueryModel queryModel, string userId);
+    Task<FilteredEventsServiceModel>    GetAllAsync(AllEventsQueryModel queryModel, string userId);
 
-    Task<string> CreateEventAsync(EventFormModel newEvent, string publisherId);
+    Task<string>                        CreateEventAsync(EventFormModel newEvent, string publisherId);
 }
