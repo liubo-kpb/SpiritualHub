@@ -6,7 +6,7 @@
 
     if (isUserLoggedIn)
     {
-        isUserConnectedPublisher = await _publisherService.IsConnectedToEntity<Author>(this.User.GetId()!, Model.Id);
+        isUserConnectedPublisher = await _publisherService.IsConnectedToEntity<Event>(this.User.GetId()!, Model.Id);
     }
 }
 
@@ -36,20 +36,23 @@
                        class="btn btn-warning">Edit</a>
                     <a asp-controller="Event" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
                 }
-                <p></p>
-                @if (Model.IsUserJoined)
-                {
-                    <form asp-controller="Event" asp-action="Leave"
-                          asp-route-id="@Model.Id" method="post">
-                        <input class="btn btn-primary mb-1" type="submit" value="Leave" />
-                    </form>
-                }
                 else
                 {
-                    <form class="input-group-sm " asp-controller="Event"
-                          asp-action="Join" asp-route-id="@Model.Id" method="post">
-                        <input class="btn btn-primary mb-1" type="submit" value="Join" />
-                    </form>
+                    <p></p>
+                    @if (Model.IsUserJoined)
+                    {
+                        <form asp-controller="Event" asp-action="Leave"
+                              asp-route-id="@Model.Id" method="post">
+                            <input class="btn btn-primary mb-1" type="submit" value="Leave" />
+                        </form>
+                    }
+                    else
+                    {
+                        <form class="input-group-sm " asp-controller="Event"
+                              asp-action="Join" asp-route-id="@Model.Id" method="post">
+                            <input class="btn btn-primary mb-1" type="submit" value="Join" />
+                        </form>
+                    }
                 }
             }
         </div>
