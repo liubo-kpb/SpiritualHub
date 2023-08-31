@@ -3,54 +3,54 @@
 <div class="row">
     <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
         <form method="post">
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label asp-for="Title"></label>
                 <input asp-for="Title" class="form-control" placeholder="Event Title...">
                 <span asp-validation-for="Title" class="small text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label asp-for="Description"></label>
                 <textarea asp-for="Description" rows="4" class="form-control" placeholder="This event..."></textarea>
                 <span asp-validation-for="Description" class="small text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label asp-for="Price">Price $</label>
                 <input asp-for="Price" class="form-control" placeholder="Event price...">
                 <span asp-validation-for="Price" class="small text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label asp-for="ImageUrl"></label>
                 <input asp-for="ImageUrl" class="form-control" placeholder="Your fine URL here...">
                 <span asp-validation-for="ImageUrl" class="small text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label asp-for="StartDateTime"></label>
                 <input asp-for="StartDateTime" class="form-control" placeholder="Event starts...">
                 <span asp-validation-for="StartDateTime" class="small text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label asp-for="EndDateTime"></label>
                 <input asp-for="EndDateTime" class="form-control" placeholder="Event ends...">
                 <span asp-validation-for="EndDateTime" class="small text-danger"></span>
             </div>
-            <div class="form-group mt-2 mb-2">
+            <div class="form-group mb-2">
                 <label asp-for="IsOnline"></label>
                 <input asp-for="IsOnline" type="checkbox" value="true">
                 <input asp-for="IsOnline" type="hidden" value="false">
                 <br/>
                 <span asp-validation-for="IsOnline" class="small text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label asp-for="LocationName"></label>
                 <input asp-for="LocationName" class="form-control" placeholder="Event location...">
                 <span asp-validation-for="LocationName" class="small text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label asp-for="LocationUrl"></label>
                 <input asp-for="LocationUrl" class="form-control" placeholder="Link to Location...">
                 <span asp-validation-for="LocationUrl" class="small text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label asp-for="AuthorId"></label>
                 <select asp-for="AuthorId" class="form-control">
                     @foreach (var author in Model.Authors)
@@ -60,7 +60,7 @@
                 </select>
                 <span asp-validation-for="AuthorId" class="small text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label asp-for="CategoryId"></label>
                 <select asp-for="CategoryId" class="form-control">
                     @foreach (var category in Model.Categories)
