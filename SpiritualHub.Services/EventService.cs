@@ -100,11 +100,50 @@ public class EventService : IEventService
         return eventModel;
     }
 
-    public async Task<int> GetAllCountAsync()
+    public async Task<int> GetAllCountAsync() => await _eventRepository
+                                                            .AllAsNoTracking()
+                                                            .CountAsync();
+
+    public async Task<bool> ExistsAsync(string id)
+        => await _eventRepository.AnyAsync(e => e.Id.ToString() == id);
+
+    public async Task<string> CreateAsync(EventFormModel newEvent)
     {
-        return await _eventRepository
-            .AllAsNoTracking()
-            .CountAsync();
+        var newEventEntity = _mapper.Map<Event>(newEvent);
+        newEventEntity.Image.Name = newEvent.Title;
+
+        await _eventRepository.AddAsync(newEventEntity);
+        await _eventRepository.SaveChangesAsync();
+
+        return newEventEntity.Id.ToString();
+    }
+
+    public async Task<EventFormModel> GetEventInfoAsync(string id)
+    {
+        var eventEntity = await _eventRepository.GetEventInfo(id);
+        var eventModel = _mapper.Map<EventFormModel>(eventEntity);
+
+        return eventModel;
+    }
+
+    public async Task EditAsync(EventFormModel updatedEvent)
+    {
+        var eventEntity = await _eventRepository.GetEventInfo(updatedEvent.Id.ToString());
+
+        eventEntity!.Title = updatedEvent.Title;
+        eventEntity!.Description = updatedEvent.Description;
+        eventEntity!.Price = updatedEvent.Price;
+        eventEntity!.StartDateTime = updatedEvent.StartDateTime;
+        eventEntity!.EndDateTime = updatedEvent.EndDateTime;
+        eventEntity!.LocationName = updatedEvent.LocationName;
+        eventEntity!.LocationUrl = updatedEvent.LocationUrl;
+        eventEntity!.IsOnline = updatedEvent.IsOnline;
+        eventEntity!.Image.URL = updatedEvent.ImageUrl;
+        eventEntity!.CategoryID = updatedEvent.CategoryId;
+        eventEntity!.AuthorID = Guid.Parse(updatedEvent.AuthorId);
+        eventEntity!.PublisherID = Guid.Parse(updatedEvent.PublisherId);
+
+        await _eventRepository.SaveChangesAsync();
     }
 
     private void SetIsUserJoined(string userId, Event eventEntity, EventViewModel eventModel)
@@ -128,18 +167,4 @@ public class EventService : IEventService
         }
     }
 
-    public async Task<bool> ExistsAsync(string id)
-        => await _eventRepository.AnyAsync(e => e.Id.ToString() == id);
-
-    public async Task<string> CreateEventAsync(EventFormModel newEvent, string publisherId)
-    {
-        var newEventEntity = _mapper.Map<Event>(newEvent);
-        newEventEntity.Image.Name = newEvent.Title;
-        newEventEntity.PublisherID = Guid.Parse(publisherId);
-        
-        await _eventRepository.AddAsync(newEventEntity);
-        await _eventRepository.SaveChangesAsync();
-
-        return newEventEntity.Id.ToString();
-    }
 }

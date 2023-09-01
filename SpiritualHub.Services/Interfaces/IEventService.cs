@@ -9,9 +9,13 @@ public interface IEventService
 
     Task<EventDetailsViewModel>         GetEventDetailsAsync(string id, string userId);
 
+    Task<EventFormModel>                GetEventInfoAsync(string id);
+
     Task<bool>                          ExistsAsync(string id);
 
     Task<FilteredEventsServiceModel>    GetAllAsync(AllEventsQueryModel queryModel, string userId);
 
-    Task<string>                        CreateEventAsync(EventFormModel newEvent, string publisherId);
+    Task<string>                        CreateAsync(EventFormModel newEvent);
+
+    Task                                EditAsync(EventFormModel updatedEvent);
 }

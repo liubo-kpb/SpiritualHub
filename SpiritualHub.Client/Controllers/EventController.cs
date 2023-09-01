@@ -19,15 +19,18 @@ public class EventController : Controller
 
     private readonly IEventService _eventService;
     private readonly IPublisherService _publisherService;
+    private readonly IAuthorService _authorService;
     private readonly ICategoryService _categoryService;
 
     public EventController(
         IEventService eventService,
         IPublisherService publisherService,
+        IAuthorService authorService,
         ICategoryService categoryService)
     {
         _eventService = eventService;
         _publisherService = publisherService;
+        _authorService = authorService;
         _categoryService = categoryService;
     }
 
@@ -49,7 +52,7 @@ public class EventController : Controller
     public async Task<IActionResult> Add()
     {
         string userId = this.User.GetId()!;
-        bool isPublisher = await _publisherService.ExistsById(userId);
+        bool isPublisher = this.User.IsAdmin() ? true : await _publisherService.ExistsByUserId(userId);
         if (!isPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -61,6 +64,7 @@ public class EventController : Controller
         {
             Categories = await _categoryService.GetAllAsync(),
             Authors = await _publisherService.GetConnectedAuthorsAsync(userId),
+            Publishers = await _publisherService.GetAllAsync(),
             StartDateTime = DateTime.Now.Date,
             EndDateTime = DateTime.Now.Date,
         };
@@ -79,37 +83,37 @@ public class EventController : Controller
     public async Task<IActionResult> Add(EventFormModel newEventForm)
     {
         string userId = this.User.GetId()!;
-        bool isPublisher = await _publisherService.ExistsById(userId);
-        if (!isPublisher)
-        {
-            TempData[ErrorMessage] = NotAPublisherErrorMessage;
+        bool isUserAdmin = this.User.IsAdmin();
 
-            return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+        if (!isUserAdmin)
+        {
+            bool isPublisher = await _publisherService.ExistsByUserId(userId);
+            if (!isPublisher)
+            {
+                TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+            }
+
+            bool isConnectedPublisher = await _publisherService.IsConnectedToEntity<Author>(userId, newEventForm.AuthorId);
+            if (!isConnectedPublisher)
+            {
+                ModelState.AddModelError(nameof(newEventForm.AuthorId), string.Format(NoEntityFoundErrorMessage, "affiliated author"));
+            }
         }
 
-        bool isConnectedPublisher = await _publisherService.IsConnectedToEntity<Author>(userId, newEventForm.AuthorId);
-        if (!isConnectedPublisher)
-        {
-            ModelState.AddModelError(nameof(newEventForm.AuthorId), string.Format(NoEntityFoundErrorMessage, "affiliated author"));
-        }
-
-        bool isExistingCategory = await _categoryService.ExistsAsync(newEventForm.CategoryId);
-        if (!isExistingCategory)
-        {
-            ModelState.AddModelError(nameof(newEventForm.CategoryId), string.Format(NoEntityFoundErrorMessage, "category"));
-        }
-
-        if (!newEventForm.IsOnline && 
-            (string.IsNullOrEmpty(newEventForm.LocationName) || string.IsNullOrEmpty(newEventForm.LocationUrl)))
-        {
-            ModelState.AddModelError(nameof(newEventForm.IsOnline), string.Format(SpecifyParticipationErrorMessage));
-            ModelState.AddModelError(nameof(newEventForm.LocationName), string.Format(SpecifyParticipationErrorMessage));
-            ModelState.AddModelError(nameof(newEventForm.LocationUrl), string.Format(SpecifyParticipationErrorMessage));
-        }
-
+        await ValidateModelAsync(newEventForm);
         if (!ModelState.IsValid)
         {
-            newEventForm.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
+            if (isUserAdmin)
+            {
+                newEventForm.Authors = await _authorService.GetAllAsync();
+                newEventForm.Publishers = await _publisherService.GetAllAsync();
+            }
+            else
+            {
+                newEventForm.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
+            }
             newEventForm.Categories = await _categoryService.GetAllAsync();
 
             return View(newEventForm);
@@ -117,8 +121,8 @@ public class EventController : Controller
 
         try
         {
-            string publisherId = (await _publisherService.GetPublisherAsync(userId))!.Id.ToString();
-            string id = await _eventService.CreateEventAsync(newEventForm, publisherId);
+            newEventForm.PublisherId = await _publisherService.GetPublisherIdAsync(userId);
+            string id = await _eventService.CreateAsync(newEventForm);
             TempData[SuccessMessage] = string.Format(CreationSuccessfulMessage, entityName);
 
             return RedirectToAction(nameof(Details), new { id });
@@ -127,12 +131,19 @@ public class EventController : Controller
         {
             TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"create {entityName}");
 
-            newEventForm.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
+            if (isUserAdmin)
+            {
+                newEventForm.Authors = await _authorService.GetAllAsync();
+                newEventForm.Publishers = await _publisherService.GetAllAsync();
+            }
+            else
+            {
+                newEventForm.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
+            }
             newEventForm.Categories = await _categoryService.GetAllAsync();
 
             return View(newEventForm);
         }
-
     }
 
     [AllowAnonymous]
@@ -165,13 +176,120 @@ public class EventController : Controller
     [HttpGet]
     public async Task<IActionResult> Edit(string id)
     {
-        return null;
+        try
+        {
+            var eventFormModel = await _eventService.GetEventInfoAsync(id);
+
+            string userId = this.User.GetId()!;
+            bool isUserAdmin = this.User.IsAdmin();
+
+            if (!isUserAdmin)
+            {
+                bool isPublisher = await _publisherService.ExistsByUserId(userId);
+                if (!isPublisher)
+                {
+                    TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+                    return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+                }
+
+                bool isConnectedPublisher = (await _publisherService.IsConnectedToEntity<Author>(userId, eventFormModel.AuthorId))
+                                         && (await _publisherService.IsConnectedToEntity<Event>(userId, eventFormModel.Id.ToString()));
+                if (!isConnectedPublisher)
+                {
+                    TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author and {entityName}");
+
+                    return RedirectToAction(nameof(MyPublishings));
+                }
+            }
+
+            if (isUserAdmin)
+            {
+                eventFormModel.Authors = await _authorService.GetAllAsync();
+                eventFormModel.Publishers = await _publisherService.GetAllAsync();
+            }
+            else
+            {
+                eventFormModel.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
+            }
+            eventFormModel.Categories = await _categoryService.GetAllAsync();
+
+            return View(eventFormModel);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load {entityName}");
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit(EventFormModel updatedEvent)
+    public async Task<IActionResult> Edit(EventFormModel updatedEventForm)
     {
-        return null;
+        string userId = this.User.GetId()!;
+        bool isUserAdmin = this.User.IsAdmin();
+
+        if (!isUserAdmin)
+        {
+            bool isPublisher = await _publisherService.ExistsByUserId(userId);
+            if (!isPublisher)
+            {
+                TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+            }
+
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntity<Author>(userId, updatedEventForm.AuthorId))
+                                     && (await _publisherService.IsConnectedToEntity<Event>(userId, updatedEventForm.Id.ToString()));
+            if (!isConnectedPublisher)
+            {
+                ModelState.AddModelError(nameof(updatedEventForm.AuthorId), string.Format(NoEntityFoundErrorMessage, "affiliated author"));
+            }
+        }
+
+        await ValidateModelAsync(updatedEventForm);
+        if (!ModelState.IsValid)
+        {
+            if (isUserAdmin)
+            {
+                updatedEventForm.Authors = await _authorService.GetAllAsync();
+                updatedEventForm.Publishers = await _publisherService.GetAllAsync();
+            }
+            else
+            {
+                updatedEventForm.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
+            }
+            updatedEventForm.Categories = await _categoryService.GetAllAsync();
+
+            return View(updatedEventForm);
+        }
+
+        try
+        {
+            await _eventService.EditAsync(updatedEventForm);
+            TempData[SuccessMessage] = string.Format(EditSuccessfulMessage, entityName);
+
+            return RedirectToAction(nameof(Details), new { id = updatedEventForm.Id });
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"edit {entityName}");
+
+            if (isUserAdmin)
+            {
+                updatedEventForm.Authors = await _authorService.GetAllAsync();
+                updatedEventForm.Publishers = await _publisherService.GetAllAsync();
+            }
+            else
+            {
+                updatedEventForm.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
+            }
+            updatedEventForm.Categories = await _categoryService.GetAllAsync();
+
+            return View(updatedEventForm);
+        }
+
     }
 
     [HttpGet]
@@ -184,5 +302,33 @@ public class EventController : Controller
     public async Task<IActionResult> Delete()
     {
         return null;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> MyPublishings()
+    {
+        return null;
+    }
+
+    private async Task ValidateModelAsync(EventFormModel eventForm)
+    {
+        bool isExistingCategory = await _categoryService.ExistsAsync(eventForm.CategoryId);
+        if (!isExistingCategory)
+        {
+            ModelState.AddModelError(nameof(eventForm.CategoryId), string.Format(NoEntityFoundErrorMessage, "category"));
+        }
+
+        if (!eventForm.IsOnline &&
+            (string.IsNullOrEmpty(eventForm.LocationName) || string.IsNullOrEmpty(eventForm.LocationUrl)))
+        {
+            ModelState.AddModelError(nameof(eventForm.IsOnline), string.Format(SpecifyParticipationErrorMessage));
+            ModelState.AddModelError(nameof(eventForm.LocationName), string.Format(SpecifyParticipationErrorMessage));
+            ModelState.AddModelError(nameof(eventForm.LocationUrl), string.Format(SpecifyParticipationErrorMessage));
+        }
+
+        if (this.User.IsAdmin() && !(await _publisherService.ExistsById(eventForm.PublisherId!)))
+        {
+            ModelState.AddModelError(nameof(eventForm.PublisherId), string.Format(NoEntityFoundErrorMessage, "publisher"));
+        }
     }
 }

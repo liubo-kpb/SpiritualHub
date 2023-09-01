@@ -37,9 +37,9 @@ public class Event
     [Required]
     public DateTime EndDateTime { get; set;}
 
-    public string LocationName { get; set; } = null!;
+    public string? LocationName { get; set; } = null!;
 
-    public string LocationUrl { get; set; } = null!;
+    public string? LocationUrl { get; set; } = null!;
 
     [Required]
     public bool IsOnline { get; set; }

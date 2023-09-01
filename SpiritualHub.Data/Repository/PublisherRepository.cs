@@ -13,11 +13,13 @@ public class PublisherRepository : Repository<Publisher>, IPublisherRepository
     {
     }
 
-    public async Task<IEnumerable<Author>> GetConnectedAuthorsAsync(string userId)
-        => (await DbSet
-                .Include(p => p.Authors)
-                .FirstOrDefaultAsync(p => p.UserID.ToString() == userId))!
-                .Authors;
+    public async Task<IEnumerable<Publisher>> GetAllPublishersInfoAsync() => await DbSet
+                                                                                    .Include(p => p.User)
+                                                                                    .ToListAsync();
+
+    public async Task<IEnumerable<Author>> GetConnectedAuthorsAsync(string userId) => (await DbSet.Include(p => p.Authors)
+                                                                                                  .FirstOrDefaultAsync(p => p.UserID.ToString() == userId))!
+                                                                                                  .Authors;
 
     public async Task<bool> IsConnectedPublisherAsync<TEntityType>(string userId, string entityId)
     {

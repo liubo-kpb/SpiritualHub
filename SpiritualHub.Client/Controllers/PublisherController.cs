@@ -25,7 +25,7 @@ public class PublisherController : Controller
     public async Task<IActionResult> Become()
     {
         string userId = User.GetId()!;
-        bool isPublisher = await _publisherService.ExistsById(userId);
+        bool isPublisher = await _publisherService.ExistsByUserId(userId);
 
         if (isPublisher)
         {
@@ -42,7 +42,7 @@ public class PublisherController : Controller
     {
         string userId = User.GetId()!;
 
-        bool isAgent = await _publisherService.ExistsById(userId);
+        bool isAgent = await _publisherService.ExistsByUserId(userId);
         if (isAgent)
         {
             TempData[ErrorMessage] = AlreadyAPublisherErrorMessage;

@@ -1,21 +1,28 @@
 ﻿namespace SpiritualHub.Services.Interfaces;
 
-using Client.ViewModels.Author;
 using Data.Models;
+using Client.ViewModels.Author;
+using Client.ViewModels.Publisher;
 
 public interface IPublisherService
 {
-    Task<bool>                              ExistsById(string Id);
+    Task<bool>                                  ExistsByUserId(string Id);
 
-    Task<bool>                              UserWithPhoneNumberExists(string phoneNumber);
+    Task<bool>                                  ExistsById(string Id);
 
-    Task<bool>                              UserHasSubscriptions(string userId);
+    Task<bool>                                  UserWithPhoneNumberExists(string phoneNumber);
 
-    Task                                    Create(string userId, string phoneNumber);
+    Task<bool>                                  UserHasSubscriptions(string userId);
 
-    Task<Publisher?>                        GetPublisherAsync(string userId);
+    Task                                        Create(string userId, string phoneNumber);
 
-    Task<bool>                              IsConnectedToEntity<TEntityType>(string userId, string entityId);
+    Task<Publisher?>                            GetPublisherAsync(string userId);
 
-    Task<IEnumerable<AuthorInfoViewModel>>  GetConnectedAuthorsAsync(string userId);
+    Task<bool>                                  IsConnectedToEntity<TEntityType>(string userId, string entityId);
+
+    Task<IEnumerable<AuthorInfoViewModel>>      GetConnectedAuthorsAsync(string userId);
+
+    Task<IEnumerable<PublisherInfoViewModel>>   GetAllAsync();
+
+    Task<string>                                GetPublisherIdAsync(string userId);
 }

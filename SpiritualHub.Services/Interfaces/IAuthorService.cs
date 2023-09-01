@@ -8,6 +8,8 @@ public interface IAuthorService
 {
     Task<FilteredAuthorsServiceModel>       GetAllAsync(AllAuthorsQueryModel queryModel, string userId);
 
+    Task<IEnumerable<AuthorInfoViewModel>>  GetAllAsync();
+
     Task<IEnumerable<AuthorIndexViewModel>> LastThreeAuthors();
 
     Task<string>                            CreateAuthor(AuthorFormModel newAuthor, Publisher publisher);
@@ -20,7 +22,7 @@ public interface IAuthorService
 
     Task<bool>                              Exists(string authorId);
 
-    Task                                    Edit(AuthorFormModel editedAuthor);
+    Task                                    EditAsync(AuthorFormModel editedAuthor);
 
     Task<AuthorFormModel>                   GetAuthorAsync(string authorId);
 

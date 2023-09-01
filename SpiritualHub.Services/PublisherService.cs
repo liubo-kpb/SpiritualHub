@@ -7,10 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 
 using Interfaces;
+using Mappings;
 using Data.Models;
 using Data.Repository.Interface;
 using Client.ViewModels.Author;
-using SpiritualHub.Services.Mappings;
+using Client.ViewModels.Publisher;
 
 public class PublisherService : IPublisherService
 {
@@ -40,9 +41,20 @@ public class PublisherService : IPublisherService
         await _publisherRepository.SaveChangesAsync();
     }
 
-    public async Task<bool> ExistsById(string Id)
+    public async Task<bool> ExistsById(string Id) => await _publisherRepository
+                                                                .AnyAsync(p => p.Id.ToString() == Id);
+
+    public async Task<bool> ExistsByUserId(string Id) => await _publisherRepository
+                                                                .AnyAsync(u => u.UserID.ToString() == Id);
+
+    public async Task<IEnumerable<PublisherInfoViewModel>> GetAllAsync()
     {
-        return await _publisherRepository.AnyAsync(u => u.UserID.ToString() == Id);
+        var publishers = await _publisherRepository.GetAllPublishersInfoAsync();
+        var publishersModel = new List<PublisherInfoViewModel>();
+
+        _mapper.MapListToViewModel(publishers, publishersModel);
+
+        return publishersModel;
     }
 
     public async Task<IEnumerable<AuthorInfoViewModel>> GetConnectedAuthorsAsync(string userId)
@@ -54,26 +66,21 @@ public class PublisherService : IPublisherService
         return authorsModel;
     }
 
-    public async Task<Publisher?> GetPublisherAsync(string userId)
-    {
-        return await _publisherRepository
-            .GetAll()
-            .FirstOrDefaultAsync(a => a.UserID.ToString() == userId);
-    }
+    public async Task<Publisher?> GetPublisherAsync(string userId) => await _publisherRepository
+                                                                                .GetAll()
+                                                                                .FirstOrDefaultAsync(a => a.UserID.ToString() == userId);
 
-    public async Task<bool> IsConnectedToEntity<TEntityType>(string userId, string entityId)
-    {
-        return await _publisherRepository
-            .IsConnectedPublisherAsync<TEntityType>(userId, entityId);
-    }
+    public async Task<string> GetPublisherIdAsync(string userId) => (await GetPublisherAsync(userId))!
+                                                                            .Id
+                                                                            .ToString();
 
-    public async Task<bool> UserHasSubscriptions(string userId)
-    {
-        return await _subscriptionRepository.AnyAsync(s => s.Subscribers.Any(u => u.Id.ToString() == userId));
-    }
+    public async Task<bool> IsConnectedToEntity<TEntityType>(string userId, string entityId) => await _publisherRepository
+                                                                                                            .IsConnectedPublisherAsync<TEntityType>(userId, entityId);
 
-    public async Task<bool> UserWithPhoneNumberExists(string phoneNumber)
-    {
-        return await _publisherRepository.AnyAsync(u => u.PhoneNumber == phoneNumber);
-    }
+    public async Task<bool> UserHasSubscriptions(string userId) => await _subscriptionRepository
+                                                                                .AnyAsync(s => s.Subscribers
+                                                                                                    .Any(u => u.Id.ToString() == userId));
+
+    public async Task<bool> UserWithPhoneNumberExists(string phoneNumber) => await _publisherRepository
+                                                                                        .AnyAsync(u => u.PhoneNumber == phoneNumber);
 }

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 using Author;
 using Category;
+using Publisher;
 
 using static Common.EntityValidationConstants.Event;
 
@@ -13,8 +14,10 @@ public class EventFormModel
     {
         this.Categories = new HashSet<CategoryServiceModel>();
         this.Authors = new HashSet<AuthorInfoViewModel>();
+        this.Publishers = new HashSet<PublisherInfoViewModel>();
         IsOnline = true;
     }
+
     public Guid Id { get; set; }
 
     [Required]
@@ -31,32 +34,37 @@ public class EventFormModel
     public decimal Price { get; set; }
 
     [Required]
-    [Display(Name = "Choose Start Date and Time")]
+    [Display(Name = "Set Starting Date and Time:")]
     public DateTime StartDateTime { get; set; }
 
     [Required]
-    [Display(Name = "Choose End Date and Time")]
+    [Display(Name = "Set End Date and Time:")]
     public DateTime EndDateTime { get; set; }
 
-    [Display(Name = "Provide location name")]
+    [Display(Name = "Provide Location Name:")]
     public string? LocationName { get; set; }
 
-    [Display(Name = "Link to Location")]
+    [Display(Name = "Link to Location:")]
     public string? LocationUrl { get; set; }
 
     [Required]
-    [Display(Name = "Event Image URL")]
+    [Display(Name = "Event Image URL:")]
     public string ImageUrl { get; set; } = null!;
 
     [Required]
-    [Display(Name = "Category")]
+    [Display(Name = "Choose Category:")]
     public int CategoryId { get; set; }
 
     public IEnumerable<CategoryServiceModel> Categories { get; set; }
 
     [Required]
-    [Display(Name = "Author")]
+    [Display(Name = "Choose Author:")]
     public string AuthorId { get; set; } = null!;
 
     public IEnumerable<AuthorInfoViewModel> Authors { get; set; }
+
+    [Display(Name = "Change Publisher:")]
+    public string? PublisherId { get; set; }
+
+    public IEnumerable<PublisherInfoViewModel> Publishers { get; set; }
 }

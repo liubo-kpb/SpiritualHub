@@ -24,15 +24,15 @@ public class AuthorFormModel
 
     public string Description { get; set; } = null!;
 
-    [Display(Name = "Is Author Active")]
+    [Display(Name = "Is Author Active:")]
     public bool IsActive { get; set; }
 
     [Required]
-    [Display(Name = "Author Image URL")]
+    [Display(Name = "Author Image URL:")]
     public string AvatarImageUrl { get; set; } = null!;
 
     [Required]
-    [Display(Name = "Choose Category")]
+    [Display(Name = "Choose Category:")]
     public int CategoryId { get; set; }
 
     public IEnumerable<CategoryServiceModel> Categories { get; set; }

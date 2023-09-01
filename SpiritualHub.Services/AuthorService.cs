@@ -12,6 +12,7 @@ using Data.Repository.Interface;
 using Data.Models;
 using Client.ViewModels.Author;
 using Client.Infrastructure.Enums;
+using AutoMapper.QueryableExtensions;
 
 public class AuthorService : IAuthorService
 {
@@ -104,7 +105,7 @@ public class AuthorService : IAuthorService
         await _authorRepository.SaveChangesAsync();
     }
 
-    public async Task Edit(AuthorFormModel editedAuthor)
+    public async Task EditAsync(AuthorFormModel editedAuthor)
     {
         var authorEntity = await _authorRepository.GetAuthorDetailsByIdAsync(editedAuthor.Id.ToString());
 
@@ -131,6 +132,11 @@ public class AuthorService : IAuthorService
         author.Followers.Add(user);
         await _authorRepository.SaveChangesAsync();
     }
+
+    public async Task<IEnumerable<AuthorInfoViewModel>> GetAllAsync() => await _authorRepository
+                                                                                    .AllAsNoTracking()
+                                                                                    .ProjectTo<AuthorInfoViewModel>(_mapper.ConfigurationProvider)
+                                                                                    .ToListAsync();
 
     public async Task<FilteredAuthorsServiceModel> GetAllAsync(AllAuthorsQueryModel queryModel, string userId)
     {

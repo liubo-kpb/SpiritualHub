@@ -4,7 +4,9 @@ using Models;
 
 public interface IPublisherRepository : IRepository<Publisher>
 {
-    Task<bool>                  IsConnectedPublisherAsync<TEntityType>(string userId, string entityId);
+    Task<bool>                      IsConnectedPublisherAsync<TEntityType>(string userId, string entityId);
 
-    Task<IEnumerable<Author>>   GetConnectedAuthorsAsync(string userId);
+    Task<IEnumerable<Author>>       GetConnectedAuthorsAsync(string userId);
+
+    Task<IEnumerable<Publisher>>    GetAllPublishersInfoAsync();
 }
