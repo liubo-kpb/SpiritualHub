@@ -15,7 +15,7 @@
         </p>
         <hr class="my-4">
         <p class="lead">
-            @if (User.Identity?.IsAuthenticated ?? false && (await _publisherService.ExistsById(this.User.GetId()!)))
+            @if (User.Identity?.IsAuthenticated ?? false && (await _publisherService.ExistsByUserId(this.User.GetId()!)))
             {
                 <a asp-controller="Author" asp-action="Add" class="btn btn-primary btn-lg"
                    role="button">Add Author</a>

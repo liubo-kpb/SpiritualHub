@@ -32,7 +32,7 @@ public class AuthorFormModel
     public string AvatarImageUrl { get; set; } = null!;
 
     [Required]
-    [Display(Name = "Category")]
+    [Display(Name = "Choose Category")]
     public int CategoryId { get; set; }
 
     public IEnumerable<CategoryServiceModel> Categories { get; set; }

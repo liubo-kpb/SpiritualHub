@@ -67,7 +67,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            @if (await _publisherService.ExistsById(this.User.GetId()!))
+                            @if (await _publisherService.ExistsByUserId(this.User.GetId()!))
                             {
                                 <li class="nav-item dropdown">
                                     <a class="nav-link text-dark dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Publisher Space<span class="caret"></span></a>
