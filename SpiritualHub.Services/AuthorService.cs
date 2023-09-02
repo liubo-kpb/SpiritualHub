@@ -2,31 +2,37 @@
 
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 using Interfaces;
 using Mappings;
 using Models.Author;
-using Data.Repository.Interface;
 using Data.Models;
+using Data.Repository.Interface;
 using Client.ViewModels.Author;
 using Client.Infrastructure.Enums;
-using AutoMapper.QueryableExtensions;
+
+using static Common.GeneralApplicationConstants;
 
 public class AuthorService : IAuthorService
 {
     private readonly IAuthorRepository _authorRepository;
     private readonly IRepository<ApplicationUser> _userRepository;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly IMapper _mapper;
 
     public AuthorService(IAuthorRepository repository,
                          IRepository<ApplicationUser> userRepository,
+                         UserManager<ApplicationUser> userManager,
                          IMapper mapper)
     {
         _authorRepository = repository;
-        _mapper = mapper;
         _userRepository = userRepository;
+        _userManager = userManager;
+        _mapper = mapper;
     }
 
     public async Task<IEnumerable<AuthorViewModel>> AllAuthorsByPublisherIdAsync(string userId, string publisherId)
@@ -49,7 +55,7 @@ public class AuthorService : IAuthorService
         return authorsModel;
     }
 
-    public async Task<IEnumerable<AuthorViewModel>> AllAuthorsByUserId(string userId)
+    public async Task<IEnumerable<AuthorViewModel>> AllAuthorsByUserIdAsync(string userId)
     {
         var authors = await _authorRepository
             .GetAll()
@@ -202,6 +208,8 @@ public class AuthorService : IAuthorService
     public async Task<AuthorDetailsViewModel> GetAuthorDetailsAsync(string authorId, string userId)
     {
         var author = await _authorRepository.GetAuthorDetailsByIdAsync(authorId);
+        await FilteroutAdministratorsFromAuthorPublishers(author, AdminRoleName);
+
         var authorModel = _mapper.Map<AuthorDetailsViewModel>(author);
         SetIsUserFollowingAndSubscribed(userId, author!, authorModel);
 
@@ -329,5 +337,24 @@ public class AuthorService : IAuthorService
                 sub => sub.Id.ToString() == userId))!;
 
         return oldSubscription == null ? null : oldSubscription.Id.ToString();
+    }
+
+    private async Task FilteroutAdministratorsFromAuthorPublishers(Author? author, string role)
+    {
+        ICollection<Publisher> usersInRole = new List<Publisher>();
+
+        foreach (var publisher in author!.Publishers)
+        {
+            bool isAdmin = await _userManager.IsInRoleAsync(publisher.User, role);
+            if (isAdmin)
+            {
+                usersInRole.Add(publisher);
+            }
+        }
+
+        foreach (var publisher in usersInRole)
+        {
+            author.Publishers.Remove(publisher);
+        }
     }
 }
