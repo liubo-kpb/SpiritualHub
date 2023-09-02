@@ -15,6 +15,10 @@ public interface IEventService
 
     Task<FilteredEventsServiceModel>    GetAllAsync(AllEventsQueryModel queryModel, string userId);
 
+    Task<IEnumerable<EventViewModel>>   AllEventsByUserIdAsync(string userId);
+
+    Task<IEnumerable<EventViewModel>>   GetEventsByPublisherIdAsync(string publisherId);
+
     Task<string>                        CreateAsync(EventFormModel newEvent);
 
     Task                                EditAsync(EventFormModel updatedEvent);

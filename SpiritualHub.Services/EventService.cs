@@ -141,9 +141,52 @@ public class EventService : IEventService
         eventEntity!.Image.URL = updatedEvent.ImageUrl;
         eventEntity!.CategoryID = updatedEvent.CategoryId;
         eventEntity!.AuthorID = Guid.Parse(updatedEvent.AuthorId);
-        eventEntity!.PublisherID = Guid.Parse(updatedEvent.PublisherId);
+        eventEntity!.PublisherID = Guid.Parse(updatedEvent.PublisherId!);
 
         await _eventRepository.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<EventViewModel>> AllEventsByUserIdAsync(string userId)
+    {
+        var events = await _eventRepository
+                                .AllAsNoTracking()
+                                .Include(e => e.Author)
+                                .Include(e => e.Image)
+                                .Include(e => e.Participants)
+                                .Where(e => e.Participants.Any(u => u.Id.ToString() == userId))
+                                .ToListAsync();
+
+        var eventsModel = new List<EventViewModel>();
+        _mapper.MapListToViewModel(events, eventsModel);
+
+        for (int i = 0; i < events.Count; i++)
+        {
+            eventsModel[i].IsUserJoined = true;
+            SetEventParticipationType(eventsModel[i]);
+        }
+
+        return eventsModel;
+    }
+
+    public async Task<IEnumerable<EventViewModel>> GetEventsByPublisherIdAsync(string publisherId)
+    {
+        var events = await _eventRepository
+                                .AllAsNoTracking()
+                                .Include(e => e.Author)
+                                .Include(e => e.Image)
+                                // .Include(e => e.Participants) still wondering if I should list all the signed up users for the event.
+                                .Where(e => e.PublisherID.ToString() == publisherId)
+                                .ToListAsync();
+
+        var eventsModel = new List<EventViewModel>();
+        _mapper.MapListToViewModel(events, eventsModel);
+
+        for (int i = 0; i < events.Count; i++)
+        {
+            SetEventParticipationType(eventsModel[i]);
+        }
+
+        return eventsModel;
     }
 
     private void SetIsUserJoined(string userId, Event eventEntity, EventViewModel eventModel)
@@ -166,5 +209,4 @@ public class EventService : IEventService
             eventModel.Participation = "In Person only";
         }
     }
-
 }

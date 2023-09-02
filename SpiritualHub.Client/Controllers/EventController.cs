@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Infrastructure.Extensions;
+using ViewModels.Author;
 using ViewModels.Event;
 using Services.Interfaces;
 using Data.Models;
@@ -60,21 +61,30 @@ public class EventController : Controller
             return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
         }
 
+        IEnumerable<AuthorInfoViewModel> authors = new List<AuthorInfoViewModel>();
+        if (this.User.IsAdmin())
+        {
+            authors = await _authorService.GetAllAsync();
+        }
+        else
+        {
+            authors = await _publisherService.GetConnectedAuthorsAsync(userId);
+            if (!authors.Any())
+            {
+                TempData[ErrorMessage] = NoConnectedAuthorsErrorMessage;
+
+                return RedirectToAction(nameof(AuthorController.All), nameof(Author));
+            }
+        }
+
         var eventForm = new EventFormModel()
         {
             Categories = await _categoryService.GetAllAsync(),
-            Authors = await _publisherService.GetConnectedAuthorsAsync(userId),
+            Authors = authors,
             Publishers = await _publisherService.GetAllAsync(),
             StartDateTime = DateTime.Now.Date,
             EndDateTime = DateTime.Now.Date,
         };
-
-        if (!eventForm.Authors.Any())
-        {
-            TempData[ErrorMessage] = NoConnectedAuthorsErrorMessage;
-
-            return RedirectToAction(nameof(AuthorController.All), nameof(Author));
-        }
 
         return View(eventForm);
     }
@@ -121,7 +131,11 @@ public class EventController : Controller
 
         try
         {
-            newEventForm.PublisherId = await _publisherService.GetPublisherIdAsync(userId);
+            if (newEventForm.PublisherId == null)
+            {
+                newEventForm.PublisherId = await _publisherService.GetPublisherIdAsync(userId);
+            }
+
             string id = await _eventService.CreateAsync(newEventForm);
             TempData[SuccessMessage] = string.Format(CreationSuccessfulMessage, entityName);
 
@@ -267,6 +281,11 @@ public class EventController : Controller
 
         try
         {
+            if (updatedEventForm.PublisherId == null)
+            {
+                updatedEventForm.PublisherId = await _publisherService.GetPublisherIdAsync(userId);
+            }
+
             await _eventService.EditAsync(updatedEventForm);
             TempData[SuccessMessage] = string.Format(EditSuccessfulMessage, entityName);
 
@@ -295,7 +314,7 @@ public class EventController : Controller
     [HttpGet]
     public async Task<IActionResult> Delete(string id)
     {
-        return null;
+        return View();
     }
 
     [HttpPost]
@@ -305,13 +324,67 @@ public class EventController : Controller
     }
 
     [HttpGet]
+    public async Task<IActionResult> Mine()
+    {
+        try
+        {
+            var eventsModel = await _eventService.AllEventsByUserIdAsync(this.User.GetId()!);
+
+            return View(eventsModel);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load your {entityName}s");
+
+            return RedirectToAction(nameof(All));
+        }
+
+    }
+
+    [HttpGet]
     public async Task<IActionResult> MyPublishings()
     {
-        return null;
+        string userId = this.User.GetId()!;
+        bool isPublisher = await _publisherService.ExistsByUserId(userId);
+        if (!isPublisher)
+        {
+            TempData[ErrorMessage] = NotAPublisherErrorMessage;
+            return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+        }
+
+        try
+        {
+            var publisherId = await _publisherService.GetPublisherIdAsync(userId);
+            var eventsModel = await _eventService.GetEventsByPublisherIdAsync(publisherId);
+
+            return View(eventsModel);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load your {entityName}s");
+
+            return RedirectToAction(nameof(All));
+        }
+
     }
 
     private async Task ValidateModelAsync(EventFormModel eventForm)
     {
+        if (eventForm.Price < 0)
+        {
+            ModelState.AddModelError(nameof(eventForm.Price), PriceMustBeHigherThanZeroErrorMessage);
+        }
+
+        if (eventForm.StartDateTime < DateTime.Now)
+        {
+            ModelState.AddModelError(nameof(eventForm.StartDateTime), string.Format(WrongDateErrorMessage, "Start date", "today's date"));
+        }
+
+        if (eventForm.StartDateTime > eventForm.EndDateTime)
+        {
+            ModelState.AddModelError(nameof(eventForm.EndDateTime), string.Format(WrongDateErrorMessage, "End date", "start date"));
+        }
+
         bool isExistingCategory = await _categoryService.ExistsAsync(eventForm.CategoryId);
         if (!isExistingCategory)
         {
