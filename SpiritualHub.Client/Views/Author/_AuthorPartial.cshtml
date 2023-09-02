@@ -9,7 +9,10 @@
     {
         string userId = this.User.GetId()!;
         isUserPublisher = await _publisherService.ExistsByUserId(userId);
-        isUserConnectedPublisher = await _publisherService.IsConnectedToEntity<Author>(userId, Model.Id);
+        if (isUserPublisher)
+        {
+            isUserConnectedPublisher = await _publisherService.IsConnectedToEntity<Author>(userId, Model.Id);
+        }
     }
 }
 

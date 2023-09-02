@@ -51,7 +51,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, "loading authors");
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load your {entityName}s");
 
             return RedirectToAction("Index", "Home");
         }
@@ -66,13 +66,13 @@ public class AuthorController : Controller
         {
             IEnumerable<AuthorViewModel> myAuthors = null!;
 
-            myAuthors = await _authorService.AllAuthorsByUserId(userId);
+            myAuthors = await _authorService.AllAuthorsByUserIdAsync(userId);
 
             return View(myAuthors);
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = String.Format(GeneralUnexpectedErrorMessage, "load your authors");
+            TempData[ErrorMessage] = String.Format(GeneralUnexpectedErrorMessage, $"load your {entityName}s");
 
             return RedirectToAction("Index", "Home");
         }

@@ -63,7 +63,7 @@ public class EventFormModel
 
     public IEnumerable<AuthorInfoViewModel> Authors { get; set; }
 
-    [Display(Name = "Change Publisher:")]
+    [Display(Name = "Choose Publisher:")]
     public string? PublisherId { get; set; }
 
     public IEnumerable<PublisherInfoViewModel> Publishers { get; set; }

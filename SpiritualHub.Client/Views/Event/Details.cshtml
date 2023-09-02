@@ -8,7 +8,12 @@
 
     if (isUserLoggedIn)
     {
-        isUserConnectedPublisher = await _publisherService.IsConnectedToEntity<Event>(this.User.GetId()!, Model.Id);
+        string userId = this.User.GetId()!;
+        bool isUserPublisher = await _publisherService.ExistsByUserId(userId);
+        if (isUserPublisher)
+        {
+            isUserConnectedPublisher = await _publisherService.IsConnectedToEntity<Event>(userId, Model.Id);
+        }
     }
 }
 <h2 class="text-center">@ViewBag.Title</h2>
@@ -31,7 +36,7 @@
                 <p>Location: <b><a href="@Model.LocationUrl" target="_blank">@Model.LocationName</a></b></p>
             }
             <p>@Model.Description</p>
-            <p>Price: $@($"{Model.Price:F2}")</p>
+            <p>Price: @(Model.Price == 0 ? "Free" : $"${Model.Price:F2}")</p>
             @* <p>
             Participants:
             <b>@Model.ParticipantsCount</b>
@@ -68,7 +73,7 @@
             <h5 class="card-title">Organizer</h5>
             <div class="card" style="width: 18rem;">
                 <div class="card-body">
-                    @if (!string.IsNullOrEmpty(Model.Publisher.FullName))
+                    @if (!string.IsNullOrWhiteSpace(Model.Publisher.FullName))
                     {
                         <p class="card-text">Name: @Model.Publisher.FullName</p>
                     }

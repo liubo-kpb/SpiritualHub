@@ -16,7 +16,7 @@ public interface IAuthorService
 
     Task<IEnumerable<AuthorViewModel>>      AllAuthorsByPublisherIdAsync(string userId, string publisherId);
 
-    Task<IEnumerable<AuthorViewModel>>      AllAuthorsByUserId(string userId);
+    Task<IEnumerable<AuthorViewModel>>      AllAuthorsByUserIdAsync(string userId);
 
     Task<AuthorDetailsViewModel>            GetAuthorDetailsAsync(string authorId, string userId);
 

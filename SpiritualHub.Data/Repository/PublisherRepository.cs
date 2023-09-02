@@ -27,7 +27,7 @@ public class PublisherRepository : Repository<Publisher>, IPublisherRepository
 
         var entity = await DbSet
             .Include(propertyName)
-            .FirstOrDefaultAsync(p => p.User.Id.ToString() == userId);
+            .FirstOrDefaultAsync(p => p.UserID.ToString() == userId);
 
         var property = entity!.GetType().GetProperty(propertyName);
 

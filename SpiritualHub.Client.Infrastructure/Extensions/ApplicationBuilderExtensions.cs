@@ -31,7 +31,6 @@ public static class ApplicationBuilderExtensions
             await roleManager.CreateAsync(role);
 
             var admin = await userManager.FindByEmailAsync(AdminEmail);
-
             await userManager.AddToRoleAsync(admin, role.Name);
         })
         .GetAwaiter()
