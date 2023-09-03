@@ -59,9 +59,9 @@ public class UserService : IUserService
 
     public async Task<string?> GetUserFullName(string userId)
     {
-        var user = await _userRepository.GetSingleByIdAsync(Guid.Parse(userId));
+        var user = await _userRepository.GetSingleByIdAsync(userId);
 
-        if (string.IsNullOrEmpty(user.FirstName) || string.IsNullOrEmpty(user.LastName))
+        if (string.IsNullOrEmpty(user!.FirstName) || string.IsNullOrEmpty(user!.LastName))
         {
             return null;
         }

@@ -53,7 +53,8 @@ public class EventController : Controller
     public async Task<IActionResult> Add()
     {
         string userId = this.User.GetId()!;
-        bool isPublisher = this.User.IsAdmin() ? true : await _publisherService.ExistsByUserId(userId);
+        bool isUserAdmin = this.User.IsAdmin();
+        bool isPublisher =  isUserAdmin ? true : await _publisherService.ExistsByUserId(userId);
         if (!isPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -61,30 +62,19 @@ public class EventController : Controller
             return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
         }
 
-        IEnumerable<AuthorInfoViewModel> authors = new List<AuthorInfoViewModel>();
-        if (this.User.IsAdmin())
-        {
-            authors = await _authorService.GetAllAsync();
-        }
-        else
-        {
-            authors = await _publisherService.GetConnectedAuthorsAsync(userId);
-            if (!authors.Any())
-            {
-                TempData[ErrorMessage] = NoConnectedAuthorsErrorMessage;
-
-                return RedirectToAction(nameof(AuthorController.All), nameof(Author));
-            }
-        }
-
         var eventForm = new EventFormModel()
         {
-            Categories = await _categoryService.GetAllAsync(),
-            Authors = authors,
-            Publishers = await _publisherService.GetAllAsync(),
             StartDateTime = DateTime.Now.Date,
             EndDateTime = DateTime.Now.Date,
         };
+
+        await GetEventFormDetailsAsync(eventForm, userId, isUserAdmin);
+        if (!eventForm.Authors.Any())
+        {
+            TempData[ErrorMessage] = NoConnectedAuthorsErrorMessage;
+
+            return RedirectToAction(nameof(AuthorController.All), nameof(Author));
+        }
 
         return View(eventForm);
     }
@@ -115,16 +105,7 @@ public class EventController : Controller
         await ValidateModelAsync(newEventForm);
         if (!ModelState.IsValid)
         {
-            if (isUserAdmin)
-            {
-                newEventForm.Authors = await _authorService.GetAllAsync();
-                newEventForm.Publishers = await _publisherService.GetAllAsync();
-            }
-            else
-            {
-                newEventForm.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
-            }
-            newEventForm.Categories = await _categoryService.GetAllAsync();
+            await GetEventFormDetailsAsync(newEventForm, userId, isUserAdmin);
 
             return View(newEventForm);
         }
@@ -142,16 +123,7 @@ public class EventController : Controller
         {
             TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"create {entityName}");
 
-            if (isUserAdmin)
-            {
-                newEventForm.Authors = await _authorService.GetAllAsync();
-                newEventForm.Publishers = await _publisherService.GetAllAsync();
-            }
-            else
-            {
-                newEventForm.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
-            }
-            newEventForm.Categories = await _categoryService.GetAllAsync();
+            await GetEventFormDetailsAsync(newEventForm, userId, isUserAdmin);
 
             return View(newEventForm);
         }
@@ -220,16 +192,7 @@ public class EventController : Controller
                 }
             }
 
-            if (isUserAdmin)
-            {
-                eventFormModel.Authors = await _authorService.GetAllAsync();
-                eventFormModel.Publishers = await _publisherService.GetAllAsync();
-            }
-            else
-            {
-                eventFormModel.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
-            }
-            eventFormModel.Categories = await _categoryService.GetAllAsync();
+            await GetEventFormDetailsAsync(eventFormModel, userId, isUserAdmin);
 
             return View(eventFormModel);
         }
@@ -275,16 +238,7 @@ public class EventController : Controller
         await ValidateModelAsync(updatedEventForm);
         if (!ModelState.IsValid)
         {
-            if (isUserAdmin)
-            {
-                updatedEventForm.Authors = await _authorService.GetAllAsync();
-                updatedEventForm.Publishers = await _publisherService.GetAllAsync();
-            }
-            else
-            {
-                updatedEventForm.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
-            }
-            updatedEventForm.Categories = await _categoryService.GetAllAsync();
+            await GetEventFormDetailsAsync(updatedEventForm, userId, isUserAdmin);
 
             return View(updatedEventForm);
         }
@@ -302,21 +256,13 @@ public class EventController : Controller
         {
             TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"edit {entityName}");
 
-            if (isUserAdmin)
-            {
-                updatedEventForm.Authors = await _authorService.GetAllAsync();
-                updatedEventForm.Publishers = await _publisherService.GetAllAsync();
-            }
-            else
-            {
-                updatedEventForm.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
-            }
-            updatedEventForm.Categories = await _categoryService.GetAllAsync();
+            await GetEventFormDetailsAsync(updatedEventForm, userId, isUserAdmin);
 
             return View(updatedEventForm);
         }
 
     }
+
 
     [HttpGet]
     public async Task<IActionResult> Delete(string id)
@@ -520,6 +466,20 @@ public class EventController : Controller
 
             return RedirectToAction(nameof(Details), new { id });
         }
+    }
+
+    private async Task GetEventFormDetailsAsync(EventFormModel eventFormModel, string userId, bool isUserAdmin = false)
+    {
+        if (isUserAdmin)
+        {
+            eventFormModel.Authors = await _authorService.GetAllAsync();
+            eventFormModel.Publishers = await _publisherService.GetAllAsync();
+        }
+        else
+        {
+            eventFormModel.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
+        }
+        eventFormModel.Categories = await _categoryService.GetAllAsync();
     }
 
     private async Task ValidateModelAsync(EventFormModel eventForm)

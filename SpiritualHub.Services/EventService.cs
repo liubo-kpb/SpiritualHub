@@ -149,11 +149,10 @@ public class EventService : IEventService
 
     public async Task DeleteAsync(string eventId)
     {
-        Guid entityId = Guid.Parse(eventId);
-        var eventEntity = await _eventRepository.GetSingleByIdAsync(entityId);
+        var eventEntity = await _eventRepository.GetSingleByIdAsync(eventId);
 
-        _eventRepository.DeleteEntriesWithForeignKeys<Rating, Guid>($"{nameof(Event)}ID", entityId);
-        _eventRepository.Delete(eventEntity);
+        _eventRepository.DeleteEntriesWithForeignKeys<Rating, Guid>($"{nameof(Event)}ID", Guid.Parse(eventId));
+        _eventRepository.Delete(eventEntity!);
 
         await _eventRepository.SaveChangesAsync();
     }
@@ -202,22 +201,18 @@ public class EventService : IEventService
                                                                                     .AnyAsync(
                                                                                         e => e.Participants
                                                                                                     .Any(u => u.Id.ToString() == userId));
-
-    public async Task<bool> HasLeftAsync(string eventId, string userId) => (await _eventRepository
-                                                                                    .GetEventWithParticipantsAsync(eventId))!
-                                                                                    .Participants.Any(u => !(u.Id.ToString() == userId));
     public async Task JoinAsync(string eventId, string userId)
     {
-        var user = await _userRepository.GetSingleByIdAsync(Guid.Parse(userId));
-        var eventEntity = await _eventRepository.GetSingleByIdAsync(Guid.Parse(eventId));
+        var user = await _userRepository.GetSingleByIdAsync(userId);
+        var eventEntity = await _eventRepository.GetSingleByIdAsync(eventId);
 
-        eventEntity.Participants.Add(user);
+        eventEntity!.Participants.Add(user!);
         await _eventRepository.SaveChangesAsync();
     }
 
     public async Task LeaveAsync(string eventId, string userId)
     {
-        var user = await _userRepository.GetSingleByIdAsync(Guid.Parse(userId));
+        var user = await _userRepository.GetSingleByIdAsync(userId);
         var eventEntity = await _eventRepository.GetEventWithParticipantsAsync(eventId);
 
         eventEntity!.Participants.Remove(user);

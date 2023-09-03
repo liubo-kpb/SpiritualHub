@@ -29,8 +29,6 @@ public interface IEventService
 
     Task<bool>                          IsJoinedAsync(string eventId, string userId);
 
-    Task<bool>                          HasLeftAsync(string eventId, string userId);
-
     Task                                JoinAsync(string eventId, string userId);
 
     Task                                LeaveAsync(string eventId, string userId);

@@ -97,16 +97,16 @@ public class AuthorService : IAuthorService
     }
     public async Task ActivateAsync(string authorId)
     {
-        var author = await _authorRepository.GetSingleByIdAsync(Guid.Parse(authorId));
-        author.IsActive = true;
+        var author = await _authorRepository.GetSingleByIdAsync(authorId);
+        author!.IsActive = true;
 
         await _authorRepository.SaveChangesAsync();
     }
 
     public async Task DisableAsync(string authorId)
     {
-        var author = await _authorRepository.GetSingleByIdAsync(Guid.Parse(authorId));
-        author.IsActive = false;
+        var author = await _authorRepository.GetSingleByIdAsync(authorId);
+        author!.IsActive = false;
 
         await _authorRepository.SaveChangesAsync();
     }
@@ -132,10 +132,10 @@ public class AuthorService : IAuthorService
 
     public async Task FollowAsync(string authorId, string userId)
     {
-        var author = await _authorRepository.GetSingleByIdAsync(Guid.Parse(authorId));
-        var user = await _userRepository.GetSingleByIdAsync(Guid.Parse(userId));
+        var author = await _authorRepository.GetSingleByIdAsync(authorId);
+        var user = await _userRepository.GetSingleByIdAsync(userId);
 
-        author.Followers.Add(user);
+        author!.Followers.Add(user!);
         await _authorRepository.SaveChangesAsync();
     }
 
@@ -248,7 +248,7 @@ public class AuthorService : IAuthorService
             throw new ArgumentException("Your plan is already set with this subscription.");
         }
 
-        var user = await _userRepository.GetSingleByIdAsync(Guid.Parse(userId));
+        var user = await _userRepository.GetSingleByIdAsync(userId);
         string? oldSubscriptionId = IsSubscribedWithUserId(author!, userId);
         if (!string.IsNullOrWhiteSpace(oldSubscriptionId))
         {
@@ -269,7 +269,7 @@ public class AuthorService : IAuthorService
     public async Task UnfollowAsync(string authorId, string userId)
     {
         var author = await _authorRepository.GetAuthorWithFollowersAsync(authorId);
-        var user = await _userRepository.GetSingleByIdAsync(Guid.Parse(userId));
+        var user = await _userRepository.GetSingleByIdAsync(userId);
 
         author!.Followers.Remove(user);
         await _authorRepository.SaveChangesAsync();
@@ -278,7 +278,7 @@ public class AuthorService : IAuthorService
     public async Task UnsubscribeAsync(string authorId, string userId)
     {
         var author = await _authorRepository.GetAuthorWithSubscriptionsAndSubscribersAsync(authorId);
-        var user = await _userRepository.GetSingleByIdAsync(Guid.Parse(userId));
+        var user = await _userRepository.GetSingleByIdAsync(userId);
 
         author!
             .Subscriptions
@@ -329,7 +329,7 @@ public class AuthorService : IAuthorService
         authorModel.IsUserSubscribed = author.Subscriptions.Any(s => s.Subscribers.Any(ss => ss.Id.ToString() == userId));
     }
 
-    private bool HasSubscriptionWithUserIdAndSubscriptionId(Author author, string subscriptionId, string userId)
+    private static bool HasSubscriptionWithUserIdAndSubscriptionId(Author author, string subscriptionId, string userId)
     {
         return author
             .Subscriptions
@@ -338,7 +338,7 @@ public class AuthorService : IAuthorService
             .Any(sub => sub.Id.ToString() == userId);
     }
 
-    private string? IsSubscribedWithUserId(Author author, string userId)
+    private static string? IsSubscribedWithUserId(Author author, string userId)
     {
         Subscription oldSubscription = author
             .Subscriptions
@@ -346,7 +346,7 @@ public class AuthorService : IAuthorService
             s => s.Subscribers.Any(
                 sub => sub.Id.ToString() == userId))!;
 
-        return oldSubscription == null ? null : oldSubscription.Id.ToString();
+        return oldSubscription?.Id.ToString();
     }
 
     private async Task FilteroutAdministratorsFromAuthorPublishers(Author? author, string role)
