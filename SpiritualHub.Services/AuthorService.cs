@@ -313,6 +313,16 @@ public class AuthorService : IAuthorService
         author.Publishers.Remove(publisherInstance!);
         await _authorRepository.SaveChangesAsync();
     }
+
+    public async Task GetConnectedEntities<TEntityType>(string authorId, string entityId)
+    {
+        string propertyName = typeof(TEntityType).Name + 's';
+
+        var author = await _authorRepository.GetAuthorWithEntitiesAsync<TEntityType>(authorId, propertyName);
+
+        //TBD
+    }
+
     private void SetIsUserFollowingAndSubscribed(string userId, Author author, AuthorViewModel authorModel)
     {
         authorModel.IsUserFollowing = author.Followers.Any(u => u.Id.ToString() == userId);

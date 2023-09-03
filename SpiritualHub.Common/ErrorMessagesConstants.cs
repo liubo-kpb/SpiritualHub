@@ -17,6 +17,8 @@ public static class ErrorMessagesConstants
 
     public const string PriceMustBeHigherThanZeroErrorMessage = "The Price must be equal to or higher than zero.";
     public const string WrongDateErrorMessage = "{0} must be after {1}.";
+    public const string AlreadyJoinedErrorMessage = "You've already joined this event.";
+    public const string AlreadyLeftErrorMessage = "You've already left this event.";
 
     public const string SpecifyParticipationErrorMessage = "You need to specify the event's participation type.";
 }

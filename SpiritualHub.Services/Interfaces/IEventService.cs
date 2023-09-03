@@ -19,7 +19,19 @@ public interface IEventService
 
     Task<IEnumerable<EventViewModel>>   GetEventsByPublisherIdAsync(string publisherId);
 
+    Task<string>                        GetAuthorIdAsync(string eventId);
+
     Task<string>                        CreateAsync(EventFormModel newEvent);
 
     Task                                EditAsync(EventFormModel updatedEvent);
+
+    Task                                DeleteAsync(string eventId);
+
+    Task<bool>                          IsJoinedAsync(string eventId, string userId);
+
+    Task<bool>                          HasLeftAsync(string eventId, string userId);
+
+    Task                                JoinAsync(string eventId, string userId);
+
+    Task                                LeaveAsync(string eventId, string userId);
 }

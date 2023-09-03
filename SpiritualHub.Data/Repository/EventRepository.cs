@@ -11,11 +11,19 @@ public class EventRepository : DeletableRepository<Event>, IEventRepository
     {
     }
 
+    public async Task<Event?> GetAuthorIdAsync(string eventId) => await DbSet
+                                                                        .Include(e => e.Author)
+                                                                        .FirstOrDefaultAsync(e => e.Id.ToString() == eventId);
+
     public async Task<Event?> GetEventInfo(string id) => await DbSet
                                                                 .Include(e => e.Image)
                                                                 .Include(e => e.Author)
                                                                 .Include(e => e.Category)
                                                                 .FirstOrDefaultAsync(e => e.Id.ToString() == id);
+
+    public async Task<Event?> GetEventWithParticipantsAsync(string eventId) => await DbSet
+                                                                                        .Include(e => e.Participants)
+                                                                                        .FirstOrDefaultAsync(e => e.Id.ToString() == eventId);
 
     public async Task<Event?> GetFullEventDetails(string id) => await DbSet
                                                                         .Include(e => e.Image)

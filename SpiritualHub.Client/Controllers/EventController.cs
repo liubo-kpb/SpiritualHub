@@ -131,10 +131,7 @@ public class EventController : Controller
 
         try
         {
-            if (newEventForm.PublisherId == null)
-            {
-                newEventForm.PublisherId = await _publisherService.GetPublisherIdAsync(userId);
-            }
+            newEventForm.PublisherId ??= await _publisherService.GetPublisherIdAsync(userId);
 
             string id = await _eventService.CreateAsync(newEventForm);
             TempData[SuccessMessage] = string.Format(CreationSuccessfulMessage, entityName);
@@ -193,6 +190,12 @@ public class EventController : Controller
         try
         {
             var eventFormModel = await _eventService.GetEventInfoAsync(id);
+            if (eventFormModel == null)
+            {
+                TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
+
+                return RedirectToAction(nameof(All));
+            }
 
             string userId = this.User.GetId()!;
             bool isUserAdmin = this.User.IsAdmin();
@@ -241,9 +244,16 @@ public class EventController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(EventFormModel updatedEventForm)
     {
+        bool exists = await _eventService.ExistsAsync(updatedEventForm.Id.ToString());
+        if (!exists)
+        {
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
+
+            return RedirectToAction(nameof(All));
+        }
+
         string userId = this.User.GetId()!;
         bool isUserAdmin = this.User.IsAdmin();
-
         if (!isUserAdmin)
         {
             bool isPublisher = await _publisherService.ExistsByUserId(userId);
@@ -281,10 +291,7 @@ public class EventController : Controller
 
         try
         {
-            if (updatedEventForm.PublisherId == null)
-            {
-                updatedEventForm.PublisherId = await _publisherService.GetPublisherIdAsync(userId);
-            }
+            updatedEventForm.PublisherId ??= await _publisherService.GetPublisherIdAsync(userId);
 
             await _eventService.EditAsync(updatedEventForm);
             TempData[SuccessMessage] = string.Format(EditSuccessfulMessage, entityName);
@@ -314,13 +321,96 @@ public class EventController : Controller
     [HttpGet]
     public async Task<IActionResult> Delete(string id)
     {
-        return View();
+        bool exists = await _eventService.ExistsAsync(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
+
+            return RedirectToAction(nameof(All));
+        }
+
+        string userId = this.User.GetId()!;
+        if (!this.User.IsAdmin())
+        {
+            bool isPublisher = await _publisherService.ExistsByUserId(userId);
+            if (!isPublisher)
+            {
+                TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+            }
+
+            string authorId = await _eventService.GetAuthorIdAsync(id);
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntity<Author>(userId, authorId))
+                                     && (await _publisherService.IsConnectedToEntity<Event>(userId, id));
+            if (!isConnectedPublisher)
+            {
+                TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author and {entityName}");
+
+                return RedirectToAction(nameof(MyPublishings));
+            }
+        }
+
+        try
+        {
+            var eventModel = await _eventService.GetEventInfoAsync(id);
+
+            return View(eventModel);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load your {entityName}");
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
     }
 
     [HttpPost]
-    public async Task<IActionResult> Delete()
+    public async Task<IActionResult> Delete(EventDetailsViewModel eventModel)
     {
-        return null;
+        bool exists = await _eventService.ExistsAsync(eventModel.Id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
+
+            return RedirectToAction(nameof(All));
+        }
+
+        string userId = this.User.GetId()!;
+        if (!this.User.IsAdmin())
+        {
+            bool isPublisher = await _publisherService.ExistsByUserId(userId);
+            if (!isPublisher)
+            {
+                TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+            }
+
+            string authorId = await _eventService.GetAuthorIdAsync(eventModel.Id);
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntity<Author>(userId, authorId))
+                                     && (await _publisherService.IsConnectedToEntity<Event>(userId, eventModel.Id));
+            if (!isConnectedPublisher)
+            {
+                TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author and {entityName}");
+
+                return RedirectToAction(nameof(MyPublishings));
+            }
+        }
+
+        try
+        {
+            await _eventService.DeleteAsync(eventModel.Id);
+
+            return RedirectToAction(nameof(MyPublishings));
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"deleting the {entityName}");
+
+            return View(new { id = eventModel.Id });
+        }
     }
 
     [HttpGet]
@@ -366,6 +456,70 @@ public class EventController : Controller
             return RedirectToAction(nameof(All));
         }
 
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Join(string id)
+    {
+        bool exists = await _eventService.ExistsAsync(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
+
+            return RedirectToAction(nameof(All));
+        }
+
+        string userId = this.User.GetId()!;
+        if (!this.User.IsAdmin())
+        {
+            bool isJoined = await _eventService.IsJoinedAsync(id, userId);
+            if (isJoined)
+            {
+                TempData[ErrorMessage] = AlreadyJoinedErrorMessage;
+
+                return RedirectToAction(nameof(All));
+            }
+        }
+
+        try
+        {
+            await _eventService.JoinAsync(id, userId);
+            TempData[SuccessMessage] = JoinEventSuccessfulMessage;
+
+            return RedirectToAction(nameof(Mine));
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"join the {entityName}");
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Leave(string id)
+    {
+        bool exists = await _eventService.ExistsAsync(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
+
+            return RedirectToAction(nameof(All));
+        }
+
+        try
+        {
+            await _eventService.LeaveAsync(id, this.User.GetId()!);
+            TempData[SuccessMessage] = LeaveEventSuccessfulMessage;
+
+            return RedirectToAction(nameof(Mine));
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"leave the {entityName}");
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
     }
 
     private async Task ValidateModelAsync(EventFormModel eventForm)

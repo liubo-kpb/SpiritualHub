@@ -17,4 +17,6 @@ public interface IAuthorRepository : IRepository<Author>
     Task<Author?>               GetAuthorWithSubscriptionsAsync(string id);
     
     Task<Author?>               GetAuthorWithFollowersAsync(string id);
+
+    Task<Author?>               GetAuthorWithEntitiesAsync<TEntityType>(string id, string propertyName);
 }

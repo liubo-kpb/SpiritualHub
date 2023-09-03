@@ -16,13 +16,16 @@ using Client.ViewModels.Event;
 public class EventService : IEventService
 {
     private readonly IEventRepository _eventRepository;
+    private readonly IRepository<ApplicationUser> _userRepository;
     private readonly IMapper _mapper;
 
     public EventService(
         IEventRepository eventRepository,
+        IRepository<ApplicationUser> userRepository,
         IMapper mapper)
     {
         _eventRepository = eventRepository;
+        _userRepository = userRepository;
         _mapper = mapper;
     }
 
@@ -146,6 +149,17 @@ public class EventService : IEventService
         await _eventRepository.SaveChangesAsync();
     }
 
+    public async Task DeleteAsync(string eventId)
+    {
+        Guid entityId = Guid.Parse(eventId);
+        var eventEntity = await _eventRepository.GetSingleByIdAsync(entityId);
+
+        _eventRepository.DeleteEntriesWithForeignKeys<Rating, Guid>($"{nameof(Event)}ID", entityId);
+        _eventRepository.Delete(eventEntity);
+
+        await _eventRepository.SaveChangesAsync();
+    }
+
     public async Task<IEnumerable<EventViewModel>> AllEventsByUserIdAsync(string userId)
     {
         var events = await _eventRepository
@@ -189,6 +203,35 @@ public class EventService : IEventService
         return eventsModel;
     }
 
+    public async Task<string> GetAuthorIdAsync(string eventId) => (await _eventRepository.GetAuthorIdAsync(eventId))!
+                                                                                                .AuthorID.ToString();
+
+    public async Task<bool> IsJoinedAsync(string eventId, string userId) => await _eventRepository
+                                                                                    .AnyAsync(
+                                                                                        e => e.Participants
+                                                                                                    .Any(u => u.Id.ToString() == userId));
+
+    public async Task<bool> HasLeftAsync(string eventId, string userId) => (await _eventRepository
+                                                                                    .GetEventWithParticipantsAsync(eventId))!
+                                                                                    .Participants.Any(u => !(u.Id.ToString() == userId));
+    public async Task JoinAsync(string eventId, string userId)
+    {
+        var user = await _userRepository.GetSingleByIdAsync(Guid.Parse(userId));
+        var eventEntity = await _eventRepository.GetSingleByIdAsync(Guid.Parse(eventId));
+
+        eventEntity.Participants.Add(user);
+        await _eventRepository.SaveChangesAsync();
+    }
+
+    public async Task LeaveAsync(string eventId, string userId)
+    {
+        var user = await _userRepository.GetSingleByIdAsync(Guid.Parse(userId));
+        var eventEntity = await _eventRepository.GetEventWithParticipantsAsync(eventId);
+
+        eventEntity!.Participants.Remove(user);
+        await _eventRepository.SaveChangesAsync();
+    }
+
     private void SetIsUserJoined(string userId, Event eventEntity, EventViewModel eventModel)
     {
         eventModel.IsUserJoined = eventEntity.Participants.Any(p => p.Id.ToString() == userId);
@@ -209,4 +252,5 @@ public class EventService : IEventService
             eventModel.Participation = "In Person only";
         }
     }
+
 }

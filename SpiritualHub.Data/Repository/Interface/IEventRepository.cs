@@ -1,10 +1,15 @@
 ﻿namespace SpiritualHub.Data.Repository.Interface;
 
 using Data.Models;
+using Microsoft.Extensions.Logging;
 
 public interface IEventRepository : IDeletableRepository<Event>
 {
-    public Task<Event?> GetFullEventDetails(string id);
+    Task<Event?> GetFullEventDetails(string id);
 
-    public Task<Event?> GetEventInfo(string id);
+    Task<Event?> GetEventInfo(string id);
+
+    Task<Event?> GetAuthorIdAsync(string eventId);
+
+    Task<Event?> GetEventWithParticipantsAsync(string eventId);
 }
