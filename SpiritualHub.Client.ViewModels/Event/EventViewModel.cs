@@ -29,7 +29,24 @@ public class EventViewModel
 
     public string ImageURL { get; set; } = null!;
 
-    public string Participation { get; set; } = null!;
+    public string Participation
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(this.LocationName) && this.IsOnline)
+            {
+                return "In Person and Online";
+            }
+            else if (this.IsOnline)
+            {
+                return "Online only";
+            }
+            else
+            {
+                return "In Person only";
+            }
+        }
+    }
 
     public AuthorInfoViewModel Author { get; set; } = null!;
 }
