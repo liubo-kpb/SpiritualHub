@@ -9,9 +9,9 @@ namespace SpiritualHub.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Events_Publishers_OrganizerID",
-                table: "Events");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_Events_Publishers_OrganizerID",
+            //    table: "Events");
 
             migrationBuilder.DeleteData(
                 table: "Subscriptions",

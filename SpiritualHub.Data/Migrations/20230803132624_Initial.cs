@@ -401,7 +401,7 @@ namespace SpiritualHub.Data.Migrations
                     EndDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsOnline = table.Column<bool>(type: "bit", nullable: false),
                     CategoryID = table.Column<int>(type: "int", nullable: false),
-                    AutorID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AuthorID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrganizerID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -409,7 +409,7 @@ namespace SpiritualHub.Data.Migrations
                     table.PrimaryKey("PK_Events", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Events_Authors_AutorID",
-                        column: x => x.AutorID,
+                        column: x => x.AuthorID,
                         principalTable: "Authors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);

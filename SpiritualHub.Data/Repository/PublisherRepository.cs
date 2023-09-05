@@ -21,7 +21,26 @@ public class PublisherRepository : Repository<Publisher>, IPublisherRepository
                                                                                                   .FirstOrDefaultAsync(p => p.UserID.ToString() == userId))!
                                                                                                   .Authors;
 
-    public async Task<bool> IsConnectedPublisherAsync<TEntityType>(string userId, string entityId)
+    public async Task<bool> IsConnectedPublisherByPublisherIdAsync<TEntityType>(string publisherId, string entityId)
+    {
+        string propertyName = typeof(TEntityType).Name + "s";
+
+        var entity = await DbSet
+            .Include(propertyName)
+            .FirstOrDefaultAsync(p => p.Id.ToString() == publisherId);
+
+        var property = entity!.GetType().GetProperty(propertyName);
+
+        var propertyValue = property!.GetValue(entity);
+        if (propertyValue is IEnumerable<object> items)
+        {
+            return items.Any(item => item.GetType().GetProperty("Id")?.GetValue(item)?.ToString() == entityId.ToLower());
+        }
+
+        throw new ArgumentException($"Property {propertyName} is not a collection.");
+    }
+
+    public async Task<bool> IsConnectedPublisherByUserIdAsync<TEntityType>(string userId, string entityId)
     {
         string propertyName = typeof(TEntityType).Name + "s";
 

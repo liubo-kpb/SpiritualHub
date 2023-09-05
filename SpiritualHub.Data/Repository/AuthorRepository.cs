@@ -77,6 +77,14 @@ public class AuthorRepository : Repository<Author>, IAuthorRepository
 
     public async Task<Author?> GetAuthorWithEntitiesAsync<TEntityType>(string id, string propertyName)
     {
+        if (propertyName == "Publishers")
+        {
+            return await DbSet
+                            .Include(a => a.Publishers)
+                            .ThenInclude(p => p.User)
+                            .FirstOrDefaultAsync(a => a.Id.ToString() == id);
+        }
+
         return await DbSet
                         .Include(propertyName)
                         .FirstOrDefaultAsync(a => a.Id.ToString() == id);

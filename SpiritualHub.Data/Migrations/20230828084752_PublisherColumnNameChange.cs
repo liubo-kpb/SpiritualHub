@@ -123,7 +123,7 @@ namespace SpiritualHub.Data.Migrations
                 column: "AuthorsId",
                 principalTable: "Authors",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

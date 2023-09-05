@@ -9,9 +9,9 @@ namespace SpiritualHub.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Authors_Publishers_PublisherID",
-                table: "Authors");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_Authors_Publishers_PublisherID",
+            //    table: "Authors");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Images_Blogs_BlogID",
@@ -33,9 +33,9 @@ namespace SpiritualHub.Data.Migrations
                 name: "IX_Images_BookId",
                 table: "Images");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Authors_PublisherID",
-                table: "Authors");
+            //migrationBuilder.DropIndex(
+            //    name: "IX_Authors_PublisherID",
+            //    table: "Authors");
 
             migrationBuilder.DropColumn(
                 name: "BookId",
@@ -274,10 +274,10 @@ namespace SpiritualHub.Data.Migrations
                 table: "Images",
                 column: "BookId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Authors_PublisherID",
-                table: "Authors",
-                column: "PublisherID");
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_Authors_PublisherID",
+            //    table: "Authors",
+            //    column: "PublisherID");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Authors_Publishers_PublisherID",
