@@ -12,7 +12,7 @@
         bool isUserPublisher = await _publisherService.ExistsByUserId(userId);
         if (isUserPublisher)
         {
-            isUserConnectedPublisher = await _publisherService.IsConnectedToEntity<Event>(userId, Model.Id);
+            isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Event>(userId, Model.Id);
         }
     }
 }
@@ -20,13 +20,9 @@
 <hr />
 <div class="container" style="display:inline">
     <div class="row">
-        <div class="col-4">
-            <img class="card-img-top" style="width: 20rem;"
-                 src="@Model.ImageURL" alt="Event Image">
-        </div>
-        <div class="card col-8 border-0">
-            <p style="font-size:25px;"><u>@Model.Title</u></p>
-            <p>Presenter: <b><a asp-controller="Author" asp-action="Details" asp-route-id="@Model.Author.Id">@Model.Author.Alias</a></b></p>
+        <div class="col-4 d-flex flex-column align-items-center">
+            <img class="card-img-top" style="width: 20rem;" src="@Model.ImageURL" alt="Event Image">
+            <p></p>
             <p>Category: <b>@Model.CategoryName</b></p>
             <p>Participation: <b>@Model.Participation</b></p>
             <p>Start: <b>@Model.StartDateTime.ToString("yy-MM-dd, hh:mm tt")</b></p>
@@ -35,12 +31,6 @@
             {
                 <p>Location: <b><a href="@Model.LocationUrl" target="_blank">@Model.LocationName</a></b></p>
             }
-            <p>@Model.Description</p>
-            <p>Price: @(Model.Price == 0 ? "Free" : $"${Model.Price:F2}")</p>
-            @* <p>
-            Participants:
-            <b>@Model.ParticipantsCount</b>
-            </p> *@
             <div class="form-inline">
                 @if (isUserLoggedIn)
                 {
@@ -49,25 +39,37 @@
                         <a asp-controller="Event" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
                         <a asp-controller="Event" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
                     }
-                    <p></p>
-                    @if (Model.IsUserJoined)
-                    {
-                        <form asp-controller="Event" asp-action="Leave"
-                              asp-route-id="@Model.Id" method="post">
-                            <input class="btn btn-primary mb-1" type="submit" value="Leave" />
-                        </form>
-                    }
-                    else
-                    {
-                        <form class="input-group-sm " asp-controller="Event"
-                              asp-action="Join" asp-route-id="@Model.Id" method="post">
-                            <input class="btn btn-primary mb-1" type="submit" value="Join" />
-                        </form>
-                    }
                 }
             </div>
+        </div>
+        <div class="card col-8 border-0">
+            <p style="font-size:25px;"><u>@Model.Title</u></p>
+            <p>Presenter: <b><a asp-controller="Author" asp-action="Details" asp-route-id="@Model.Author.Id">@Model.Author.Alias</a></b></p>
+            <p>Price: @(Model.Price == 0 ? "Free" : $"${Model.Price:F2}")</p>
+            <p>@Model.Description</p>
+            @* <p>
+            Participants:
+            <b>@Model.ParticipantsCount</b>
+            </p> *@
+            @if (isUserLoggedIn)
+            {
+                @if (Model.IsUserJoined)
+                {
+                    <form asp-controller="Event" asp-action="Leave"
+                          asp-route-id="@Model.Id" method="post">
+                        <input class="btn btn-primary mb-1" type="submit" value="Leave" />
+                    </form>
+                }
+                else
+                {
+                    <form class="input-group-sm " asp-controller="Event"
+                          asp-action="Join" asp-route-id="@Model.Id" method="post">
+                        <input class="btn btn-primary mb-1" type="submit" value="Join" />
+                    </form>
+                }
+            }
             <p></p>
-            <h5 class="card-title">Organizer</h5>
+            <h5 class="card-title">Organizer:</h5>
             <div class="card" style="width: 18rem;">
                 <div class="card-body">
                     @if (!string.IsNullOrWhiteSpace(Model.Publisher.FullName))
