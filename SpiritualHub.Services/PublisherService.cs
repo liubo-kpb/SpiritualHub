@@ -74,8 +74,11 @@ public class PublisherService : IPublisherService
                                                                             .Id
                                                                             .ToString();
 
-    public async Task<bool> IsConnectedToEntity<TEntityType>(string userId, string entityId) => await _publisherRepository
-                                                                                                            .IsConnectedPublisherAsync<TEntityType>(userId, entityId);
+    public async Task<bool> IsConnectedToEntityByPublisherId<TEntityType>(string publisherId, string entityId) => await _publisherRepository
+                                                                                                                            .IsConnectedPublisherByPublisherIdAsync<TEntityType>(publisherId, entityId);
+
+    public async Task<bool> IsConnectedToEntityByUserId<TEntityType>(string userId, string entityId) => await _publisherRepository
+                                                                                                                    .IsConnectedPublisherByUserIdAsync<TEntityType>(userId, entityId);
 
     public async Task<bool> UserHasSubscriptions(string userId) => await _subscriptionRepository
                                                                                 .AnyAsync(s => s.Subscribers

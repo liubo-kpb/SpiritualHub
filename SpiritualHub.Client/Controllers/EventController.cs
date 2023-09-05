@@ -12,6 +12,7 @@ using Data.Models;
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
+using SpiritualHub.Client.ViewModels.Publisher;
 
 [Authorize]
 public class EventController : Controller
@@ -54,7 +55,7 @@ public class EventController : Controller
     {
         string userId = this.User.GetId()!;
         bool isUserAdmin = this.User.IsAdmin();
-        bool isPublisher =  isUserAdmin ? true : await _publisherService.ExistsByUserId(userId);
+        bool isPublisher = isUserAdmin ? true : await _publisherService.ExistsByUserId(userId);
         if (!isPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -95,14 +96,14 @@ public class EventController : Controller
                 return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
             }
 
-            bool isConnectedPublisher = await _publisherService.IsConnectedToEntity<Author>(userId, newEventForm.AuthorId);
+            bool isConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, newEventForm.AuthorId);
             if (!isConnectedPublisher)
             {
                 ModelState.AddModelError(nameof(newEventForm.AuthorId), string.Format(NoEntityFoundErrorMessage, "affiliated author"));
             }
         }
 
-        await ValidateModelAsync(newEventForm);
+        await ValidateModelAsync(newEventForm, isUserAdmin);
         if (!ModelState.IsValid)
         {
             await GetEventFormDetailsAsync(newEventForm, userId, isUserAdmin);
@@ -182,8 +183,8 @@ public class EventController : Controller
                     return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
                 }
 
-                bool isConnectedPublisher = (await _publisherService.IsConnectedToEntity<Author>(userId, eventFormModel.AuthorId))
-                                         && (await _publisherService.IsConnectedToEntity<Event>(userId, eventFormModel.Id.ToString()));
+                bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, eventFormModel.AuthorId))
+                                         && (await _publisherService.IsConnectedToEntityByUserId<Event>(userId, eventFormModel.Id.ToString()));
                 if (!isConnectedPublisher)
                 {
                     TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author and {entityName}");
@@ -227,15 +228,15 @@ public class EventController : Controller
                 return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
             }
 
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntity<Author>(userId, updatedEventForm.AuthorId))
-                                     && (await _publisherService.IsConnectedToEntity<Event>(userId, updatedEventForm.Id.ToString()));
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, updatedEventForm.AuthorId))
+                                     && (await _publisherService.IsConnectedToEntityByUserId<Event>(userId, updatedEventForm.Id.ToString()));
             if (!isConnectedPublisher)
             {
                 ModelState.AddModelError(nameof(updatedEventForm.AuthorId), string.Format(NoEntityFoundErrorMessage, "affiliated author"));
             }
         }
 
-        await ValidateModelAsync(updatedEventForm);
+        await ValidateModelAsync(updatedEventForm, isUserAdmin);
         if (!ModelState.IsValid)
         {
             await GetEventFormDetailsAsync(updatedEventForm, userId, isUserAdmin);
@@ -287,8 +288,8 @@ public class EventController : Controller
             }
 
             string authorId = await _eventService.GetAuthorIdAsync(id);
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntity<Author>(userId, authorId))
-                                     && (await _publisherService.IsConnectedToEntity<Event>(userId, id));
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId))
+                                     && (await _publisherService.IsConnectedToEntityByUserId<Event>(userId, id));
             if (!isConnectedPublisher)
             {
                 TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author and {entityName}");
@@ -335,8 +336,8 @@ public class EventController : Controller
             }
 
             string authorId = await _eventService.GetAuthorIdAsync(eventModel.Id);
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntity<Author>(userId, authorId))
-                                     && (await _publisherService.IsConnectedToEntity<Event>(userId, eventModel.Id));
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId))
+                                     && (await _publisherService.IsConnectedToEntityByUserId<Event>(userId, eventModel.Id));
             if (!isConnectedPublisher)
             {
                 TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author and {entityName}");
@@ -473,7 +474,15 @@ public class EventController : Controller
         if (isUserAdmin)
         {
             eventFormModel.Authors = await _authorService.GetAllAsync();
-            eventFormModel.Publishers = await _publisherService.GetAllAsync();
+
+            if (eventFormModel.AuthorId == null)
+            {
+                eventFormModel.Publishers = await _publisherService.GetAllAsync();
+            }
+            else
+            {
+                eventFormModel.Publishers = await _authorService.GetConnectedEntities<Publisher, PublisherInfoViewModel>(eventFormModel.AuthorId);
+            }
         }
         else
         {
@@ -482,7 +491,7 @@ public class EventController : Controller
         eventFormModel.Categories = await _categoryService.GetAllAsync();
     }
 
-    private async Task ValidateModelAsync(EventFormModel eventForm)
+    private async Task ValidateModelAsync(EventFormModel eventForm, bool isUserAdmin)
     {
         if (eventForm.Price < 0)
         {
@@ -513,9 +522,16 @@ public class EventController : Controller
             ModelState.AddModelError(nameof(eventForm.LocationUrl), string.Format(SpecifyParticipationErrorMessage));
         }
 
-        if (this.User.IsAdmin() && !(await _publisherService.ExistsById(eventForm.PublisherId!)))
+        if (isUserAdmin)
         {
-            ModelState.AddModelError(nameof(eventForm.PublisherId), string.Format(NoEntityFoundErrorMessage, "publisher"));
+            if (!(await _publisherService.ExistsById(eventForm.PublisherId!)))
+            {
+                ModelState.AddModelError(nameof(eventForm.PublisherId), string.Format(NoEntityFoundErrorMessage, "publisher"));
+            }
+            else if (!(await _publisherService.IsConnectedToEntityByPublisherId<Author>(eventForm.PublisherId!, eventForm.AuthorId)))
+            {
+                ModelState.AddModelError(nameof(eventForm.PublisherId), WrongPublisherErrorMessage);
+            }
         }
     }
 }

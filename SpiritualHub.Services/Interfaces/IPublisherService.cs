@@ -18,7 +18,9 @@ public interface IPublisherService
 
     Task<Publisher?>                            GetPublisherAsync(string userId);
 
-    Task<bool>                                  IsConnectedToEntity<TEntityType>(string userId, string entityId);
+    Task<bool>                                  IsConnectedToEntityByUserId<TEntityType>(string userId, string entityId);
+
+    Task<bool>                                  IsConnectedToEntityByPublisherId<TEntityType>(string publisherId, string entityId);
 
     Task<IEnumerable<AuthorInfoViewModel>>      GetConnectedAuthorsAsync(string userId);
 
