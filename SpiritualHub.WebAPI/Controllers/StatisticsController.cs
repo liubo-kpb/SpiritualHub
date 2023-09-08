@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 using Client.ViewModels.Home;
 using Services.Interfaces;
+using SpiritualHub.WebAPI.Responses;
+
+using static Common.ErrorMessagesConstants;
 
 [ApiController]
 [Route("api/statistics")]
@@ -38,9 +41,10 @@ public class StatisticsController : ControllerBase
     [ProducesResponseType(400)]
     public async Task<IActionResult> GetAllRessoursesCount()
     {
+        var response = new SingleResponse<StatisticsViewModel>();
         try
         {
-            StatisticsViewModel model = new StatisticsViewModel()
+            response.Model = new StatisticsViewModel()
             {
                 TotalActiveAuthors = await _authorService.GetAllCountAsync(),
                 TotalEvents = await _eventService.GetAllCountAsync(),
@@ -50,11 +54,13 @@ public class StatisticsController : ControllerBase
                 TotalUsers = await _userService.GetAllCountAsync()
             };
 
-            return Ok(model);
+            return Ok(response);
         }
         catch (Exception)
         {
-            return BadRequest();
+            response.AddError(string.Format(GeneralUnexpectedErrorMessage, "load statistics on the server"));
+
+            return Ok(response.Error);
         }
     }
 }

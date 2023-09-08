@@ -21,18 +21,20 @@ public class AuthorService : IAuthorService
 {
     private readonly IAuthorRepository _authorRepository;
     private readonly IRepository<ApplicationUser> _userRepository;
-    private readonly UserManager<ApplicationUser> _userManager;
     private readonly IMapper _mapper;
+
+    private readonly UserManager<ApplicationUser> _userManager;
 
     public AuthorService(IAuthorRepository repository,
                          IRepository<ApplicationUser> userRepository,
-                         UserManager<ApplicationUser> userManager,
-                         IMapper mapper)
+                         IMapper mapper,
+                         UserManager<ApplicationUser> userManager = null!)
     {
         _authorRepository = repository;
         _userRepository = userRepository;
-        _userManager = userManager;
         _mapper = mapper;
+
+        _userManager = userManager;
     }
 
     public async Task<IEnumerable<AuthorViewModel>> AllAuthorsByPublisherIdAsync(string userId, string publisherId)
@@ -314,13 +316,20 @@ public class AuthorService : IAuthorService
         await _authorRepository.SaveChangesAsync();
     }
 
-    public async Task GetConnectedEntities<TEntityType>(string authorId, string entityId)
+    public async Task<IEnumerable<TViewModel>> GetConnectedEntities<TEntityType, TViewModel>(string authorId)
     {
         string propertyName = typeof(TEntityType).Name + 's';
 
         var author = await _authorRepository.GetAuthorWithEntitiesAsync<TEntityType>(authorId, propertyName);
 
-        //TBD
+        var property = author!.GetType().GetProperty(propertyName);
+        var propertyValue = property!.GetValue(author) as IEnumerable<TEntityType>;
+
+        var viewModel = new List<TViewModel>();
+
+        _mapper.MapListToViewModel<TEntityType, TViewModel>(propertyValue!, viewModel);
+
+        return viewModel;
     }
 
     private void SetIsUserFollowingAndSubscribed(string userId, Author author, AuthorViewModel authorModel)

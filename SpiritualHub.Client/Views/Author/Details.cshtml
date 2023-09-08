@@ -13,7 +13,7 @@
         isUserPublisher = await _publisherService.ExistsByUserId(userId);
         if (isUserPublisher)
         {
-            isUserConnectedPublisher = await _publisherService.IsConnectedToEntity<Author>(userId, Model.Id);
+            isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, Model.Id);
         }
     }
 }
@@ -21,15 +21,9 @@
 <hr />
 <div class="container" style="display:inline">
     <div class="row">
-        <div class="col-4">
-            <img class="card-img-top" style="width: 20rem;"
-                 src="@Model.AvatarImageUrl" alt="Author Image">
-        </div>
-        <div class="card col-8 border-0">
-            <p style="font-size:25px;"><u>@Model.Name</u></p>
-            <p>(@(Model.IsActive ? "Currently active" : "Not currently active"))</p>
-            <p>Alias: <b>@Model.Alias</b></p>
-            <p>@Model.Description</p>
+        <div class="col-4 d-flex flex-column align-items-center">
+            <img class="card-img-top" style="width: 20rem;" src="@Model.AvatarImageUrl" alt="Author Image">
+            <p></p>
             <p>
                 Followers:
                 <b>@Model.FollowerCount</b>
@@ -44,15 +38,17 @@
                 {
                     @if (isUserConnectedPublisher || this.User.IsAdmin())
                     {
-                        <a asp-controller="Author" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
-                        @if (Model.IsActive)
-                        {
-                            <a asp-controller="Author" asp-action="Disable" asp-route-id="@Model.Id" class="btn btn-danger">Disable</a>
-                        }
-                        else
-                        {
-                            <a asp-controller="Author" asp-action="Activate" asp-route-id="@Model.Id" class="btn btn-warning">Activate</a>
-                        }
+                        <div class="d-flex justify-content-around">
+                            <a asp-controller="Author" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                            @if (Model.IsActive)
+                            {
+                                <a asp-controller="Author" asp-action="Disable" asp-route-id="@Model.Id" class="btn btn-danger">Disable</a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Author" asp-action="Activate" asp-route-id="@Model.Id" class="btn btn-warning">Activate</a>
+                            }
+                        </div>
                     }
                     @if (isUserConnectedPublisher)
                     {
@@ -63,21 +59,19 @@
                     else if (isUserPublisher)
                     {
                         <form asp-controller="Author" asp-action="BecomeConnectedPublisher" asp-route-id="@Model.Id" method="post">
-                            <input class="btn btn-warning mt-2" type="submit" value="Become a Connected Publisher" />
+                            <input class="btn btn-warning mt-2" type="submit" value="Become a Publisher" />
                         </form>
                     }
                     <p></p>
                     @if (Model.IsUserFollowing)
                     {
-                        <form asp-controller="Author" asp-action="Unfollow"
-                              asp-route-id="@Model.Id" method="post">
+                        <form class="input-group-sm d-flex flex-column align-items-center" asp-controller="Author" asp-action="Unfollow" asp-route-id="@Model.Id" method="post">
                             <input class="btn btn-primary mb-1" type="submit" value="Unfollow" />
                         </form>
                     }
                     else
                     {
-                        <form class="input-group-sm " asp-controller="Author"
-                              asp-action="Follow" asp-route-id="@Model.Id" method="post">
+                        <form class="input-group-sm d-flex flex-column align-items-center" asp-controller="Author" asp-action="Follow" asp-route-id="@Model.Id" method="post">
                             <input class="btn btn-primary mb-1" type="submit" value="Follow" />
                         </form>
                     }
@@ -86,7 +80,7 @@
                     {
                         @if (Model.IsUserSubscribed)
                         {
-                            <form class="input-group-sm" asp-controller="Author"
+                            <form class="input-group-sm d-flex flex-column align-items-center" asp-controller="Author"
                                   asp-action="Subscribe" asp-route-id="@Model.Id" method="get">
                                 <input class="btn btn-primary mb-1" type="submit" value="Change Subscription" />
                             </form>
@@ -97,7 +91,7 @@
                         }
                         else
                         {
-                            <form class="input-group-sm" asp-controller="Author"
+                            <form class="input-group-sm d-flex flex-column align-items-center" asp-controller="Author"
                                   asp-action="Subscribe" asp-route-id="@Model.Id" method="get">
                                 <input class="btn btn-primary mb-1" type="submit" value="Subscribe" />
                             </form>
@@ -105,21 +99,56 @@
                     }
                 }
             </div>
-            <p></p>
-            <h5 class="card-title">Publishers</h5>
-            @foreach (var publisher in Model.Publishers)
-            {
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        @if (!string.IsNullOrWhiteSpace(publisher.FullName))
-                        {
-                            <p class="card-text">Name: @publisher.FullName</p>
-                        }
-                        <p class="card-text">Email: @publisher.Email</p>
-                        <p class="card-text">Phone Number: @publisher.PhoneNumber</p>
-                    </div>
+        </div>
+        <div class="card col-8 border-0">
+            <p style="font-size:25px;"><u>@Model.Name</u></p>
+            <p>(@(Model.IsActive ? "Currently active" : "Not currently active"))</p>
+            <p>Alias: <b>@Model.Alias</b></p>
+            <p>@Model.Description</p>
+            <div class="mb-4">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="event-tab" data-bs-toggle="tab" data-bs-target="#events" type="button" role="tab" aria-controls="event" aria-selected="false">Events</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="course-tab" data-bs-toggle="tab" data-bs-target="#courses" type="button" role="tab" aria-controls="course" aria-selected="false">Courses</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="book-tab" data-bs-toggle="tab" data-bs-target="#books" type="button" role="tab" aria-controls="book" aria-selected="false">Books</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="sub-tab" data-bs-toggle="tab" data-bs-target="#subs" type="button" role="tab" aria-controls="sub" aria-selected="false">Subscriptions</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade" id="events" role="tabpanel" aria-labelledby="event-tab"></div>
+                    <div class="tab-pane fade" id="courses" role="tabpanel" aria-labelledby="course-tab"></div>
+                    <div class="tab-pane fade" id="books" role="tabpanel" aria-labelledby="book-tab"></div>
+                    <div class="tab-pane fade" id="subs" role="tabpanel" aria-labelledby="sub-tab"></div>
                 </div>
-            }
+            </div>
+            <p></p>
+            <h5 class="card-title">Publishers:</h5>
+            <div class="d-flex flex-row flex-wrap">
+                @foreach (var publisher in Model.Publishers)
+                {
+                    <div class="card" style="width: 17rem;">
+                        <div class="card-body">
+                            @if (!string.IsNullOrWhiteSpace(publisher.FullName))
+                            {
+                                <p class="card-text">Name: @publisher.FullName</p>
+                            }
+                            <p class="card-text">Email: @publisher.Email</p>
+                            <p class="card-text">Phone Number: @publisher.PhoneNumber</p>
+                        </div>
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </div>
+
+@section Scripts
+{
+    <script>authorRessources(`@Model.Id`);</script>
+}

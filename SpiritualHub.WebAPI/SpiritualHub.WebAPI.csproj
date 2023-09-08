@@ -15,6 +15,7 @@
     <ProjectReference Include="..\SpiritualHub.Client.Infrastructure\SpiritualHub.Client.Infrastructure.csproj" />
     <ProjectReference Include="..\SpiritualHub.Client.ViewModels\SpiritualHub.Client.ViewModels.csproj" />
     <ProjectReference Include="..\SpiritualHub.Services\SpiritualHub.Services.csproj" />
+    <ProjectReference Include="..\SpiritualHub.WebAPI.Responses\SpiritualHub.WebAPI.Responses.csproj" />
   </ItemGroup>
 
 </Project>

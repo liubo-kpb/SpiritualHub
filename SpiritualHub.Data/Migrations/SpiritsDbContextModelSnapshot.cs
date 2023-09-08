@@ -34,7 +34,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("FollowersId");
 
-                    b.ToTable("ApplicationUserAuthor");
+                    b.ToTable("ApplicationUserAuthor", (string)null);
                 });
 
             modelBuilder.Entity("ApplicationUserEvent", b =>
@@ -49,7 +49,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("ParticipantsId");
 
-                    b.ToTable("ApplicationUserEvent");
+                    b.ToTable("ApplicationUserEvent", (string)null);
                 });
 
             modelBuilder.Entity("ApplicationUserSubscription", b =>
@@ -64,7 +64,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("SubscriptionsId");
 
-                    b.ToTable("ApplicationUserSubscription");
+                    b.ToTable("ApplicationUserSubscription", (string)null);
                 });
 
             modelBuilder.Entity("AuthorPublisher", b =>
@@ -79,7 +79,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("PublishersId");
 
-                    b.ToTable("AuthorPublisher");
+                    b.ToTable("AuthorPublisher", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -387,7 +387,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("CategoryID");
 
-                    b.ToTable("Authors");
+                    b.ToTable("Authors", (string)null);
 
                     b.HasData(
                         new
@@ -462,7 +462,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("PublisherID");
 
-                    b.ToTable("Blogs");
+                    b.ToTable("Blogs", (string)null);
                 });
 
             modelBuilder.Entity("SpiritualHub.Data.Models.BlogPostImage", b =>
@@ -477,7 +477,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("BlogID");
 
-                    b.ToTable("BlogPostImage");
+                    b.ToTable("BlogPostImage", (string)null);
                 });
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Book", b =>
@@ -529,7 +529,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("PublisherID");
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", (string)null);
 
                     b.HasData(
                         new
@@ -587,7 +587,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
 
                     b.HasData(
                         new
@@ -650,7 +650,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Course", b =>
@@ -703,7 +703,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("PublisherID");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Event", b =>
@@ -764,7 +764,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("PublisherID");
 
-                    b.ToTable("Events");
+                    b.ToTable("Events", (string)null);
 
                     b.HasData(
                         new
@@ -834,7 +834,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images");
+                    b.ToTable("Images", (string)null);
 
                     b.HasData(
                         new
@@ -911,7 +911,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Publishers");
+                    b.ToTable("Publishers", (string)null);
 
                     b.HasData(
                         new
@@ -968,7 +968,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Ratings");
+                    b.ToTable("Ratings", (string)null);
                 });
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Subscription", b =>
@@ -992,7 +992,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("SubscriptionTypeID");
 
-                    b.ToTable("Subscriptions");
+                    b.ToTable("Subscriptions", (string)null);
 
                     b.HasCheckConstraint("CK__PossibleTypes", "Type = 'Monthly' OR Type = 'Quarterly' OR Type = 'Annual'");
 
@@ -1076,7 +1076,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SubscriptionTypes");
+                    b.ToTable("SubscriptionTypes", (string)null);
 
                     b.HasData(
                         new

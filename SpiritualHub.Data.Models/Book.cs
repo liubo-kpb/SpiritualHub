@@ -20,7 +20,7 @@ public class Book
 
     [Required]
     [StringLength(TitleMaxLength, MinimumLength = TitleMinLength)]
-    public string Title { get; set; }
+    public string Title { get; set; } = null!;
 
     public string Description { get; set; } = null!;
 
@@ -34,11 +34,11 @@ public class Book
 
     public Guid AuthorID { get; set; }
 
-    public virtual Author Author { get; set; }
+    public virtual Author Author { get; set; } = null!;
 
     public Guid ImageID { get; set; }
 
-    public virtual Image Image { get; set; }
+    public virtual Image Image { get; set; } = null!;
 
     public Guid PublisherID { get; set; }
 
@@ -46,7 +46,7 @@ public class Book
 
     public int CategoryID { get; set; }
 
-    public virtual Category Category { get; set; }
+    public virtual Category Category { get; set; } = null!;
 
     public virtual ICollection<Rating> Ratings { get; set; }
 }

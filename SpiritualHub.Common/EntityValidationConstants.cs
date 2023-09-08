@@ -54,7 +54,7 @@ public static class EntityValidationConstants
 
     public static class Event
     {
-        public const int TitleMaxLength = 50;
+        public const int TitleMaxLength = 80;
         public const int TitleMinLength = 5;
 
         public const int DescriptionMinLength = 30;

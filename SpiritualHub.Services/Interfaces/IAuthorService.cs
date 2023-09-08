@@ -48,5 +48,5 @@ public interface IAuthorService
 
     Task                                    RemovePublisherAsync(string authorId, Guid publisherId);
 
-    Task                                    GetConnectedEntities<TEntityType>(string authorId, string entityId);
+    Task<IEnumerable<TViewModel>>           GetConnectedEntities<TEntityType, TViewModel>(string authorId);
 }

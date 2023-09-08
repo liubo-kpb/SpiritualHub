@@ -203,7 +203,7 @@ public class AuthorController : Controller
         }
 
         string userId = this.User.GetId()!;
-        bool isConnectedPublisher = this.User.IsAdmin() ? true : await _publisherService.IsConnectedToEntity<Author>(userId, id);
+        bool isConnectedPublisher = this.User.IsAdmin() ? true : await _publisherService.IsConnectedToEntityByUserId<Author>(userId, id);
         if (!isConnectedPublisher)
         {
             TempData[ErrorMessage] = string.Format(string.Format(NotAConnectedPublisherErrorMessage, entityName), entityName);
@@ -239,7 +239,7 @@ public class AuthorController : Controller
         }
 
         string userId = this.User.GetId()!;
-        bool isConnectedPublisher = this.User.IsAdmin() ? true : await _publisherService.IsConnectedToEntity<Author>(userId, id);
+        bool isConnectedPublisher = this.User.IsAdmin() ? true : await _publisherService.IsConnectedToEntityByUserId<Author>(userId, id);
         if (!isConnectedPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -288,7 +288,7 @@ public class AuthorController : Controller
         }
 
         string userId = this.User.GetId()!;
-        bool isConnectedPublisher = this.User.IsAdmin() ? true : await _publisherService.IsConnectedToEntity<Author>(userId, id);
+        bool isConnectedPublisher = this.User.IsAdmin() ? true : await _publisherService.IsConnectedToEntityByUserId<Author>(userId, id);
         if (!isConnectedPublisher)
         {
             TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, entityName);
@@ -313,7 +313,7 @@ public class AuthorController : Controller
         }
 
         string userId = this.User.GetId()!;
-        bool isConnectedPublisher = this.User.IsAdmin() ? true : await _publisherService.IsConnectedToEntity<Author>(userId, author.Id);
+        bool isConnectedPublisher = this.User.IsAdmin() ? true : await _publisherService.IsConnectedToEntityByUserId<Author>(userId, author.Id);
         if (!isConnectedPublisher)
         {
             TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, entityName);
@@ -339,7 +339,7 @@ public class AuthorController : Controller
         }
 
         string userId = this.User.GetId()!;
-        bool isConnectedPublisher = this.User.IsAdmin() ? true : await _publisherService.IsConnectedToEntity<Author>(userId, id);
+        bool isConnectedPublisher = this.User.IsAdmin() ? true : await _publisherService.IsConnectedToEntityByUserId<Author>(userId, id);
         if (!isConnectedPublisher)
         {
             TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, entityName);
@@ -364,7 +364,7 @@ public class AuthorController : Controller
         }
 
         string userId = this.User.GetId()!;
-        bool isConnectedPublisher = this.User.IsAdmin() ? true : await _publisherService.IsConnectedToEntity<Author>(userId, author.Id);
+        bool isConnectedPublisher = this.User.IsAdmin() ? true : await _publisherService.IsConnectedToEntityByUserId<Author>(userId, author.Id);
         if (!isConnectedPublisher)
         {
             TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, entityName);
@@ -555,7 +555,7 @@ public class AuthorController : Controller
                 RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
             }
 
-            bool isConnectedPublisher = await _publisherService.IsConnectedToEntity<Author>(userId, id);
+            bool isConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, id);
             if (isConnectedPublisher)
             {
                 TempData[ErrorMessage] = AlreadyAConnectedPublisherErrorMessage;
@@ -586,7 +586,7 @@ public class AuthorController : Controller
                 RedirectToAction(nameof(PublisherController.Become), "Publisher");
             }
 
-            bool isConnectedPublisher = await _publisherService.IsConnectedToEntity<Author>(userId, id);
+            bool isConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, id);
             if (!isConnectedPublisher)
             {
                 TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, entityName);
