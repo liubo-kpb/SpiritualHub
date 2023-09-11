@@ -31,12 +31,15 @@ function statistics() {
 }
 
 async function authorRessources(id) {
-    let type = ""; z
+    let type = "";
     $("#event-tab").on("click", async function (e) {
         e.preventDefault();
         e.stopPropagation();
 
         type = `events`;
+        $(`#${type}`).append(`<p></p>`);
+        addLoader(type);
+
         const response = await getRessources(id, type);
         if (!response) {
             switch (type) {
@@ -64,7 +67,7 @@ async function authorRessources(id) {
         }
         else if (response.hasError) {
             response.errorMessages.forEach((error) => {
-                $(`#${type}`).append(`<p></p><p>${error}</p>`);
+                $(`#${type}`).append(`<p>${error}</p>`);
             });
         }
         else {
@@ -73,7 +76,7 @@ async function authorRessources(id) {
             switch (type) {
                 case "events": {
                     response.data.forEach((event) => {
-                        $(`#${type}`).append(`<p></p><div class="d-flex flex-row justify-content-around">
+                        $(`#${type}`).append(`<div class="d-flex flex-row justify-content-between">
                                                     <p class="w-25"><b><a href="/Event/Details/${event.id}">${event.title}</a></b></p>
                                                     <p>Start: ${formatDate(event.startDateTime)}</p>
                                                     <p>End: ${formatDate(event.endDateTime)}</p>
@@ -100,7 +103,16 @@ async function authorRessources(id) {
                 }
             }
         }
+        removeLoader(type);
     });
+}
+
+function addLoader(type) {
+    $(`#${type}`).addClass(`spinner-grow`);
+}
+
+function removeLoader(type) {
+    $(`#${type}`).removeClass(`spinner-grow`);
 }
 
 async function getRessources(id, type) {
