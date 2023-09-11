@@ -1,11 +1,12 @@
-﻿function statistics() {
+﻿const webAPIDomain = `https://localhost:7177/api/`;
+function statistics() {
     $('#statistics_btn').on('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
 
         // hasClass('d-none') -> Statistics are hidden
         if ($('#statistics_box').hasClass('d-none')) {
-            $.get('https://localhost:7177/api/statistics', function (data) {
+            $.get(`${webAPIDomain}statistics`, function (data) {
                 $('#total_authors').text(data.model.totalActiveAuthors + " Active Authors");
                 $('#total_events').text(data.model.totalEvents + " Events");
                 $('#total_courses').text(data.model.totalCourses + " Courses");
@@ -30,24 +31,17 @@
 }
 
 async function authorRessources(id) {
-    let type = "";
+    let type = ""; z
     $("#event-tab").on("click", async function (e) {
         e.preventDefault();
         e.stopPropagation();
 
         type = `events`;
         const response = await getRessources(id, type);
-        if (response && response.hasError) {
-            response.errorMessage.forEach((error) => {
-                $(`#${type}`).append(`<p>${error}</p>`);
-            });
-        }
-        else if (!response) {
-
-
+        if (!response) {
             switch (type) {
                 case "events": {
-                        document.getElementById(type).innerHTML = `<p></p><p>Author has no upcoming events at this time.</p>`;
+                    document.getElementById(type).innerHTML = `<p></p><p>Author has no upcoming events at this time.</p>`;
                     break;
                 }
                 case "courses": {
@@ -67,6 +61,11 @@ async function authorRessources(id) {
                     break;
                 }
             }
+        }
+        else if (response.hasError) {
+            response.errorMessages.forEach((error) => {
+                $(`#${type}`).append(`<p></p><p>${error}</p>`);
+            });
         }
         else {
             document.getElementById(type).innerHTML = "";
@@ -104,16 +103,23 @@ async function authorRessources(id) {
     });
 }
 
-const webAPIDomain = `https://localhost:7177/api/`;
 async function getRessources(id, type) {
-    const response = new Promise(function (resolve, reject) {
+    const response = new Promise(async function (resolve, reject) {
         $.ajax({
             url: `${webAPIDomain}author/${id}/${type}`,
             method: 'GET',
             success: function (data) {
                 resolve(data);
             },
-            error: function (xhr, status, error) {
+            error: async function (xhr, status, error) {
+                if (!xhr.ok && xhr.responseJSON.hasError) {
+                    const response = {
+                        hasError: xhr.responseJSON.hasError,
+                        errorMessages: xhr.responseJSON.errorMessages
+                    }
+                    resolve(response);
+                }
+
                 reject({
                     statusCode: xhr.status,
                     statusText: xhr.statusText,
@@ -133,9 +139,8 @@ function formatDate(inputDate) {
     const day = String(date.getDate()).padStart(2, '0');
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
 
-    const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}`;
 
     return formattedDateTime;
 }

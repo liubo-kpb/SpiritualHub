@@ -52,7 +52,7 @@ public class AuthorController : ControllerBase
         catch (Exception)
         {
             response.AddError(string.Format(GeneralUnexpectedErrorMessage, $"load {entityName}'s events on the server"));
-            return Ok(response.Error);
+            return BadRequest(response.Error);
         }
     }
 }

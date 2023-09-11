@@ -60,7 +60,7 @@ public class StatisticsController : ControllerBase
         {
             response.AddError(string.Format(GeneralUnexpectedErrorMessage, "load statistics on the server"));
 
-            return Ok(response.Error);
+            return BadRequest(response.Error);
         }
     }
 }
