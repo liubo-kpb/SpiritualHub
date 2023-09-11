@@ -32,87 +32,54 @@ function statistics() {
 
 async function authorRessources(id) {
     let type = "";
+
     $("#event-tab").on("click", async function (e) {
         e.preventDefault();
         e.stopPropagation();
 
         type = `events`;
-        $(`#${type}`).append(`<p></p>`);
+        document.getElementById(type).innerHTML = "";
         addLoader(type);
 
         const response = await getRessources(id, type);
         if (!response) {
-            switch (type) {
-                case "events": {
-                    document.getElementById(type).innerHTML = `<p></p><p>Author has no upcoming events at this time.</p>`;
-                    break;
-                }
-                case "courses": {
-
-                    break;
-                }
-                case "books": {
-
-                    break;
-                }
-                case "posts": {
-
-                    break;
-                }
-                case "subscriptions": {
-
-                    break;
-                }
-            }
+            noRessourcessMessage(type);
         }
         else if (response.hasError) {
-            response.errorMessages.forEach((error) => {
-                $(`#${type}`).append(`<p>${error}</p>`);
-            });
+            displayErrors(response, type);
         }
         else {
-            document.getElementById(type).innerHTML = "";
-
-            switch (type) {
-                case "events": {
-                    response.data.forEach((event) => {
-                        $(`#${type}`).append(`<div class="d-flex flex-row justify-content-between">
-                                                    <p class="w-25"><b><a href="/Event/Details/${event.id}">${event.title}</a></b></p>
-                                                    <p>Start: ${formatDate(event.startDateTime)}</p>
-                                                    <p>End: ${formatDate(event.endDateTime)}</p>
-                                                    <p>Price: <b>$${event.price}<b></p>
-                                               </div>`);
-                    });
-                    break;
-                }
-                case "courses": {
-
-                    break;
-                }
-                case "books": {
-
-                    break;
-                }
-                case "posts": {
-
-                    break;
-                }
-                case "subscriptions": {
-
-                    break;
-                }
-            }
+            response.data.forEach((event) => {
+                $(`#${type}`).append(`<div class="d-flex flex-row justify-content-between">
+                                          <p class="w-25"><b><a href="/Event/Details/${event.id}">${event.title}</a></b></p>
+                                          <p>Start: ${formatDate(event.startDateTime)}</p>
+                                          <p>End: ${formatDate(event.endDateTime)}</p>
+                                          <p>Price: <b>$${event.price}<b></p>
+                                     </div>`);
+            });
         }
         removeLoader(type);
     });
+
+
+}
+
+function displayErrors(response, type) {
+    response.errorMessages.forEach((error) => {
+        $(`#${type}`).append(`<p>${error}</p>`);
+    });
+}
+
+function noRessourcessMessage(type) {
+    document.getElementById(type).innerHTML = `<p></p><p><b>Author has no ${type} at this time.</b></p>`;
 }
 
 function addLoader(type) {
-    $(`#${type}`).addClass(`spinner-grow`);
+    $(`#${type}`).addClass(`spinner-border`);
 }
 
 function removeLoader(type) {
-    $(`#${type}`).removeClass(`spinner-grow`);
+    $(`#${type}`).removeClass(`spinner-border`);
 }
 
 async function getRessources(id, type) {
@@ -125,11 +92,11 @@ async function getRessources(id, type) {
             },
             error: async function (xhr, status, error) {
                 if (!xhr.ok && xhr.responseJSON.hasError) {
-                    const response = {
+                    const data = {
                         hasError: xhr.responseJSON.hasError,
                         errorMessages: xhr.responseJSON.errorMessages
                     }
-                    resolve(response);
+                    resolve(data);
                 }
 
                 reject({
