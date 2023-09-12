@@ -4,15 +4,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Infrastructure.Extensions;
-using ViewModels.Author;
 using ViewModels.Event;
+using ViewModels.Publisher;
 using Services.Interfaces;
 using Data.Models;
 
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
-using SpiritualHub.Client.ViewModels.Publisher;
 
 [Authorize]
 public class EventController : Controller

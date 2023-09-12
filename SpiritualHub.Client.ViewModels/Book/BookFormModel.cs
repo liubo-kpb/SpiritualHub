@@ -1,0 +1,6 @@
+﻿namespace SpiritualHub.Client.ViewModels.Book;
+
+
+public class BookFormModel
+{
+}
