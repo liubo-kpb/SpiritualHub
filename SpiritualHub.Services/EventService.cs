@@ -37,17 +37,17 @@ public class EventService : IEventService
 
         if (!string.IsNullOrWhiteSpace(queryModel.CategoryName))
         {
-            eventsQuery = eventsQuery.Where(a => a.Category.Name == queryModel.CategoryName);
+            eventsQuery = eventsQuery.Where(e => e.Category != null && e.Category!.Name == queryModel.CategoryName);
         }
 
         if (!string.IsNullOrWhiteSpace(queryModel.SearchTerm))
         {
             string wildCard = $"%{queryModel.SearchTerm.ToLower()}%";
 
-            eventsQuery = eventsQuery.Where(a => EF.Functions.Like(a.Title, wildCard)
-                                      || EF.Functions.Like(a.Description, wildCard)
-                                      || EF.Functions.Like(a.LocationName!, wildCard)
-                                      || EF.Functions.Like(a.Author.Name, wildCard));
+            eventsQuery = eventsQuery.Where(e => EF.Functions.Like(e.Title.ToLower(), wildCard)
+                                      || EF.Functions.Like(e.Description.ToLower(), wildCard)
+                                      || EF.Functions.Like(e.LocationName != null ? e.LocationName!.ToLower() : "", wildCard)
+                                      || EF.Functions.Like(e.Author.Name.ToLower(), wildCard));
         }
 
         eventsQuery = queryModel.SortingOption switch

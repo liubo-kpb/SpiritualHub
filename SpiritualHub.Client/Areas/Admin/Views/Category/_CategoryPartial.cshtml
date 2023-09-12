@@ -1,0 +1,9 @@
+﻿@model CategoryServiceModel
+
+<td class="w-75"><label>@Model.Name</label></td>
+<td class="w-25">
+    <form class="input-group-sm " asp-area="Admin" asp-controller="Category" asp-action="Delete" asp-route-id="@Model.Id" method="post">
+        <a asp-area="Admin" asp-controller="Category" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+        <input class="btn btn-danger" type="submit" value="Delete" />
+    </form>
+</td>

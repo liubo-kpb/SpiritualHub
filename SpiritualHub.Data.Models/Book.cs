@@ -46,7 +46,7 @@ public class Book
 
     public int CategoryID { get; set; }
 
-    public virtual Category Category { get; set; } = null!;
+    public virtual Category? Category { get; set; } = null!;
 
     public virtual ICollection<Rating> Ratings { get; set; }
 }

@@ -152,16 +152,16 @@ public class AuthorService : IAuthorService
 
         if (!string.IsNullOrWhiteSpace(queryModel.CategoryName))
         {
-            authorsQuery = authorsQuery.Where(a => a.Category.Name == queryModel.CategoryName);
+            authorsQuery = authorsQuery.Where(a => a.Category != null && a.Category!.Name == queryModel.CategoryName);
         }
 
         if (!string.IsNullOrWhiteSpace(queryModel.SearchTerm))
         {
             string wildCard = $"%{queryModel.SearchTerm.ToLower()}%";
 
-            authorsQuery = authorsQuery.Where(a => EF.Functions.Like(a.Alias, wildCard)
-                                      || EF.Functions.Like(a.Name, wildCard)
-                                      || EF.Functions.Like(a.Description, wildCard));
+            authorsQuery = authorsQuery.Where(a => EF.Functions.Like(a.Alias.ToLower(), wildCard)
+                                      || EF.Functions.Like(a.Name.ToLower(), wildCard)
+                                      || EF.Functions.Like(a.Description.ToLower(), wildCard));
         }
 
         authorsQuery = queryModel.SortingOption switch

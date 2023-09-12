@@ -34,7 +34,7 @@ public class Blog
     [Required]
     public int CategoryID { get; set; }
 
-    public virtual Category Category { get; set; }
+    public virtual Category? Category { get; set; }
 
     [Required]
     public Guid PublisherID { get; set; }

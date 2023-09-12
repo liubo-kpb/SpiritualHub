@@ -39,7 +39,7 @@ public class Author
     [Required]
     public int CategoryID { get; set; }
 
-    public virtual Category Category { get; set; } = null!;
+    public virtual Category? Category { get; set; } = null!;
 
     public Guid AvatarImageID { get; set; }
 

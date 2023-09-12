@@ -4,6 +4,7 @@ public class SuccessMessageConstants
 {
     public const string CreationSuccessfulMessage = "You have successfully created the {0}.";
     public const string EditSuccessfulMessage = "You have successfully editted the {0}.";
+    public const string DeleteSuccessfulMessage = "You have successfully deleted the {0}.";
 
     public const string JoinEventSuccessfulMessage = "You have successfully joined the event.";
     public const string LeaveEventSuccessfulMessage = "You have successfully left the event.";

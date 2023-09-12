@@ -47,7 +47,7 @@ public class Course
     [Required]
     public int CategoryID { get; set; }
 
-    public virtual Category Category { get; set; }
+    public virtual Category? Category { get; set; }
     
     public virtual Guid ImageID { get; set; }
     

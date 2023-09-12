@@ -47,7 +47,7 @@ public class Event
     [Required]
     public int CategoryID { get; set; }
 
-    public virtual Category Category { get; set; } = null!;
+    public virtual Category? Category { get; set; } = null!;
 
     [Required]
     public Guid AuthorID { get; set; }

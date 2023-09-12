@@ -1,0 +1,43 @@
+﻿@model AllCategoryQueryModel
+@{
+    ViewBag.Title = "All Categories";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+<form method="get">
+    <div class="row justify-content-center">
+        <div class="form-group col-md-3">
+            <label asp-for="SearchTerm"></label>
+            <input asp-for="SearchTerm" class="form-control" placeholder="...">
+        </div>
+        <div class="col-md-3">
+            <div class="form-group mt-3 p-2">
+                <input type="submit" value="Search" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</form>
+@if (!Model.Categories.Any())
+{
+    <h2 class="text-center">No categories found!</h2>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th><label>Name</label></th>
+                <th><label>Actions</label></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in Model.Categories)
+            {
+                <tr>
+                    <partial name="_CategoryPartial" model="@category" />
+                </tr>
+            }
+        </tbody>
+    </table>
+}
