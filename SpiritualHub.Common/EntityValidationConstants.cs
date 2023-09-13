@@ -33,6 +33,9 @@ public static class EntityValidationConstants
     {
         public const int TitleMaxLength = 30;
         public const int TitleMinLength = 5;
+        public const int ShortDescriptionMaxLength = 50;
+        public const int ShortDescriptionMinLength = 15;
+        public const int DescriptionMinLength = 50;
     }
 
     public static class Course

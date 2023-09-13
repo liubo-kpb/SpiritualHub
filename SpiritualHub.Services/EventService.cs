@@ -44,10 +44,10 @@ public class EventService : IEventService
         {
             string wildCard = $"%{queryModel.SearchTerm.ToLower()}%";
 
-            eventsQuery = eventsQuery.Where(e => EF.Functions.Like(e.Title.ToLower(), wildCard)
-                                      || EF.Functions.Like(e.Description.ToLower(), wildCard)
-                                      || EF.Functions.Like(e.LocationName != null ? e.LocationName!.ToLower() : "", wildCard)
-                                      || EF.Functions.Like(e.Author.Name.ToLower(), wildCard));
+            eventsQuery = eventsQuery.Where(e => EF.Functions.Like(e.Title, wildCard)
+                                      || EF.Functions.Like(e.Description, wildCard)
+                                      || EF.Functions.Like(e.LocationName != null ? e.LocationName! : "", wildCard)
+                                      || EF.Functions.Like(e.Author.Name, wildCard));
         }
 
         eventsQuery = queryModel.SortingOption switch

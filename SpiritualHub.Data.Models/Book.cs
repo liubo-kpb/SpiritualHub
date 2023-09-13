@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-using static SpiritualHub.Common.EntityValidationConstants.Book;
+using static Common.EntityValidationConstants.Book;
 
 public class Book
 {
@@ -22,8 +22,12 @@ public class Book
     [StringLength(TitleMaxLength, MinimumLength = TitleMinLength)]
     public string Title { get; set; } = null!;
 
+    [Required]
+    [MinLength(DescriptionMinLength)]
     public string Description { get; set; } = null!;
 
+    [Required]
+    [StringLength(ShortDescriptionMaxLength, MinimumLength = ShortDescriptionMinLength)]
     public string ShortDescription { get; set; } = null!;
 
     [Required]

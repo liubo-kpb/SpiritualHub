@@ -6,6 +6,7 @@ using Data.Models;
 using Client.ViewModels.Author;
 using Client.ViewModels.Category;
 using Client.ViewModels.Event;
+using Client.ViewModels.Book;
 using Client.ViewModels.Publisher;
 using Client.ViewModels.Subscription;
 using Client.ViewModels.User;
@@ -27,6 +28,13 @@ public class ApplicationProfile : Profile
         CreateMap<Event, EventDetailsViewModel>();
         CreateMap<Event, EventFormModel>().ReverseMap();
         CreateMap<Event, EventInfoViewModel>();
+
+        // Book
+        // Event
+        CreateMap<Book, BookViewModel>();
+        CreateMap<Book, BookDetailsViewModel>();
+        CreateMap<Book, BookFormModel>().ReverseMap();
+        CreateMap<Book, BookInfoViewModel>();
 
         // Category
         CreateMap<Category, CategoryServiceModel>();

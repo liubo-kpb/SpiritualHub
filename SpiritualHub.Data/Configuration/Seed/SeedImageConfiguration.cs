@@ -90,7 +90,7 @@ public class SeedImageConfiguration : IEntitySeedConfiguration<Image>
         {
             Id = Guid.Parse("55dc2c91-c81b-40de-ac5b-f7474a7acfdc"),
             Name = "MOL",
-            URL = "https://images-na.ssl-images-amazon.com/images/I/61oU5+vqzwL._AC_UL750_SR750,750_.jpg"
+            URL = "https://images-eu.ssl-images-amazon.com/images/I/61oU5+vqzwL._AC_UL750_SR750,750_.jpg"
         };
         images.Add(image);
 

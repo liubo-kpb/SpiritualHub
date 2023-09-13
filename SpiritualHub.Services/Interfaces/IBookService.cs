@@ -1,7 +1,7 @@
 ﻿namespace SpiritualHub.Services.Interfaces;
 
 using Client.ViewModels.Book;
-using Models.Event;
+using Models.Book;
 
 public interface IBookService
 {
@@ -13,7 +13,7 @@ public interface IBookService
 
     Task<bool>                          ExistsAsync(string id);
 
-    Task<FilteredEventsServiceModel>    GetAllAsync(AllBooksQueryModel queryModel, string userId);
+    Task<FilteredBooksServiceModel>    GetAllAsync(AllBooksQueryModel queryModel);
 
     Task<IEnumerable<BookViewModel>>    AllBooksByUserIdAsync(string userId);
 

@@ -159,9 +159,9 @@ public class AuthorService : IAuthorService
         {
             string wildCard = $"%{queryModel.SearchTerm.ToLower()}%";
 
-            authorsQuery = authorsQuery.Where(a => EF.Functions.Like(a.Alias.ToLower(), wildCard)
-                                      || EF.Functions.Like(a.Name.ToLower(), wildCard)
-                                      || EF.Functions.Like(a.Description.ToLower(), wildCard));
+            authorsQuery = authorsQuery.Where(a => EF.Functions.Like(a.Alias, wildCard)
+                                      || EF.Functions.Like(a.Name, wildCard)
+                                      || EF.Functions.Like(a.Description, wildCard));
         }
 
         authorsQuery = queryModel.SortingOption switch

@@ -17,17 +17,28 @@ public class BookController : Controller
     private readonly string entityname = nameof(Book).ToLower();
 
     private readonly IBookService _bookService;
+    private readonly ICategoryService _categoryService;
 
-    public BookController(IBookService bookService)
+    public BookController(
+        IBookService bookService,
+        ICategoryService categoryService)
     {
         _bookService = bookService;
+        _categoryService = categoryService;
     }
 
     [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> All([FromQuery] AllBooksQueryModel queryModel)
     {
-        return View();
+        var filteredBooks = await _bookService.GetAllAsync(queryModel);
+        var categories = await _categoryService.GetAllAsync();
+
+        queryModel.Books = filteredBooks.Books;
+        queryModel.Categories = categories.Select(c => c.Name);
+        queryModel.TotalBooksCount = filteredBooks.TotalBooksCount;
+
+        return View(queryModel);
     }
 
     [AllowAnonymous]

@@ -6,16 +6,23 @@ using Microsoft.EntityFrameworkCore;
 using Data.Models;
 using Data.Repository.Interface;
 using Interfaces;
-using Models.Event;
+using Models.Book;
 using Client.ViewModels.Book;
+using Client.Infrastructure.Enums;
+using AutoMapper;
+using SpiritualHub.Services.Mappings;
 
 public class BookService : IBookService
 {
     private readonly IRepository<Book> _bookRepository;
+    private readonly IMapper _mapper;
 
-    public BookService(IRepository<Book> bookRepository)
+    public BookService(
+        IRepository<Book> bookRepository,
+        IMapper mapper)
     {
         _bookRepository = bookRepository;
+        _mapper = mapper;
     }
 
     public Task AddAsync(string bookId, string userId)
@@ -48,9 +55,52 @@ public class BookService : IBookService
         throw new NotImplementedException();
     }
 
-    public Task<FilteredEventsServiceModel> GetAllAsync(AllBooksQueryModel queryModel, string userId)
+    public async Task<FilteredBooksServiceModel> GetAllAsync(AllBooksQueryModel queryModel)
     {
-        throw new NotImplementedException();
+        var booksQuery = _bookRepository
+                        .AllAsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(queryModel.CategoryName))
+        {
+            booksQuery = booksQuery.Where(b => b.Category != null && b.Category!.Name == queryModel.CategoryName);
+        }
+
+        if (!string.IsNullOrWhiteSpace(queryModel.SearchTerm))
+        {
+            string wildCard = $"%{queryModel.SearchTerm.ToLower()}%";
+            booksQuery = booksQuery.Where(b => EF.Functions.Like(b.Title, wildCard)
+                                            || EF.Functions.Like(b.Author.Name, wildCard)
+                                            || EF.Functions.Like(b.Description, wildCard)
+                                            || EF.Functions.Like(b.ShortDescription, wildCard));
+        }
+
+        booksQuery = queryModel.SortingOption switch
+        {
+            BookSorting.TopRated => booksQuery.OrderByDescending(b => b.Ratings.Count == 0 ? 0 : (b.Ratings.Sum(r => r.Stars) / (double) b.Ratings.Count)),
+            BookSorting.LeastRated => booksQuery.OrderBy(b => b.Ratings.Count == 0 ? 0 : (b.Ratings.Sum(r => r.Stars) / (double) b.Ratings.Count)),
+            BookSorting.Newest => booksQuery.OrderByDescending(b => b.AddedOn),
+            BookSorting.Oldest => booksQuery.OrderBy(b => b.AddedOn),
+            BookSorting.PriceAscending => booksQuery.OrderBy(b => b.Price),
+            BookSorting.PriceDescending => booksQuery.OrderByDescending(b => b.Price),
+            _ => booksQuery.OrderByDescending(b => b.AddedOn)
+                           .ThenByDescending(b => b.Ratings.Count == 0 ? 0 : (b.Ratings.Sum(r => r.Stars) / (b.Ratings.Count * 1.0)))
+        };
+
+        var books = await booksQuery
+                            .Skip((queryModel.CurrentPage - 1) * queryModel.BooksPerPage)
+                            .Take(queryModel.BooksPerPage)
+                            .Include(e => e.Image)
+                            .Include(e => e.Author)
+                            .ToListAsync();
+
+        List<BookViewModel> booksModel = new List<BookViewModel>();
+        _mapper.MapListToViewModel(books, booksModel);
+
+        return new FilteredBooksServiceModel()
+        {
+            Books = booksModel,
+            TotalBooksCount = books.Count
+        };
     }
 
     public async Task<int> GetAllCountAsync()

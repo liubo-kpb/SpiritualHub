@@ -35,12 +35,12 @@ public class SeedBookConfiguration : IEntitySeedConfiguration<Book>
         {
             Id = Guid.Parse("12221379-d5c7-4688-8ad8-efbffcaf8d06"),
             Title = "The Masters of Limitation",
-            Description = "All the facts, in the beginning, were puzzle pieces, scattered in vastness - fragmented, incongruous, unordered. They arrived haphazardly in moments when you weren't seeking them and not expecting them... Flashes, illuminating the darkness, which it is fitting to capture in your hands like fireflies - to gather them with patience, inspiration, and dedication. Then, embracing the scattered chaos of your own ignorance, with faith in the Nothingness, you arrange the light of your own Life.",
-            ShortDescription = "Bundle of the books You - The Source, You - The Manifestation, You - The Life",
+            Description = "\"The Masters of Limitation: An ET's Observations of Earth\" offers not only a unique perspective of human society and our place in the universe, but also gifts us with life-changing information that can profoundly alter our view of reality.",
+            ShortDescription = "\"The Masters of Limitation: An ET's Observations of Earth\" offers not only a unique perspective of human society and our place in the universe, but also gifts us with life-changing information that can profoundly alter our view of reality.\r\n",
             Price = 30,
             CategoryID = 2,
             AuthorID = Guid.Parse("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
-            ImageID = Guid.Parse("c7b99bd1-8188-4277-b937-81ab367b4034"),
+            ImageID = Guid.Parse("55dc2c91-c81b-40de-ac5b-f7474a7acfdc"),
         };
         books.Add(book);
 
