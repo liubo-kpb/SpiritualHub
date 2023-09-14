@@ -3,22 +3,23 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
+using AutoMapper;
+using Mappings;
+
 using Data.Models;
 using Data.Repository.Interface;
 using Interfaces;
 using Models.Book;
 using Client.ViewModels.Book;
 using Client.Infrastructure.Enums;
-using AutoMapper;
-using SpiritualHub.Services.Mappings;
 
 public class BookService : IBookService
 {
-    private readonly IRepository<Book> _bookRepository;
+    private readonly IBookRepository _bookRepository;
     private readonly IMapper _mapper;
 
     public BookService(
-        IRepository<Book> bookRepository,
+        IBookRepository bookRepository,
         IMapper mapper)
     {
         _bookRepository = bookRepository;
@@ -35,7 +36,7 @@ public class BookService : IBookService
         throw new NotImplementedException();
     }
 
-    public Task<string> CreateAsync(BookFormModel newEvent)
+    public Task<string> CreateAsync(BookFormModel newBook)
     {
         throw new NotImplementedException();
     }
@@ -45,7 +46,7 @@ public class BookService : IBookService
         throw new NotImplementedException();
     }
 
-    public Task EditAsync(BookFormModel updatedEvent)
+    public Task EditAsync(BookFormModel updatedBook)
     {
         throw new NotImplementedException();
     }
@@ -58,7 +59,7 @@ public class BookService : IBookService
     public async Task<FilteredBooksServiceModel> GetAllAsync(AllBooksQueryModel queryModel)
     {
         var booksQuery = _bookRepository
-                        .AllAsNoTracking();
+                            .AllAsNoTracking();
 
         if (!string.IsNullOrWhiteSpace(queryModel.CategoryName))
         {
@@ -115,12 +116,15 @@ public class BookService : IBookService
         throw new NotImplementedException();
     }
 
-    public Task<BookDetailsViewModel> GetBookDetailsAsync(string id, string userId)
+    public async Task<BookDetailsViewModel> GetBookDetailsAsync(string id)
     {
-        throw new NotImplementedException();
+        var bookEntity = await _bookRepository.GetFullBookDetails(id);
+        var bookModel = _mapper.Map<BookDetailsViewModel>(bookEntity);
+
+        return bookModel;
     }
 
-    public Task<BookFormModel> GetEventInfoAsync(string id)
+    public Task<BookFormModel> GetBookInfoAsync(string id)
     {
         throw new NotImplementedException();
     }

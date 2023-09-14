@@ -30,7 +30,6 @@ public class ApplicationProfile : Profile
         CreateMap<Event, EventInfoViewModel>();
 
         // Book
-        // Event
         CreateMap<Book, BookViewModel>();
         CreateMap<Book, BookDetailsViewModel>();
         CreateMap<Book, BookFormModel>().ReverseMap();

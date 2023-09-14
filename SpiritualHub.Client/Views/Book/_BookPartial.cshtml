@@ -10,7 +10,7 @@
         bool isUserPublisher = await _publisherService.ExistsByUserId(userId);
         if (isUserPublisher)
         {
-            isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Event>(userId, Model.Id);
+            isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Book>(userId, Model.Id);
         }
     }
 }
@@ -25,27 +25,27 @@
             <p>Price: $@($"{Model.Price:F2}")</p>
             <p>@Model.ShortDescription</p>
             <br />
-            <a asp-controller="Event" asp-action="Details" asp-route-id="@Model.Id"
+            <a asp-controller="Book" asp-action="Details" asp-route-id="@Model.Id"
                class="btn btn-success">Details</a>
             @if (isUserLoggedIn)
             {
                 @if (isUserConnectedPublisher || this.User.IsAdmin())
                 {
-                    <a asp-controller="Event" asp-action="Edit" asp-route-id="@Model.Id"
+                    <a asp-controller="Book" asp-action="Edit" asp-route-id="@Model.Id"
                        class="btn btn-warning">Edit</a>
-                    <a asp-controller="Event" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+                    <a asp-controller="Book" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
                 }
                 <p></p>
                 @if (Model.HasBook)
                 {
-                    <form asp-controller="Event" asp-action="Remove"
+                    <form asp-controller="Book" asp-action="Remove"
                           asp-route-id="@Model.Id" method="post">
                         <input class="btn btn-primary mb-1" type="submit" value="Remove" />
                     </form>
                 }
                 else
                 {
-                    <form class="input-group-sm " asp-controller="Event"
+                    <form class="input-group-sm " asp-controller="Book"
                           asp-action="Add" asp-route-id="@Model.Id" method="post">
                         <input class="btn btn-primary mb-1" type="submit" value="Add" />
                     </form>

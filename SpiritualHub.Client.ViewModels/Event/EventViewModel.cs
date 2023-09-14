@@ -27,7 +27,7 @@ public class EventViewModel
 
     public string CategoryName { get; set; } = null!;
 
-    public string ImageURL { get; set; } = null!;
+    public string ImageUrl { get; set; } = null!;
 
     public string Participation
     {

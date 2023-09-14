@@ -45,7 +45,9 @@ public class BookController : Controller
     [HttpGet]
     public async Task<IActionResult> Details(string id)
     {
-        return View();
+        var bookModel = await _bookService.GetBookDetailsAsync(id);
+
+        return View(bookModel);
     }
 
     [HttpGet]

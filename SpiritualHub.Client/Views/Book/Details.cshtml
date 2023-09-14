@@ -1,5 +1,74 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model BookDetailsViewModel
+@inject IPublisherService _publisherService
 @{
+    ViewBag.Title = "Book Details";
+
+    bool isUserLoggedIn = this.User.Identity?.IsAuthenticated ?? false;
+    bool isUserConnectedPublisher = false;
+
+    if (isUserLoggedIn)
+    {
+        string userId = this.User.GetId()!;
+        bool isUserPublisher = await _publisherService.ExistsByUserId(userId);
+        if (isUserPublisher)
+        {
+            isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Book>(userId, Model.Id);
+        }
+    }
 }
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+<div class="container" style="display:inline">
+    <div class="row">
+        <div class="col-4 d-flex flex-column align-items-center">
+            <img class="card-img-top" style="width: 20rem;" src="@Model.ImageUrl" alt="Event Image">
+            <p></p>
+            <p>Category: <b>@Model.CategoryName</b></p>
+            <div class="form-inline">
+                @if (isUserLoggedIn)
+                {
+                    @if (isUserConnectedPublisher || this.User.IsAdmin())
+                    {
+                        <a asp-controller="Event" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                        <a asp-controller="Event" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+                    }
+                }
+            </div>
+        </div>
+        <div class="card col-8 border-0">
+            <p style="font-size:25px;"><u>@Model.Title</u></p>
+            <p>Presenter: <b><a asp-controller="Author" asp-action="Details" asp-route-id="@Model.Author.Id">@Model.Author.Alias</a></b></p>
+            <p>Price: @(Model.Price == 0 ? "Free" : $"${Model.Price:F2}")</p>
+            <p>@Model.Description</p>
+            @if (isUserLoggedIn)
+            {
+                @if (Model.HasBook)
+                {
+                    <form asp-controller="Event" asp-action="Remove"
+                          asp-route-id="@Model.Id" method="post">
+                        <input class="btn btn-primary mb-1" type="submit" value="Remove" />
+                    </form>
+                }
+                else
+                {
+                    <form class="input-group-sm " asp-controller="Event"
+                          asp-action="Add" asp-route-id="@Model.Id" method="post">
+                        <input class="btn btn-primary mb-1" type="submit" value="Add" />
+                    </form>
+                }
+            }
+            <p></p>
+            <h5 class="card-title">Organizer:</h5>
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    @if (!string.IsNullOrWhiteSpace(Model.Publisher.FullName))
+                    {
+                        <p class="card-text">Name: @Model.Publisher.FullName</p>
+                    }
+                    <p class="card-text">Email: @Model.Publisher.Email</p>
+                    <p class="card-text">Phone Number: @Model.Publisher.PhoneNumber</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

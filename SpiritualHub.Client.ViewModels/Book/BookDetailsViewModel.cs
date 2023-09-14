@@ -1,5 +1,10 @@
 ﻿namespace SpiritualHub.Client.ViewModels.Book;
 
-public class BookDetailsViewModel
+using Publisher;
+
+public class BookDetailsViewModel : BookViewModel
 {
+    public string Description { get; set; } = null!;
+
+    public PublisherInfoViewModel Publisher { get; set; } = null!;
 }
