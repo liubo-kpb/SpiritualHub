@@ -43,6 +43,22 @@ public class SeedImageConfiguration : IEntitySeedConfiguration<Image>
         };
         images.Add(image);
 
+        image = new Image()
+        {
+            Id = Guid.Parse("CBAB4CBB-8F68-4445-8E5E-03B9503BEB0A"),
+            Name = "Hermes",
+            URL = "https://8bccdf3481.clvaw-cdnwnd.com/fef11e181af7c99838320c3f6ce510d2/200003132-410794107c/hermes%20trismegisto.jpg?ph=8bccdf3481"
+        };
+        images.Add(image);
+
+        image = new Image()
+        {
+            Id = Guid.Parse("7993BAD4-DF53-40DD-8921-15D4CDF5C252"),
+            Name = "LaoTzu",
+            URL = "https://www.newtraderu.com/wp-content/uploads/Lao-Tzu-Quotes-about-Life-That-Still-Ring-True-Today-.jpg"
+        };
+        images.Add(image);
+
         //Events
         image = new Image()
         {

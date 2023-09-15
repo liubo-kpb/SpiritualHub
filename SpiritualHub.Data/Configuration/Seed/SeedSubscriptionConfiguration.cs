@@ -16,7 +16,7 @@ public class SeedSubscriptionConfiguration : IEntitySeedConfiguration<Subscripti
     {
         ICollection<Subscription> subscriptoins = new HashSet<Subscription>();
 
-        Subscription subscription = null;
+        Subscription subscription = null!;
 
 
         // Tolle Subscriptions

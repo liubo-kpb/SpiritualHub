@@ -1,5 +1,19 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<BookViewModel>
 @{
+    ViewBag.Title = "My Books";
 }
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+@if (!Model.Any())
+{
+    <h2 class="text-center">You have no books yet!</h2>
+}
+
+<div class="row">
+    @foreach (var book in Model)
+    {
+        <partial name="_BookPartial" model="book" />
+    }
+</div>

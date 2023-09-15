@@ -129,7 +129,7 @@ public class EventService : IEventService
 
     public async Task EditAsync(EventFormModel updatedEvent)
     {
-        var eventEntity = await _eventRepository.GetEventInfo(updatedEvent.Id.ToString());
+        var eventEntity = await _eventRepository.GetEventInfo(updatedEvent.Id);
 
         eventEntity!.Title = updatedEvent.Title;
         eventEntity!.Description = updatedEvent.Description;

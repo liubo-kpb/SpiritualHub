@@ -13,7 +13,7 @@ public class AuthorFormModel
         this.Categories = new HashSet<CategoryServiceModel>();
         IsActive = true;
     }
-    public Guid Id { get; set; }
+    public string Id { get; set; } = null!;
 
     [StringLength(AliasMaxLength, MinimumLength = AliasMinLength)]
     public string Alias { get; set; } = null!;

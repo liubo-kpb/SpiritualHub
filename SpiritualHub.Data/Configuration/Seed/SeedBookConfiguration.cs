@@ -28,6 +28,7 @@ public class SeedBookConfiguration : IEntitySeedConfiguration<Book>
             CategoryID = 3,
             AuthorID = Guid.Parse("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"),
             ImageID = Guid.Parse("c7b99bd1-8188-4277-b937-81ab367b4034"),
+            PublisherID = Guid.Parse("d99242d9-3db2-4675-87e3-da7743c6b526"),
         };
         books.Add(book);
 
@@ -41,6 +42,7 @@ public class SeedBookConfiguration : IEntitySeedConfiguration<Book>
             CategoryID = 2,
             AuthorID = Guid.Parse("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
             ImageID = Guid.Parse("55dc2c91-c81b-40de-ac5b-f7474a7acfdc"),
+            PublisherID = Guid.Parse("d99242d9-3db2-4675-87e3-da7743c6b526"),
         };
         books.Add(book);
 
@@ -54,6 +56,7 @@ public class SeedBookConfiguration : IEntitySeedConfiguration<Book>
             CategoryID = 5,
             AuthorID = Guid.Parse("8c8bd426-2974-4bad-aa33-0e045ca86a54"),
             ImageID = Guid.Parse("327b0419-5ff9-4694-a4f8-151cb0a46e6b"),
+            PublisherID = Guid.Parse("d99242d9-3db2-4675-87e3-da7743c6b526"),
         };
         books.Add(book);
 

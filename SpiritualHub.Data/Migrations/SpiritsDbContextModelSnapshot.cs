@@ -34,7 +34,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("FollowersId");
 
-                    b.ToTable("ApplicationUserAuthor", (string)null);
+                    b.ToTable("ApplicationUserAuthor");
                 });
 
             modelBuilder.Entity("ApplicationUserEvent", b =>
@@ -49,7 +49,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("ParticipantsId");
 
-                    b.ToTable("ApplicationUserEvent", (string)null);
+                    b.ToTable("ApplicationUserEvent");
                 });
 
             modelBuilder.Entity("ApplicationUserSubscription", b =>
@@ -64,7 +64,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("SubscriptionsId");
 
-                    b.ToTable("ApplicationUserSubscription", (string)null);
+                    b.ToTable("ApplicationUserSubscription");
                 });
 
             modelBuilder.Entity("AuthorPublisher", b =>
@@ -79,7 +79,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("PublishersId");
 
-                    b.ToTable("AuthorPublisher", (string)null);
+                    b.ToTable("AuthorPublisher");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -295,7 +295,7 @@ namespace SpiritualHub.Data.Migrations
                         {
                             Id = new Guid("bcb4f072-ecca-43c9-ab26-c060c6f364e4"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5f327ff6-0284-4084-b052-5109d53d5802",
+                            ConcurrencyStamp = "33263793-7ed9-4a45-a208-deabd06ee2b6",
                             Email = "admin@mail.com",
                             EmailConfirmed = false,
                             FirstName = "Great",
@@ -303,9 +303,9 @@ namespace SpiritualHub.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MAIL.COM",
                             NormalizedUserName = "ADMIN@MAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFDVHR9Ffwq335ozbNVXdICrVrtjWMmQW/Q8ezICO32RuRXXBm/jOSOKis1vtKHplw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEkhhwzd5BBX0vl+CyaFUjKu2OA88MxaLA0MLuYcoGPDqvnYE3/8CDa6aKjRYHrjeQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f0016e66-f2c3-4dc4-8404-cd60f167dde9",
+                            SecurityStamp = "c0a20a5b-3d45-4cc1-9407-4abe92148206",
                             TwoFactorEnabled = false,
                             UserName = "admin@mail.com"
                         },
@@ -313,7 +313,7 @@ namespace SpiritualHub.Data.Migrations
                         {
                             Id = new Guid("194974cd-73f0-4946-ba85-710d4061472d"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a1dc8436-64bb-4e64-be67-dfd8c350d769",
+                            ConcurrencyStamp = "d60dad2b-204a-4637-bda1-66e65d878bc4",
                             Email = "publisher@spirits.com",
                             EmailConfirmed = false,
                             FirstName = "Pablo",
@@ -321,9 +321,9 @@ namespace SpiritualHub.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "PUBLISHER@SPIRITS.COM",
                             NormalizedUserName = "PUBLISHER@SPIRITS.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEOesKCAL+m50U5Ds1MbPW6GmI5tXyNNs0WW2qZREWRix4x7kNFYd37YKi79Unfnnkw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJd+WeTB17UOaGVVsUEJ2d8+DTbRv2VKtCiwG/C4g62BeLSSkHyaEACkXLoK0XpFSg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d8a68382-4cb8-4584-b53f-abc2f2719454",
+                            SecurityStamp = "275de793-7938-4011-bd4b-9c38de417c47",
                             TwoFactorEnabled = false,
                             UserName = "publisher@spirits.com"
                         },
@@ -331,7 +331,7 @@ namespace SpiritualHub.Data.Migrations
                         {
                             Id = new Guid("1fd95f69-4f9d-4671-b126-cefcf4b8a95e"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "adeabec1-5944-4405-b18e-ca34e372fddc",
+                            ConcurrencyStamp = "716dd339-39c4-4fe2-98f5-88fa86cc3390",
                             Email = "user@mail.com",
                             EmailConfirmed = false,
                             FirstName = "Martin",
@@ -339,11 +339,27 @@ namespace SpiritualHub.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@MAIL.COM",
                             NormalizedUserName = "USER@MAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBorEgrmm0Eg1S3bP46poSr+1vysUpNc0eAHjp7Whb464WtJiG1NiKTmYnXF4uP33Q==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIj90D3UO8MbRRxKZkolYWxZqHcGg5Lmg37BhhMeU3RuPhmMduKwCWmHdZqknLd2wA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b8c7aab9-c408-4f1b-bb10-712d7bea47d6",
+                            SecurityStamp = "38474616-d00b-4898-adf5-af99e07c89f1",
                             TwoFactorEnabled = false,
                             UserName = "user@mail.com"
+                        },
+                        new
+                        {
+                            Id = new Guid("187e0540-5a90-419a-bf5b-f65ee213a0ca"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "d17de0f2-70f8-4b6d-983c-ee1b60f1b64b",
+                            Email = "noname@mail.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "NONAME@MAIL.COM",
+                            NormalizedUserName = "NONAME@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDIuGpCI2pJqxE9v4R9h2z7ZVDVUlJSQfMUlfCKy0tJxYAlPRHQp3jn58f9Upnvxvw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "900f7d84-d92f-4674-8d77-f37296b9ee75",
+                            TwoFactorEnabled = false,
+                            UserName = "noname@mail.com"
                         });
                 });
 
@@ -387,7 +403,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("CategoryID");
 
-                    b.ToTable("Authors", (string)null);
+                    b.ToTable("Authors");
 
                     b.HasData(
                         new
@@ -414,6 +430,17 @@ namespace SpiritualHub.Data.Migrations
                         },
                         new
                         {
+                            Id = new Guid("68508613-d974-4237-5182-08dba58c19e0"),
+                            AddedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Alias = "Lao Tzu",
+                            AvatarImageID = new Guid("7993bad4-df53-40dd-8921-15d4cdf5c252"),
+                            CategoryID = 5,
+                            Description = "Laozi (/ˈlaʊdzə/, Chinese: 老子), also romanized as Lao Tzu and various other ways, was a semi-legendary ancient Chinese Taoist philosopher, credited with writing the Tao Te Ching. Laozi is a Chinese honorific, generally translated as \"the Old Master\". Although modern scholarship generally regards him as a fictional person, traditional accounts say he was born as Li Er in the state of Chu in the 6th century BC during China's Spring and Autumn Period, served as the royal archivist for the Zhou court at Wangcheng (modern Luoyang), met and impressed Confucius on one occasion, and composed the Tao Te Ching in a single session before retiring into the western wilderness. And more...",
+                            IsActive = false,
+                            Name = "Laotzu"
+                        },
+                        new
+                        {
                             Id = new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"),
                             AddedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Alias = "Eckhart Tolle",
@@ -422,6 +449,17 @@ namespace SpiritualHub.Data.Migrations
                             Description = "Eckhart Tolle is widely recognized as one of the most inspiring and visionary spiritual teachers in the world today. With his international bestsellers, The Power of Now and A New Earth—translated into 52 languages—he has introduced millions to the joy and freedom of living life in the present moment. The New York Times has described him as “the most popular spiritual author in the United States”, and in 2011, Watkins Review named him “the most spiritually influential person in the world”.",
                             IsActive = false,
                             Name = "Eckhart Tolle"
+                        },
+                        new
+                        {
+                            Id = new Guid("0fd425bd-bb0e-477e-ab19-a58ddad6fb27"),
+                            AddedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Alias = "Hermes Trismegistus",
+                            AvatarImageID = new Guid("cbab4cbb-8f68-4445-8e5e-03b9503beb0a"),
+                            CategoryID = 1,
+                            Description = "Hermes Trismegistus (from Ancient Greek: Ἑρμῆς ὁ Τρισμέγιστος, \"Hermes the Thrice-Greatest\"; Classical Latin: Mercurius ter Maximus) is a legendary Hellenistic figure that originated as a syncretic combination of the Greek god Hermes and the Egyptian god Thoth. He is the purported author of the Hermetica, a widely diverse series of ancient and medieval pseudepigraphical texts that lay the basis of various philosophical systems known as Hermeticism.",
+                            IsActive = false,
+                            Name = "Hermes"
                         });
                 });
 
@@ -462,7 +500,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("PublisherID");
 
-                    b.ToTable("Blogs", (string)null);
+                    b.ToTable("Blogs");
                 });
 
             modelBuilder.Entity("SpiritualHub.Data.Models.BlogPostImage", b =>
@@ -477,7 +515,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("BlogID");
 
-                    b.ToTable("BlogPostImage", (string)null);
+                    b.ToTable("BlogPostImage");
                 });
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Book", b =>
@@ -490,6 +528,9 @@ namespace SpiritualHub.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<Guid?>("ApplicationUserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("AuthorID")
                         .HasColumnType("uniqueidentifier");
@@ -512,7 +553,8 @@ namespace SpiritualHub.Data.Migrations
 
                     b.Property<string>("ShortDescription")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -520,6 +562,8 @@ namespace SpiritualHub.Data.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("AuthorID");
 
@@ -529,7 +573,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("PublisherID");
 
-                    b.ToTable("Books", (string)null);
+                    b.ToTable("Books");
 
                     b.HasData(
                         new
@@ -541,7 +585,7 @@ namespace SpiritualHub.Data.Migrations
                             Description = "All the facts, in the beginning, were puzzle pieces, scattered in vastness - fragmented, incongruous, unordered. They arrived haphazardly in moments when you weren't seeking them and not expecting them... Flashes, illuminating the darkness, which it is fitting to capture in your hands like fireflies - to gather them with patience, inspiration, and dedication. Then, embracing the scattered chaos of your own ignorance, with faith in the Nothingness, you arrange the light of your own Life.",
                             ImageID = new Guid("c7b99bd1-8188-4277-b937-81ab367b4034"),
                             Price = 30m,
-                            PublisherID = new Guid("00000000-0000-0000-0000-000000000000"),
+                            PublisherID = new Guid("d99242d9-3db2-4675-87e3-da7743c6b526"),
                             ShortDescription = "Bundle of the books You - The Source, You - The Manifestation, You - The Life",
                             Title = "Encyclopedia Cogitality"
                         },
@@ -551,11 +595,11 @@ namespace SpiritualHub.Data.Migrations
                             AddedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AuthorID = new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
                             CategoryID = 2,
-                            Description = "All the facts, in the beginning, were puzzle pieces, scattered in vastness - fragmented, incongruous, unordered. They arrived haphazardly in moments when you weren't seeking them and not expecting them... Flashes, illuminating the darkness, which it is fitting to capture in your hands like fireflies - to gather them with patience, inspiration, and dedication. Then, embracing the scattered chaos of your own ignorance, with faith in the Nothingness, you arrange the light of your own Life.",
-                            ImageID = new Guid("c7b99bd1-8188-4277-b937-81ab367b4034"),
+                            Description = "\"The Masters of Limitation: An ET's Observations of Earth\" offers not only a unique perspective of human society and our place in the universe, but also gifts us with life-changing information that can profoundly alter our view of reality.",
+                            ImageID = new Guid("55dc2c91-c81b-40de-ac5b-f7474a7acfdc"),
                             Price = 30m,
-                            PublisherID = new Guid("00000000-0000-0000-0000-000000000000"),
-                            ShortDescription = "Bundle of the books You - The Source, You - The Manifestation, You - The Life",
+                            PublisherID = new Guid("d99242d9-3db2-4675-87e3-da7743c6b526"),
+                            ShortDescription = "\"The Masters of Limitation: An ET's Observations of Earth\" offers not only a unique perspective of human society and our place in the universe, but also gifts us with life-changing information that can profoundly alter our view of reality.\r\n",
                             Title = "The Masters of Limitation"
                         },
                         new
@@ -567,7 +611,7 @@ namespace SpiritualHub.Data.Migrations
                             Description = "It's no wonder that The Power of Now has sold over 2 million copies worldwide and has been translated into over 30 foreign languages. Much more than simple principles and platitudes, the book takes readers on an inspiring spiritual journey to find their true and deepest self and reach the ultimate in personal growth and spirituality: the discovery of truth and light.\r\r\n\r\r\nIn the first chapter, Tolle introduces readers to enlightenment and its natural enemy, the mind. He awakens readers to their role as a creator of pain and shows them how to have a pain-free identity by living fully in the present. The journey is thrilling, and along the way, the author shows how to connect to the indestructible essence of our Being, \"the eternal, ever-present One Life beyond the myriad forms of life that are subject to birth and death.\"\r\r\n\r\r\nFeaturing a new preface by the author, this paperback shows that only after regaining awareness of Being, liberated from Mind and intensely in the Now, is there Enlightenment.",
                             ImageID = new Guid("327b0419-5ff9-4694-a4f8-151cb0a46e6b"),
                             Price = 30m,
-                            PublisherID = new Guid("00000000-0000-0000-0000-000000000000"),
+                            PublisherID = new Guid("d99242d9-3db2-4675-87e3-da7743c6b526"),
                             ShortDescription = "This book shows that only after regaining awareness of Being, liberated from Mind and intensely in the Now, is there Enlightenment",
                             Title = "The Power Of Now"
                         });
@@ -587,7 +631,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
 
                     b.HasData(
                         new
@@ -650,7 +694,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Course", b =>
@@ -663,6 +707,9 @@ namespace SpiritualHub.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<Guid?>("ApplicationUserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("AuthorID")
                         .HasColumnType("uniqueidentifier");
@@ -695,6 +742,8 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ApplicationUserId");
+
                     b.HasIndex("AuthorID");
 
                     b.HasIndex("CategoryID");
@@ -703,7 +752,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("PublisherID");
 
-                    b.ToTable("Courses", (string)null);
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Event", b =>
@@ -712,7 +761,7 @@ namespace SpiritualHub.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AutorID")
+                    b.Property<Guid>("AuthorID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("CategoryID")
@@ -751,12 +800,12 @@ namespace SpiritualHub.Data.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AutorID");
+                    b.HasIndex("AuthorID");
 
                     b.HasIndex("CategoryID");
 
@@ -764,30 +813,30 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("PublisherID");
 
-                    b.ToTable("Events", (string)null);
+                    b.ToTable("Events");
 
                     b.HasData(
                         new
                         {
                             Id = new Guid("15f326bc-f47f-487f-8764-5fb8fd5c448a"),
-                            AutorID = new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
+                            AuthorID = new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
                             CategoryID = 2,
-                            CreatedOn = new DateTime(2023, 8, 30, 13, 38, 3, 287, DateTimeKind.Utc).AddTicks(9170),
+                            CreatedOn = new DateTime(2023, 9, 15, 14, 2, 54, 703, DateTimeKind.Utc).AddTicks(2964),
                             Description = "What if there was one state of being we could adopt that would help us establish better, stronger connections not only with our families and friends on earth, but also with our friends from the stars?\r\r\n\r\r\nIn The Three Behaviors of Connection, Bashar will share how action, timing, and communication are vital concepts for making inroads and connection with the hybrid children that will eventually be living among us. He will expand in detail on these three behaviors and how we might apply them to our lives on Earth as well as to our quest for contact with our extraterrestrial family.",
                             EndDateTime = new DateTime(2023, 8, 26, 15, 30, 0, 0, DateTimeKind.Unspecified),
                             ImageID = new Guid("69630e42-a4de-4116-a1a4-38c43faa0b53"),
                             IsOnline = true,
                             Price = 35m,
-                            PublisherID = new Guid("4779b556-cbb5-45d2-a16c-d8a83501198a"),
+                            PublisherID = new Guid("d99242d9-3db2-4675-87e3-da7743c6b526"),
                             StartDateTime = new DateTime(2023, 8, 26, 14, 30, 0, 0, DateTimeKind.Unspecified),
                             Title = "The 3 Behaviors of Connection"
                         },
                         new
                         {
                             Id = new Guid("45bb1c09-b50d-4d47-8fdb-fbfb53086922"),
-                            AutorID = new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"),
+                            AuthorID = new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"),
                             CategoryID = 5,
-                            CreatedOn = new DateTime(2023, 8, 30, 13, 38, 3, 287, DateTimeKind.Utc).AddTicks(9190),
+                            CreatedOn = new DateTime(2023, 9, 15, 14, 2, 54, 703, DateTimeKind.Utc).AddTicks(2993),
                             Description = "Join us for this unique opportunity to sit with Eckhart Tolle as he points you to spiritual awakening and the transformation of consciousness. With his hallmark warmth, humour and compassion, this evening will connect you with the peace and serenity that arises from living in the moment.\r\r\n\r\r\nEckhart’s profound, yet simple teachings have helped countless people from around the globe awaken to a vibrantly alive inner peace in their daily lives. Eckhart Tolle’s writings and life-changing public events have touched millions of lives, garnering fans to the likes of Oprah, the Dalai Lama and Deepak Chopra. He is the best-selling author of The Power of Now and A New Earth that are widely regarded as the most transformational books of our time.",
                             EndDateTime = new DateTime(2023, 9, 26, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             ImageID = new Guid("13e26f61-5a34-44e0-b9d4-d8ab04b8f342"),
@@ -795,16 +844,16 @@ namespace SpiritualHub.Data.Migrations
                             LocationName = "Stockholm",
                             LocationUrl = "https://www.google.com/maps/place/Stockholm,+Sweden/@59.3262131,17.8172495,11z/data=!3m1!4b1!4m6!3m5!1s0x465f763119640bcb:0xa80d27d3679d7766!8m2!3d59.3293235!4d18.0685808!16zL20vMDZteHM?entry=ttu",
                             Price = 199m,
-                            PublisherID = new Guid("4779b556-cbb5-45d2-a16c-d8a83501198a"),
+                            PublisherID = new Guid("d99242d9-3db2-4675-87e3-da7743c6b526"),
                             StartDateTime = new DateTime(2023, 9, 26, 18, 30, 0, 0, DateTimeKind.Unspecified),
                             Title = "An Evening with Eckhart Tolle in Stockholm"
                         },
                         new
                         {
                             Id = new Guid("3db097df-7c7c-4c4e-b546-d4555c4c1521"),
-                            AutorID = new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"),
+                            AuthorID = new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"),
                             CategoryID = 3,
-                            CreatedOn = new DateTime(2023, 8, 30, 13, 38, 3, 287, DateTimeKind.Utc).AddTicks(9202),
+                            CreatedOn = new DateTime(2023, 9, 15, 14, 2, 54, 703, DateTimeKind.Utc).AddTicks(3011),
                             Description = "The Cogitality seminars are back - they have already started in the country, and now they are happening at the \"Healing\" campus too! They are pre-planned and organized by the team of cogitalists.\r\r\n\r\r\nThe first seminar at the \"Healing\" campus, which will take place on September 2-3, 2023, is already fully booked. Thank you for the sincere desire to share this experience together!",
                             EndDateTime = new DateTime(2023, 9, 3, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             ImageID = new Guid("ab7cfc34-55f4-4ed8-9687-c48a747e9fb4"),
@@ -812,7 +861,7 @@ namespace SpiritualHub.Data.Migrations
                             LocationName = "Campus \"Healing\"",
                             LocationUrl = "https://www.google.com/maps/place/%D0%9A%D0%B0%D0%BC%D0%BF%D1%83%D1%81+%D0%98%D0%B7%D1%86%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@42.2625195,25.2288508,17z/data=!3m1!4b1!4m6!3m5!1s0x40a82595106658b3:0x4dc3df5ed0a4ca00!8m2!3d42.2625156!4d25.2314257!16s%2Fg%2F11ry_fh0ry?entry=ttu",
                             Price = 144m,
-                            PublisherID = new Guid("4779b556-cbb5-45d2-a16c-d8a83501198a"),
+                            PublisherID = new Guid("d99242d9-3db2-4675-87e3-da7743c6b526"),
                             StartDateTime = new DateTime(2023, 9, 2, 9, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Seminar - Campus \"Healing\""
                         });
@@ -834,7 +883,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images", (string)null);
+                    b.ToTable("Images");
 
                     b.HasData(
                         new
@@ -854,6 +903,18 @@ namespace SpiritualHub.Data.Migrations
                             Id = new Guid("26db05ea-2b5e-44dd-bdef-4e74b9ecaa5f"),
                             Name = "EckhartTolleAvatar",
                             URL = "https://eckharttolle.com/wp-content/uploads/2021/03/PHOTO-Eckhart_EDITEDIMG_5197-scaled.jpg"
+                        },
+                        new
+                        {
+                            Id = new Guid("cbab4cbb-8f68-4445-8e5e-03b9503beb0a"),
+                            Name = "Hermes",
+                            URL = "https://8bccdf3481.clvaw-cdnwnd.com/fef11e181af7c99838320c3f6ce510d2/200003132-410794107c/hermes%20trismegisto.jpg?ph=8bccdf3481"
+                        },
+                        new
+                        {
+                            Id = new Guid("7993bad4-df53-40dd-8921-15d4cdf5c252"),
+                            Name = "LaoTzu",
+                            URL = "https://www.newtraderu.com/wp-content/uploads/Lao-Tzu-Quotes-about-Life-That-Still-Ring-True-Today-.jpg"
                         },
                         new
                         {
@@ -889,7 +950,7 @@ namespace SpiritualHub.Data.Migrations
                         {
                             Id = new Guid("55dc2c91-c81b-40de-ac5b-f7474a7acfdc"),
                             Name = "MOL",
-                            URL = "https://images-na.ssl-images-amazon.com/images/I/61oU5+vqzwL._AC_UL750_SR750,750_.jpg"
+                            URL = "https://images-eu.ssl-images-amazon.com/images/I/61oU5+vqzwL._AC_UL750_SR750,750_.jpg"
                         });
                 });
 
@@ -911,7 +972,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Publishers", (string)null);
+                    b.ToTable("Publishers");
 
                     b.HasData(
                         new
@@ -968,7 +1029,7 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Ratings", (string)null);
+                    b.ToTable("Ratings");
                 });
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Subscription", b =>
@@ -992,70 +1053,68 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasIndex("SubscriptionTypeID");
 
-                    b.ToTable("Subscriptions", (string)null);
-
-                    b.HasCheckConstraint("CK__PossibleTypes", "Type = 'Monthly' OR Type = 'Quarterly' OR Type = 'Annual'");
+                    b.ToTable("Subscriptions");
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("520ca37d-98cc-4d1c-b052-0dae71c8c1dd"),
+                            Id = new Guid("5d15b369-03e2-4e98-a1c5-17af15319974"),
                             AuthorID = new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"),
                             Price = 25m,
                             SubscriptionTypeID = 1
                         },
                         new
                         {
-                            Id = new Guid("6c433b0d-87b5-45c9-9ce5-9e9f0d210b0d"),
+                            Id = new Guid("eb524666-b14d-47b0-8a3c-0b7ce17fa138"),
                             AuthorID = new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"),
                             Price = 65m,
                             SubscriptionTypeID = 2
                         },
                         new
                         {
-                            Id = new Guid("26fac86e-c18b-49f0-883a-27e9caf952fb"),
+                            Id = new Guid("e95fff8c-6454-4f70-8b88-96f957a2b5e0"),
                             AuthorID = new Guid("8c8bd426-2974-4bad-aa33-0e045ca86a54"),
                             Price = 150m,
                             SubscriptionTypeID = 3
                         },
                         new
                         {
-                            Id = new Guid("c9d0e00e-106d-4039-9287-1f066040f347"),
+                            Id = new Guid("3b204122-6918-4a1b-ad6f-f489a5035a3e"),
                             AuthorID = new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
                             Price = 25m,
                             SubscriptionTypeID = 1
                         },
                         new
                         {
-                            Id = new Guid("d465c46b-d5c4-4f75-9d0c-062dfbbd4532"),
+                            Id = new Guid("0b38dbbb-1657-4347-8cc2-15c50e8fd167"),
                             AuthorID = new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
                             Price = 70m,
                             SubscriptionTypeID = 2
                         },
                         new
                         {
-                            Id = new Guid("28fbdb15-a187-4e2b-8ca8-307f0f905c3e"),
+                            Id = new Guid("4ffe90fc-18a5-4982-9cbc-0199f7e14ad9"),
                             AuthorID = new Guid("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
                             Price = 200m,
                             SubscriptionTypeID = 3
                         },
                         new
                         {
-                            Id = new Guid("1be042e3-6b50-4d17-b9b9-f5a5d7f144a3"),
+                            Id = new Guid("0d530c57-2ec2-4617-a918-2f573a0d9317"),
                             AuthorID = new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"),
                             Price = 21m,
                             SubscriptionTypeID = 1
                         },
                         new
                         {
-                            Id = new Guid("790489e3-fbd4-4d32-ada1-061d93334a66"),
+                            Id = new Guid("f614d540-41d2-4972-a00e-5733c84d9549"),
                             AuthorID = new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"),
                             Price = 55m,
                             SubscriptionTypeID = 2
                         },
                         new
                         {
-                            Id = new Guid("a24a8894-ed9e-43fe-8fa4-c42d034376f2"),
+                            Id = new Guid("beabb97b-a19b-48d0-a2bb-3a4f1f480254"),
                             AuthorID = new Guid("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"),
                             Price = 189m,
                             SubscriptionTypeID = 3
@@ -1076,7 +1135,9 @@ namespace SpiritualHub.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SubscriptionTypes", (string)null);
+                    b.ToTable("SubscriptionTypes");
+
+                    b.HasCheckConstraint("CK__PossibleTypes", "Type = 'Monthly' OR Type = 'Quarterly' OR Type = 'Annual'");
 
                     b.HasData(
                         new
@@ -1274,6 +1335,10 @@ namespace SpiritualHub.Data.Migrations
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Book", b =>
                 {
+                    b.HasOne("SpiritualHub.Data.Models.ApplicationUser", null)
+                        .WithMany("Books")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("SpiritualHub.Data.Models.Author", "Author")
                         .WithMany("Books")
                         .HasForeignKey("AuthorID")
@@ -1332,6 +1397,10 @@ namespace SpiritualHub.Data.Migrations
 
             modelBuilder.Entity("SpiritualHub.Data.Models.Course", b =>
                 {
+                    b.HasOne("SpiritualHub.Data.Models.ApplicationUser", null)
+                        .WithMany("Courses")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("SpiritualHub.Data.Models.Author", "Author")
                         .WithMany("Courses")
                         .HasForeignKey("AuthorID")
@@ -1369,7 +1438,7 @@ namespace SpiritualHub.Data.Migrations
                 {
                     b.HasOne("SpiritualHub.Data.Models.Author", "Author")
                         .WithMany("Events")
-                        .HasForeignKey("AutorID")
+                        .HasForeignKey("AuthorID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -1475,7 +1544,11 @@ namespace SpiritualHub.Data.Migrations
 
             modelBuilder.Entity("SpiritualHub.Data.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("Books");
+
                     b.Navigation("Comments");
+
+                    b.Navigation("Courses");
 
                     b.Navigation("Ratings");
                 });

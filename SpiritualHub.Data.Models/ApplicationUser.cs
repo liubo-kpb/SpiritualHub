@@ -13,6 +13,8 @@ public class ApplicationUser : IdentityUser<Guid>
         this.Comments = new HashSet<Comment>();
         this.Ratings = new HashSet<Rating>();
         this.JoinedEvents = new HashSet<Event>();
+        this.Books = new HashSet<Book>();
+        this.Courses = new HashSet<Course>();
         this.FollowedAuthors = new HashSet<Author>();
         this.Subscriptions = new HashSet<Subscription>();
     }
@@ -28,6 +30,10 @@ public class ApplicationUser : IdentityUser<Guid>
     public virtual ICollection<Rating> Ratings { get; set; }
 
     public virtual ICollection<Event> JoinedEvents { get; set; }
+
+    public virtual ICollection<Book> Books { get; set; }
+
+    public virtual ICollection<Course> Courses { get; set; }
 
     public virtual ICollection<Author> FollowedAuthors { get; set; }
 
