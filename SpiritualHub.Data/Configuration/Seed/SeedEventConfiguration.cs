@@ -29,7 +29,7 @@ public class SeedEventConfiguration : IEntitySeedConfiguration<Event>
             EndDateTime = new DateTime(2023, 08, 26, 15, 30, 00),
             IsOnline = true,
             CategoryID = 2,
-            PublisherID = Guid.Parse("4779b556-cbb5-45d2-a16c-d8a83501198a"),
+            PublisherID = Guid.Parse("d99242d9-3db2-4675-87e3-da7743c6b526"),
             AuthorID = Guid.Parse("47383fe7-f3e1-4d22-8180-5bfaa76955f5"),
             ImageID = Guid.Parse("69630e42-a4de-4116-a1a4-38c43faa0b53"),
         };
@@ -48,7 +48,7 @@ public class SeedEventConfiguration : IEntitySeedConfiguration<Event>
             LocationName = "Stockholm",
             LocationUrl = "https://www.google.com/maps/place/Stockholm,+Sweden/@59.3262131,17.8172495,11z/data=!3m1!4b1!4m6!3m5!1s0x465f763119640bcb:0xa80d27d3679d7766!8m2!3d59.3293235!4d18.0685808!16zL20vMDZteHM?entry=ttu",
             CategoryID = 5,
-            PublisherID = Guid.Parse("4779b556-cbb5-45d2-a16c-d8a83501198a"),
+            PublisherID = Guid.Parse("d99242d9-3db2-4675-87e3-da7743c6b526"),
             AuthorID = Guid.Parse("8c8bd426-2974-4bad-aa33-0e045ca86a54"),
             ImageID = Guid.Parse("13e26f61-5a34-44e0-b9d4-d8ab04b8f342"),
         };
@@ -67,7 +67,7 @@ public class SeedEventConfiguration : IEntitySeedConfiguration<Event>
             LocationName = "Campus \"Healing\"",
             LocationUrl = "https://www.google.com/maps/place/%D0%9A%D0%B0%D0%BC%D0%BF%D1%83%D1%81+%D0%98%D0%B7%D1%86%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@42.2625195,25.2288508,17z/data=!3m1!4b1!4m6!3m5!1s0x40a82595106658b3:0x4dc3df5ed0a4ca00!8m2!3d42.2625156!4d25.2314257!16s%2Fg%2F11ry_fh0ry?entry=ttu",
             CategoryID = 3,
-            PublisherID = Guid.Parse("4779b556-cbb5-45d2-a16c-d8a83501198a"),
+            PublisherID = Guid.Parse("d99242d9-3db2-4675-87e3-da7743c6b526"),
             AuthorID = Guid.Parse("240ae09a-7f04-45e5-ac42-bf5311e1c4a8"),
             ImageID = Guid.Parse("ab7cfc34-55f4-4ed8-9687-c48a747e9fb4"),
         };

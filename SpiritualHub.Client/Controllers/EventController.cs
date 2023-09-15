@@ -183,7 +183,7 @@ public class EventController : Controller
                 }
 
                 bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, eventFormModel.AuthorId))
-                                         && (await _publisherService.IsConnectedToEntityByUserId<Event>(userId, eventFormModel.Id.ToString()));
+                                         && (await _publisherService.IsConnectedToEntityByUserId<Event>(userId, eventFormModel.Id));
                 if (!isConnectedPublisher)
                 {
                     TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author and {entityName}");
@@ -207,7 +207,7 @@ public class EventController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(EventFormModel updatedEventForm)
     {
-        bool exists = await _eventService.ExistsAsync(updatedEventForm.Id.ToString());
+        bool exists = await _eventService.ExistsAsync(updatedEventForm.Id);
         if (!exists)
         {
             TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
@@ -228,7 +228,7 @@ public class EventController : Controller
             }
 
             bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, updatedEventForm.AuthorId))
-                                     && (await _publisherService.IsConnectedToEntityByUserId<Event>(userId, updatedEventForm.Id.ToString()));
+                                     && (await _publisherService.IsConnectedToEntityByUserId<Event>(userId, updatedEventForm.Id));
             if (!isConnectedPublisher)
             {
                 ModelState.AddModelError(nameof(updatedEventForm.AuthorId), string.Format(NoEntityFoundErrorMessage, "affiliated author"));

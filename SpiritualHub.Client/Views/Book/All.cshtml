@@ -62,7 +62,7 @@
 <div class="row mb-5">
     <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-start">
         <a class="btn btn-primary @(Model.CurrentPage == 1 ? "disabled" : string.Empty)"
-           asp-controller="Event"
+           asp-controller="Book"
            asp-action="All"
            asp-route-currentPage="@previousPage"
            asp-route-category="@Model.CategoryName"
@@ -76,7 +76,7 @@
     <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-end">
         <a class="btn btn-primary
 @(shouldButtonBeDisabled ? "disabled" : string.Empty)"
-           asp-controller="Event"
+           asp-controller="Book"
            asp-action="All"
            asp-route-currentPage="@(Model.CurrentPage + 1)"
            asp-route-category="@Model.CategoryName"
@@ -86,7 +86,7 @@
 </div>
 @if (!Model.Books.Any())
 {
-    <h2 class="text-center">No Events found by the given criteria!</h2>
+    <h2 class="text-center">No Books found by the given criteria!</h2>
 }
 <div class="row">
     @foreach (var Book in Model.Books)

@@ -6,23 +6,26 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using Mappings;
 
-using Data.Models;
 using Data.Repository.Interface;
 using Interfaces;
 using Models.Book;
 using Client.ViewModels.Book;
 using Client.Infrastructure.Enums;
+using AutoMapper.QueryableExtensions;
 
 public class BookService : IBookService
 {
     private readonly IBookRepository _bookRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
 
     public BookService(
         IBookRepository bookRepository,
+        IUserRepository userRepository,
         IMapper mapper)
     {
         _bookRepository = bookRepository;
+        _userRepository = userRepository;
         _mapper = mapper;
     }
 
@@ -31,9 +34,15 @@ public class BookService : IBookService
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<BookViewModel>> AllBooksByUserIdAsync(string userId)
+    public async Task<IEnumerable<BookViewModel>> AllBooksByUserIdAsync(string userId)
     {
-        throw new NotImplementedException();
+        var user = await _userRepository.GetUserWithBooks(userId);
+
+        var booksModel = new List<BookViewModel>();
+        _mapper.MapListToViewModel(user!.Books, booksModel);
+
+        return booksModel;
+
     }
 
     public Task<string> CreateAsync(BookFormModel newBook)
@@ -90,8 +99,8 @@ public class BookService : IBookService
         var books = await booksQuery
                             .Skip((queryModel.CurrentPage - 1) * queryModel.BooksPerPage)
                             .Take(queryModel.BooksPerPage)
-                            .Include(e => e.Image)
-                            .Include(e => e.Author)
+                            .Include(b => b.Image)
+                            .Include(b => b.Author)
                             .ToListAsync();
 
         List<BookViewModel> booksModel = new List<BookViewModel>();
@@ -107,8 +116,8 @@ public class BookService : IBookService
     public async Task<int> GetAllCountAsync()
     {
         return await _bookRepository
-            .AllAsNoTracking()
-            .CountAsync();
+                            .AllAsNoTracking()
+                            .CountAsync();
     }
 
     public Task<string> GetAuthorIdAsync(string bookId)
@@ -129,9 +138,15 @@ public class BookService : IBookService
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<BookViewModel>> GetBooksByPublisherIdAsync(string publisherId)
+    public async Task<IEnumerable<BookViewModel>> GetBooksByPublisherIdAsync(string publisherId)
     {
-        throw new NotImplementedException();
+        return await _bookRepository
+                            .AllAsNoTracking()
+                            .Include(b => b.Image)
+                            .Include(b => b.Author)
+                            .Where(b => b.PublisherID.ToString() == publisherId)
+                            .ProjectTo<BookViewModel>(_mapper.ConfigurationProvider)
+                            .ToListAsync();
     }
 
     public Task<bool> IsAddedAsync(string bookId, string userId)

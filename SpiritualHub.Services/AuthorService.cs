@@ -115,7 +115,7 @@ public class AuthorService : IAuthorService
 
     public async Task EditAsync(AuthorFormModel editedAuthor)
     {
-        var authorEntity = await _authorRepository.GetAuthorDetailsByIdAsync(editedAuthor.Id.ToString());
+        var authorEntity = await _authorRepository.GetAuthorDetailsByIdAsync(editedAuthor.Id);
 
         authorEntity!.Alias = editedAuthor.Alias;
         authorEntity.Name = editedAuthor.Name;

@@ -65,6 +65,18 @@ public class SeedUserConfiguration : IEntitySeedConfiguration<ApplicationUser>
         user.PasswordHash = hasher.HashPassword(user, "using123");
         users.Add(user);
 
+        user = new ApplicationUser()
+        {
+            Id = Guid.Parse("187E0540-5A90-419A-BF5B-F65EE213A0CA"),
+            UserName = "noname@mail.com",
+            NormalizedUserName = "NONAME@MAIL.COM",
+            Email = "noname@mail.com",
+            NormalizedEmail = "NONAME@MAIL.COM",
+            SecurityStamp = Guid.NewGuid().ToString(),
+        };
+        user.PasswordHash = hasher.HashPassword(user, "noname123");
+        users.Add(user);
+
         return users.ToArray();
     }
 }
