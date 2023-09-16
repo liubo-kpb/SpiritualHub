@@ -4,5 +4,7 @@ using SpiritualHub.Data.Models;
 
 public interface IBookRepository : IDeletableRepository<Book>
 {
-    Task<Book?> GetFullBookDetails(string id);
+    Task<Book?> GetFullBookDetailsAsync(string id);
+
+    Task<Book?> GetBookInfoAsync(string id);
 }

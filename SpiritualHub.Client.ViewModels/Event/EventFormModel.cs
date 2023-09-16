@@ -18,7 +18,7 @@ public class EventFormModel
         IsOnline = true;
     }
 
-    public string Id { get; set; } = null!;
+    public string? Id { get; set; } = null!;
 
     [Required]
     [StringLength(TitleMaxLength, MinimumLength = TitleMinLength)]

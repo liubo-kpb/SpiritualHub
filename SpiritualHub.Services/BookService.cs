@@ -62,14 +62,25 @@ public class BookService : IBookService
         throw new NotImplementedException();
     }
 
-    public Task EditAsync(BookFormModel updatedBook)
+    public async Task EditAsync(BookFormModel updatedBook)
     {
-        throw new NotImplementedException();
+        var book = await _bookRepository.GetBookInfoAsync(updatedBook.Id!);
+
+        book!.Title = updatedBook.Title;
+        book!.Description = updatedBook.Description;
+        book!.ShortDescription = updatedBook.ShortDescription;
+        book!.Price = updatedBook.Price;
+        book!.Image.URL = updatedBook.ImageUrl;
+        book!.CategoryID = updatedBook.CategoryId;
+        book!.AuthorID = Guid.Parse(updatedBook.AuthorId);
+        book!.PublisherID = Guid.Parse(updatedBook.PublisherId!);
+
+        await _bookRepository.SaveChangesAsync();
     }
 
     public Task<bool> ExistsAsync(string id)
     {
-        throw new NotImplementedException();
+        return _bookRepository.AnyAsync(b => b.Id.ToString() == id);
     }
 
     public async Task<FilteredBooksServiceModel> GetAllAsync(AllBooksQueryModel queryModel)
@@ -116,7 +127,7 @@ public class BookService : IBookService
         return new FilteredBooksServiceModel()
         {
             Books = booksModel,
-            TotalBooksCount = books.Count
+            TotalBooksCount = booksQuery.Count()
         };
     }
 
@@ -134,15 +145,18 @@ public class BookService : IBookService
 
     public async Task<BookDetailsViewModel> GetBookDetailsAsync(string id)
     {
-        var bookEntity = await _bookRepository.GetFullBookDetails(id);
+        var bookEntity = await _bookRepository.GetFullBookDetailsAsync(id);
         var bookModel = _mapper.Map<BookDetailsViewModel>(bookEntity);
 
         return bookModel;
     }
 
-    public Task<BookFormModel> GetBookInfoAsync(string id)
+    public async Task<BookFormModel> GetBookInfoAsync(string id)
     {
-        throw new NotImplementedException();
+        var book = await _bookRepository.GetBookInfoAsync(id);
+        var bookModel = _mapper.Map<BookFormModel>(book);
+
+        return bookModel;
     }
 
     public async Task<IEnumerable<BookViewModel>> GetBooksByPublisherIdAsync(string publisherId)

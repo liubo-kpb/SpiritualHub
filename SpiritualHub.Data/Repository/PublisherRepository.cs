@@ -53,7 +53,7 @@ public class PublisherRepository : Repository<Publisher>, IPublisherRepository
         var propertyValue = property!.GetValue(entity);
         if (propertyValue is IEnumerable<object> items)
         {
-            return items.Any(item => item.GetType().GetProperty("Id")?.GetValue(item)?.ToString() == entityId);
+            return items.Any(item => item.GetType().GetProperty("Id")?.GetValue(item)?.ToString() == entityId.ToLower());
         }
 
         throw new ArgumentException($"Property {propertyName} is not a collection.");

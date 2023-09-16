@@ -129,7 +129,7 @@ public class EventService : IEventService
 
     public async Task EditAsync(EventFormModel updatedEvent)
     {
-        var eventEntity = await _eventRepository.GetEventInfo(updatedEvent.Id);
+        var eventEntity = await _eventRepository.GetEventInfo(updatedEvent.Id!);
 
         eventEntity!.Title = updatedEvent.Title;
         eventEntity!.Description = updatedEvent.Description;
@@ -215,7 +215,7 @@ public class EventService : IEventService
         var user = await _userRepository.GetSingleByIdAsync(userId);
         var eventEntity = await _eventRepository.GetEventWithParticipantsAsync(eventId);
 
-        eventEntity!.Participants.Remove(user);
+        eventEntity!.Participants.Remove(user!);
         await _eventRepository.SaveChangesAsync();
     }
 

@@ -11,7 +11,14 @@ public class BookRepository : DeletableRepository<Book>, IBookRepository
     {
     }
 
-    public async Task<Book?> GetFullBookDetails(string id) => await DbSet
+    public async Task<Book?> GetBookInfoAsync(string id) => await DbSet
+                                                                    .Include(b => b.Image)
+                                                                    .Include(b => b.Author)
+                                                                    .Include(b => b.Category)
+                                                                    .Include(b => b.Publisher)
+                                                                    .FirstOrDefaultAsync(b => b.Id.ToString() == id);
+
+    public async Task<Book?> GetFullBookDetailsAsync(string id) => await DbSet
                                                                         .Include(b => b.Image)
                                                                         .Include(b => b.Author)
                                                                         .Include(b => b.Category)
