@@ -1,5 +1,69 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model BookFormModel
+
+<div class="row">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form method="post">
+            <div class="form-group mb-2">
+                <label asp-for="Title"></label>
+                <input asp-for="Title" class="form-control" placeholder="Event Title...">
+                <span asp-validation-for="Title" class="small text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="ShortDescription"></label>
+                <textarea asp-for="ShortDescription" rows="4" class="form-control" placeholder="This event..."></textarea>
+                <span asp-validation-for="ShortDescription" class="small text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" rows="4" class="form-control" placeholder="This event..."></textarea>
+                <span asp-validation-for="Description" class="small text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="Price">Price $</label>
+                <input asp-for="Price" class="form-control" placeholder="Event price...">
+                <span asp-validation-for="Price" class="small text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="ImageUrl"></label>
+                <input asp-for="ImageUrl" class="form-control" placeholder="Your fine URL here...">
+                <span asp-validation-for="ImageUrl" class="small text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="AuthorId"></label>
+                <select asp-for="AuthorId" class="form-control">
+                    @foreach (var author in Model.Authors)
+                    {
+                        <option value="@author.Id">@($"{author.Name} ({author.Alias})")</option>
+                    }
+                </select>
+                <span asp-validation-for="AuthorId" class="small text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="CategoryId"></label>
+                <select asp-for="CategoryId" class="form-control">
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="CategoryId" class="small text-danger"></span>
+            </div>
+            @if (this.User.IsAdmin())
+            {
+                <div class="form-group mb-2">
+                    <label asp-for="PublisherId"></label>
+                    <select asp-for="PublisherId" class="form-control">
+                        @foreach (var publisher in Model.Publishers)
+                        {
+                            <option value="@publisher.Id">@publisher.Email</option>
+                        }
+                    </select>
+                    <span asp-validation-for="PublisherId" class="small text-danger"></span>
+                </div>
+            }
+            <div class="text-center">
+                <input class="btn btn-primary mt-3" type="submit" value="Save" />
+            </div>
+        </form>
+    </div>
+</div>

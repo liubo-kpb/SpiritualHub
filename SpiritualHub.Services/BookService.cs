@@ -7,6 +7,7 @@ using AutoMapper;
 using Mappings;
 
 using Data.Repository.Interface;
+using Data.Models;
 using Interfaces;
 using Models.Book;
 using Client.ViewModels.Book;
@@ -45,9 +46,15 @@ public class BookService : IBookService
 
     }
 
-    public Task<string> CreateAsync(BookFormModel newBook)
+    public async Task<string> CreateAsync(BookFormModel newBook)
     {
-        throw new NotImplementedException();
+        var newBookEntity = _mapper.Map<Book>(newBook);
+        newBookEntity.Image.Name = newBook.Title;
+
+        await _bookRepository.AddAsync(newBookEntity);
+        await _bookRepository.SaveChangesAsync();
+
+        return newBookEntity.Id.ToString();
     }
 
     public Task DeleteAsync(string bookId)

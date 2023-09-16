@@ -507,6 +507,12 @@ public class EventController : Controller
             ModelState.AddModelError(nameof(eventForm.EndDateTime), string.Format(WrongDateErrorMessage, "End date", "start date"));
         }
 
+        bool isExistingAuthor = await _authorService.Exists(eventForm.AuthorId);
+        if (!isExistingAuthor)
+        {
+            ModelState.AddModelError(nameof(eventForm.CategoryId), string.Format(NoEntityFoundErrorMessage, "author"));
+        }
+
         bool isExistingCategory = await _categoryService.ExistsAsync(eventForm.CategoryId);
         if (!isExistingCategory)
         {

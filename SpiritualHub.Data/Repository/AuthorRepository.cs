@@ -16,12 +16,21 @@ public class AuthorRepository : Repository<Author>, IAuthorRepository
 
     public async Task<IEnumerable<Author>?> LastThreeAuthors()
     {
-        return await DbSet
+        var authors = DbSet
                         .Include(a => a.AvatarImage)
                         .Where(a => a.IsActive)
                         .OrderByDescending(a => a.AddedOn)
-                        .Take(3)
-                        .ToArrayAsync();
+                        .Take(3);
+                        
+
+        if (!authors.Any()) { 
+            authors = DbSet
+                        .Include(a => a.AvatarImage)
+                        .OrderByDescending(a => a.AddedOn)
+                        .Take(3);
+        }
+
+        return await authors.ToArrayAsync();
     }
 
     public async Task<Author?> GetAuthorDetailsByIdAsync(string id)
