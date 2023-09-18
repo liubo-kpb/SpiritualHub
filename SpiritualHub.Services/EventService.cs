@@ -197,10 +197,17 @@ public class EventService : IEventService
     public async Task<string> GetAuthorIdAsync(string eventId) => (await _eventRepository.GetAuthorIdAsync(eventId))!
                                                                                                 .AuthorID.ToString();
 
-    public async Task<bool> IsJoinedAsync(string eventId, string userId) => await _eventRepository
-                                                                                    .AnyAsync(
-                                                                                        e => e.Participants
-                                                                                                    .Any(u => u.Id.ToString() == userId));
+    public async Task<bool> IsJoinedAsync(string eventId, string userId)
+    {
+        var @event = await _eventRepository.GetEventWithParticipantsAsync(eventId);
+
+        if (@event!.Participants.Any(p => p.Id.ToString() == userId))
+        {
+            return true;
+        }
+
+        return false;
+    }
     public async Task JoinAsync(string eventId, string userId)
     {
         var user = await _userRepository.GetSingleByIdAsync(userId);

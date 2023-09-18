@@ -9,7 +9,7 @@
     if (isUserLoggedIn)
     {
         string userId = this.User.GetId()!;
-        bool isUserPublisher = await _publisherService.ExistsByUserId(userId);
+        bool isUserPublisher = await _publisherService.ExistsByUserIdAsync(userId);
         if (isUserPublisher)
         {
             isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Book>(userId, Model.Id);
@@ -52,8 +52,8 @@
                 else
                 {
                     <form class="input-group-sm " asp-controller="Book"
-                          asp-action="Add" asp-route-id="@Model.Id" method="post">
-                        <input class="btn btn-primary mb-1" type="submit" value="Add" />
+                          asp-action="Get" asp-route-id="@Model.Id" method="post">
+                        <input class="btn btn-primary mb-1" type="submit" value="Get" />
                     </form>
                 }
             }

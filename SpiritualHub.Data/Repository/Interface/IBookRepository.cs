@@ -7,4 +7,6 @@ public interface IBookRepository : IDeletableRepository<Book>
     Task<Book?> GetFullBookDetailsAsync(string id);
 
     Task<Book?> GetBookInfoAsync(string id);
+
+    Task<Book?> GetBookWithReaders(string id);
 }

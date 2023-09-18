@@ -6,9 +6,9 @@ using Client.ViewModels.Publisher;
 
 public interface IPublisherService
 {
-    Task<bool>                                  ExistsByUserId(string Id);
+    Task<bool>                                  ExistsByUserIdAsync(string Id);
 
-    Task<bool>                                  ExistsById(string Id);
+    Task<bool>                                  ExistsByIdAsync(string Id);
 
     Task<bool>                                  UserWithPhoneNumberExists(string phoneNumber);
 

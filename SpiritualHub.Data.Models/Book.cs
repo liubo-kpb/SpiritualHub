@@ -13,6 +13,7 @@ public class Book
     {
         this.Id = Guid.NewGuid();
         this.Ratings = new HashSet<Rating>();
+        this.Readers = new HashSet<ApplicationUser>();
     }
 
     [Key]
@@ -34,6 +35,8 @@ public class Book
     [Column(TypeName = "decimal(10, 5)")]
     public decimal Price { get; set; }
 
+    public bool IsHidden { get; set; }
+
     public DateTime AddedOn { get; set; }
 
     public Guid AuthorID { get; set; }
@@ -53,4 +56,6 @@ public class Book
     public virtual Category? Category { get; set; } = null!;
 
     public virtual ICollection<Rating> Ratings { get; set; }
+
+    public virtual ICollection<ApplicationUser> Readers { get; set; }
 }

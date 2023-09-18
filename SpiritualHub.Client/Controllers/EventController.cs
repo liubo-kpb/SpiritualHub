@@ -39,14 +39,23 @@ public class EventController : Controller
     [HttpGet]
     public async Task<IActionResult> All([FromQuery] AllEventsQueryModel queryModel)
     {
-        var filteredEvents = await _eventService.GetAllAsync(queryModel, this.User.GetId()!);
-        var categories = await _categoryService.GetAllAsync();
+        try
+        {
+            var filteredEvents = await _eventService.GetAllAsync(queryModel, this.User.GetId()!);
+            var categories = await _categoryService.GetAllAsync();
 
-        queryModel.Events = filteredEvents.Events;
-        queryModel.Categories = categories.Select(c => c.Name);
-        queryModel.TotalEventsCount = filteredEvents.TotalEventsCount;
+            queryModel.Events = filteredEvents.Events;
+            queryModel.Categories = categories.Select(c => c.Name);
+            queryModel.TotalEventsCount = filteredEvents.TotalEventsCount;
 
-        return View(queryModel);
+            return View(queryModel);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load {entityName}s");
+
+            return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
     }
 
     [HttpGet]
@@ -54,7 +63,7 @@ public class EventController : Controller
     {
         string userId = this.User.GetId()!;
         bool isUserAdmin = this.User.IsAdmin();
-        bool isPublisher = isUserAdmin ? true : await _publisherService.ExistsByUserId(userId);
+        bool isPublisher = isUserAdmin ? true : await _publisherService.ExistsByUserIdAsync(userId);
         if (!isPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -87,7 +96,7 @@ public class EventController : Controller
 
         if (!isUserAdmin)
         {
-            bool isPublisher = await _publisherService.ExistsByUserId(userId);
+            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
             if (!isPublisher)
             {
                 TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -174,7 +183,7 @@ public class EventController : Controller
 
             if (!isUserAdmin)
             {
-                bool isPublisher = await _publisherService.ExistsByUserId(userId);
+                bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
                 if (!isPublisher)
                 {
                     TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -219,7 +228,7 @@ public class EventController : Controller
         bool isUserAdmin = this.User.IsAdmin();
         if (!isUserAdmin)
         {
-            bool isPublisher = await _publisherService.ExistsByUserId(userId);
+            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
             if (!isPublisher)
             {
                 TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -277,7 +286,7 @@ public class EventController : Controller
         string userId = this.User.GetId()!;
         if (!this.User.IsAdmin())
         {
-            bool isPublisher = await _publisherService.ExistsByUserId(userId);
+            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
             if (!isPublisher)
             {
                 TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -311,7 +320,7 @@ public class EventController : Controller
 
     }
 
-    [HttpPost]
+    [HttpDelete]
     public async Task<IActionResult> Delete(EventDetailsViewModel eventModel)
     {
         bool exists = await _eventService.ExistsAsync(eventModel.Id);
@@ -325,7 +334,7 @@ public class EventController : Controller
         string userId = this.User.GetId()!;
         if (!this.User.IsAdmin())
         {
-            bool isPublisher = await _publisherService.ExistsByUserId(userId);
+            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
             if (!isPublisher)
             {
                 TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -380,7 +389,7 @@ public class EventController : Controller
     public async Task<IActionResult> MyPublishings()
     {
         string userId = this.User.GetId()!;
-        bool isPublisher = await _publisherService.ExistsByUserId(userId);
+        bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
         if (!isPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -528,7 +537,7 @@ public class EventController : Controller
 
         if (isUserAdmin)
         {
-            if (!(await _publisherService.ExistsById(eventForm.PublisherId!)))
+            if (!(await _publisherService.ExistsByIdAsync(eventForm.PublisherId!)))
             {
                 ModelState.AddModelError(nameof(eventForm.PublisherId), string.Format(NoEntityFoundErrorMessage, "publisher"));
             }

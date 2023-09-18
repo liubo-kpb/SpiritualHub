@@ -30,5 +30,9 @@ public class CourseEntityConfiguration : IEntityTypeConfiguration<Course>
             .WithMany(c => c.Courses)
             .HasForeignKey(c => c.CategoryID)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder
+            .HasMany(c => c.Students)
+            .WithMany(u => u.Courses);
     }
 }

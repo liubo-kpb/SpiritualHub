@@ -22,6 +22,7 @@ public static class ErrorMessagesConstants
 
     public const string SpecifyParticipationErrorMessage = "You need to specify the event's participation type.";
 
+    public const string AlreadyHasBookErrorMessage = "You already have this book";
+
     public const string WrongPublisherErrorMessage = "You need to pick a publisher that is affiliated with the author!";
-    public const string NoEntitiesErrorMessage = "This author doesn't have any {0} at this time.";
 }

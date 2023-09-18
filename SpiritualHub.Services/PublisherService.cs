@@ -41,10 +41,10 @@ public class PublisherService : IPublisherService
         await _publisherRepository.SaveChangesAsync();
     }
 
-    public async Task<bool> ExistsById(string Id) => await _publisherRepository
+    public async Task<bool> ExistsByIdAsync(string Id) => await _publisherRepository
                                                                 .AnyAsync(p => p.Id.ToString() == Id);
 
-    public async Task<bool> ExistsByUserId(string Id) => await _publisherRepository
+    public async Task<bool> ExistsByUserIdAsync(string Id) => await _publisherRepository
                                                                 .AnyAsync(u => u.UserID.ToString() == Id);
 
     public async Task<IEnumerable<PublisherInfoViewModel>> GetAllAsync()

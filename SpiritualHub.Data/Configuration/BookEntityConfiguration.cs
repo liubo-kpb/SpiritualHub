@@ -24,5 +24,9 @@ public class BookEntityConfiguration : IEntityTypeConfiguration<Book>
             .WithMany(a => a.Books)
             .HasForeignKey(b => b.AuthorID)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder
+            .HasMany(b => b.Readers)
+            .WithMany(u => u.Books);
     }
 }

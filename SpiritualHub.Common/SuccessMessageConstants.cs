@@ -9,6 +9,9 @@ public class SuccessMessageConstants
     public const string JoinEventSuccessfulMessage = "You have successfully joined the event.";
     public const string LeaveEventSuccessfulMessage = "You have successfully left the event.";
 
+    public const string GetBookSuccessMessage = "You have successfully added the book to your librarty.";
+    public const string RemoveBookSuccessMessage = "You have successfully removed the book from your librarty.";
+
     public const string AuthorActivatedSuccessfullyMessage = "Author was succesfully activated.";
     public const string AuthorDeactivatedSuccessfullyMessage = "Author was succesfully deactivated.";
 

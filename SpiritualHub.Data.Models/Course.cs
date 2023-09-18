@@ -12,6 +12,7 @@ public class Course
     {
         this.Id = Guid.NewGuid();
         this.Ratings = new HashSet<Rating>();
+        this.Students = new HashSet<ApplicationUser>();
     }
 
     [Key]
@@ -54,4 +55,6 @@ public class Course
     public virtual Image Image { get; set; }
 
     public virtual ICollection<Rating> Ratings { get; set; }
+
+    public virtual ICollection<ApplicationUser> Students { get; set; }
 }

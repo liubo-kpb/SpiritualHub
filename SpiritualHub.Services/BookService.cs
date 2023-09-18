@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 using AutoMapper;
 using Mappings;
+using AutoMapper.QueryableExtensions;
 
 using Data.Repository.Interface;
 using Data.Models;
@@ -12,17 +13,16 @@ using Interfaces;
 using Models.Book;
 using Client.ViewModels.Book;
 using Client.Infrastructure.Enums;
-using AutoMapper.QueryableExtensions;
 
 public class BookService : IBookService
 {
     private readonly IBookRepository _bookRepository;
-    private readonly IUserRepository _userRepository;
+    private readonly IRepository<ApplicationUser> _userRepository;
     private readonly IMapper _mapper;
 
     public BookService(
         IBookRepository bookRepository,
-        IUserRepository userRepository,
+        IRepository<ApplicationUser> userRepository,
         IMapper mapper)
     {
         _bookRepository = bookRepository;
@@ -30,20 +30,34 @@ public class BookService : IBookService
         _mapper = mapper;
     }
 
-    public Task AddAsync(string bookId, string userId)
+    public async Task GetAsync(string bookId, string userId)
     {
-        throw new NotImplementedException();
+        var book = await _bookRepository.GetSingleByIdAsync(bookId);
+        var user = await _userRepository.GetSingleByIdAsync(userId);
+
+        user!.Books.Add(book!);
+        await _bookRepository.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<BookViewModel>> AllBooksByUserIdAsync(string userId)
     {
-        var user = await _userRepository.GetUserWithBooks(userId);
+        var book = await _bookRepository
+            .AllAsNoTracking()
+            .Include(b => b.Author)
+            .Include(b => b.Image)
+            .Include(b => b.Readers)
+            .Where(b => b.Readers.Any(u => u.Id.ToString() == userId))
+            .ToListAsync();
 
         var booksModel = new List<BookViewModel>();
-        _mapper.MapListToViewModel(user!.Books, booksModel);
+        _mapper.MapListToViewModel(book, booksModel);
+
+        for (int i = 0; i < booksModel.Count; i++)
+        {
+            booksModel[i].HasBook = true;
+        }
 
         return booksModel;
-
     }
 
     public async Task<string> CreateAsync(BookFormModel newBook)
@@ -57,9 +71,12 @@ public class BookService : IBookService
         return newBookEntity.Id.ToString();
     }
 
-    public Task DeleteAsync(string bookId)
+    public async Task DeleteAsync(string bookId)
     {
-        throw new NotImplementedException();
+        var book = await _bookRepository.GetSingleByIdAsync(bookId);
+
+        _bookRepository.Delete(book!);
+        await _bookRepository.SaveChangesAsync();
     }
 
     public async Task EditAsync(BookFormModel updatedBook)
@@ -70,6 +87,7 @@ public class BookService : IBookService
         book!.Description = updatedBook.Description;
         book!.ShortDescription = updatedBook.ShortDescription;
         book!.Price = updatedBook.Price;
+        book!.IsHidden = updatedBook.IsHidden;
         book!.Image.URL = updatedBook.ImageUrl;
         book!.CategoryID = updatedBook.CategoryId;
         book!.AuthorID = Guid.Parse(updatedBook.AuthorId);
@@ -83,10 +101,11 @@ public class BookService : IBookService
         return _bookRepository.AnyAsync(b => b.Id.ToString() == id);
     }
 
-    public async Task<FilteredBooksServiceModel> GetAllAsync(AllBooksQueryModel queryModel)
+    public async Task<FilteredBooksServiceModel> GetAllAsync(AllBooksQueryModel queryModel, string userId)
     {
         var booksQuery = _bookRepository
-                            .AllAsNoTracking();
+                            .AllAsNoTracking()
+                            .Where(b => !b.IsHidden);
 
         if (!string.IsNullOrWhiteSpace(queryModel.CategoryName))
         {
@@ -119,10 +138,16 @@ public class BookService : IBookService
                             .Take(queryModel.BooksPerPage)
                             .Include(b => b.Image)
                             .Include(b => b.Author)
+                            .Include(b => b.Readers)
                             .ToListAsync();
 
         List<BookViewModel> booksModel = new List<BookViewModel>();
         _mapper.MapListToViewModel(books, booksModel);
+
+        for (int i = 0; i < booksModel.Count; i++)
+        {
+            booksModel[i].HasBook = HasBook(userId, books[i]);
+        }
 
         return new FilteredBooksServiceModel()
         {
@@ -143,10 +168,11 @@ public class BookService : IBookService
         throw new NotImplementedException();
     }
 
-    public async Task<BookDetailsViewModel> GetBookDetailsAsync(string id)
+    public async Task<BookDetailsViewModel> GetBookDetailsAsync(string id, string userId)
     {
         var bookEntity = await _bookRepository.GetFullBookDetailsAsync(id);
         var bookModel = _mapper.Map<BookDetailsViewModel>(bookEntity);
+        bookModel.HasBook = HasBook(userId, bookEntity);
 
         return bookModel;
     }
@@ -159,24 +185,65 @@ public class BookService : IBookService
         return bookModel;
     }
 
-    public async Task<IEnumerable<BookViewModel>> GetBooksByPublisherIdAsync(string publisherId)
+    public async Task<IEnumerable<BookViewModel>> GetBooksByPublisherIdAsync(string publisherId, string userId)
     {
-        return await _bookRepository
+        var books = await _bookRepository
                             .AllAsNoTracking()
                             .Include(b => b.Image)
                             .Include(b => b.Author)
+                            .Include(b => b.Readers)
                             .Where(b => b.PublisherID.ToString() == publisherId)
-                            .ProjectTo<BookViewModel>(_mapper.ConfigurationProvider)
                             .ToListAsync();
+
+        var booksModel = new List<BookViewModel>();
+        _mapper.MapListToViewModel(books, booksModel);
+
+        for (int i = 0; i < booksModel.Count; i++)
+        {
+            booksModel[i].HasBook = HasBook(userId, books[i]);
+        }
+
+        return booksModel;
     }
 
-    public Task<bool> IsAddedAsync(string bookId, string userId)
+    public async Task HideAsync(string bookId)
     {
-        throw new NotImplementedException();
+        var book = await _bookRepository.GetSingleByIdAsync(bookId);
+
+        book!.IsHidden = true;
+        await _bookRepository.SaveChangesAsync();
     }
 
-    public Task RemoveAsync(string bookId, string userId)
+    public async Task UnideAsync(string bookId)
     {
-        throw new NotImplementedException();
+        var book = await _bookRepository.GetSingleByIdAsync(bookId);
+
+        book!.IsHidden = false;
+        await _bookRepository.SaveChangesAsync();
+    }
+
+    public async Task<bool> HasBookAsync(string bookId, string userId)
+    {
+        var book = await _bookRepository.GetBookWithReaders(bookId);
+        return HasBook(userId, book);
+    }
+
+    public async Task RemoveAsync(string bookId, string userId)
+    {
+        var book = await _bookRepository.GetBookWithReaders(bookId);
+        var user = await _userRepository.GetSingleByIdAsync(userId);
+
+        book!.Readers.Remove(user!);
+        await _userRepository.SaveChangesAsync();
+    }
+
+    private static bool HasBook(string userId, Book? book)
+    {
+        if (book!.Readers.Any(p => p.Id.ToString() == userId))
+        {
+            return true;
+        }
+
+        return false;
     }
 }

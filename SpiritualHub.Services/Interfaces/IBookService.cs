@@ -7,17 +7,17 @@ public interface IBookService
 {
     Task<int>                           GetAllCountAsync();
 
-    Task<BookDetailsViewModel>          GetBookDetailsAsync(string id);
+    Task<BookDetailsViewModel>          GetBookDetailsAsync(string id, string userId);
 
     Task<BookFormModel>                 GetBookInfoAsync(string id);
 
     Task<bool>                          ExistsAsync(string id);
 
-    Task<FilteredBooksServiceModel>     GetAllAsync(AllBooksQueryModel queryModel);
+    Task<FilteredBooksServiceModel>     GetAllAsync(AllBooksQueryModel queryModel, string userId);
 
     Task<IEnumerable<BookViewModel>>    AllBooksByUserIdAsync(string userId);
 
-    Task<IEnumerable<BookViewModel>>    GetBooksByPublisherIdAsync(string publisherId);
+    Task<IEnumerable<BookViewModel>>    GetBooksByPublisherIdAsync(string publisherId, string userId);
 
     Task<string>                        GetAuthorIdAsync(string bookId);
 
@@ -27,9 +27,13 @@ public interface IBookService
 
     Task                                DeleteAsync(string bookId);
 
-    Task<bool>                          IsAddedAsync(string bookId, string userId);
+    Task                                HideAsync(string bookId);
 
-    Task                                AddAsync(string bookId, string userId);
+    Task                                UnideAsync(string bookId);
+
+    Task<bool>                          HasBookAsync(string bookId, string userId);
+
+    Task                                GetAsync(string bookId, string userId);
 
     Task                                RemoveAsync(string bookId, string userId);
 }

@@ -7,7 +7,7 @@
     if (isUserLoggedIn)
     {
         string userId = this.User.GetId()!;
-        bool isUserPublisher = await _publisherService.ExistsByUserId(userId);
+        bool isUserPublisher = await _publisherService.ExistsByUserIdAsync(userId);
         if (isUserPublisher)
         {
             isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Event>(userId, Model.Id);

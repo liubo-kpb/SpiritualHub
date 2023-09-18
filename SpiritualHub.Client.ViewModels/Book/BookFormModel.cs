@@ -31,6 +31,9 @@ public class BookFormModel
 
     public decimal Price { get; set; }
 
+    [Display(Name = "Hide book")]
+    public bool IsHidden { get; set; }
+
     [Display(Name = "Book Cover URL")]
     public string ImageUrl { get; set; } = null!;
 

@@ -51,7 +51,7 @@ public class AuthorController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load your {entityName}s");
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load {entityName}s");
 
             return RedirectToAction("Index", "Home");
         }
@@ -82,7 +82,7 @@ public class AuthorController : Controller
     public async Task<IActionResult> MyPublishings()
     {
         string userId = this.User.GetId()!;
-        bool isPublisher = this.User.IsAdmin() ? true : await _publisherService.ExistsByUserId(userId);
+        bool isPublisher = this.User.IsAdmin() ? true : await _publisherService.ExistsByUserIdAsync(userId);
         if (!isPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -125,7 +125,7 @@ public class AuthorController : Controller
     [HttpGet]
     public async Task<IActionResult> Add()
     {
-        var isPublisher = this.User.IsAdmin() ? true : await _publisherService.ExistsByUserId(User.GetId()!);
+        var isPublisher = this.User.IsAdmin() ? true : await _publisherService.ExistsByUserIdAsync(User.GetId()!);
         if (!isPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -152,7 +152,7 @@ public class AuthorController : Controller
     public async Task<IActionResult> Add(AuthorFormModel newAuthor)
     {
         var userId = User.GetId()!;
-        var isPublisher = this.User.IsAdmin() ? true : await _publisherService.ExistsByUserId(userId);
+        var isPublisher = this.User.IsAdmin() ? true : await _publisherService.ExistsByUserIdAsync(userId);
         if (!isPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -445,7 +445,7 @@ public class AuthorController : Controller
             return RedirectToAction(nameof(All));
         }
 
-        bool isPublisher = await _publisherService.ExistsByUserId(this.User.GetId()!);
+        bool isPublisher = await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
         if (isPublisher && !this.User.IsAdmin())
         {
             TempData[ErrorMessage] = PublishersCannotSubscribeErrorMessage;
@@ -489,7 +489,7 @@ public class AuthorController : Controller
         }
 
         string userId = this.User.GetId()!;
-        bool isPublisher = this.User.IsAdmin() ? true : await _publisherService.ExistsByUserId(userId);
+        bool isPublisher = this.User.IsAdmin() ? true : await _publisherService.ExistsByUserIdAsync(userId);
         if (isPublisher)
         {
             TempData[ErrorMessage] = PublishersCannotSubscribeErrorMessage;
@@ -547,7 +547,7 @@ public class AuthorController : Controller
         string userId = this.User.GetId()!;
         if (!this.User.IsAdmin())
         {
-            bool isPublisher = await _publisherService.ExistsByUserId(userId);
+            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
             if (!isPublisher)
             {
                 TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -578,7 +578,7 @@ public class AuthorController : Controller
         string userId = this.User.GetId()!;
         if (this.User.IsAdmin())
         {
-            bool isPublisher = await _publisherService.ExistsByUserId(userId);
+            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
             if (!isPublisher)
             {
                 TempData[ErrorMessage] = NotAPublisherErrorMessage;

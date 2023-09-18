@@ -8,7 +8,7 @@
     @if (SignInManager.IsSignedIn(User))
     {
         string userFullName = await _userService.GetUserFullName(this.User.GetId()!);
-        @if (!(await _publisherService.ExistsByUserId(this.User.GetId())))
+        @if (!(await _publisherService.ExistsByUserIdAsync(this.User.GetId())))
         {
             <li>
                 <a class="nav-link text-dark" asp-area="" asp-controller="Publisher" asp-action="Become">Become a Publisher</a>
