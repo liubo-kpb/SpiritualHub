@@ -191,11 +191,10 @@ public class EventController : Controller
                     return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
                 }
 
-                bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, eventFormModel.AuthorId))
-                                         && (await _publisherService.IsConnectedToEntityByUserId<Event>(userId, eventFormModel.Id!));
+                bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, eventFormModel.AuthorId));
                 if (!isConnectedPublisher)
                 {
-                    TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author and {entityName}");
+                    TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author");
 
                     return RedirectToAction(nameof(MyPublishings));
                 }
@@ -236,8 +235,7 @@ public class EventController : Controller
                 return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
             }
 
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, updatedEventForm.AuthorId))
-                                     && (await _publisherService.IsConnectedToEntityByUserId<Event>(userId, updatedEventForm.Id!));
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, updatedEventForm.AuthorId));
             if (!isConnectedPublisher)
             {
                 ModelState.AddModelError(nameof(updatedEventForm.AuthorId), string.Format(NoEntityFoundErrorMessage, "affiliated author"));
@@ -283,9 +281,9 @@ public class EventController : Controller
             return RedirectToAction(nameof(All));
         }
 
-        string userId = this.User.GetId()!;
         if (!this.User.IsAdmin())
         {
+            string userId = this.User.GetId()!;
             bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
             if (!isPublisher)
             {
@@ -295,11 +293,10 @@ public class EventController : Controller
             }
 
             string authorId = await _eventService.GetAuthorIdAsync(id);
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId))
-                                     && (await _publisherService.IsConnectedToEntityByUserId<Event>(userId, id));
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
             if (!isConnectedPublisher)
             {
-                TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author and {entityName}");
+                TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author");
 
                 return RedirectToAction(nameof(MyPublishings));
             }
@@ -313,14 +310,14 @@ public class EventController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load your {entityName}");
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load the {entityName}");
 
             return RedirectToAction(nameof(Details), new { id });
         }
 
     }
 
-    [HttpDelete]
+    [HttpPost]
     public async Task<IActionResult> Delete(EventDetailsViewModel eventModel)
     {
         bool exists = await _eventService.ExistsAsync(eventModel.Id);
@@ -331,9 +328,9 @@ public class EventController : Controller
             return RedirectToAction(nameof(All));
         }
 
-        string userId = this.User.GetId()!;
         if (!this.User.IsAdmin())
         {
+            string userId = this.User.GetId()!;
             bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
             if (!isPublisher)
             {
@@ -343,11 +340,10 @@ public class EventController : Controller
             }
 
             string authorId = await _eventService.GetAuthorIdAsync(eventModel.Id);
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId))
-                                     && (await _publisherService.IsConnectedToEntityByUserId<Event>(userId, eventModel.Id));
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
             if (!isConnectedPublisher)
             {
-                TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author and {entityName}");
+                TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author");
 
                 return RedirectToAction(nameof(MyPublishings));
             }
@@ -356,6 +352,7 @@ public class EventController : Controller
         try
         {
             await _eventService.DeleteAsync(eventModel.Id);
+            TempData[SuccessMessage] = string.Format(DeleteSuccessfulMessage, entityName);
 
             return RedirectToAction(nameof(MyPublishings));
         }

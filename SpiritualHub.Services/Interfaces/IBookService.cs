@@ -29,7 +29,7 @@ public interface IBookService
 
     Task                                HideAsync(string bookId);
 
-    Task                                UnideAsync(string bookId);
+    Task                                ShowAsync(string bookId);
 
     Task<bool>                          HasBookAsync(string bookId, string userId);
 

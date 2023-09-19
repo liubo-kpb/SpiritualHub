@@ -10,7 +10,7 @@
         bool isUserPublisher = await _publisherService.ExistsByUserIdAsync(userId);
         if (isUserPublisher)
         {
-            isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Event>(userId, Model.Id);
+            isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, Model.Author.Id);
         }
     }
 }

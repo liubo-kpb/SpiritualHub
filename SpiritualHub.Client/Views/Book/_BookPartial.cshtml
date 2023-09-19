@@ -10,7 +10,7 @@
         bool isUserPublisher = await _publisherService.ExistsByUserIdAsync(userId);
         if (isUserPublisher)
         {
-            isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Book>(userId, Model.Id);
+            isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, Model.Author.Id);
         }
     }
 }
@@ -25,15 +25,29 @@
             <p>Price: $@($"{Model.Price:F2}")</p>
             <p>@Model.ShortDescription</p>
             <br />
-            <a asp-controller="Book" asp-action="Details" asp-route-id="@Model.Id"
-               class="btn btn-success">Details</a>
+            <a asp-controller="Book" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-success">Details</a>
             @if (isUserLoggedIn)
             {
                 @if (isUserConnectedPublisher || this.User.IsAdmin())
                 {
-                    <a asp-controller="Book" asp-action="Edit" asp-route-id="@Model.Id"
-                       class="btn btn-warning">Edit</a>
-                    <a asp-controller="Book" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+                    <p></p>
+                    <div class="d-flex flex-row justify-content-center">
+                        <a asp-controller="Book" asp-action="Edit" asp-route-id="@Model.Id"
+                           class="btn btn-warning">Edit</a>
+                        @if (Model.IsHidden)
+                        {
+                            <form asp-controller="Book" asp-action="Show" asp-route-id="@Model.Id" method="post" class="mx-1">
+                                <input class="btn btn-primary m" type="submit" value="Show" />
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-controller="Book" asp-action="Hide" asp-route-id="@Model.Id" method="post" class="mx-1">
+                                <input class="btn btn-warning" type="submit" value="Hide" />
+                            </form>
+                        }
+                        <a asp-controller="Book" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+                    </div>
                 }
                 <p></p>
                 @if (Model.HasBook)

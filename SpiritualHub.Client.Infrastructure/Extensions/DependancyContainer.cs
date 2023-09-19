@@ -53,7 +53,7 @@ public static class DependancyContainer
         services.AddScoped<IPublisherRepository, PublisherRepository>();
         services.AddScoped<IRepository<Subscription>, Repository<Subscription>>();
         services.AddScoped<IDeletableRepository<Category>, DeletableRepository<Category>>();
-        services.AddScoped<IRepository<Image>, Repository<Image>>();
+        services.AddScoped<IDeletableRepository<Image>, DeletableRepository<Image>>();
         services.AddScoped<IRepository<ApplicationUser>, Repository<ApplicationUser>>();
         services.AddScoped<IEventRepository, EventRepository>();
         services.AddScoped<IRepository<Course>, Repository<Course>>();

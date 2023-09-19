@@ -18,6 +18,14 @@ public class BookRepository : DeletableRepository<Book>, IBookRepository
                                                                     .Include(b => b.Publisher)
                                                                     .FirstOrDefaultAsync(b => b.Id.ToString() == id);
 
+    public async Task<Book?> GetBookWithAuthorAsync(string id) => await DbSet
+                                                                            .Include(e => e.Author)
+                                                                            .FirstOrDefaultAsync(e => e.Id.ToString() == id);
+
+    public async Task<Book?> GetBookWithImageAsync(string id) => await DbSet
+                                                                        .Include(b => b.Image)
+                                                                        .FirstOrDefaultAsync(b => b.Id.ToString() == id);
+
     public async Task<Book?> GetBookWithReaders(string id) => await DbSet
                                                                         .Include(b => b.Readers)
                                                                         .FirstOrDefaultAsync(b => b.Id.ToString() == id);
@@ -30,4 +38,6 @@ public class BookRepository : DeletableRepository<Book>, IBookRepository
                                                                         .ThenInclude(p => p.User)
                                                                         .Include(b => b.Readers)
                                                                         .FirstOrDefaultAsync(b => b.Id.ToString() == id);
+
+    
 }

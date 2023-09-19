@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 
 using AutoMapper;
 using Mappings;
-using AutoMapper.QueryableExtensions;
 
 using Data.Repository.Interface;
 using Data.Models;
@@ -17,15 +16,18 @@ using Client.Infrastructure.Enums;
 public class BookService : IBookService
 {
     private readonly IBookRepository _bookRepository;
+    private readonly IDeletableRepository<Image> _imageRepository;
     private readonly IRepository<ApplicationUser> _userRepository;
     private readonly IMapper _mapper;
 
     public BookService(
         IBookRepository bookRepository,
+        IDeletableRepository<Image> imageRepository,
         IRepository<ApplicationUser> userRepository,
         IMapper mapper)
     {
         _bookRepository = bookRepository;
+        _imageRepository = imageRepository;
         _userRepository = userRepository;
         _mapper = mapper;
     }
@@ -73,9 +75,12 @@ public class BookService : IBookService
 
     public async Task DeleteAsync(string bookId)
     {
-        var book = await _bookRepository.GetSingleByIdAsync(bookId);
+        var book = await _bookRepository.GetBookWithImageAsync(bookId);
 
+        _bookRepository.DeleteEntriesWithForeignKeys<Rating, Guid>($"{nameof(Book)}ID", Guid.Parse(bookId));
         _bookRepository.Delete(book!);
+        _imageRepository.Delete(book!.Image);
+
         await _bookRepository.SaveChangesAsync();
     }
 
@@ -163,9 +168,9 @@ public class BookService : IBookService
                             .CountAsync();
     }
 
-    public Task<string> GetAuthorIdAsync(string bookId)
+    public async Task<string> GetAuthorIdAsync(string bookId)
     {
-        throw new NotImplementedException();
+        return (await _bookRepository.GetBookWithAuthorAsync(bookId))!.AuthorID.ToString();
     }
 
     public async Task<BookDetailsViewModel> GetBookDetailsAsync(string id, string userId)
@@ -214,7 +219,7 @@ public class BookService : IBookService
         await _bookRepository.SaveChangesAsync();
     }
 
-    public async Task UnideAsync(string bookId)
+    public async Task ShowAsync(string bookId)
     {
         var book = await _bookRepository.GetSingleByIdAsync(bookId);
 

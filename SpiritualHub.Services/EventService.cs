@@ -16,15 +16,18 @@ using Client.ViewModels.Event;
 public class EventService : IEventService
 {
     private readonly IEventRepository _eventRepository;
+    private readonly IDeletableRepository<Image> _imageRepository;
     private readonly IRepository<ApplicationUser> _userRepository;
     private readonly IMapper _mapper;
 
     public EventService(
         IEventRepository eventRepository,
+        IDeletableRepository<Image> imageRepository,
         IRepository<ApplicationUser> userRepository,
         IMapper mapper)
     {
         _eventRepository = eventRepository;
+        _imageRepository = imageRepository;
         _userRepository = userRepository;
         _mapper = mapper;
     }
@@ -149,10 +152,11 @@ public class EventService : IEventService
 
     public async Task DeleteAsync(string eventId)
     {
-        var eventEntity = await _eventRepository.GetSingleByIdAsync(eventId);
+        var eventEntity = await _eventRepository.GetEventWithImageAsync(eventId);
 
         _eventRepository.DeleteEntriesWithForeignKeys<Rating, Guid>($"{nameof(Event)}ID", Guid.Parse(eventId));
         _eventRepository.Delete(eventEntity!);
+        _imageRepository.Delete(eventEntity!.Image);
 
         await _eventRepository.SaveChangesAsync();
     }
@@ -194,7 +198,7 @@ public class EventService : IEventService
         return eventsModel;
     }
 
-    public async Task<string> GetAuthorIdAsync(string eventId) => (await _eventRepository.GetAuthorIdAsync(eventId))!
+    public async Task<string> GetAuthorIdAsync(string eventId) => (await _eventRepository.GetEventWithAuthorAsync(eventId))!
                                                                                                 .AuthorID.ToString();
 
     public async Task<bool> IsJoinedAsync(string eventId, string userId)

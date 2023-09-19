@@ -11,7 +11,7 @@ public class EventRepository : DeletableRepository<Event>, IEventRepository
     {
     }
 
-    public async Task<Event?> GetAuthorIdAsync(string eventId) => await DbSet
+    public async Task<Event?> GetEventWithAuthorAsync(string eventId) => await DbSet
                                                                         .Include(e => e.Author)
                                                                         .FirstOrDefaultAsync(e => e.Id.ToString() == eventId);
 
@@ -21,6 +21,10 @@ public class EventRepository : DeletableRepository<Event>, IEventRepository
                                                                 .Include(e => e.Category)
                                                                 .Include(e => e.Publisher)
                                                                 .FirstOrDefaultAsync(e => e.Id.ToString() == id);
+
+    public Task<Event?> GetEventWithImageAsync(string eventId) => DbSet
+                                                                    .Include(e => e.Image)
+                                                                    .FirstOrDefaultAsync(e => e.Id.ToString() == eventId);
 
     public async Task<Event?> GetEventWithParticipantsAsync(string eventId) => await DbSet
                                                                                         .Include(e => e.Participants)

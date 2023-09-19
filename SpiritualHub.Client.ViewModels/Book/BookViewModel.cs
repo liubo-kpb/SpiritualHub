@@ -22,5 +22,7 @@ public class BookViewModel
 
     public bool HasBook { get; set; }
 
+    public bool IsHidden { get; set; }
+
     public AuthorInfoViewModel Author { get; set; } = null!;
 }

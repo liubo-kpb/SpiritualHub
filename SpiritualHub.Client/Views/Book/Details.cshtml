@@ -12,7 +12,7 @@
         bool isUserPublisher = await _publisherService.ExistsByUserIdAsync(userId);
         if (isUserPublisher)
         {
-            isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Book>(userId, Model.Id);
+            isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, Model.Author.Id);
         }
     }
 }
@@ -29,8 +29,22 @@
                 {
                     @if (isUserConnectedPublisher || this.User.IsAdmin())
                     {
+                        <div class="d-flex flex-row">
                         <a asp-controller="Book" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                        @if (Model.IsHidden)
+                        {
+                            <form asp-controller="Book" asp-action="Show" asp-route-id="@Model.Id" method="post" class="mx-1">
+                                <input class="btn btn-primary" type="submit" value="Show" />
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-controller="Book" asp-action="Hide" asp-route-id="@Model.Id" method="post" class="mx-1">
+                                <input class="btn btn-warning" type="submit" value="Hide" />
+                            </form>
+                        }
                         <a asp-controller="Book" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+                        </div>
                     }
                 }
             </div>
@@ -58,7 +72,7 @@
                 }
             }
             <p></p>
-            <h5 class="card-title">Organizer:</h5>
+            <h5 class="card-title">Published By:</h5>
             <div class="card" style="width: 18rem;">
                 <div class="card-body">
                     @if (!string.IsNullOrWhiteSpace(Model.Publisher.FullName))

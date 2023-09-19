@@ -68,7 +68,7 @@ public class ApplicationProfile : Profile
         CreateMap<Author, AuthorDetailsViewModel>()
             .ForMember(a => a.SubscriberCount,
                        opt => opt.MapFrom(
-                           au => au.Subscriptions.Sum(
+                           a => a.Subscriptions.Sum(
                                s => s.Subscribers.Count)))
             .ForMember(a => a.FollowerCount,
                        opt => opt.MapFrom(f => f.Followers.Count));
@@ -76,7 +76,7 @@ public class ApplicationProfile : Profile
         CreateMap<Author, AuthorViewModel>()
             .ForMember(a => a.SubscriberCount,
                        opt => opt.MapFrom(
-                           au => au.Subscriptions.Sum(
+                           a => a.Subscriptions.Sum(
                                s => s.Subscribers.Count)))
             .ForMember(a => a.FollowerCount,
                        opt => opt.MapFrom(f => f.Followers.Count));
