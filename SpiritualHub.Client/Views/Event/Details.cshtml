@@ -55,15 +55,13 @@
             {
                 @if (Model.IsUserJoined)
                 {
-                    <form asp-controller="Event" asp-action="Leave"
-                          asp-route-id="@Model.Id" method="post">
+                    <form asp-controller="Event" asp-action="Leave" asp-route-id="@Model.Id" method="post">
                         <input class="btn btn-primary mb-1" type="submit" value="Leave" />
                     </form>
                 }
                 else
                 {
-                    <form class="input-group-sm " asp-controller="Event"
-                          asp-action="Join" asp-route-id="@Model.Id" method="post">
+                    <form class="input-group-sm " asp-controller="Event" asp-action="Join" asp-route-id="@Model.Id" method="post">
                         <input class="btn btn-primary mb-1" type="submit" value="Join" />
                     </form>
                 }

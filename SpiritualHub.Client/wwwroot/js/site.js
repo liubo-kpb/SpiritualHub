@@ -41,9 +41,9 @@ async function authorRessources(id) {
         document.getElementById(type).innerHTML = "";
         addLoader(type);
 
-        const response = await getRessources(id, type);
+        const response = await getResources(id, type);
         if (!response) {
-            noRessourcessMessage(type);
+            noResourcesMessage(type);
         }
         else if (response.hasError) {
             displayErrors(response, type);
@@ -61,7 +61,61 @@ async function authorRessources(id) {
         removeLoader(type);
     });
 
+    $("#book-tab").on("click", async function (e) {
+        e.preventDefault();
+        e.stopPropagation();
 
+        type = `books`;
+        document.getElementById(type).innerHTML = "";
+        addLoader(type);
+
+        const response = await getResources(id, type);
+        if (!response) {
+            noResourcesMessage(type);
+        }
+        else if (response.hasError) {
+            displayErrors(response, type);
+        }
+        else {
+            response.data.forEach((book) => {
+                $(`#${type}`).append(`<div class="d-flex flex-row justify-content-between">
+                                          <p class="w-50"><b><a href="/Book/Details/${book.id}">${book.title}</a></b></p>
+                                          <p class="w-25">Price: <b>$${book.price}</b></p>
+                                          <p>${book.shortDescription}</p>
+                                     </div>`);
+            });
+        }
+        removeLoader(type);
+    });
+
+
+    $("#sub-tab").on("click", async function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        type = `subscriptions`;
+        document.getElementById(type).innerHTML = "";
+        addLoader(type);
+
+        const response = await getResources(id, type);
+        if (!response) {
+            noResourcesMessage(type);
+        }
+        else if (response.hasError) {
+            displayErrors(response, type);
+        }
+        else {
+            response.data.forEach((subscription) => {
+                $(`#${type}`).append(`<div class="d-flex flex-row justify-content-between">
+                                          <p><b>${subscription.subscriptionType}:</b> $${subscription.price.toFixed(2)}</p>
+                                     </div>`);
+            });
+            $(`#${type}`).append(`<form class="input-group-sm" action="/Author/Subscribe/${id}" method="get">
+                                        <input class="btn btn-primary mb-1" type="submit" value="Choose Subscription" />
+                                </form>`);
+        }
+        removeLoader(type);
+    });
 }
 
 function displayErrors(response, type) {
@@ -70,7 +124,7 @@ function displayErrors(response, type) {
     });
 }
 
-function noRessourcessMessage(type) {
+function noResourcesMessage(type) {
     document.getElementById(type).innerHTML = `<p></p><p><b>Author has no ${type} at this time.</b></p>`;
 }
 
@@ -82,7 +136,7 @@ function removeLoader(type) {
     $(`#${type}`).removeClass(`spinner-border`);
 }
 
-async function getRessources(id, type) {
+async function getResources(id, type) {
     const response = new Promise(async function (resolve, reject) {
         $.ajax({
             url: `${webAPIDomain}author/${id}/${type}`,
