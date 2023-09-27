@@ -5,11 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using Responses;
 using Client.ViewModels.Event;
 using Client.ViewModels.Book;
+using Client.ViewModels.Subscription;
 using Services.Interfaces;
 using Data.Models;
 
 using static Common.ErrorMessagesConstants;
-using SpiritualHub.Client.ViewModels.Subscription;
+using SpiritualHub.Client.ViewModels.Course;
 
 [ApiController]
 [Route("api/author")]
@@ -36,6 +37,7 @@ public class AuthorController : ControllerBase
         if (!exists)
         {
             response.AddError(string.Format(NoEntityFoundErrorMessage, entityName));
+
             return NotFound(response.Error);
         }
 
@@ -54,6 +56,43 @@ public class AuthorController : ControllerBase
         catch (Exception)
         {
             response.AddError(string.Format(GeneralUnexpectedErrorMessage, $"load {entityName}'s events on the server"));
+
+            return BadRequest(response.Error);
+        }
+    }
+
+    [HttpGet]
+    [Route("{id}/courses")]
+    [Produces("application/json")]
+    [ProducesResponseType(200, Type = typeof(CollectionResponse<CourseInfoViewModel>))]
+    [ProducesResponseType(204, Type = typeof(ErrorResponse))]
+    public async Task<IActionResult> GetConnectedCourses(string id)
+    {
+        var response = new CollectionResponse<CourseInfoViewModel>();
+        bool exists = await _authorService.Exists(id);
+        if (!exists)
+        {
+            response.AddError(string.Format(NoEntityFoundErrorMessage, entityName));
+
+            return NotFound(response.Error);
+        }
+
+        try
+        {
+            response.Data = (await _authorService.GetConnectedEntities<Course, CourseInfoViewModel>(id))!
+                                                                                .Where(c => c.IsActive);
+
+            if (!response.Data.Any())
+            {
+                return NoContent();
+            }
+
+            return Ok(response);
+        }
+        catch (Exception)
+        {
+            response.AddError(string.Format(GeneralUnexpectedErrorMessage, $"load {entityName}'s courses on the server"));
+
             return BadRequest(response.Error);
         }
     }
@@ -70,6 +109,7 @@ public class AuthorController : ControllerBase
         if (!exists)
         {
             response.AddError(string.Format(NoEntityFoundErrorMessage, entityName));
+
             return NotFound(response.Error);
         }
 
@@ -88,6 +128,7 @@ public class AuthorController : ControllerBase
         catch (Exception)
         {
             response.AddError(string.Format(GeneralUnexpectedErrorMessage, $"load {entityName}'s books on the server"));
+
             return BadRequest(response.Error);
         }
     }
@@ -104,12 +145,14 @@ public class AuthorController : ControllerBase
         if (!exists)
         {
             response.AddError(string.Format(NoEntityFoundErrorMessage, entityName));
+
             return NotFound(response.Error);
         }
 
         try
         {
-            response.Data = (await _authorService.GetConnectedEntities<Subscription, SubscriptionViewModel>(id))!.OrderBy(s => s.Price);
+            response.Data = (await _authorService.GetConnectedEntities<Subscription, SubscriptionViewModel>(id))!
+                                                                                        .OrderBy(s => s.Price);
 
             if (!response.Data.Any())
             {
@@ -120,8 +163,10 @@ public class AuthorController : ControllerBase
         }
         catch (Exception)
         {
-            response.AddError(string.Format(GeneralUnexpectedErrorMessage, $"load {entityName}'s books on the server"));
+            response.AddError(string.Format(GeneralUnexpectedErrorMessage, $"load {entityName}'s subscriptions on the server"));
+
             return BadRequest(response.Error);
         }
     }
+
 }

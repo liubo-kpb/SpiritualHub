@@ -88,6 +88,32 @@ async function authorRessources(id) {
         removeLoader(type);
     });
 
+    $("#course-tab").on("click", async function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        type = `courses`;
+        document.getElementById(type).innerHTML = "";
+        addLoader(type);
+
+        const response = await getResources(id, type);
+        if (!response) {
+            noResourcesMessage(type);
+        }
+        else if (response.hasError) {
+            displayErrors(response, type);
+        }
+        else {
+            response.data.forEach((course) => {
+                $(`#${type}`).append(`<div class="d-flex flex-row justify-content-between">
+                                          <p class="w-50"><b><a href="/Course/Details/${course.id}">${course.name}</a></b></p>
+                                          <p class="w-25">Price: <b>$${course.price}</b></p>
+                                          <p>${course.shortDescription}</p>
+                                     </div>`);
+            });
+        }
+        removeLoader(type);
+    });
 
     $("#sub-tab").on("click", async function (e) {
         e.preventDefault();
