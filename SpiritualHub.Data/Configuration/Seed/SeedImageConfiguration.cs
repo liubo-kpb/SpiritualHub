@@ -110,6 +110,39 @@ public class SeedImageConfiguration : IEntitySeedConfiguration<Image>
         };
         images.Add(image);
 
+        //Course
+        image = new Image()
+        {
+            Id = Guid.Parse("1dbf6044-b493-4373-b650-c5c00c967086"),
+            Name = "CogitalityAcademy",
+            URL = "https://academy.cogitality.net/wp-content/uploads/elementor/thumbs/logo-ca-e1687374679913-q8ax1pqb2zkk37wfo9eeytezs45hegaqpfefkzqldy.png"
+        };
+        images.Add(image);
+
+        image = new Image()
+        {
+            Id = Guid.Parse("d3d4a16d-0050-4947-90a9-9133a2b129b9"),
+            Name = "ExperienceNow",
+            URL = "https://cdn-fkmoj.nitrocdn.com/xvpOGZRTxJUhXKufpOYIruQcRqtvAAQX/assets/images/optimized/rev-4e1f421/s3.amazonaws.com/media.briantracy.com/blog/wp-content/uploads/2021/09/03073828/motivational-inspirational-quotes.jpg"
+        };
+        images.Add(image);
+
+        image = new Image()
+        {
+            Id = Guid.Parse("01457f31-bc09-4d77-8d5d-6c334ff3347b"),
+            Name = "ChannelYourPassion",
+            URL = "https://www.strategyblocks.com/wp-content/uploads/2017/09/mountains.jpg"
+        };
+        images.Add(image);
+
+        image = new Image()
+        {
+            Id = Guid.Parse("251f1b7a-4aec-46b5-8cde-1740103cde1f"),
+            Name = "AncientAlchemy",
+            URL = "https://cdn.hswstatic.com/gif/alchemy.jpg"
+        };
+        images.Add(image);
+
         return images.ToArray();
     }
 }

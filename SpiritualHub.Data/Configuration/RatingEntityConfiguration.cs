@@ -3,7 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using SpiritualHub.Data.Models;
+using Models;
 
 public class RatingEntityConfiguration : IEntityTypeConfiguration<Rating>
 {
@@ -16,27 +16,23 @@ public class RatingEntityConfiguration : IEntityTypeConfiguration<Rating>
             .OnDelete(DeleteBehavior.NoAction);
 
         builder
-            .HasOne(r => r.Author)
-            .WithMany(a => a.Ratings)
-            .HasForeignKey(r => r.AuthorID)
-            .OnDelete(DeleteBehavior.NoAction);
+            .HasMany(r => r.Authors)
+            .WithMany(a => a.Ratings);
 
         builder
-            .HasOne(r => r.Course)
-            .WithMany(c => c.Ratings)
-            .HasForeignKey(r => r.CourseID)
-            .OnDelete(DeleteBehavior.NoAction);
+            .HasMany(r => r.Courses)
+            .WithMany(c => c.Ratings);
 
         builder
-            .HasOne(r => r.Event)
-            .WithMany(e => e.Ratings)
-            .HasForeignKey(r => r.EventID)
-            .OnDelete(DeleteBehavior.NoAction);
+            .HasMany(r => r.Modules)
+            .WithMany(m => m.Ratings);
 
         builder
-            .HasOne(r => r.Book)
-            .WithMany(b => b.Ratings)
-            .HasForeignKey(r => r.BookID)
-            .OnDelete(DeleteBehavior.NoAction);
+            .HasMany(r => r.Events)
+            .WithMany(e => e.Ratings);
+
+        builder
+            .HasMany(r => r.Books)
+            .WithMany(b => b.Ratings);
     }
 }

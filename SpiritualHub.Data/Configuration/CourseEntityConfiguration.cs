@@ -10,8 +10,12 @@ public class CourseEntityConfiguration : IEntityTypeConfiguration<Course>
     public void Configure(EntityTypeBuilder<Course> builder)
     {
         builder
-                .Property(h => h.AddedOn)
+                .Property(c => c.AddedOn)
                 .HasDefaultValueSql("GETDATE()");
+
+        builder
+                .Property(c => c.IsActive)
+                .HasDefaultValue(true);
 
         builder
             .HasOne(c => c.Author)

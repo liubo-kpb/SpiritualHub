@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SpiritualHub.Data;
 
@@ -11,9 +12,10 @@ using SpiritualHub.Data;
 namespace SpiritualHub.Data.Migrations
 {
     [DbContext(typeof(SpiritsDbContext))]
-    partial class SpiritsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230927115506_CourseAndModuleSeed")]
+    partial class CourseAndModuleSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

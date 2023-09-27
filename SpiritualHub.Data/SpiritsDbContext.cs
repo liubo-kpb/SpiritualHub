@@ -51,6 +51,7 @@ public class SpiritsDbContext : IdentityDbContext<ApplicationUser, IdentityRole<
         builder.ApplyConfiguration(new BookEntityConfiguration());
         builder.ApplyConfiguration(new CommentEntityConfiguration());
         builder.ApplyConfiguration(new CourseEntityConfiguration());
+        builder.ApplyConfiguration(new ModuleEntityConfiguration());
         builder.ApplyConfiguration(new EventEntityConfiguration());
         builder.ApplyConfiguration(new RatingEntityConfiguration());
         builder.ApplyConfiguration(new SubscriptionEntityConfiguration());
@@ -64,6 +65,8 @@ public class SpiritsDbContext : IdentityDbContext<ApplicationUser, IdentityRole<
             builder.ApplyConfiguration(new SeedAuthorConfiguration());
             builder.ApplyConfiguration(new SeedEventConfiguration());
             builder.ApplyConfiguration(new SeedBookConfiguration());
+            builder.ApplyConfiguration(new SeedCourseConfiguration());
+            builder.ApplyConfiguration(new SeedModuleConfiguration());
             builder.ApplyConfiguration(new SeedUserConfiguration());
             builder.ApplyConfiguration(new SeedPublisherConfiguration());
             builder.ApplyConfiguration(new SeedSubscriptionConfiguration());
