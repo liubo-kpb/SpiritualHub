@@ -14,5 +14,5 @@ public class Image
     public string Name { get; set; } = null!;
 
     [Required]
-    public string URL { get; set; }
+    public string URL { get; set; } = null!;
 }

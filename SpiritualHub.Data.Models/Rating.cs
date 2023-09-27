@@ -9,15 +9,25 @@ public class Rating
     public Rating()
     {
         this.Id = Guid.NewGuid();
+        this.Authors = new HashSet<Author>();
+        this.Events = new HashSet<Event>();
+        this.Books = new HashSet<Book>();
+        this.Courses = new HashSet<Course>();
+        this.Modules = new HashSet<Module>();
     }
 
     [Key]
     public Guid Id { get; set; }
 
     [Required]
-    [Range(RatingMinStar, RatingMaxStar)]
+    [Range(MinStar, MaxStar)]
     public int Stars { get; set; }
 
+    [Required]
+    [StringLength(HeadlineMaxLength)]
+    public string Headline { get; set; } = null!;
+
+    [StringLength(TextMaxLength)]
     public string Text { get; set; } = null!;
 
     [Required]
@@ -25,19 +35,13 @@ public class Rating
 
     public virtual ApplicationUser User { get; set; } = null!;
 
-    public Guid AuthorID { get; set; }
+    public ICollection<Author> Authors { get; set; }
 
-    public virtual Author Author { get; set; } = null!;
+    public ICollection<Event> Events { get; set; }
 
-    public Guid CourseID { get; set; }
+    public ICollection<Book> Books { get; set; }
 
-    public virtual Course Course { get; set; } = null!;
+    public ICollection<Course> Courses { get; set; }
 
-    public Guid EventID { get; set; }
-
-    public virtual Event Event { get; set; } = null!;
-
-    public Guid BookID { get; set; }
-
-    public virtual Book Book { get; set; } = null!;
+    public ICollection<Module> Modules { get; set; }
 }

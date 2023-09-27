@@ -12,7 +12,6 @@ using Infrastructure.Extensions;
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
-using SpiritualHub.Services;
 
 [Authorize]
 public class BookController : Controller

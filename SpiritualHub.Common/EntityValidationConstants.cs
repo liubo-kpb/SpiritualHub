@@ -22,10 +22,10 @@ public static class EntityValidationConstants
 
     public static class Blog
     {
-        public const int TitleMaxLength = 50;
+        public const int TitleMaxLength = 150;
         public const int TitleMinLength = 5;
 
-        public const int ShortDesciptionMaxLength = 150;
+        public const int ShortDesciptionMaxLength = 250;
         public const int ShortDescriptionMinLength = 30;
     }
 
@@ -42,18 +42,26 @@ public static class EntityValidationConstants
 
     public static class Course
     {
-        public const int NameMaxLength = 30;
+        public const int NameMaxLength = 80;
         public const int NameMinLength = 5;
 
         public const int DescriptionMinLength = 30;
 
-        public const int ShortDescriptionMaxLength = 50;
+        public const int ShortDescriptionMaxLength = 250;
         public const int ShortDescriptionMinLength = 15;
+    }
+
+    public static class Module
+    {
+        public const int NameMaxLength = 80;
+        public const int NameMinLength = 5;
+
+        public const int ShortDescriptionMaxLength = 250;
     }
 
     public static class Comment
     {
-        public const int TextMaxLength = 300;
+        public const int TextMaxLength = 600;
         public const int TextMinLength = 10;
     }
 
@@ -73,7 +81,11 @@ public static class EntityValidationConstants
 
     public static class Rating
     {
-        public const int RatingMaxStar = 10;
-        public const int RatingMinStar = 0;
+        public const int MaxStar = 10;
+        public const int MinStar = 0;
+
+        public const int HeadlineMaxLength = 200;
+
+        public const int TextMaxLength = 600;
     }
 }

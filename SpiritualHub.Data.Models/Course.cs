@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-using static SpiritualHub.Common.EntityValidationConstants.Course;
+using static Common.EntityValidationConstants.Course;
 
 public class Course
 {
     public Course()
     {
         this.Id = Guid.NewGuid();
+        this.Modules = new HashSet<Module>();
         this.Ratings = new HashSet<Rating>();
         this.Students = new HashSet<ApplicationUser>();
     }
@@ -20,15 +21,15 @@ public class Course
 
     [Required]
     [StringLength(NameMaxLength, MinimumLength = NameMinLength)]
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
     [Required]
     [MinLength(DescriptionMinLength)]
-    public string Description { get; set; }
+    public string Description { get; set; } = null!;
 
     [Required]
     [StringLength(ShortDescriptionMaxLength, MinimumLength = ShortDescriptionMinLength)]
-    public string ShortDescription { get; set; }
+    public string ShortDescription { get; set; } = null!;
 
     [Required]
     [Column(TypeName = "decimal(10, 5)")]
@@ -36,10 +37,12 @@ public class Course
 
     public DateTime AddedOn { get; set; }
 
+    public bool? IsActive { get; set; }
+
     [Required]
     public Guid AuthorID { get; set; }
 
-    public virtual Author Author { get; set; }
+    public virtual Author Author { get; set; } = null!;
 
     public Guid PublisherID { get; set; }
 
@@ -48,11 +51,13 @@ public class Course
     [Required]
     public int CategoryID { get; set; }
 
-    public virtual Category? Category { get; set; }
+    public virtual Category? Category { get; set; } = null!;
     
     public virtual Guid ImageID { get; set; }
-    
-    public virtual Image Image { get; set; }
+
+    public virtual Image Image { get; set; } = null!;
+
+    public virtual ICollection<Module> Modules { get; set; }
 
     public virtual ICollection<Rating> Ratings { get; set; }
 
