@@ -1,0 +1,70 @@
+﻿@model CourseViewModel
+@inject IPublisherService _publisherService
+@{
+    bool isUserLoggedIn = this.User.Identity?.IsAuthenticated ?? false;
+    bool isUserConnectedPublisher = false;
+
+    if (isUserLoggedIn)
+    {
+        string userId = this.User.GetId()!;
+        bool isUserPublisher = await _publisherService.ExistsByUserIdAsync(userId);
+        if (isUserPublisher)
+        {
+            isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, Model.Author.Id);
+        }
+    }
+}
+
+<div class="col-md-4">
+    <div class="card mb-3">
+        <img class="card-img-top" src="@Model.ImageUrl" alt="Course Image">
+        <div class="card-body text-center">
+            <h4>@Model.Name</h4>
+            <h6>Author: <b><a asp-controller="Author" asp-action="Details" asp-route-id="@Model.Author.Id">@Model.Author.Alias</a></b></h6>
+            <p></p>
+            <p>Price: $@($"{Model.Price:F2}")</p>
+            <p>@Model.ShortDescription</p>
+            <br />
+            <a asp-controller="Course" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-success">Details</a>
+            @if (isUserLoggedIn)
+            {
+                @if (isUserConnectedPublisher || this.User.IsAdmin())
+                {
+                    <p></p>
+                    <div class="d-flex flex-row justify-content-center">
+                        <a asp-controller="Course" asp-action="Edit" asp-route-id="@Model.Id"
+                           class="btn btn-warning">Edit</a>
+                        @if (Model.IsActive)
+                        {
+                            <form asp-controller="Course" asp-action="Show" asp-route-id="@Model.Id" method="post" class="mx-1">
+                                <input class="btn btn-primary m" type="submit" value="Show" />
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-controller="Course" asp-action="Hide" asp-route-id="@Model.Id" method="post" class="mx-1">
+                                <input class="btn btn-warning" type="submit" value="Hide" />
+                            </form>
+                        }
+                        <a asp-controller="Course" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+                    </div>
+                }
+                <p></p>
+                @if (Model.HasCourse)
+                {
+                    <form asp-controller="Course" asp-action="Remove"
+                          asp-route-id="@Model.Id" method="post">
+                        <input class="btn btn-primary mb-1" type="submit" value="Remove" />
+                    </form>
+                }
+                else
+                {
+                    <form class="input-group-sm " asp-controller="Course"
+                          asp-action="Get" asp-route-id="@Model.Id" method="post">
+                        <input class="btn btn-primary mb-1" type="submit" value="Get" />
+                    </form>
+                }
+            }
+        </div>
+    </div>
+</div>
