@@ -402,9 +402,9 @@ public class BookController : Controller
 
         try
         {
-            var eventModel = await _bookService.GetBookInfoAsync(id);
+            var bookModel = await _bookService.GetBookInfoAsync(id);
 
-            return View(eventModel);
+            return View(bookModel);
         }
         catch (Exception)
         {

@@ -55,8 +55,6 @@ public static class EntityValidationConstants
     {
         public const int NameMaxLength = 80;
         public const int NameMinLength = 5;
-
-        public const int ShortDescriptionMaxLength = 250;
     }
 
     public static class Comment

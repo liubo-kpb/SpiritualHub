@@ -21,6 +21,7 @@ public class CourseController : Controller
     private readonly IAuthorService _authorService;
     private readonly ICategoryService _categoryService;
     private readonly IPublisherService _publisherService;
+
     public CourseController(
         ICourseService courseService,
         IAuthorService authorService,
@@ -39,12 +40,12 @@ public class CourseController : Controller
     {
         try
         {
-            var filteredBooks = await _courseService.GetAllAsync(queryModel, this.User.GetId()!);
+            var filteredCourses = await _courseService.GetAllAsync(queryModel, this.User.GetId()!);
             var categories = await _categoryService.GetAllAsync();
 
-            queryModel.Courses = filteredBooks.Courses;
+            queryModel.Courses = filteredCourses.Courses;
             queryModel.Categories = categories.Select(c => c.Name);
-            queryModel.TotalCoursesCount = filteredBooks.TotalCoursesCount;
+            queryModel.TotalCoursesCount = filteredCourses.TotalCoursesCount;
 
             return View(queryModel);
         }
@@ -60,8 +61,26 @@ public class CourseController : Controller
     [HttpGet]
     public async Task<IActionResult> Details(string id)
     {
+        bool exists = await _courseService.ExistsAsync(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
 
-        return View();
+            return RedirectToAction(nameof(All));
+        }
+
+        try
+        {
+            var courseModel = await _courseService.GetCourseDetailsAsync(id, this.User.GetId()!);
+
+            return View(courseModel);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"loading {entityName}");
+
+            return RedirectToAction(nameof(All));
+        }
     }
 
     [HttpGet]

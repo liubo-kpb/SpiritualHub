@@ -17,9 +17,10 @@ public class CourseService : ICourseService
 {
     private readonly IMapper _mapper;
 
-    private readonly IRepository<Course> _courseRepository;
+    private readonly ICourseRepository _courseRepository;
 
-    public CourseService(IRepository<Course> courseRepository,
+    public CourseService(
+        ICourseRepository courseRepository,
         IMapper mapper)
     {
         _courseRepository = courseRepository;
@@ -42,7 +43,6 @@ public class CourseService : ICourseService
         for (int i = 0; i < coursesModel.Count; i++)
         {
             coursesModel[i].HasCourse = true;
-            coursesModel[i].ModulesCount = courses[i].Modules.Count;
         }
 
         return coursesModel;
@@ -63,9 +63,9 @@ public class CourseService : ICourseService
         throw new NotImplementedException();
     }
 
-    public Task<bool> ExistsAsync(string id)
+    public async Task<bool> ExistsAsync(string id)
     {
-        throw new NotImplementedException();
+        return await _courseRepository.AnyAsync(c => c.Id.ToString() == id);
     }
 
     public async Task<FilteredCoursesServiceModel> GetAllAsync(AllCoursesQueryModel queryModel, string userId)
@@ -116,7 +116,6 @@ public class CourseService : ICourseService
         for (int i = 0; i < coursesModel.Count; i++)
         {
             coursesModel[i].HasCourse = HasCourse(userId, courses[i]);
-            coursesModel[i].ModulesCount = courses[i].Modules.Count;
         }
 
         return new FilteredCoursesServiceModel()
@@ -143,9 +142,15 @@ public class CourseService : ICourseService
         throw new NotImplementedException();
     }
 
-    public Task<CourseDetailsViewModel> GetCourseDetailsAsync(string id, string userId)
+    public async Task<CourseDetailsViewModel> GetCourseDetailsAsync(string id, string userId)
     {
-        throw new NotImplementedException();
+        var course = await _courseRepository.GetCourseDetailsAsync(id);
+        
+        var courseModel = _mapper.Map<CourseDetailsViewModel>(course!);
+        // courseModel.Modules = courseModel.Modules.OrderBy(m => m.Number);
+        courseModel.HasCourse = HasCourse(userId, course);
+
+        return courseModel;
     }
 
     public Task<CourseFormModel> GetCourseInfoAsync(string id)
@@ -169,7 +174,6 @@ public class CourseService : ICourseService
         for (int i = 0; i < coursesModel.Count; i++)
         {
             coursesModel[i].HasCourse = HasCourse(userId, courses[i]);
-            coursesModel[i].ModulesCount = courses[i].Modules.Count;
         }
 
         return coursesModel;

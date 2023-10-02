@@ -23,8 +23,7 @@ public class Module
     public string Name { get; set; } = null!;
 
     [Required]
-    [StringLength(ShortDescriptionMaxLength)]
-    public string ShortDescription { get; set; } = null!;
+    public string Description { get; set; } = null!;
 
     public string VideoUrl { get; set; } = null!;
 
