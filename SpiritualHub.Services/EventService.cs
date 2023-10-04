@@ -72,8 +72,8 @@ public class EventService : IEventService
         };
 
         List<Event> events = await eventsQuery
-                                        .Skip((queryModel.CurrentPage - 1) * queryModel.EventsPerPage)
-                                        .Take(queryModel.EventsPerPage)
+                                        .Skip((queryModel.CurrentPage - 1) * queryModel.EntitiesPerPage)
+                                        .Take(queryModel.EntitiesPerPage)
                                         .Include(e => e.Image)
                                         .Include(e => e.Author)
                                         .Include(e => e.Participants)

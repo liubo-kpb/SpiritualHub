@@ -23,8 +23,8 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 {
     protected readonly string _entityName;
 
+    private readonly ICategoryService _categoryService;
     protected readonly IAuthorService _authorService;
-    protected readonly ICategoryService _categoryService;
     protected readonly IPublisherService _publisherService;
 
     public BaseController(

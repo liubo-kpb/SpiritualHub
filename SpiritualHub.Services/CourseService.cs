@@ -102,8 +102,8 @@ public class CourseService : ICourseService
         };
 
         var courses = await coursesQuery
-            .Skip((queryModel.CurrentPage - 1) * queryModel.CoursesPerPage)
-            .Take(queryModel.CoursesPerPage)
+            .Skip((queryModel.CurrentPage - 1) * queryModel.EntitiesPerPage)
+            .Take(queryModel.EntitiesPerPage)
             .Include(c => c.Image)
             .Include(c => c.Author)
             .Include(c => c.Modules)

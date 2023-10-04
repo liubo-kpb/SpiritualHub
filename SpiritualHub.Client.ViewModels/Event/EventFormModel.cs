@@ -2,23 +2,16 @@
 
 using System.ComponentModel.DataAnnotations;
 
-using Author;
-using Category;
-using Publisher;
+using ViewModels.BaseModels;
 
 using static Common.EntityValidationConstants.Event;
 
-public class EventFormModel
+public class EventFormModel : BaseFormModel
 {
     public EventFormModel()
     {
-        this.Categories = new HashSet<CategoryServiceModel>();
-        this.Authors = new HashSet<AuthorInfoViewModel>();
-        this.Publishers = new HashSet<PublisherInfoViewModel>();
         IsOnline = true;
     }
-
-    public string? Id { get; set; } = null!;
 
     [Required]
     [StringLength(TitleMaxLength, MinimumLength = TitleMinLength)]
@@ -50,21 +43,4 @@ public class EventFormModel
     [Required]
     [Display(Name = "Event Image URL:")]
     public string ImageUrl { get; set; } = null!;
-
-    [Required]
-    [Display(Name = "Choose Category:")]
-    public int CategoryId { get; set; }
-
-    public IEnumerable<CategoryServiceModel> Categories { get; set; }
-
-    [Required]
-    [Display(Name = "Choose Author:")]
-    public string AuthorId { get; set; } = null!;
-
-    public IEnumerable<AuthorInfoViewModel> Authors { get; set; }
-
-    [Display(Name = "Choose Publisher:")]
-    public string? PublisherId { get; set; }
-
-    public IEnumerable<PublisherInfoViewModel> Publishers { get; set; }
 }

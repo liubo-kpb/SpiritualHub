@@ -71,7 +71,7 @@
     </div>
     @{
         var shouldButtonBeDisabled = Model.CurrentPage == maxPage ||
-        !Model.Entities.Any();
+        !Model.EntityViewModels.Any();
     }
     <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-end">
         <a class="btn btn-primary
@@ -84,12 +84,12 @@
            asp-route-sorting="@((int)Model.SortingOption)">>></a>
     </div>
 </div>
-@if (!Model.Entities.Any())
+@if (!Model.EntityViewModels.Any())
 {
     <h2 class="text-center">No Books found by the given criteria!</h2>
 }
 <div class="row">
-    @foreach (var Book in Model.Entities)
+    @foreach (var Book in Model.EntityViewModels)
     {
         <partial name="_BookPartial" model="@Book" />
     }

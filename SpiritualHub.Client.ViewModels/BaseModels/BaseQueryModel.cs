@@ -12,7 +12,7 @@ public class BaseQueryModel<TViewModel, TSortingEnum>
     public BaseQueryModel()
     {
         this.Categories = new HashSet<string>();
-        this.Entities = new HashSet<TViewModel>();
+        this.EntityViewModels = new HashSet<TViewModel>();
 
         CurrentPage = DefaultPage;
         EntitiesPerPage = EntitiesPerPageConstant;
@@ -36,5 +36,5 @@ public class BaseQueryModel<TViewModel, TSortingEnum>
 
     public IEnumerable<string> Categories { get; set; }
 
-    public IEnumerable<TViewModel> Entities { get; set; }
+    public IEnumerable<TViewModel> EntityViewModels { get; set; }
 }
