@@ -30,7 +30,7 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
     [HttpPost]
     public async Task<IActionResult> Get(string id)
     {
-        bool exists = await _bookService.ExistsAsync(id);
+        bool exists = await ExistsAsync(id);
         if (!exists)
         {
             TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
@@ -65,7 +65,7 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
     [HttpPost]
     public async Task<IActionResult> Remove(string id)
     {
-        bool exists = await _bookService.ExistsAsync(id);
+        bool exists = await ExistsAsync(id);
         if (!exists)
         {
             TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
@@ -91,7 +91,7 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
     [HttpGet]
     public async Task<IActionResult> Delete(string id)
     {
-        bool exists = await _bookService.ExistsAsync(id);
+        bool exists = await ExistsAsync(id);
         if (!exists)
         {
             TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
@@ -122,7 +122,7 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
 
         try
         {
-            var bookModel = await _bookService.GetBookInfoAsync(id);
+            var bookModel = await GetEntityInfoAsync(id);
 
             return View(bookModel);
         }
@@ -137,7 +137,7 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
     [HttpPost]
     public async Task<IActionResult> Delete(BookDetailsViewModel bookModel)
     {
-        bool exists = await _bookService.ExistsAsync(bookModel.Id);
+        bool exists = await ExistsAsync(bookModel.Id);
         if (!exists)
         {
             TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
@@ -171,7 +171,7 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
     [HttpPost]
     public async Task<IActionResult> Hide(string id)
     {
-        bool exists = await _bookService.ExistsAsync(id);
+        bool exists = await ExistsAsync(id);
         if (!exists)
         {
             TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
@@ -218,7 +218,7 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
     [HttpPost]
     public async Task<IActionResult> Show(string id)
     {
-        bool exists = await _bookService.ExistsAsync(id);
+        bool exists = await ExistsAsync(id);
         if (!exists)
         {
             TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
@@ -271,7 +271,7 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
     {
         var filteredBooks = await _bookService.GetAllAsync(queryModel, userId);
 
-        queryModel.Entities = filteredBooks.Books;
+        queryModel.EntityViewModels = filteredBooks.Books;
         queryModel.TotalEntitiesCount = filteredBooks.TotalBooksCount;
 
         return queryModel;
@@ -305,5 +305,15 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
     protected override async Task EditAsync(BookFormModel updatedEntityFrom)
     {
         await _bookService.EditAsync(updatedEntityFrom);
+    }
+
+    protected override async Task ValidateModelAsync(BookFormModel formModel, bool isUserAdmin)
+    {
+        if (formModel.Price < 0)
+        {
+            ModelState.AddModelError(nameof(formModel.Price), PriceMustBeHigherThanZeroErrorMessage);
+        }
+
+        await base.ValidateModelAsync(formModel, isUserAdmin);
     }
 }

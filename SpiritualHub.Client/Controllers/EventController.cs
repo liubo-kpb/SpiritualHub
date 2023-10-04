@@ -230,29 +230,38 @@ public class EventController : BaseController<EventViewModel, EventDetailsViewMo
         return await _eventService.GetEventInfoAsync(id);
     }
 
-    protected override async Task ValidateModelAsync(EventFormModel eventForm, bool isUserAdmin)
+    protected override EventFormModel CreateFormInstance()
     {
-        if (eventForm.Price < 0)
+        return new EventFormModel()
         {
-            ModelState.AddModelError(nameof(eventForm.Price), PriceMustBeHigherThanZeroErrorMessage);
+            StartDateTime = DateTime.Now.Date,
+            EndDateTime = DateTime.Now.Date
+        };
+    }
+
+    protected override async Task ValidateModelAsync(EventFormModel formModel, bool isUserAdmin)
+    {
+        if (formModel.Price < 0)
+        {
+            ModelState.AddModelError(nameof(formModel.Price), PriceMustBeHigherThanZeroErrorMessage);
         }
 
-        if (eventForm.StartDateTime < DateTime.Now)
+        if (formModel.StartDateTime < DateTime.Now)
         {
-            ModelState.AddModelError(nameof(eventForm.StartDateTime), string.Format(WrongDateErrorMessage, "Start date", "today's date"));
+            ModelState.AddModelError(nameof(formModel.StartDateTime), string.Format(WrongDateErrorMessage, "Start date", "today's date"));
         }
 
-        if (eventForm.StartDateTime > eventForm.EndDateTime)
+        if (formModel.StartDateTime > formModel.EndDateTime)
         {
-            ModelState.AddModelError(nameof(eventForm.EndDateTime), string.Format(WrongDateErrorMessage, "End date", "start date"));
+            ModelState.AddModelError(nameof(formModel.EndDateTime), string.Format(WrongDateErrorMessage, "End date", "start date"));
         }
 
-        if (!eventForm.IsOnline &&
-            (string.IsNullOrEmpty(eventForm.LocationName) || string.IsNullOrEmpty(eventForm.LocationUrl)))
+        if (!formModel.IsOnline &&
+            (string.IsNullOrEmpty(formModel.LocationName) || string.IsNullOrEmpty(formModel.LocationUrl)))
         {
-            ModelState.AddModelError(nameof(eventForm.IsOnline), string.Format(SpecifyParticipationErrorMessage));
-            ModelState.AddModelError(nameof(eventForm.LocationName), string.Format(SpecifyParticipationErrorMessage));
-            ModelState.AddModelError(nameof(eventForm.LocationUrl), string.Format(SpecifyParticipationErrorMessage));
+            ModelState.AddModelError(nameof(formModel.IsOnline), string.Format(SpecifyParticipationErrorMessage));
+            ModelState.AddModelError(nameof(formModel.LocationName), string.Format(SpecifyParticipationErrorMessage));
+            ModelState.AddModelError(nameof(formModel.LocationUrl), string.Format(SpecifyParticipationErrorMessage));
         }
 
         if (!ModelState.IsValid)
@@ -260,6 +269,6 @@ public class EventController : BaseController<EventViewModel, EventDetailsViewMo
             return;
         }
 
-        await base.ValidateModelAsync(eventForm, isUserAdmin);
+        await base.ValidateModelAsync(formModel, isUserAdmin);
     }
 }

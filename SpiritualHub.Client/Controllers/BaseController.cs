@@ -55,6 +55,60 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 
     protected abstract Task EditAsync(TFormModel updatedEntityFrom);
 
+    protected virtual TFormModel CreateFormInstance()
+    {
+        return new TFormModel();
+    }
+
+    protected virtual async Task GetFormDetailsAsync(TFormModel formModel, string userId, bool isUserAdmin = false)
+    {
+        if (isUserAdmin)
+        {
+            formModel.Authors = await _authorService.GetAllAsync();
+
+            if (formModel.AuthorId == null)
+            {
+                formModel.Publishers = await _publisherService.GetAllAsync();
+            }
+            else
+            {
+                formModel.Publishers = await _authorService.GetConnectedEntities<Publisher, PublisherInfoViewModel>(formModel.AuthorId);
+            }
+        }
+        else
+        {
+            formModel.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
+        }
+        formModel.Categories = await _categoryService.GetAllAsync();
+    }
+
+    protected virtual async Task ValidateModelAsync(TFormModel formModel, bool isUserAdmin)
+    {
+        bool isExistingAuthor = await _authorService.Exists(formModel.AuthorId);
+        if (!isExistingAuthor)
+        {
+            ModelState.AddModelError(nameof(formModel.CategoryId), string.Format(NoEntityFoundErrorMessage, "author"));
+        }
+
+        bool isExistingCategory = await _categoryService.ExistsAsync(formModel.CategoryId);
+        if (!isExistingCategory)
+        {
+            ModelState.AddModelError(nameof(formModel.CategoryId), string.Format(NoEntityFoundErrorMessage, "category"));
+        }
+
+        if (isUserAdmin)
+        {
+            if (!(await _publisherService.ExistsByIdAsync(formModel.PublisherId!)))
+            {
+                ModelState.AddModelError(nameof(formModel.PublisherId), string.Format(NoEntityFoundErrorMessage, "publisher"));
+            }
+            else if (!(await _publisherService.IsConnectedToEntityByPublisherId<Author>(formModel.PublisherId!, formModel.AuthorId)))
+            {
+                ModelState.AddModelError(nameof(formModel.PublisherId), WrongPublisherErrorMessage);
+            }
+        }
+    }
+
     [AllowAnonymous]
     [HttpGet]
     public virtual async Task<IActionResult> All([FromQuery] TQueryModel queryModel)
@@ -157,7 +211,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
         }
 
-        var formModel = new TFormModel();
+        var formModel = CreateFormInstance();
 
         await GetFormDetailsAsync(formModel, userId, isUserAdmin);
         if (!formModel.Authors.Any())
@@ -321,55 +375,6 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             await GetFormDetailsAsync(updatedEntityFrom, userId, isUserAdmin);
 
             return View(updatedEntityFrom);
-        }
-    }
-
-    protected virtual async Task GetFormDetailsAsync(TFormModel formModel, string userId, bool isUserAdmin = false)
-    {
-        if (isUserAdmin)
-        {
-            formModel.Authors = await _authorService.GetAllAsync();
-
-            if (formModel.AuthorId == null)
-            {
-                formModel.Publishers = await _publisherService.GetAllAsync();
-            }
-            else
-            {
-                formModel.Publishers = await _authorService.GetConnectedEntities<Publisher, PublisherInfoViewModel>(formModel.AuthorId);
-            }
-        }
-        else
-        {
-            formModel.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
-        }
-        formModel.Categories = await _categoryService.GetAllAsync();
-    }
-
-    protected virtual async Task ValidateModelAsync(TFormModel formModel, bool isUserAdmin)
-    {
-        bool isExistingAuthor = await _authorService.Exists(formModel.AuthorId);
-        if (!isExistingAuthor)
-        {
-            ModelState.AddModelError(nameof(formModel.CategoryId), string.Format(NoEntityFoundErrorMessage, "author"));
-        }
-
-        bool isExistingCategory = await _categoryService.ExistsAsync(formModel.CategoryId);
-        if (!isExistingCategory)
-        {
-            ModelState.AddModelError(nameof(formModel.CategoryId), string.Format(NoEntityFoundErrorMessage, "category"));
-        }
-
-        if (isUserAdmin)
-        {
-            if (!(await _publisherService.ExistsByIdAsync(formModel.PublisherId!)))
-            {
-                ModelState.AddModelError(nameof(formModel.PublisherId), string.Format(NoEntityFoundErrorMessage, "publisher"));
-            }
-            else if (!(await _publisherService.IsConnectedToEntityByPublisherId<Author>(formModel.PublisherId!, formModel.AuthorId)))
-            {
-                ModelState.AddModelError(nameof(formModel.PublisherId), WrongPublisherErrorMessage);
-            }
         }
     }
 }
