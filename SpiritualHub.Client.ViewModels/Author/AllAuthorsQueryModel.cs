@@ -14,7 +14,7 @@ public class AllAuthorsQueryModel
         this.Authors = new HashSet<AuthorViewModel>();
 
         CurrentPage = DefaultPage;
-        AuthorsPerPage = EntitiesPerPage;
+        AuthorsPerPage = EntitiesPerPageConstant;
     }
 
     [Display(Name = "Category")]

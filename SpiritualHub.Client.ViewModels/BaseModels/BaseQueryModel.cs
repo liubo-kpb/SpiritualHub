@@ -32,7 +32,7 @@ public class BaseQueryModel<TViewModel, TSortingEnum>
     [Display(Name = "Show on Page")]
     public int EntitiesPerPage { get; set; }
 
-    public int TotalEntitesCount { get; set; }
+    public int TotalEntitiesCount { get; set; }
 
     public IEnumerable<string> Categories { get; set; }
 

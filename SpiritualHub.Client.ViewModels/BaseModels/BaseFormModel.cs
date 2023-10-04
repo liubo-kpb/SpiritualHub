@@ -24,7 +24,7 @@ public class BaseFormModel
     public string AuthorId { get; set; } = null!;
 
     [Display(Name = "Choose Publisher:")]
-    public string PublisherId { get; set; } = null!;
+    public string? PublisherId { get; set; }
 
     public IEnumerable<CategoryServiceModel> Categories { get; set; }
 

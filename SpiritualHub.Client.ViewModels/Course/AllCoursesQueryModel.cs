@@ -14,7 +14,7 @@ public class AllCoursesQueryModel
         this.Courses = new HashSet<CourseViewModel>();
 
         CurrentPage = DefaultPage;
-        CoursesPerPage = EntitiesPerPage;
+        CoursesPerPage = EntitiesPerPageConstant;
     }
 
     [Display(Name = "Category")]

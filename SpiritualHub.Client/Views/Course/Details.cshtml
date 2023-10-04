@@ -48,10 +48,22 @@
                     }
                 }
             </div>
+            <p></p>
+            <h5 class="card-title">Published By:</h5>
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    @if (!string.IsNullOrWhiteSpace(Model.Publisher.FullName))
+                    {
+                        <p class="card-text">Name: @Model.Publisher.FullName</p>
+                    }
+                    <p class="card-text">Email: @Model.Publisher.Email</p>
+                    <p class="card-text">Phone Number: @Model.Publisher.PhoneNumber</p>
+                </div>
+            </div>
         </div>
         <div class="card col-8 border-0">
             <p style="font-size:25px;"><u>@Model.Name</u></p>
-            <p>Presenter: <b><a asp-controller="Author" asp-action="Details" asp-route-id="@Model.Author.Id">@Model.Author.Alias</a></b></p>
+            <p>Author: <b><a asp-controller="Author" asp-action="Details" asp-route-id="@Model.Author.Id">@Model.Author.Alias</a></b></p>
             <p>Price: <b>@(Model.Price == 0 ? "Free" : $"${Model.Price:F2}")</b></p>
             <p>Modules: <b>@Model.ModulesCount</b></p>
             <p>@Model.Description</p>
@@ -89,18 +101,6 @@
                         </div>
                     </div>
                 }
-            </div>
-            <p></p>
-            <h5 class="card-title">Published By:</h5>
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    @if (!string.IsNullOrWhiteSpace(Model.Publisher.FullName))
-                    {
-                        <p class="card-text">Name: @Model.Publisher.FullName</p>
-                    }
-                    <p class="card-text">Email: @Model.Publisher.Email</p>
-                    <p class="card-text">Phone Number: @Model.Publisher.PhoneNumber</p>
-                </div>
             </div>
         </div>
     </div>

@@ -19,8 +19,8 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="BooksPerPage"></label>
-                <select asp-for="BooksPerPage" class="form-control">
+                <label asp-for="EntitiesPerPage"></label>
+                <select asp-for="EntitiesPerPage" class="form-control">
                     <option value="3">3</option>
                     <option value="6">6</option>
                     <option value="9">9</option>
@@ -57,7 +57,7 @@
     {
         previousPage = 1;
     }
-    var maxPage = Math.Ceiling((double) Model.TotalBooksCount / Model.BooksPerPage);
+    var maxPage = Math.Ceiling((double) Model.TotalEntitiesCount / Model.EntitiesPerPage);
 }
 <div class="row mb-5">
     <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-start">
@@ -71,7 +71,7 @@
     </div>
     @{
         var shouldButtonBeDisabled = Model.CurrentPage == maxPage ||
-        !Model.Books.Any();
+        !Model.Entities.Any();
     }
     <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-end">
         <a class="btn btn-primary
@@ -84,12 +84,12 @@
            asp-route-sorting="@((int)Model.SortingOption)">>></a>
     </div>
 </div>
-@if (!Model.Books.Any())
+@if (!Model.Entities.Any())
 {
     <h2 class="text-center">No Books found by the given criteria!</h2>
 }
 <div class="row">
-    @foreach (var Book in Model.Books)
+    @foreach (var Book in Model.Entities)
     {
         <partial name="_BookPartial" model="@Book" />
     }

@@ -12,13 +12,14 @@ using ViewModels.Publisher;
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
-using SpiritualHub.Services;
 
-public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQueryModel> : Controller
+[Authorize]
+public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQueryModel, TSortingEnum> : Controller
     where TViewModel : class
     where TDetailsModel : class
     where TFormModel : BaseFormModel, new()
-    where TQueryModel : class
+    where TQueryModel : BaseQueryModel<TViewModel, TSortingEnum>
+    where TSortingEnum : Enum
 {
     protected readonly string _entityName;
 
@@ -44,37 +45,35 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 
     protected abstract Task<TDetailsModel> GetEntityDetails(string id, string userId);
 
-    protected abstract Task<TViewModel> GetAllEntitiesByUserId(string userId);
+    protected abstract Task<IEnumerable<TViewModel>> GetAllEntitiesByUserId(string userId);
 
-    protected abstract Task<TViewModel> GetEntitiesByPublisherIdAsync(string publisherId, string userId);
+    protected abstract Task<IEnumerable<TViewModel>> GetEntitiesByPublisherIdAsync(string publisherId, string userId);
 
     protected abstract Task<string> CreateAsync(TFormModel newEntity);
 
     protected abstract Task<TFormModel> GetEntityInfoAsync(string id);
 
-    protected abstract Task<string> EditAsync(TFormModel updatedEntityFrom);
+    protected abstract Task EditAsync(TFormModel updatedEntityFrom);
 
     [AllowAnonymous]
     [HttpGet]
     public virtual async Task<IActionResult> All([FromQuery] TQueryModel queryModel)
     {
-        //try
-        //{
-        //    var filteredBooks = await GetAllAsync(queryModel, this.User.GetId()!);
-        //    var categories = await _categoryService.GetAllAsync();
+        try
+        {
+            queryModel = await GetAllAsync(queryModel, this.User.GetId()!);
+            
+            var categories = await _categoryService.GetAllAsync();
+            queryModel.Categories = categories.Select(c => c.Name);
 
-        //    queryModel.Books = filteredBooks.Books;
-        //    queryModel.Categories = categories.Select(c => c.Name);
-        //    queryModel.TotalBooksCount = filteredBooks.TotalBooksCount;
+            return View(queryModel);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load {_entityName}s");
 
-        //    return View(queryModel);
-        //}
-        //catch (Exception)
-        //{
-        //    TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load {_entityName}s");
-
-        //    return RedirectToAction(nameof(HomeController.Index), "Home");
-        //}
+            return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
     }
 
     [AllowAnonymous]

@@ -14,7 +14,7 @@ public class AllEventsQueryModel
         this.Events = new HashSet<EventViewModel>();
 
         CurrentPage = DefaultPage;
-        EventsPerPage = EntitiesPerPage;
+        EventsPerPage = EntitiesPerPageConstant;
     }
 
     [Display(Name = "Category")]
