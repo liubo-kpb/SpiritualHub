@@ -10,7 +10,6 @@ using static Common.EntityValidationConstants.Course;
 public class CourseFormModel : BaseFormModel
 {
     public CourseFormModel()
-        : base()
     {
         this.Modules = new HashSet<ModuleInfoViewModel>();
     }

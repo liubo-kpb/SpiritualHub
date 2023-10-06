@@ -1,27 +1,20 @@
 ﻿namespace SpiritualHub.Client.Controllers;
 
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 using Services.Interfaces;
 using Data.Models;
 using ViewModels.Course;
-using ViewModels.Publisher;
-using Infrastructure.Extensions;
+using Infrastructure.Enums;
 
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
 
-public class CourseController : Controller
+public class CourseController : BaseController<CourseViewModel, CourseDetailsViewModel, CourseFormModel, AllCoursesQueryModel, CourseSorting>
 {
-    private readonly string entityName = nameof(Course).ToLower();
-
     private readonly ICourseService _courseService;
     private readonly IModuleService _moduleService;
-    private readonly IAuthorService _authorService;
-    private readonly ICategoryService _categoryService;
-    private readonly IPublisherService _publisherService;
 
     public CourseController(
         ICourseService courseService,
@@ -29,156 +22,74 @@ public class CourseController : Controller
         IAuthorService authorService,
         ICategoryService categoryService,
         IPublisherService publisherService)
+        : base(authorService, categoryService, publisherService, nameof(Course).ToLower())
     {
         _courseService = courseService;
         _moduleService = moduleService;
-        _authorService = authorService;
-        _categoryService = categoryService;
-        _publisherService = publisherService;
     }
 
-    [AllowAnonymous]
-    [HttpGet]
-    public async Task<IActionResult> All([FromQuery] AllCoursesQueryModel queryModel)
+    protected override async Task<string> CreateAsync(CourseFormModel newEntity)
     {
-        try
-        {
-            var filteredCourses = await _courseService.GetAllAsync(queryModel, this.User.GetId()!);
-            var categories = await _categoryService.GetAllAsync();
-
-            queryModel.Courses = filteredCourses.Courses;
-            queryModel.Categories = categories.Select(c => c.Name);
-            queryModel.TotalCoursesCount = filteredCourses.TotalCoursesCount;
-
-            return View(queryModel);
-        }
-        catch (Exception)
-        {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load {entityName}s");
-
-            return RedirectToAction(nameof(HomeController.Index), "Home");
-        }
+        return await _courseService.CreateAsync(newEntity);
     }
 
-    [AllowAnonymous]
-    [HttpGet]
-    public async Task<IActionResult> Details(string id)
+    protected override async Task EditAsync(CourseFormModel updatedEntityFrom)
     {
-        bool exists = await _courseService.ExistsAsync(id);
-        if (!exists)
-        {
-            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
-        try
-        {
-            var courseModel = await _courseService.GetCourseDetailsAsync(id, this.User.GetId()!);
-
-            return View(courseModel);
-        }
-        catch (Exception)
-        {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"loading {entityName}");
-
-            return RedirectToAction(nameof(All));
-        }
+        await _courseService.EditAsync(updatedEntityFrom);
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Mine()
+    protected override async Task<bool> ExistsAsync(string id)
     {
-        try
-        {
-            var coursesModel = await _courseService.AllCoursesByUserIdAsync(this.User.GetId()!);
+        return await _courseService.ExistsAsync(id);
+    }
 
-            return View(coursesModel);
-        }
-        catch (Exception)
-        {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load your {entityName}s");
+    protected override async Task<AllCoursesQueryModel> GetAllAsync(AllCoursesQueryModel queryModel, string userId)
+    {
+        var filteredCourses = await _courseService.GetAllAsync(queryModel, userId);
 
-            return RedirectToAction(nameof(All));
+        queryModel.EntityViewModels = filteredCourses.Courses;
+        queryModel.TotalEntitiesCount = filteredCourses.TotalCoursesCount;
+
+        return queryModel;
+    }
+
+    protected override async Task<IEnumerable<CourseViewModel>> GetAllEntitiesByUserId(string userId)
+    {
+        return await _courseService.AllCoursesByUserIdAsync(userId);
+    }
+
+    protected override async Task<IEnumerable<CourseViewModel>> GetEntitiesByPublisherIdAsync(string publisherId, string userId)
+    {
+        return await _courseService.GetCoursesByPublisherIdAsync(publisherId, userId);
+    }
+
+    protected override async Task<CourseDetailsViewModel> GetEntityDetails(string id, string userId)
+    {
+        return await _courseService.GetCourseDetailsAsync(id, userId);
+    }
+
+    protected override async Task<CourseFormModel> GetEntityInfoAsync(string id)
+    {
+        return await _courseService.GetCourseInfoAsync(id);
+    }
+
+    protected override async Task GetFormDetailsAsync(CourseFormModel formModel, string userId, bool isUserAdmin = false)
+    {
+        await base.GetFormDetailsAsync(formModel, userId, isUserAdmin);
+
+        if (formModel.Id != null)
+        {
+            formModel.Modules = await _moduleService.GetModulesByCourseId(formModel.Id);
         }
     }
 
-    [HttpGet]
-    public async Task<IActionResult> MyPublishings()
+    protected override async Task ValidateModelAsync(CourseFormModel formModel, bool isUserAdmin)
     {
-        string userId = this.User.GetId()!;
-        bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-        if (!isPublisher)
+        if (formModel.Price < 0)
         {
-            TempData[ErrorMessage] = NotAPublisherErrorMessage;
-            return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+            ModelState.AddModelError(nameof(formModel.Price), PriceMustBeHigherThanZeroErrorMessage);
         }
 
-        try
-        {
-            var publisherId = await _publisherService.GetPublisherIdAsync(userId);
-            var coursesModel = await _courseService.GetCoursesByPublisherIdAsync(publisherId, userId);
-
-            return View(coursesModel);
-        }
-        catch (Exception)
-        {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load your {entityName}s");
-
-            return RedirectToAction(nameof(All));
-        }
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> Add()
-    {
-        string userId = this.User.GetId()!;
-        bool isUserAdmin = this.User.IsAdmin();
-        bool isPublisher = isUserAdmin || await _publisherService.ExistsByUserIdAsync(userId);
-        if (!isPublisher)
-        {
-            TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-            return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-        }
-
-        var formModel = new CourseFormModel();
-
-        await GetCourseFormDetailsAsync(formModel, userId, isUserAdmin);
-        if (!formModel.Authors.Any())
-        {
-            TempData[ErrorMessage] = NoConnectedAuthorsErrorMessage;
-
-            return RedirectToAction(nameof(AuthorController.All), nameof(Author));
-        }
-
-        return View(formModel);
-    }
-
-    private async Task GetCourseFormDetailsAsync(CourseFormModel courseFormModel, string userId, bool isUserAdmin = false)
-    {
-        if (isUserAdmin)
-        {
-            courseFormModel.Authors = await _authorService.GetAllAsync();
-
-            if (courseFormModel.AuthorId == null)
-            {
-                courseFormModel.Publishers = await _publisherService.GetAllAsync();
-            }
-            else
-            {
-                courseFormModel.Publishers = await _authorService.GetConnectedEntities<Publisher, PublisherInfoViewModel>(courseFormModel.AuthorId);
-            }
-        }
-        else
-        {
-            courseFormModel.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
-        }
-        if (courseFormModel.Id != null)
-        {
-            courseFormModel.Modules = await _moduleService.GetModulesByCourseId(courseFormModel.Id);
-        }
-
-        courseFormModel.Categories = await _categoryService.GetAllAsync();
+        await base.ValidateModelAsync(formModel, isUserAdmin);
     }
 }
