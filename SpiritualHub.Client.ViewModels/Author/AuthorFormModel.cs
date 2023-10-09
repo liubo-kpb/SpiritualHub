@@ -2,18 +2,16 @@
 
 using System.ComponentModel.DataAnnotations;
 
-using Category;
+using BaseModels;
 
 using static Common.EntityValidationConstants.Author;
 
-public class AuthorFormModel
+public class AuthorFormModel : BaseFormModel
 {
     public AuthorFormModel()
     {
-        this.Categories = new HashSet<CategoryServiceModel>();
         IsActive = true;
     }
-    public string? Id { get; set; } = null!;
 
     [StringLength(AliasMaxLength, MinimumLength = AliasMinLength)]
     public string Alias { get; set; } = null!;
@@ -31,9 +29,5 @@ public class AuthorFormModel
     [Display(Name = "Author Image URL:")]
     public string AvatarImageUrl { get; set; } = null!;
 
-    [Required]
-    [Display(Name = "Choose Category:")]
-    public int CategoryId { get; set; }
-
-    public IEnumerable<CategoryServiceModel> Categories { get; set; }
+    public override string? AuthorId => Id!;
 }

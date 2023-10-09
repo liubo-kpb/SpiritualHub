@@ -21,7 +21,7 @@ public class BaseFormModel
     public int CategoryId { get; set; }
 
     [Display(Name = "Choose Author:")]
-    public string AuthorId { get; set; } = null!;
+    public virtual string? AuthorId { get; set; } = null!;
 
     [Display(Name = "Choose Publisher:")]
     public string? PublisherId { get; set; }

@@ -230,7 +230,7 @@ public class EventController : BaseController<EventViewModel, EventDetailsViewMo
         return await _eventService.GetEventInfoAsync(id);
     }
 
-    protected override EventFormModel CreateFormInstance()
+    protected override EventFormModel CreateFormModelInstance()
     {
         return new EventFormModel()
         {

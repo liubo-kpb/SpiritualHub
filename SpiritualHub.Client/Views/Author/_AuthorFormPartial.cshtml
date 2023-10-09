@@ -38,6 +38,19 @@
                 </select>
                 <span asp-validation-for="CategoryId" class="small text-danger"></span>
             </div>
+            @if (this.User.IsAdmin())
+            {
+                <div class="form-group mb-2">
+                    <label asp-for="PublisherId"></label>
+                    <select asp-for="PublisherId" class="form-control">
+                        @foreach (var publisher in Model.Publishers)
+                        {
+                            <option value="@publisher.Id">@publisher.Email</option>
+                        }
+                    </select>
+                    <span asp-validation-for="PublisherId" class="small text-danger"></span>
+                </div>
+            }
             <div class="text-center">
                 <input class="btn btn-primary mt-3" type="submit" value="Save" />
             </div>
