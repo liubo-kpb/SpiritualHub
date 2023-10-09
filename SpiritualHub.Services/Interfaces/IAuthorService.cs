@@ -14,7 +14,7 @@ public interface IAuthorService
 
     Task<string>                            CreateAuthor(AuthorFormModel newAuthor, Publisher publisher);
 
-    Task<IEnumerable<AuthorViewModel>>      AllAuthorsByPublisherIdAsync(string userId, string publisherId);
+    Task<IEnumerable<AuthorViewModel>>      AllAuthorsByPublisherIdAsync(string publisherId, string userId);
 
     Task<IEnumerable<AuthorViewModel>>      AllAuthorsByUserIdAsync(string userId);
 
@@ -24,7 +24,7 @@ public interface IAuthorService
 
     Task                                    EditAsync(AuthorFormModel editedAuthor);
 
-    Task<AuthorFormModel>                   GetAuthorAsync(string authorId);
+    Task<AuthorFormModel>                   GetAuthorInfoAsync(string authorId);
 
     Task                                    ActivateAsync(string authorId);
 

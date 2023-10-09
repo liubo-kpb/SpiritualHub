@@ -139,8 +139,8 @@ public class BookService : IBookService
         };
 
         var books = await booksQuery
-                            .Skip((queryModel.CurrentPage - 1) * queryModel.BooksPerPage)
-                            .Take(queryModel.BooksPerPage)
+                            .Skip((queryModel.CurrentPage - 1) * queryModel.EntitiesPerPage)
+                            .Take(queryModel.EntitiesPerPage)
                             .Include(b => b.Image)
                             .Include(b => b.Author)
                             .Include(b => b.Readers)

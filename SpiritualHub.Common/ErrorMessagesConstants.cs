@@ -13,6 +13,9 @@ public static class ErrorMessagesConstants
     public const string AlreadyAPublisherErrorMessage = "You are already a publisher.";
     public const string AlreadyAConnectedPublisherErrorMessage = "You are already a connected publisher for this author.";
 
+    public const string AlreadyFollowingAuthorErrorMessage = "You are already following this author.";
+    public const string SelectValidSubscriptionPlan = "Please select a valid subscription plan!";
+
     public const string PhoneAlreadyRegisteredErrorMessage = "Phone number is already registered for a publisher!";
 
     public const string PriceMustBeHigherThanZeroErrorMessage = "The Price must be equal to or higher than zero.";

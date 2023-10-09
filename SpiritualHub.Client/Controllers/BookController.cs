@@ -1,319 +1,39 @@
 ﻿namespace SpiritualHub.Client.Controllers;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 
 using Data.Models;
 using Services.Interfaces;
-using ViewModels.Book;
-using ViewModels.Publisher;
+using Infrastructure.Enums;
 using Infrastructure.Extensions;
+using ViewModels.Book;
 
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
 
-[Authorize]
-public class BookController : Controller
-{
-    private readonly string entityName = nameof(Book).ToLower();
 
+public class BookController : BaseController<BookViewModel, BookDetailsViewModel, BookFormModel, AllBooksQueryModel, BookSorting>
+{
     private readonly IBookService _bookService;
-    private readonly IAuthorService _authorService;
-    private readonly ICategoryService _categoryService;
-    private readonly IPublisherService _publisherService;
 
     public BookController(
         IBookService bookService,
         IAuthorService authorService,
         ICategoryService categoryService,
         IPublisherService publisherService)
+        : base(authorService, categoryService, publisherService, nameof(Book).ToLower())
     {
         _bookService = bookService;
-        _authorService = authorService;
-        _categoryService = categoryService;
-        _publisherService = publisherService;
-    }
-
-    [AllowAnonymous]
-    [HttpGet]
-    public async Task<IActionResult> All([FromQuery] AllBooksQueryModel queryModel)
-    {
-        try
-        {
-            var filteredBooks = await _bookService.GetAllAsync(queryModel, this.User.GetId()!);
-            var categories = await _categoryService.GetAllAsync();
-
-            queryModel.Books = filteredBooks.Books;
-            queryModel.Categories = categories.Select(c => c.Name);
-            queryModel.TotalBooksCount = filteredBooks.TotalBooksCount;
-
-            return View(queryModel);
-        }
-        catch (Exception)
-        {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load {entityName}s");
-
-            return RedirectToAction(nameof(HomeController.Index), "Home");
-        }
-    }
-
-    [AllowAnonymous]
-    [HttpGet]
-    public async Task<IActionResult> Details(string id)
-    {
-        bool exists = await _bookService.ExistsAsync(id);
-        if (!exists)
-        {
-            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
-        try
-        {
-            var bookModel = await _bookService.GetBookDetailsAsync(id, this.User.GetId()!);
-
-            return View(bookModel);
-        }
-        catch (Exception)
-        {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"loading {entityName}");
-
-            return RedirectToAction(nameof(All));
-        }
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> Mine()
-    {
-        try
-        {
-            var booksModel = await _bookService.AllBooksByUserIdAsync(this.User.GetId()!);
-
-            return View(booksModel);
-        }
-        catch (Exception)
-        {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load your {entityName}s");
-
-            return RedirectToAction(nameof(All));
-        }
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> MyPublishings()
-    {
-        string userId = this.User.GetId()!;
-        bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-        if (!isPublisher)
-        {
-            TempData[ErrorMessage] = NotAPublisherErrorMessage;
-            return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-        }
-
-        try
-        {
-            var publisherId = await _publisherService.GetPublisherIdAsync(userId);
-            var booksModel = await _bookService.GetBooksByPublisherIdAsync(publisherId, userId);
-
-            return View(booksModel);
-        }
-        catch (Exception)
-        {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load your {entityName}s");
-
-            return RedirectToAction(nameof(All));
-        }
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> Add()
-    {
-        string userId = this.User.GetId()!;
-        bool isUserAdmin = this.User.IsAdmin();
-        bool isPublisher = isUserAdmin || await _publisherService.ExistsByUserIdAsync(userId);
-        if (!isPublisher)
-        {
-            TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-            return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-        }
-
-        var formModel = new BookFormModel();
-
-        await GetBookFormDetailsAsync(formModel, userId, isUserAdmin);
-        if (!formModel.Authors.Any())
-        {
-            TempData[ErrorMessage] = NoConnectedAuthorsErrorMessage;
-
-            return RedirectToAction(nameof(AuthorController.All), nameof(Author));
-        }
-
-        return View(formModel);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Add(BookFormModel newBookForm)
-    {
-        string userId = this.User.GetId()!;
-        bool isUserAdmin = this.User.IsAdmin();
-
-        if (!isUserAdmin)
-        {
-            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-            if (!isPublisher)
-            {
-                TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-            }
-
-            bool isConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, newBookForm.AuthorId);
-            if (!isConnectedPublisher)
-            {
-                ModelState.AddModelError(nameof(newBookForm.AuthorId), string.Format(NoEntityFoundErrorMessage, "affiliated author"));
-            }
-        }
-
-        await ValidateModelAsync(newBookForm, isUserAdmin);
-        if (!ModelState.IsValid)
-        {
-            await GetBookFormDetailsAsync(newBookForm, userId, isUserAdmin);
-
-            return View(newBookForm);
-        }
-
-        try
-        {
-            newBookForm.PublisherId ??= await _publisherService.GetPublisherIdAsync(userId);
-
-            string id = await _bookService.CreateAsync(newBookForm);
-            TempData[SuccessMessage] = string.Format(CreationSuccessfulMessage, entityName);
-
-            return RedirectToAction(nameof(Details), new { id });
-        }
-        catch (Exception)
-        {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"create {entityName}");
-
-            await GetBookFormDetailsAsync(newBookForm, userId, isUserAdmin);
-
-            return View(newBookForm);
-        }
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> Edit(string id)
-    {
-        try
-        {
-            var bookFormModel = await _bookService.GetBookInfoAsync(id);
-            if (bookFormModel == null)
-            {
-                TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
-
-                return RedirectToAction(nameof(All));
-            }
-
-            string userId = this.User.GetId()!;
-            bool isUserAdmin = this.User.IsAdmin();
-
-            if (!isUserAdmin)
-            {
-                bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-                if (!isPublisher)
-                {
-                    TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-                    return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-                }
-
-                bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, bookFormModel.AuthorId));
-                if (!isConnectedPublisher)
-                {
-                    TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author");
-
-                    return RedirectToAction(nameof(MyPublishings));
-                }
-            }
-
-            await GetBookFormDetailsAsync(bookFormModel, userId, isUserAdmin);
-
-            return View(bookFormModel);
-        }
-        catch (Exception)
-        {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load {entityName}");
-
-            return RedirectToAction(nameof(Details), new { id });
-        }
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Edit(BookFormModel updatedBookFrom)
-    {
-        bool exists = await _bookService.ExistsAsync(updatedBookFrom.Id!);
-        if (!exists)
-        {
-            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
-        string userId = this.User.GetId()!;
-        bool isUserAdmin = this.User.IsAdmin();
-        if (!isUserAdmin)
-        {
-            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-            if (!isPublisher)
-            {
-                TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-            }
-
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, updatedBookFrom.AuthorId));
-            if (!isConnectedPublisher)
-            {
-                ModelState.AddModelError(nameof(updatedBookFrom.AuthorId), string.Format(NoEntityFoundErrorMessage, "affiliated author"));
-            }
-        }
-
-        await ValidateModelAsync(updatedBookFrom, isUserAdmin);
-        if (!ModelState.IsValid)
-        {
-            await GetBookFormDetailsAsync(updatedBookFrom, userId, isUserAdmin);
-
-            return View(updatedBookFrom);
-        }
-
-        try
-        {
-            updatedBookFrom.PublisherId ??= await _publisherService.GetPublisherIdAsync(userId);
-
-            await _bookService.EditAsync(updatedBookFrom);
-            TempData[SuccessMessage] = string.Format(EditSuccessfulMessage, entityName);
-
-            return RedirectToAction(nameof(Details), new { id = updatedBookFrom.Id });
-        }
-        catch (Exception)
-        {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"edit {entityName}");
-
-            await GetBookFormDetailsAsync(updatedBookFrom, userId, isUserAdmin);
-
-            return View(updatedBookFrom);
-        }
     }
 
     [HttpPost]
     public async Task<IActionResult> Get(string id)
     {
-        bool exists = await _bookService.ExistsAsync(id);
+        bool exists = await ExistsAsync(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
 
             return RedirectToAction(nameof(All));
         }
@@ -345,10 +65,10 @@ public class BookController : Controller
     [HttpPost]
     public async Task<IActionResult> Remove(string id)
     {
-        bool exists = await _bookService.ExistsAsync(id);
+        bool exists = await ExistsAsync(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
 
             return RedirectToAction(nameof(All));
         }
@@ -371,10 +91,10 @@ public class BookController : Controller
     [HttpGet]
     public async Task<IActionResult> Delete(string id)
     {
-        bool exists = await _bookService.ExistsAsync(id);
+        bool exists = await ExistsAsync(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
 
             return RedirectToAction(nameof(All));
         }
@@ -402,13 +122,13 @@ public class BookController : Controller
 
         try
         {
-            var eventModel = await _bookService.GetBookInfoAsync(id);
+            var bookModel = await GetEntityInfoAsync(id);
 
-            return View(eventModel);
+            return View(bookModel);
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load the {entityName}");
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load the {_entityName}");
 
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -417,10 +137,10 @@ public class BookController : Controller
     [HttpPost]
     public async Task<IActionResult> Delete(BookDetailsViewModel bookModel)
     {
-        bool exists = await _bookService.ExistsAsync(bookModel.Id);
+        bool exists = await ExistsAsync(bookModel.Id);
         if (!exists)
         {
-            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
 
             return RedirectToAction(nameof(All));
         }
@@ -436,13 +156,13 @@ public class BookController : Controller
         try
         {
             await _bookService.DeleteAsync(bookModel.Id);
-            TempData[SuccessMessage] = string.Format(DeleteSuccessfulMessage, entityName);
+            TempData[SuccessMessage] = string.Format(DeleteSuccessfulMessage, _entityName);
 
             return RedirectToAction(nameof(MyPublishings));
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"delete {entityName}");
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"delete {_entityName}");
 
             return View(new { id = bookModel.Id });
         }
@@ -451,10 +171,10 @@ public class BookController : Controller
     [HttpPost]
     public async Task<IActionResult> Hide(string id)
     {
-        bool exists = await _bookService.ExistsAsync(id);
+        bool exists = await ExistsAsync(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
 
             return RedirectToAction(nameof(All));
         }
@@ -489,7 +209,7 @@ public class BookController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"hide the {entityName}");
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"hide the {_entityName}");
 
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -498,10 +218,10 @@ public class BookController : Controller
     [HttpPost]
     public async Task<IActionResult> Show(string id)
     {
-        bool exists = await _bookService.ExistsAsync(id);
+        bool exists = await ExistsAsync(id);
         if (!exists)
         {
-            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
 
             return RedirectToAction(nameof(All));
         }
@@ -536,58 +256,64 @@ public class BookController : Controller
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"show the {entityName}");
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"show the {_entityName}");
 
             return RedirectToAction(nameof(Details), new { id });
         }
     }
 
-    private async Task GetBookFormDetailsAsync(BookFormModel bookFormModel, string userId, bool isUserAdmin = false)
+    protected override async Task<bool> ExistsAsync(string id)
     {
-        if (isUserAdmin)
-        {
-            bookFormModel.Authors = await _authorService.GetAllAsync();
-
-            if (bookFormModel.AuthorId == null)
-            {
-                bookFormModel.Publishers = await _publisherService.GetAllAsync();
-            }
-            else
-            {
-                bookFormModel.Publishers = await _authorService.GetConnectedEntities<Publisher, PublisherInfoViewModel>(bookFormModel.AuthorId);
-            }
-        }
-        else
-        {
-            bookFormModel.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
-        }
-        bookFormModel.Categories = await _categoryService.GetAllAsync();
+        return await _bookService.ExistsAsync(id);
     }
 
-    private async Task ValidateModelAsync(BookFormModel bookFormModel, bool isUserAdmin)
+    protected override async Task<AllBooksQueryModel> GetAllAsync(AllBooksQueryModel queryModel, string userId)
     {
-        bool isExistingAuthor = await _authorService.Exists(bookFormModel.AuthorId);
-        if (!isExistingAuthor)
+        var filteredBooks = await _bookService.GetAllAsync(queryModel, userId);
+
+        queryModel.EntityViewModels = filteredBooks.Books;
+        queryModel.TotalEntitiesCount = filteredBooks.TotalBooksCount;
+
+        return queryModel;
+    }
+
+    protected override async Task<BookDetailsViewModel> GetEntityDetails(string id, string userId)
+    {
+        return await _bookService.GetBookDetailsAsync(id, userId);
+    }
+
+    protected override async Task<IEnumerable<BookViewModel>> GetAllEntitiesByUserId(string userId)
+    {
+        return await _bookService.AllBooksByUserIdAsync(userId);
+    }
+
+    protected override async Task<IEnumerable<BookViewModel>> GetEntitiesByPublisherIdAsync(string publisherId, string userId)
+    {
+        return await _bookService.GetBooksByPublisherIdAsync(publisherId, userId);
+    }
+
+    protected override async Task<string> CreateAsync(BookFormModel newEntity)
+    {
+        return await _bookService.CreateAsync(newEntity);
+    }
+
+    protected override async Task<BookFormModel> GetEntityInfoAsync(string id)
+    {
+        return await _bookService.GetBookInfoAsync(id);
+    }
+
+    protected override async Task EditAsync(BookFormModel updatedEntityFrom)
+    {
+        await _bookService.EditAsync(updatedEntityFrom);
+    }
+
+    protected override async Task ValidateModelAsync(BookFormModel formModel, bool isUserAdmin)
+    {
+        if (formModel.Price < 0)
         {
-            ModelState.AddModelError(nameof(bookFormModel.CategoryId), string.Format(NoEntityFoundErrorMessage, "author"));
+            ModelState.AddModelError(nameof(formModel.Price), PriceMustBeHigherThanZeroErrorMessage);
         }
 
-        bool isExistingCategory = await _categoryService.ExistsAsync(bookFormModel.CategoryId);
-        if (!isExistingCategory)
-        {
-            ModelState.AddModelError(nameof(bookFormModel.CategoryId), string.Format(NoEntityFoundErrorMessage, "category"));
-        }
-
-        if (isUserAdmin)
-        {
-            if (!(await _publisherService.ExistsByIdAsync(bookFormModel.PublisherId!)))
-            {
-                ModelState.AddModelError(nameof(bookFormModel.PublisherId), string.Format(NoEntityFoundErrorMessage, "publisher"));
-            }
-            else if (!(await _publisherService.IsConnectedToEntityByPublisherId<Author>(bookFormModel.PublisherId!, bookFormModel.AuthorId)))
-            {
-                ModelState.AddModelError(nameof(bookFormModel.PublisherId), WrongPublisherErrorMessage);
-            }
-        }
+        await base.ValidateModelAsync(formModel, isUserAdmin);
     }
 }

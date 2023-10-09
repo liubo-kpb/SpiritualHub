@@ -19,8 +19,8 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="CoursesPerPage"></label>
-                <select asp-for="CoursesPerPage" class="form-control">
+                <label asp-for="EntitiesPerPage"></label>
+                <select asp-for="EntitiesPerPage" class="form-control">
                     <option value="3">3</option>
                     <option value="6">6</option>
                     <option value="9">9</option>
@@ -59,7 +59,7 @@
     {
         previousPage = 1;
     }
-    var maxPage = Math.Ceiling((double) Model.TotalCoursesCount / Model.CoursesPerPage);
+    var maxPage = Math.Ceiling((double) Model.TotalEntitiesCount / Model.EntitiesPerPage);
 }
 <div class="row mb-5">
     <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-start">
@@ -73,7 +73,7 @@
     </div>
     @{
         var shouldButtonBeDisabled = Model.CurrentPage == maxPage ||
-        !Model.Courses.Any();
+        !Model.EntityViewModels.Any();
     }
     <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-end">
         <a class="btn btn-primary
@@ -86,12 +86,12 @@
            asp-route-sorting="@((int)Model.SortingOption)">>></a>
     </div>
 </div>
-@if (!Model.Courses.Any())
+@if (!Model.EntityViewModels.Any())
 {
     <h2 class="text-center">No Courses found by the given criteria!</h2>
 }
 <div class="row">
-    @foreach (var course in Model.Courses)
+    @foreach (var course in Model.EntityViewModels)
     {
         <partial name="_CoursePartial" model="@course" />
     }

@@ -30,30 +30,42 @@
                     @if (isUserConnectedPublisher || this.User.IsAdmin())
                     {
                         <div class="d-flex flex-row">
-                        <a asp-controller="Course" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
-                        @if (!Model.IsActive)
-                        {
-                            <form asp-controller="Course" asp-action="Show" asp-route-id="@Model.Id" method="post" class="mx-1">
-                                <input class="btn btn-primary" type="submit" value="Show" />
-                            </form>
-                        }
-                        else
-                        {
-                            <form asp-controller="Course" asp-action="Hide" asp-route-id="@Model.Id" method="post" class="mx-1">
-                                <input class="btn btn-warning" type="submit" value="Hide" />
-                            </form>
-                        }
-                        <a asp-controller="Course" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+                            <a asp-controller="Course" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                            @if (!Model.IsActive)
+                            {
+                                <form asp-controller="Course" asp-action="Show" asp-route-id="@Model.Id" method="post" class="mx-1">
+                                    <input class="btn btn-primary" type="submit" value="Show" />
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-controller="Course" asp-action="Hide" asp-route-id="@Model.Id" method="post" class="mx-1">
+                                    <input class="btn btn-warning" type="submit" value="Hide" />
+                                </form>
+                            }
+                            <a asp-controller="Course" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
                         </div>
                     }
                 }
             </div>
+            <p></p>
+            <h5 class="card-title">Published By:</h5>
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    @if (!string.IsNullOrWhiteSpace(Model.Publisher.FullName))
+                    {
+                        <p class="card-text">Name: @Model.Publisher.FullName</p>
+                    }
+                    <p class="card-text">Email: @Model.Publisher.Email</p>
+                    <p class="card-text">Phone Number: @Model.Publisher.PhoneNumber</p>
+                </div>
+            </div>
         </div>
         <div class="card col-8 border-0">
             <p style="font-size:25px;"><u>@Model.Name</u></p>
-            <p>Presenter: <b><a asp-controller="Author" asp-action="Details" asp-route-id="@Model.Author.Id">@Model.Author.Alias</a></b></p>
-            <p>Price: @(Model.Price == 0 ? "Free" : $"${Model.Price:F2}")</p>
-            <p>Modules: @Model.ModulesCount")</p>
+            <p>Author: <b><a asp-controller="Author" asp-action="Details" asp-route-id="@Model.Author.Id">@Model.Author.Alias</a></b></p>
+            <p>Price: <b>@(Model.Price == 0 ? "Free" : $"${Model.Price:F2}")</b></p>
+            <p>Modules: <b>@Model.ModulesCount</b></p>
             <p>@Model.Description</p>
             @if (isUserLoggedIn)
             {
@@ -71,18 +83,24 @@
                         <input class="btn btn-primary mb-1" type="submit" value="Get" />
                     </form>
                 }
+                <p></p>
             }
-            <p></p>
-            <h5 class="card-title">Published By:</h5>
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    @if (!string.IsNullOrWhiteSpace(Model.Publisher.FullName))
-                    {
-                        <p class="card-text">Name: @Model.Publisher.FullName</p>
-                    }
-                    <p class="card-text">Email: @Model.Publisher.Email</p>
-                    <p class="card-text">Phone Number: @Model.Publisher.PhoneNumber</p>
-                </div>
+            <div class="accordion" id="moduleAccordion">
+                @foreach (var module in Model.Modules)
+                {
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading-@module.Number">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@module.Number" aria-expanded="false" aria-controls="collapse-@module.Number">
+                                Module @module.Number: @module.Name
+                            </button>
+                        </h2>
+                        <div id="collapse-@module.Number" class="accordion-collapse collapse" aria-labelledby="heading-@module.Number" data-bs-parent="#moduleAccordion">
+                            <div class="accordion-body">
+                                <b>Description:</b> @module.Description
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>

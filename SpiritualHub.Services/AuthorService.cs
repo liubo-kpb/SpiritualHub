@@ -37,13 +37,15 @@ public class AuthorService : IAuthorService
         _userManager = userManager;
     }
 
-    public async Task<IEnumerable<AuthorViewModel>> AllAuthorsByPublisherIdAsync(string userId, string publisherId)
+    public async Task<IEnumerable<AuthorViewModel>> AllAuthorsByPublisherIdAsync(string publisherId, string userId)
     {
         var authors = await _authorRepository
-            .GetAll()
+            .AllAsNoTracking()
             .Include(a => a.AvatarImage)
             .Include(a => a.Followers)
-            .Where(a => a.Publishers.Any(p => p.Id.ToString() == publisherId))
+            .Include(a => a.Subscriptions)
+            .ThenInclude(s => s.Subscribers)
+            .Where(a => a.Publishers.Any(p => p.Id.ToString() == publisherId.ToUpper()))
             .ToListAsync();
 
         List<AuthorViewModel> authorsModel = new List<AuthorViewModel>();
@@ -178,8 +180,8 @@ public class AuthorService : IAuthorService
         };
 
         List<Author> authors = await authorsQuery
-            .Skip((queryModel.CurrentPage - 1) * queryModel.AuthorsPerPage)
-            .Take(queryModel.AuthorsPerPage)
+            .Skip((queryModel.CurrentPage - 1) * queryModel.EntitiesPerPage)
+            .Take(queryModel.EntitiesPerPage)
             .Include(a => a.AvatarImage)
             .Include(a => a.Followers)
             .Include(a => a.Subscriptions)
@@ -201,7 +203,7 @@ public class AuthorService : IAuthorService
         };
     }
 
-    public async Task<AuthorFormModel> GetAuthorAsync(string authorId)
+    public async Task<AuthorFormModel> GetAuthorInfoAsync(string authorId)
     {
         var author = await _authorRepository.GetAuthorByIdWithAvatar(authorId);
         return _mapper.Map<AuthorFormModel>(author);
