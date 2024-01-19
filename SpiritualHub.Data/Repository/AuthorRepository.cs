@@ -80,6 +80,7 @@ public class AuthorRepository : Repository<Author>, IAuthorRepository
     {
         return await DbSet
             .Include(a => a.AvatarImage)
+            .Include(a => a.Category)
             .Include(a => a.Subscriptions)
             .ThenInclude(s => s.SubscriptionType)
             .FirstOrDefaultAsync(a => a.Id.ToString() == id);

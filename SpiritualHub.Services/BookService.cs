@@ -95,7 +95,7 @@ public class BookService : IBookService
         book!.IsHidden = updatedBook.IsHidden;
         book!.Image.URL = updatedBook.ImageUrl;
         book!.CategoryID = updatedBook.CategoryId;
-        book!.AuthorID = Guid.Parse(updatedBook.AuthorId);
+        book!.AuthorID = Guid.Parse(updatedBook.AuthorId!);
         book!.PublisherID = Guid.Parse(updatedBook.PublisherId!);
 
         await _bookRepository.SaveChangesAsync();

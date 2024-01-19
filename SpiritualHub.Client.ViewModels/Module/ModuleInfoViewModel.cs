@@ -9,4 +9,6 @@ public class ModuleInfoViewModel
     public int Number {  get; set; }
 
     public string Description { get; set; } = null!;
+
+    public bool IsActive { get; set; }
 }

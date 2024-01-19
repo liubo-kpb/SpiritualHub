@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using Responses;
 using Client.ViewModels.Event;
 using Client.ViewModels.Book;
+using Client.ViewModels.Course;
 using Client.ViewModels.Subscription;
 using Services.Interfaces;
 using Data.Models;
 
 using static Common.ErrorMessagesConstants;
-using SpiritualHub.Client.ViewModels.Course;
 
 [ApiController]
 [Route("api/author")]

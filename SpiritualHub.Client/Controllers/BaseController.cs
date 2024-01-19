@@ -186,7 +186,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
                 return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
             }
 
-            bool isConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, newEntityForm.AuthorId);
+            bool isConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, newEntityForm.AuthorId!);
             if (!isConnectedPublisher)
             {
                 ModelState.AddModelError(nameof(newEntityForm.AuthorId), string.Format(NoEntityFoundErrorMessage, "affiliated author"));
@@ -290,7 +290,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
                 return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
             }
 
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, updatedEntityFrom.AuthorId));
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, updatedEntityFrom.AuthorId!));
             if (!isConnectedPublisher)
             {
                 TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
@@ -361,7 +361,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             {
                 ModelState.AddModelError(nameof(formModel.PublisherId), string.Format(NoEntityFoundErrorMessage, "publisher"));
             }
-            else if (!(await _publisherService.IsConnectedToEntityByPublisherId<Author>(formModel.PublisherId!, formModel.AuthorId)))
+            else if (!(await _publisherService.IsConnectedToEntityByPublisherId<Author>(formModel.PublisherId!, formModel.AuthorId!)))
             {
                 ModelState.AddModelError(nameof(formModel.PublisherId), WrongPublisherErrorMessage);
             }

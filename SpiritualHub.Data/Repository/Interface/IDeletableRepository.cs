@@ -7,4 +7,6 @@ public interface IDeletableRepository<TEntity> : IRepository<TEntity>
 
     void DeleteEntriesWithForeignKeys<TEntityType, TKey>(string foreignKeyColumnName, TKey entityId)
         where TEntityType : class;
+
+    void DeleteMultiple(IEnumerable<TEntity> entities);
 }

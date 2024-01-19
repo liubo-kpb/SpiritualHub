@@ -1,1 +1,16 @@
-﻿
+﻿@model CourseFormModel
+@{
+    ViewBag.Title = "Add Course";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+<partial name="_CourseFormPartial" model="@Model" ; />
+
+<script src="~/js/courseEdit.js" asp-append-version="true"></script>
+
+@section Scripts {
+    <script>courseEdit(@Model.Modules.Count);</script>
+    <partial name="_ValidationScriptsPartial" />
+}

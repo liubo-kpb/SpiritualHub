@@ -18,5 +18,13 @@ public class ModuleEntityConfiguration : IEntityTypeConfiguration<Module>
         builder
             .Property(m => m.VideoUrl)
             .IsRequired(false);
+
+        builder
+            .Property(m => m.Text)
+            .IsRequired(false);
+
+        builder
+            .Property(m => m.Description)
+            .HasDefaultValue("Please add a description...");
     }
 }

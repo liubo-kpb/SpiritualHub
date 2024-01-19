@@ -50,7 +50,7 @@
                     </div>
                 }
                 <p></p>
-                @if (Model.HasCourse)
+                @if (Model.UserHasCourse)
                 {
                     <form asp-controller="Course" asp-action="Remove"
                           asp-route-id="@Model.Id" method="post">

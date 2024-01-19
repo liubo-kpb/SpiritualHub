@@ -27,8 +27,9 @@ public class Module
 
     public string VideoUrl { get; set; } = null!;
 
-    [Required]
     public string Text { get; set; } = null!;
+
+    public bool IsActive { get; set; }
 
     [Required]
     public Guid CourseID { get; set; }

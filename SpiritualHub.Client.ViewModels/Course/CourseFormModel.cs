@@ -11,7 +11,7 @@ public class CourseFormModel : BaseFormModel
 {
     public CourseFormModel()
     {
-        this.Modules = new HashSet<ModuleInfoViewModel>();
+        this.Modules = new List<CourseModuleViewModel>();
     }
 
     [Required]
@@ -21,7 +21,7 @@ public class CourseFormModel : BaseFormModel
 
     [Required]
     [MinLength(DescriptionMinLength)]
-    [Display(Name = "Full Course Description")]
+    [Display(Name = "Full Description")]
     public string Description { get; set; } = null!;
 
     [Required]
@@ -34,8 +34,8 @@ public class CourseFormModel : BaseFormModel
     [Display(Name = "Image URL")]
     public string ImageUrl { get; set; } = null!;
 
-    [Display(Name = "Activate Course")]
+    [Display(Name = "Publish")]
     public bool IsActive { get; set; }
 
-    public IEnumerable<ModuleInfoViewModel> Modules { get; set; }
+    public IList<CourseModuleViewModel> Modules { get; set; }
 }

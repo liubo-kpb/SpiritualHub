@@ -18,7 +18,12 @@ public class CourseRepository : DeletableRepository<Course>, ICourseRepository
                                                                             .Include(c => c.Author)
                                                                             .Include(c => c.Publisher)
                                                                             .ThenInclude(p => p.User)
-                                                                            .Include(c => c.Modules
-                                                                                                .OrderBy(m => m.Number))
+                                                                            .Include(c => c.Modules)
                                                                             .FirstOrDefaultAsync(c => c.Id.ToString() == id);
+
+    public async Task<Course?> GetCourseInfoAsync(string id) => await DbSet
+                                                                        .Include(c => c.Image)
+                                                                        .Include(c => c.Modules)
+                                                                        .FirstOrDefaultAsync(c => c.Id.ToString() == id);
+
 }

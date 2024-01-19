@@ -5,16 +5,20 @@
 
     bool isUserLoggedIn = this.User.Identity?.IsAuthenticated ?? false;
     bool isUserConnectedPublisher = false;
+    bool isUserAdmin = false;
 
     if (isUserLoggedIn)
     {
         string userId = this.User.GetId()!;
+        isUserAdmin = this.User.IsAdmin();
         bool isUserPublisher = await _publisherService.ExistsByUserIdAsync(userId);
         if (isUserPublisher)
         {
             isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, Model.Author.Id);
         }
     }
+
+    bool CanEdit() => isUserAdmin || isUserConnectedPublisher;
 }
 <h2 class="text-center">@ViewBag.Title</h2>
 <hr />
@@ -27,7 +31,7 @@
             <div class="form-inline">
                 @if (isUserLoggedIn)
                 {
-                    @if (isUserConnectedPublisher || this.User.IsAdmin())
+                    @if (CanEdit())
                     {
                         <div class="d-flex flex-row">
                             <a asp-controller="Course" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
@@ -69,7 +73,7 @@
             <p>@Model.Description</p>
             @if (isUserLoggedIn)
             {
-                @if (Model.HasCourse)
+                @if (Model.UserHasCourse)
                 {
                     <form asp-controller="Course" asp-action="Remove"
                           asp-route-id="@Model.Id" method="post">
@@ -84,24 +88,46 @@
                     </form>
                 }
                 <p></p>
-            }
-            <div class="accordion" id="moduleAccordion">
-                @foreach (var module in Model.Modules)
+                if (CanEdit())
                 {
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="heading-@module.Number">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@module.Number" aria-expanded="false" aria-controls="collapse-@module.Number">
-                                Module @module.Number: @module.Name
-                            </button>
-                        </h2>
-                        <div id="collapse-@module.Number" class="accordion-collapse collapse" aria-labelledby="heading-@module.Number" data-bs-parent="#moduleAccordion">
-                            <div class="accordion-body">
-                                <b>Description:</b> @module.Description
-                            </div>
-                        </div>
-                    </div>
+                    <a asp-controller="Module" asp-action="Add" asp-route-courseId="@Model.Id" class="btn btn-primary">+ Add Module</a>
+                    <p></p>
                 }
-            </div>
+            }
+            @if (Model.Modules.Any(m => m.IsActive) || CanEdit())
+            {
+                <div class="accordion" id="moduleAccordion">
+                    @foreach (var module in Model.Modules)
+                    {
+                        @if (CanEdit() || module.IsActive)
+                        {
+                            <div class="accordion-item" id="heading-@module.Number">
+                                <div class="accordion-header d-flex justify-content-between align-items-center h-85">
+                                    <h2 class="w-100 mb-0">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@module.Number" aria-expanded="false" aria-controls="collapse-@module.Number">
+                                            <p>Module @module.Number:  <b>@module.Name</b></p>
+                                        </button>
+                                    </h2>
+                                    @if (CanEdit() || Model.UserHasCourse)
+                                    {
+                                        <a asp-controller="Module" asp-action="View" asp-route-id="@module.Id" class="w-25 h-25 text-center">Go to Module >></a>
+                                    }
+                                </div>
+                                <div id="collapse-@module.Number" class="accordion-collapse collapse" aria-labelledby="heading-@module.Number" data-bs-parent="#moduleAccordion">
+                                    <div class="accordion-body">
+                                        <b>Description:</b> @module.Description
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            }
+            else
+            {
+                <p></p>
+                <h4 class="text-center">Course doesn't have any modules yet.</h4>
+            }
         </div>
     </div>
 </div>

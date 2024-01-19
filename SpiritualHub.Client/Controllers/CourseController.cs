@@ -14,18 +14,15 @@ using static Common.SuccessMessageConstants;
 public class CourseController : BaseController<CourseViewModel, CourseDetailsViewModel, CourseFormModel, AllCoursesQueryModel, CourseSorting>
 {
     private readonly ICourseService _courseService;
-    private readonly IModuleService _moduleService;
 
     public CourseController(
         ICourseService courseService,
-        IModuleService moduleService,
         IAuthorService authorService,
         ICategoryService categoryService,
         IPublisherService publisherService)
         : base(authorService, categoryService, publisherService, nameof(Course).ToLower())
     {
         _courseService = courseService;
-        _moduleService = moduleService;
     }
 
     protected override async Task<string> CreateAsync(CourseFormModel newEntity)
@@ -71,16 +68,6 @@ public class CourseController : BaseController<CourseViewModel, CourseDetailsVie
     protected override async Task<CourseFormModel> GetEntityInfoAsync(string id)
     {
         return await _courseService.GetCourseInfoAsync(id);
-    }
-
-    protected override async Task GetFormDetailsAsync(CourseFormModel formModel, string userId, bool isUserAdmin = false)
-    {
-        await base.GetFormDetailsAsync(formModel, userId, isUserAdmin);
-
-        if (formModel.Id != null)
-        {
-            formModel.Modules = await _moduleService.GetModulesByCourseId(formModel.Id);
-        }
     }
 
     protected override async Task ValidateModelAsync(CourseFormModel formModel, bool isUserAdmin)

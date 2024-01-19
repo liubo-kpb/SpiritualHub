@@ -27,4 +27,9 @@ public class DeletableRepository<TEntity> : Repository<TEntity>, IDeletableRepos
     {
         DbSet.Remove(entity);
     }
+
+    public virtual void DeleteMultiple(IEnumerable<TEntity> entities)
+    {
+        DbSet.RemoveRange(entities);
+    }
 }

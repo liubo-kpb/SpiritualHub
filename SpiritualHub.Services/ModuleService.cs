@@ -13,22 +13,38 @@ using Data.Models;
 
 public class ModuleService : IModuleService
 {
-    private readonly IRepository<Module> _moduleRepository;
+    private readonly IDeletableRepository<Module> _moduleRepository;
     private readonly IMapper _mapper;
 
-    public ModuleService(IRepository<Module> moduleRepository,
+    public ModuleService(IDeletableRepository<Module> moduleRepository,
         IMapper mapper)
     {
         _moduleRepository = moduleRepository;
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<ModuleInfoViewModel>> GetModulesByCourseId(string courseId)
+    public Module Create(CourseModuleViewModel newModule, Guid courseId)
+    {
+        return new Module()
+        {
+            Number = newModule.Number,
+            Name = newModule.Name,
+            CourseID = courseId,
+        };
+    }
+
+    public void Edit(Module moduleEntity, CourseModuleViewModel updatedModule)
+    {
+        moduleEntity.Name = updatedModule.Name;
+        moduleEntity.Number = updatedModule.Number;
+    }
+
+    public async Task<IList<CourseModuleViewModel>> GetModulesByCourseId(string courseId)
     {
         return await _moduleRepository
                             .AllAsNoTracking()
                             .Where(m => m.CourseID.ToString() == courseId)
-                            .ProjectTo<ModuleInfoViewModel>(_mapper.ConfigurationProvider)
+                            .ProjectTo<CourseModuleViewModel>(_mapper.ConfigurationProvider)
                             .ToListAsync();
     }
 }

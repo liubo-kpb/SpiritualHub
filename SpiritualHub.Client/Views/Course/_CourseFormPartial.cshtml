@@ -1,1 +1,100 @@
-﻿
+﻿@model CourseFormModel
+
+<div class="row">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form id="form" method="post">
+            <input type="hidden" asp-for="@Model.Id" />
+            <div class="form-group mb-2">
+                <label asp-for="IsActive" title="Make course visible to users"></label>
+                <input asp-for="IsActive" title="Make course visible to users" type="checkbox" value="true">
+                <input asp-for="IsActive" title="Make course visible to users" type="hidden" value="false">
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control" placeholder="Course Title...">
+                <span asp-validation-for="Name" class="small text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="ShortDescription"></label>
+                <textarea asp-for="ShortDescription" rows="4" class="form-control" placeholder="This course..." titile="Summarize what people can get out of the course."></textarea>
+                <span asp-validation-for="ShortDescription" class="small text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" rows="4" class="form-control" placeholder="This course..."></textarea>
+                <span asp-validation-for="Description" class="small text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="Price">Price $</label>
+                <input asp-for="Price" class="form-control" placeholder="Course price...">
+                <span asp-validation-for="Price" class="small text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="ImageUrl"></label>
+                <input asp-for="ImageUrl" class="form-control" placeholder="Your fine URL here...">
+                <span asp-validation-for="ImageUrl" class="small text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="AuthorId"></label>
+                <select asp-for="AuthorId" class="form-control">
+                    @foreach (var author in Model.Authors)
+                    {
+                        <option value="@author.Id">@($"{author.Name} ({author.Alias})")</option>
+                    }
+                </select>
+                <span asp-validation-for="AuthorId" class="small text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="CategoryId"></label>
+                <select asp-for="CategoryId" class="form-control">
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="CategoryId" class="small text-danger"></span>
+            </div>
+            @if (this.User.IsAdmin())
+            {
+                <div class="form-group mb-2">
+                    <label asp-for="PublisherId"></label>
+                    <select asp-for="PublisherId" class="form-control">
+                        @foreach (var publisher in Model.Publishers)
+                        {
+                            <option value="@publisher.Id">@publisher.Email</option>
+                        }
+                    </select>
+                    <span asp-validation-for="PublisherId" class="small text-danger"></span>
+                </div>
+            }
+            <div class="form-group mb-2">
+                <input id="add-module" class="btn btn-primary" type="button" value="+ Add Module" />
+            </div>
+            <div id="modules-list" class="form-group">
+                <p class="text-center">(Modules with same numbers will be ordered alphabetically.)</p>
+                @for (int i = 0; i < Model.Modules.Count; i++)
+                {
+                    <div id="module-@i" class="d-flex align-items-start bg-light mb-2 ">
+                        <input type="hidden" asp-for="@Model.Modules[i].Id" />
+                        <select id="order-select-@i" class="w-25 form-control" asp-for="@Model.Modules[i].Number">
+                            @for (int j = 1; j <= Model.Modules.Count; j++)
+                            {
+                                <option value="@j" class="text-center">Module @j</option>
+                            }
+                        </select>
+                        <div class="form-group d-flex flex-column w-75 mx-2">
+                            <input id="module-@i-name" asp-for="@Model.Modules[i].Name" class="form-control text-center" placeholder="Enter Module Name" />
+                            <span asp-validation-for="@Model.Modules[i].Name" class="small text-danger text-center"></span>
+                        </div>
+                        <input id="delete-btn-@i" class="btn btn-danger" type="button" title="Delete Module" value="X" />
+                        <input id="is-deleted-@i" asp-for="@Model.Modules[i].IsDeleted" type="hidden" value="false">
+                        <input id="is-new-@i" asp-for="@Model.Modules[i].IsNew" type="hidden"/>
+                    </div>
+                }
+            </div>
+            <div class="text-center">
+                <input class="btn btn-primary mt-3" type="submit" value="Save" />
+            </div>
+        </form>
+    </div>
+</div>

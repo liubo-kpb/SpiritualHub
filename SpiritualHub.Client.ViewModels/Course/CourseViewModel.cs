@@ -20,7 +20,7 @@ public class CourseViewModel
 
     public bool IsActive { get; set; }
 
-    public bool HasCourse { get; set; }
+    public bool UserHasCourse { get; set; }
 
     public AuthorInfoViewModel Author { get; set; } = null!;
 }

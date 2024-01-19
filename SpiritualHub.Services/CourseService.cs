@@ -12,18 +12,24 @@ using Mappings;
 using Models.Course;
 using Client.ViewModels.Course;
 using Client.Infrastructure.Enums;
+using Client.ViewModels.Module;
 
 public class CourseService : ICourseService
 {
-    private readonly IMapper _mapper;
-
     private readonly ICourseRepository _courseRepository;
+    private readonly IModuleService _moduleService;
+    private readonly IDeletableRepository<Module> _moduleRepository;
+    private readonly IMapper _mapper;
 
     public CourseService(
         ICourseRepository courseRepository,
+        IModuleService moduleService,
+        IDeletableRepository<Module> moduleRepository,
         IMapper mapper)
     {
         _courseRepository = courseRepository;
+        _moduleService = moduleService;
+        _moduleRepository = moduleRepository;
         _mapper = mapper;
     }
 
@@ -42,15 +48,23 @@ public class CourseService : ICourseService
 
         for (int i = 0; i < coursesModel.Count; i++)
         {
-            coursesModel[i].HasCourse = true;
+            coursesModel[i].UserHasCourse = true;
         }
 
         return coursesModel;
     }
 
-    public Task<string> CreateAsync(CourseFormModel newCourse)
+    public async Task<string> CreateAsync(CourseFormModel newCourse)
     {
-        throw new NotImplementedException();
+        var courseEntity = _mapper.Map<Course>(newCourse);
+        courseEntity.Image.Name = courseEntity.Name;
+
+        ReorderCourseModules(courseEntity);
+
+        await _courseRepository.AddAsync(courseEntity);
+        await _courseRepository.SaveChangesAsync();
+
+        return courseEntity.Id.ToString();
     }
 
     public Task DeleteAsync(string id)
@@ -58,9 +72,42 @@ public class CourseService : ICourseService
         throw new NotImplementedException();
     }
 
-    public Task EditAsync(CourseFormModel updatedCourse)
+    public async Task EditAsync(CourseFormModel updatedCourse)
     {
-        throw new NotImplementedException();
+        var course = await _courseRepository.GetCourseInfoAsync(updatedCourse.Id!);
+
+        course!.Name = updatedCourse.Name;
+        course.ShortDescription = updatedCourse.ShortDescription;
+        course.Description = updatedCourse.Description;
+        course.Price = updatedCourse.Price;
+        course.Image.URL = updatedCourse.ImageUrl;
+        course.IsActive = updatedCourse.IsActive;
+        course.AuthorID = Guid.Parse(updatedCourse.AuthorId!);
+        course.CategoryID = updatedCourse.CategoryId;
+        course.PublisherID = Guid.Parse(updatedCourse.PublisherId!);
+
+        var deletedModules = updatedCourse.Modules.Where(m => m.IsDeleted);
+        if (deletedModules.Any())
+        {
+            DeleteModules(course, deletedModules);
+            updatedCourse.Modules = updatedCourse.Modules.Except(deletedModules).ToList();
+        }
+
+        var newModules = updatedCourse.Modules.Where(m => m.IsNew);
+        if (newModules.Any())
+        {
+            CreateModules(course, newModules);
+        }
+
+        foreach (var updatedModule in updatedCourse.Modules.Where(m => m.Id != null))
+        {
+            var moduleEntity = course.Modules.FirstOrDefault(m => m.Id.ToString() == updatedModule.Id);
+            _moduleService.Edit(moduleEntity!, updatedModule);
+        }
+
+        ReorderCourseModules(course);
+
+        await _courseRepository.SaveChangesAsync();
     }
 
     public async Task<bool> ExistsAsync(string id)
@@ -84,6 +131,7 @@ public class CourseService : ICourseService
             string wildCard = $"%{queryModel.SearchTerm.ToLower()}%";
             coursesQuery = coursesQuery.Where(b => EF.Functions.Like(b.Name, wildCard)
                                             || EF.Functions.Like(b.Author.Name, wildCard)
+                                            || EF.Functions.Like(b.Author.Alias, wildCard)
                                             || EF.Functions.Like(b.Description, wildCard)
                                             || EF.Functions.Like(b.ShortDescription, wildCard));
         }
@@ -92,7 +140,7 @@ public class CourseService : ICourseService
         {
             CourseSorting.Newest => coursesQuery.OrderByDescending(c => c.AddedOn),
             CourseSorting.Oldest => coursesQuery.OrderBy(c => c.AddedOn),
-            CourseSorting.StudentsDescending=> coursesQuery.OrderByDescending(c => c.Students.Count),
+            CourseSorting.StudentsDescending => coursesQuery.OrderByDescending(c => c.Students.Count),
             CourseSorting.StudentsAscending => coursesQuery.OrderBy(c => c.Students.Count),
             CourseSorting.PriceDescending => coursesQuery.OrderByDescending(c => c.Price),
             CourseSorting.PriceAscending => coursesQuery.OrderBy(c => c.Price),
@@ -115,7 +163,7 @@ public class CourseService : ICourseService
 
         for (int i = 0; i < coursesModel.Count; i++)
         {
-            coursesModel[i].HasCourse = HasCourse(userId, courses[i]);
+            coursesModel[i].UserHasCourse = HasCourse(userId, courses[i]);
         }
 
         return new FilteredCoursesServiceModel()
@@ -145,17 +193,24 @@ public class CourseService : ICourseService
     public async Task<CourseDetailsViewModel> GetCourseDetailsAsync(string id, string userId)
     {
         var course = await _courseRepository.GetCourseDetailsAsync(id);
-        
+
         var courseModel = _mapper.Map<CourseDetailsViewModel>(course!);
-        // courseModel.Modules = courseModel.Modules.OrderBy(m => m.Number);
-        courseModel.HasCourse = HasCourse(userId, course);
+        courseModel.Modules = courseModel.Modules.OrderBy(m => m.Number);
+        courseModel.UserHasCourse = HasCourse(userId, course);
 
         return courseModel;
     }
 
-    public Task<CourseFormModel> GetCourseInfoAsync(string id)
+    public async Task<CourseFormModel> GetCourseInfoAsync(string id)
     {
-        throw new NotImplementedException();
+        var course = await _courseRepository.GetCourseDetailsAsync(id);
+
+        var courseModel = _mapper.Map<CourseFormModel>(course!);
+        courseModel.Modules = courseModel.Modules
+                                            .OrderBy(m => m.Number)
+                                            .ToList();
+
+        return courseModel;
     }
 
     public async Task<IEnumerable<CourseViewModel>> GetCoursesByPublisherIdAsync(string publisherId, string userId)
@@ -173,7 +228,7 @@ public class CourseService : ICourseService
 
         for (int i = 0; i < coursesModel.Count; i++)
         {
-            coursesModel[i].HasCourse = HasCourse(userId, courses[i]);
+            coursesModel[i].UserHasCourse = HasCourse(userId, courses[i]);
         }
 
         return coursesModel;
@@ -207,5 +262,41 @@ public class CourseService : ICourseService
         }
 
         return false;
+    }
+
+    private void CreateModules(Course course, IEnumerable<CourseModuleViewModel> newModules)
+    {
+        foreach (var newModule in newModules)
+        {
+            var module = _moduleService.Create(newModule, course.Id);
+            _moduleRepository.AddAsync(module);
+            course.Modules.Add(module);
+        }
+    }
+
+    private void DeleteModules(Course course, IEnumerable<CourseModuleViewModel> deletedModules)
+    {
+        ICollection<Module> modulesToDelete = new List<Module>();
+        foreach (var module in deletedModules)
+        {
+            var moduleEntity = course.Modules.FirstOrDefault(m => m.Id.ToString() == module.Id)!;
+            modulesToDelete.Add(moduleEntity);
+            course.Modules.Remove(moduleEntity);
+        }
+
+        _moduleRepository.DeleteMultiple(modulesToDelete);
+    }
+
+    private static void ReorderCourseModules(Course course)
+    {
+        var sortedModules = course.Modules.OrderBy(m => m.Number).ThenBy(m => m.Name).ToList();
+
+        int currentNumber = 1;
+        foreach (var module in sortedModules)
+        {
+            module.Number = currentNumber++;
+        }
+
+        course.Modules = sortedModules;
     }
 }
