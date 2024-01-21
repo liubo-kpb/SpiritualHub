@@ -13,23 +13,27 @@ using Models.Course;
 using Client.ViewModels.Course;
 using Client.Infrastructure.Enums;
 using Client.ViewModels.Module;
+using SpiritualHub.Data.Repository;
 
 public class CourseService : ICourseService
 {
     private readonly ICourseRepository _courseRepository;
     private readonly IModuleService _moduleService;
     private readonly IDeletableRepository<Module> _moduleRepository;
+    private readonly IRepository<ApplicationUser> _userRepository;
     private readonly IMapper _mapper;
 
     public CourseService(
         ICourseRepository courseRepository,
         IModuleService moduleService,
         IDeletableRepository<Module> moduleRepository,
+        IRepository<ApplicationUser> userRepository,
         IMapper mapper)
     {
         _courseRepository = courseRepository;
         _moduleService = moduleService;
         _moduleRepository = moduleRepository;
+        _userRepository = userRepository;
         _mapper = mapper;
     }
 
@@ -180,9 +184,13 @@ public class CourseService : ICourseService
             .CountAsync();
     }
 
-    public Task GetAsync(string courseId, string userId)
+    public async Task GetAsync(string courseId, string userId)
     {
-        throw new NotImplementedException();
+        var course = await _courseRepository.GetSingleByIdAsync(courseId);
+        var user = await _userRepository.GetSingleByIdAsync(userId);
+
+        user!.Courses.Add(course!);
+        await _courseRepository.SaveChangesAsync();
     }
 
     public Task<string> GetAuthorIdAsync(string courseId)
@@ -234,9 +242,11 @@ public class CourseService : ICourseService
         return coursesModel;
     }
 
-    public Task<bool> HasCourseAsync(string courseId, string userId)
+    public async Task<bool> HasCourseAsync(string courseId, string userId)
     {
-        throw new NotImplementedException();
+        return await _courseRepository
+            .AnyAsync(
+            c => c.Id.ToString() == courseId && c.Students.Any(s => s.Id.ToString() == userId));
     }
 
     public Task HideAsync(string id)
@@ -244,9 +254,13 @@ public class CourseService : ICourseService
         throw new NotImplementedException();
     }
 
-    public Task RemoveAsync(string courseId, string userId)
+    public async Task RemoveAsync(string courseId, string userId)
     {
-        throw new NotImplementedException();
+        var course = await _courseRepository.GetCourseWithStudents(courseId);
+        var user = await _userRepository.GetSingleByIdAsync(userId);
+
+        course!.Students.Remove(user!);
+        await _userRepository.SaveChangesAsync();
     }
 
     public Task ShowAsync(string id)

@@ -11,8 +11,12 @@ public class SuccessMessageConstants
 
     public const string GetBookSuccessMessage = "You have successfully added the book to your librarty.";
     public const string RemoveBookSuccessMessage = "You have successfully removed the book from your librarty.";
-    public const string HideBookSuccessMessage = "You have successfully hidden the book.";
-    public const string ShowBookSuccessMessage = "You have successfully made the book public.";
+
+    public const string GetCourseSuccessMessage = "You have successfully purchased the course.";
+    public const string RemoveCourseSuccessMessage = "You have successfully removed this course from your library.";
+
+    public const string HideEntitySuccessMessage = "You have successfully hidden the {0}.";
+    public const string ShowEntitySuccessMessage = "You have successfully made the {0} public.";
 
     public const string AuthorActivatedSuccessfullyMessage = "Author was succesfully activated.";
     public const string AuthorDeactivatedSuccessfullyMessage = "Author was succesfully deactivated.";

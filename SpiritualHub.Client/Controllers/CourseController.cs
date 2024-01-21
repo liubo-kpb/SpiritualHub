@@ -2,14 +2,18 @@
 
 using System.Collections.Generic;
 
+using Microsoft.AspNetCore.Mvc;
+
 using Services.Interfaces;
 using Data.Models;
 using ViewModels.Course;
 using Infrastructure.Enums;
+using Infrastructure.Extensions;
 
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
+using SpiritualHub.Services;
 
 public class CourseController : BaseController<CourseViewModel, CourseDetailsViewModel, CourseFormModel, AllCoursesQueryModel, CourseSorting>
 {
@@ -23,6 +27,91 @@ public class CourseController : BaseController<CourseViewModel, CourseDetailsVie
         : base(authorService, categoryService, publisherService, nameof(Course).ToLower())
     {
         _courseService = courseService;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Get(string id)
+    {
+        bool exists = await ExistsAsync(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
+
+            return RedirectToAction(nameof(All));
+        }
+
+        string userId = this.User.GetId()!;
+        bool hasCourse = await _courseService.HasCourseAsync(id, userId);
+        if (hasCourse)
+        {
+            TempData[ErrorMessage] = AlreadyHasCourseErrorMessage;
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        try
+        {
+            await _courseService.GetAsync(id, userId);
+            TempData[SuccessMessage] = GetCourseSuccessMessage;
+
+            return RedirectToAction(nameof(Mine));
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"purchase {_entityName}");
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Remove(string id)
+    {
+        bool exists = await ExistsAsync(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
+
+            return RedirectToAction(nameof(All));
+        }
+
+        try
+        {
+            await _courseService.RemoveAsync(id, this.User.GetId()!);
+            TempData[SuccessMessage] = RemoveCourseSuccessMessage;
+
+            return RedirectToAction(nameof(Mine));
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"remove {_entityName} from your library");
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Delete(string id)
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Delete(CourseDetailsViewModel courseModel)
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Hide(string id)
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Show(string id)
+    {
+        return View();
     }
 
     protected override async Task<string> CreateAsync(CourseFormModel newEntity)

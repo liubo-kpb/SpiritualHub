@@ -18,14 +18,16 @@ public static class ErrorMessagesConstants
 
     public const string PhoneAlreadyRegisteredErrorMessage = "Phone number is already registered for a publisher!";
 
-    public const string PriceMustBeHigherThanZeroErrorMessage = "The Price must be equal to or higher than zero.";
+    public const string PriceMustBeHigherThanZeroErrorMessage = "The Price must be equal to or higher than 0.";
     public const string WrongDateErrorMessage = "{0} must be after {1}.";
     public const string AlreadyJoinedErrorMessage = "You've already joined this event.";
     public const string AlreadyLeftErrorMessage = "You've already left this event.";
 
     public const string SpecifyParticipationErrorMessage = "You need to specify the event's participation type.";
 
-    public const string AlreadyHasBookErrorMessage = "You already have this book";
+    public const string AlreadyHasBookErrorMessage = "You already have this book.";
+
+    public const string AlreadyHasCourseErrorMessage = "You already have access to this course.";
 
     public const string WrongPublisherErrorMessage = "You need to pick a publisher that is affiliated with the author!";
 }

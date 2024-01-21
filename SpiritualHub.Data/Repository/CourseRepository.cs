@@ -26,4 +26,7 @@ public class CourseRepository : DeletableRepository<Course>, ICourseRepository
                                                                         .Include(c => c.Modules)
                                                                         .FirstOrDefaultAsync(c => c.Id.ToString() == id);
 
+    public async Task<Course?> GetCourseWithStudents(string id) => await DbSet
+                                                                            .Include(c => c.Students)
+                                                                            .FirstOrDefaultAsync(c => c.Id.ToString() == id);
 }

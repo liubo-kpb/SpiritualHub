@@ -56,7 +56,7 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, "add book to your library");
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"add {_entityName} to your library");
 
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -82,7 +82,7 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, "remove book from your library");
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"remove {_entityName} from your library");
 
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -203,7 +203,7 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
         try
         {
             await _bookService.HideAsync(id);
-            TempData[SuccessMessage] = HideBookSuccessMessage;
+            TempData[SuccessMessage] = string.Format(HideEntitySuccessMessage, _entityName);
 
             return RedirectToAction(nameof(MyPublishings));
         }
@@ -250,7 +250,7 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
         try
         {
             await _bookService.ShowAsync(id);
-            TempData[SuccessMessage] = ShowBookSuccessMessage;
+            TempData[SuccessMessage] = string.Format(ShowEntitySuccessMessage, _entityName);
 
             return RedirectToAction(nameof(MyPublishings));
         }
