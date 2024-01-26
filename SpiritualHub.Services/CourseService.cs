@@ -71,9 +71,12 @@ public class CourseService : ICourseService
         return courseEntity.Id.ToString();
     }
 
-    public Task DeleteAsync(string id)
+    public async Task DeleteAsync(string id)
     {
-        throw new NotImplementedException();
+        var course = await _courseRepository.GetCourseWithModulesAsync(id);
+        _courseRepository.Delete(course!);
+
+        await _courseRepository.SaveChangesAsync();
     }
 
     public async Task EditAsync(CourseFormModel updatedCourse)
@@ -193,9 +196,9 @@ public class CourseService : ICourseService
         await _courseRepository.SaveChangesAsync();
     }
 
-    public Task<string> GetAuthorIdAsync(string courseId)
+    public async Task<string> GetAuthorIdAsync(string courseId)
     {
-        throw new NotImplementedException();
+        return (await _courseRepository.GetCourseAuthorIdAsync(courseId))!;
     }
 
     public async Task<CourseDetailsViewModel> GetCourseDetailsAsync(string id, string userId)
@@ -256,7 +259,7 @@ public class CourseService : ICourseService
 
     public async Task RemoveAsync(string courseId, string userId)
     {
-        var course = await _courseRepository.GetCourseWithStudents(courseId);
+        var course = await _courseRepository.GetCourseWithStudentsAsync(courseId);
         var user = await _userRepository.GetSingleByIdAsync(userId);
 
         course!.Students.Remove(user!);

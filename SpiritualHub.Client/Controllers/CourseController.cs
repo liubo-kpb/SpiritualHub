@@ -93,13 +93,81 @@ public class CourseController : BaseController<CourseViewModel, CourseDetailsVie
     [HttpGet]
     public async Task<IActionResult> Delete(string id)
     {
-        return View();
+        bool exists = await ExistsAsync(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
+
+            return RedirectToAction(nameof(All));
+        }
+
+        if (!this.User.IsAdmin())
+        {
+            string userId = this.User.GetId()!;
+            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
+            if (!isPublisher)
+            {
+                TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+            }
+
+            string authorId = await _courseService.GetAuthorIdAsync(id);
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
+            if (!isConnectedPublisher)
+            {
+                TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author");
+
+                return RedirectToAction(nameof(MyPublishings));
+            }
+        }
+
+        try
+        {
+            var courseModel = await GetEntityInfoAsync(id);
+
+            return View(courseModel);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load the {_entityName}");
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> Delete(CourseDetailsViewModel courseModel)
     {
-        return View();
+        bool exists = await ExistsAsync(courseModel.Id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
+
+            return RedirectToAction(nameof(All));
+        }
+
+        bool isPublisher = this.User.IsAdmin() ? true : await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
+        if (!isPublisher)
+        {
+            TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+            return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+        }
+
+        try
+        {
+            await _courseService.DeleteAsync(courseModel.Id);
+            TempData[SuccessMessage] = string.Format(DeleteSuccessfulMessage, _entityName);
+
+            return RedirectToAction(nameof(MyPublishings));
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"delete {_entityName}");
+
+            return View(new { id = courseModel.Id });
+        }
     }
 
     [HttpPost]

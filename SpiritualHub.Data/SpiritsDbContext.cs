@@ -30,6 +30,8 @@ public class SpiritsDbContext : IdentityDbContext<ApplicationUser, IdentityRole<
 
     public DbSet<Course> Courses { get; set; } = null!;
 
+    public DbSet<Module> Modules { get; set; } = null!;
+
     public DbSet<Event> Events { get; set; } = null!;
 
     public DbSet<Image> Images { get; set; } = null!;

@@ -13,7 +13,7 @@ public class ModuleEntityConfiguration : IEntityTypeConfiguration<Module>
             .HasOne(m => m.Course)
             .WithMany(c => c.Modules)
             .HasForeignKey(m => m.CourseID)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .Property(m => m.VideoUrl)
