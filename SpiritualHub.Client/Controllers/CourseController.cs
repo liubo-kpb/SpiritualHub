@@ -116,7 +116,7 @@ public class CourseController : BaseController<CourseViewModel, CourseDetailsVie
             bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
             if (!isConnectedPublisher)
             {
-                TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author");
+                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
 
                 return RedirectToAction(nameof(MyPublishings));
             }
@@ -173,13 +173,95 @@ public class CourseController : BaseController<CourseViewModel, CourseDetailsVie
     [HttpPost]
     public async Task<IActionResult> Hide(string id)
     {
-        return View();
+        bool exists = await ExistsAsync(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
+
+            return RedirectToAction(nameof(All));
+        }
+
+        if (!this.User.IsAdmin())
+        {
+            string userId = this.User.GetId()!;
+            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
+            if (!isPublisher)
+            {
+                TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+            }
+
+            string authorId = await _courseService.GetAuthorIdAsync(id);
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
+            if (!isConnectedPublisher)
+            {
+                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
+
+                return RedirectToAction(nameof(MyPublishings));
+            }
+        }
+
+        try
+        {
+            await _courseService.HideAsync(id);
+            TempData[SuccessMessage] = string.Format(HideEntitySuccessMessage, _entityName);
+
+            return RedirectToAction(nameof(MyPublishings));
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"hide the {_entityName}");
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> Show(string id)
     {
-        return View();
+        bool exists = await ExistsAsync(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
+
+            return RedirectToAction(nameof(All));
+        }
+
+        if (!this.User.IsAdmin())
+        {
+            string userId = this.User.GetId()!;
+            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
+            if (!isPublisher)
+            {
+                TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+            }
+
+            string authorId = await _courseService.GetAuthorIdAsync(id);
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
+            if (!isConnectedPublisher)
+            {
+                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
+
+                return RedirectToAction(nameof(MyPublishings));
+            }
+        }
+
+        try
+        {
+            await _courseService.ShowAsync(id);
+            TempData[SuccessMessage] = string.Format(ShowEntitySuccessMessage, _entityName);
+
+            return RedirectToAction(nameof(MyPublishings));
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"show the {_entityName}");
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
     }
 
     protected override async Task<string> CreateAsync(CourseFormModel newEntity)

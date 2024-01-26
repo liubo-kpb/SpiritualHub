@@ -53,7 +53,7 @@ public class EventController : BaseController<EventViewModel, EventDetailsViewMo
             bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
             if (!isConnectedPublisher)
             {
-                TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author");
+                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
 
                 return RedirectToAction(nameof(MyPublishings));
             }
@@ -100,7 +100,7 @@ public class EventController : BaseController<EventViewModel, EventDetailsViewMo
             bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
             if (!isConnectedPublisher)
             {
-                TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author");
+                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
 
                 return RedirectToAction(nameof(MyPublishings));
             }

@@ -249,7 +249,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
                 bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, entityFormModel.AuthorId!));
                 if (!isConnectedPublisher)
                 {
-                    TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author");
+                    TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
 
                     return RedirectToAction(nameof(MyPublishings));
                 }

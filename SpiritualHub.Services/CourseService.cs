@@ -252,10 +252,11 @@ public class CourseService : ICourseService
             c => c.Id.ToString() == courseId && c.Students.Any(s => s.Id.ToString() == userId));
     }
 
-    public Task HideAsync(string id)
+    public async Task HideAsync(string id)
     {
-        throw new NotImplementedException();
+        await ChangeCourseActivityStatusAsync(id, false);
     }
+
 
     public async Task RemoveAsync(string courseId, string userId)
     {
@@ -266,9 +267,9 @@ public class CourseService : ICourseService
         await _userRepository.SaveChangesAsync();
     }
 
-    public Task ShowAsync(string id)
+    public async Task ShowAsync(string id)
     {
-        throw new NotImplementedException();
+        await ChangeCourseActivityStatusAsync(id, true);
     }
 
     private static bool HasCourse(string userId, Course? course)
@@ -315,5 +316,18 @@ public class CourseService : ICourseService
         }
 
         course.Modules = sortedModules;
+    }
+
+    private async Task ChangeCourseActivityStatusAsync(string id, bool status)
+    {
+        var course = await _courseRepository.GetCourseWithModulesAsync(id);
+        course!.IsActive = status;
+
+        foreach (var module in course.Modules)
+        {
+            module.IsActive = status;
+        }
+
+        await _courseRepository.SaveChangesAsync();
     }
 }

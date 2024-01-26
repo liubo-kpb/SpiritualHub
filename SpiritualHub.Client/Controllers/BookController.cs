@@ -114,7 +114,7 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
             bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
             if (!isConnectedPublisher)
             {
-                TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author");
+                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
 
                 return RedirectToAction(nameof(MyPublishings));
             }
@@ -194,7 +194,7 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
             bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
             if (!isConnectedPublisher)
             {
-                TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author");
+                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
 
                 return RedirectToAction(nameof(MyPublishings));
             }
@@ -241,7 +241,7 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
             bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
             if (!isConnectedPublisher)
             {
-                TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, $"author");
+                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
 
                 return RedirectToAction(nameof(MyPublishings));
             }
