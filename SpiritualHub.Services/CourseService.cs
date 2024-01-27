@@ -12,27 +12,22 @@ using Mappings;
 using Models.Course;
 using Client.ViewModels.Course;
 using Client.Infrastructure.Enums;
-using Client.ViewModels.Module;
-using SpiritualHub.Data.Repository;
 
 public class CourseService : ICourseService
 {
     private readonly ICourseRepository _courseRepository;
     private readonly IModuleService _moduleService;
-    private readonly IDeletableRepository<Module> _moduleRepository;
     private readonly IRepository<ApplicationUser> _userRepository;
     private readonly IMapper _mapper;
 
     public CourseService(
         ICourseRepository courseRepository,
         IModuleService moduleService,
-        IDeletableRepository<Module> moduleRepository,
         IRepository<ApplicationUser> userRepository,
         IMapper mapper)
     {
         _courseRepository = courseRepository;
         _moduleService = moduleService;
-        _moduleRepository = moduleRepository;
         _userRepository = userRepository;
         _mapper = mapper;
     }
@@ -63,7 +58,7 @@ public class CourseService : ICourseService
         var courseEntity = _mapper.Map<Course>(newCourse);
         courseEntity.Image.Name = courseEntity.Name;
 
-        ReorderCourseModules(courseEntity);
+        _moduleService.ReorderCourseModules(courseEntity.Modules);
 
         await _courseRepository.AddAsync(courseEntity);
         await _courseRepository.SaveChangesAsync();
@@ -96,14 +91,17 @@ public class CourseService : ICourseService
         var deletedModules = updatedCourse.Modules.Where(m => m.IsDeleted);
         if (deletedModules.Any())
         {
-            DeleteModules(course, deletedModules);
+            var removedModules = _moduleService.DeleteModules(course.Modules, deletedModules);
+
             updatedCourse.Modules = updatedCourse.Modules.Except(deletedModules).ToList();
+            course.Modules = course.Modules.Except(removedModules).ToList();
         }
 
         var newModules = updatedCourse.Modules.Where(m => m.IsNew);
-        if (newModules.Any())
+        foreach (var newModule in newModules)
         {
-            CreateModules(course, newModules);
+            var module = await _moduleService.CreateModuleAsync(newModule);
+            course.Modules.Add(module);
         }
 
         foreach (var updatedModule in updatedCourse.Modules.Where(m => m.Id != null))
@@ -112,7 +110,7 @@ public class CourseService : ICourseService
             _moduleService.Edit(moduleEntity!, updatedModule);
         }
 
-        ReorderCourseModules(course);
+        _moduleService.ReorderCourseModules(course.Modules);
 
         await _courseRepository.SaveChangesAsync();
     }
@@ -286,43 +284,6 @@ public class CourseService : ICourseService
         }
 
         return false;
-    }
-
-    private void CreateModules(Course course, IEnumerable<CourseModuleViewModel> newModules)
-    {
-        foreach (var newModule in newModules)
-        {
-            var module = _mapper.Map<Module>(newModule);
-
-            _moduleRepository.AddAsync(module);
-            course.Modules.Add(module);
-        }
-    }
-
-    private void DeleteModules(Course course, IEnumerable<CourseModuleViewModel> deletedModules)
-    {
-        ICollection<Module> modulesToDelete = new List<Module>();
-        foreach (var module in deletedModules)
-        {
-            var moduleEntity = course.Modules.FirstOrDefault(m => m.Id.ToString() == module.Id)!;
-            modulesToDelete.Add(moduleEntity);
-            course.Modules.Remove(moduleEntity);
-        }
-
-        _moduleRepository.DeleteMultiple(modulesToDelete);
-    }
-
-    private static void ReorderCourseModules(Course course)
-    {
-        var sortedModules = course.Modules.OrderBy(m => m.Number).ThenBy(m => m.Name).ToList();
-
-        int currentNumber = 1;
-        foreach (var module in sortedModules)
-        {
-            module.Number = currentNumber++;
-        }
-
-        course.Modules = sortedModules;
     }
 
     private async Task ChangeCourseActivityStatusAsync(string id, bool newStatus)
