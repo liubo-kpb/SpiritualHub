@@ -39,5 +39,8 @@ public class BookRepository : DeletableRepository<Book>, IBookRepository
                                                                         .Include(b => b.Readers)
                                                                         .FirstOrDefaultAsync(b => b.Id.ToString() == id);
 
-    
+    public async Task<bool> IsHiddenAsync(string id) => await DbSet
+                                                            .Where(b => b.Id.ToString() == id)
+                                                            .Select(b => b.IsHidden)
+                                                            .FirstOrDefaultAsync();
 }

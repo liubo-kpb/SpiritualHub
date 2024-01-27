@@ -13,4 +13,6 @@ public interface ICourseRepository : IDeletableRepository<Course>
     Task<Course?> GetCourseWithModulesAsync(string id);
 
     Task<string?> GetCourseAuthorIdAsync(string id);
+
+    Task<bool> CheckCourseActivityStatusAsync(string id);
 }

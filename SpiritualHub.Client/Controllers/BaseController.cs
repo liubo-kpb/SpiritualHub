@@ -87,6 +87,14 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             return RedirectToAction(nameof(All));
         }
 
+        string errorMessage = (await CustomValidateAsync(id))!;
+        if (!string.IsNullOrEmpty(errorMessage))
+        {
+            TempData[ErrorMessage] = errorMessage;
+
+            return RedirectToAction(nameof(All));
+        }
+
         try
         {
             var viewModel = await GetEntityDetails(id, this.User.GetId()!);
@@ -379,4 +387,15 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             ModelState.AddModelError(nameof(formModel.CategoryId), string.Format(NoEntityFoundErrorMessage, "category"));
         }
     }
+
+    /// <summary>
+    /// Do custom validation for Getting entity details. Returns null by default.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns>Null if validation is successfull. String with error message if not.</returns>
+    protected virtual Task<string?> CustomValidateAsync(string id)
+    {
+        return null!;
+    }
+
 }

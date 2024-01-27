@@ -231,6 +231,7 @@ public class CourseService : ICourseService
             .Include(c => c.Image)
             .Include(c => c.Author)
             .Include(c => c.Modules)
+            .Include(c => c.Students)
             .Where(c => c.PublisherID.ToString() == publisherId)
             .ToListAsync();
 
@@ -272,9 +273,14 @@ public class CourseService : ICourseService
         await ChangeCourseActivityStatusAsync(id, true);
     }
 
+    public async Task<bool> IsActiveAsync(string courseId)
+    {
+        return await _courseRepository.CheckCourseActivityStatusAsync(courseId);
+    }
+
     private static bool HasCourse(string userId, Course? course)
     {
-        if (course!.Students.Any(p => p.Id.ToString() == userId))
+        if (course!.Students.Any(s => s.Id.ToString() == userId))
         {
             return true;
         }
@@ -318,14 +324,14 @@ public class CourseService : ICourseService
         course.Modules = sortedModules;
     }
 
-    private async Task ChangeCourseActivityStatusAsync(string id, bool status)
+    private async Task ChangeCourseActivityStatusAsync(string id, bool newStatus)
     {
         var course = await _courseRepository.GetCourseWithModulesAsync(id);
-        course!.IsActive = status;
+        course!.IsActive = newStatus;
 
         foreach (var module in course.Modules)
         {
-            module.IsActive = status;
+            module.IsActive = newStatus;
         }
 
         await _courseRepository.SaveChangesAsync();

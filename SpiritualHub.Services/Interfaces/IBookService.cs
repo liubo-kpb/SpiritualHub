@@ -36,4 +36,6 @@ public interface IBookService
     Task                                GetAsync(string bookId, string userId);
 
     Task                                RemoveAsync(string bookId, string userId);
+
+    Task<bool>                          IsHiddenAsync(string bookId);
 }

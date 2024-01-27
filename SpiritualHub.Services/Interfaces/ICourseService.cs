@@ -36,4 +36,6 @@ public interface ICourseService
     Task                                GetAsync(string courseId, string userId);
 
     Task                                RemoveAsync(string courseId, string userId);
+
+    Task<bool>                          IsActiveAsync(string courseId);
 }

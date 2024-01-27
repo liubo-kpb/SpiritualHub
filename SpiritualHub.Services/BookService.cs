@@ -151,7 +151,7 @@ public class BookService : IBookService
 
         for (int i = 0; i < booksModel.Count; i++)
         {
-            booksModel[i].HasBook = HasBook(userId, books[i]);
+            booksModel[i].HasBook = SetHasBook(userId, books[i]);
         }
 
         return new FilteredBooksServiceModel()
@@ -177,7 +177,7 @@ public class BookService : IBookService
     {
         var bookEntity = await _bookRepository.GetFullBookDetailsAsync(id);
         var bookModel = _mapper.Map<BookDetailsViewModel>(bookEntity);
-        bookModel.HasBook = HasBook(userId, bookEntity);
+        bookModel.HasBook = SetHasBook(userId, bookEntity);
 
         return bookModel;
     }
@@ -205,7 +205,7 @@ public class BookService : IBookService
 
         for (int i = 0; i < booksModel.Count; i++)
         {
-            booksModel[i].HasBook = HasBook(userId, books[i]);
+            booksModel[i].HasBook = SetHasBook(userId, books[i]);
         }
 
         return booksModel;
@@ -230,7 +230,7 @@ public class BookService : IBookService
     public async Task<bool> HasBookAsync(string bookId, string userId)
     {
         var book = await _bookRepository.GetBookWithReaders(bookId);
-        return HasBook(userId, book);
+        return SetHasBook(userId, book);
     }
 
     public async Task RemoveAsync(string bookId, string userId)
@@ -242,7 +242,12 @@ public class BookService : IBookService
         await _userRepository.SaveChangesAsync();
     }
 
-    private static bool HasBook(string userId, Book? book)
+    public async Task<bool> IsHiddenAsync(string bookId)
+    {
+        return await _bookRepository.IsHiddenAsync(bookId);
+    }
+
+    private static bool SetHasBook(string userId, Book? book)
     {
         if (book!.Readers.Any(p => p.Id.ToString() == userId))
         {
@@ -251,4 +256,5 @@ public class BookService : IBookService
 
         return false;
     }
+
 }

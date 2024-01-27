@@ -13,4 +13,6 @@ public interface IBookRepository : IDeletableRepository<Book>
     Task<Book?> GetBookWithImageAsync(string id);
 
     Task<Book?> GetBookWithAuthorAsync(string id);
+
+    Task<bool>  IsHiddenAsync(string id);
 }
