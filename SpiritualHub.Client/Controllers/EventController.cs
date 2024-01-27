@@ -243,7 +243,7 @@ public class EventController : BaseController<EventViewModel, EventDetailsViewMo
     {
         if (formModel.Price < 0)
         {
-            ModelState.AddModelError(nameof(formModel.Price), PriceMustBeHigherThanZeroErrorMessage);
+            ModelState.AddModelError(nameof(formModel.Price), PriceMustBeZeroOrHigherErrorMessage);
         }
 
         if (formModel.StartDateTime < DateTime.Now)

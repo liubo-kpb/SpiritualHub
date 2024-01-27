@@ -144,7 +144,7 @@ public class EventService : IEventService
         eventEntity!.IsOnline = updatedEvent.IsOnline;
         eventEntity!.Image.URL = updatedEvent.ImageUrl;
         eventEntity!.CategoryID = updatedEvent.CategoryId;
-        eventEntity!.AuthorID = Guid.Parse(updatedEvent.AuthorId);
+        eventEntity!.AuthorID = Guid.Parse(updatedEvent.AuthorId!);
         eventEntity!.PublisherID = Guid.Parse(updatedEvent.PublisherId!);
 
         await _eventRepository.SaveChangesAsync();

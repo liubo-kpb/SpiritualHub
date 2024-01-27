@@ -16,15 +16,15 @@ public class Comment
 
     [Required]
     [StringLength(TextMaxLength, MinimumLength = TextMinLength)]
-    public string Text { get; set; }
+    public string Text { get; set; } = null!;
 
     [Required]
     public Guid PostID { get; set; }
 
-    public virtual Blog Post { get; set; }
+    public virtual Blog Post { get; set; } = null!;
 
     [Required]
     public Guid UserID { get; set; }
 
-    public virtual ApplicationUser User { get; set; }
+    public virtual ApplicationUser User { get; set; } = null!;
 }

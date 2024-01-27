@@ -30,7 +30,7 @@ public class OnlineUsersMiddleware
     {
         if (context.User.Identity?.IsAuthenticated ?? false)
         {
-            if (!context.Request.Cookies.TryGetValue(this.cookieName, out string userId))
+            if (!context.Request.Cookies.TryGetValue(this.cookieName, out string? userId))
             {
                 // First login after being offline
                 userId = context.User.GetId()!;
@@ -40,7 +40,7 @@ public class OnlineUsersMiddleware
 
             memoryCache.GetOrCreate(userId, cacheEntry =>
             {
-                if (!AllKeys.TryAdd(userId, true))
+                if (!AllKeys.TryAdd(userId!, true))
                 {
                     // Adding key failed to the concurrent dictionary so we have an error
                     cacheEntry.AbsoluteExpiration = DateTimeOffset.MinValue;
@@ -57,11 +57,11 @@ public class OnlineUsersMiddleware
         else
         {
             // User has just logged out
-            if (context.Request.Cookies.TryGetValue(this.cookieName, out string userId))
+            if (context.Request.Cookies.TryGetValue(this.cookieName, out string? userId))
             {
-                if (!AllKeys.TryRemove(userId, out _))
+                if (!AllKeys.TryRemove(userId!, out _))
                 {
-                    AllKeys.TryUpdate(userId, false, true);
+                    AllKeys.TryUpdate(userId!, false, true);
                 }
 
                 context.Response.Cookies.Delete(this.cookieName);

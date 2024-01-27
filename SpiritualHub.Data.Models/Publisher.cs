@@ -10,6 +10,10 @@ public class Publisher
     {
         this.Id = Guid.NewGuid();
         this.Authors = new HashSet<Author>();
+        this.Events = new HashSet<Event>();
+        this.Books = new HashSet<Book>();
+        this.Courses = new HashSet<Course>();
+        this.Blogs = new HashSet<Blog>();
     }
 
     [Key]
@@ -21,7 +25,7 @@ public class Publisher
 
     public Guid UserID { get; set; }
 
-    public virtual ApplicationUser User { get; set; }
+    public virtual ApplicationUser User { get; set; } = null!;
 
     public virtual ICollection<Author> Authors { get; set; }
 

@@ -117,7 +117,7 @@ public class AuthorService : IAuthorService
 
     public async Task EditAsync(AuthorFormModel editedAuthor)
     {
-        var authorEntity = await _authorRepository.GetAuthorDetailsByIdAsync(editedAuthor.Id);
+        var authorEntity = await _authorRepository.GetAuthorDetailsByIdAsync(editedAuthor.Id!);
 
         authorEntity!.Alias = editedAuthor.Alias;
         authorEntity.Name = editedAuthor.Name;
@@ -252,7 +252,7 @@ public class AuthorService : IAuthorService
             throw new ArgumentException("Your plan is already set with this subscription.");
         }
 
-        var user = await _userRepository.GetSingleByIdAsync(userId);
+        var user = (await _userRepository.GetSingleByIdAsync(userId))!;
         string? oldSubscriptionId = IsSubscribedWithUserId(author!, userId);
         if (!string.IsNullOrWhiteSpace(oldSubscriptionId))
         {
@@ -275,7 +275,7 @@ public class AuthorService : IAuthorService
         var author = await _authorRepository.GetAuthorWithFollowersAsync(authorId);
         var user = await _userRepository.GetSingleByIdAsync(userId);
 
-        author!.Followers.Remove(user);
+        author!.Followers.Remove(user!);
         await _authorRepository.SaveChangesAsync();
     }
 
@@ -288,7 +288,7 @@ public class AuthorService : IAuthorService
             .Subscriptions
             .FirstOrDefault(s => s.Subscribers.Any(sub => sub.Id.ToString() == userId))!
             .Subscribers
-            .Remove(user);
+            .Remove(user!);
 
         await _authorRepository.SaveChangesAsync();
     }

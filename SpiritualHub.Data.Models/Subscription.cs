@@ -22,12 +22,12 @@ public class Subscription
     [Required]
     public int SubscriptionTypeID { get; set; }
 
-    public virtual SubscriptionType SubscriptionType { get; set; }
+    public virtual SubscriptionType SubscriptionType { get; set; } = null!;
 
     [Required]
     public Guid AuthorID { get; set; }
 
-    public virtual Author Author { get; set; }
+    public virtual Author Author { get; set; } = null!;
 
     public virtual ICollection<ApplicationUser> Subscribers { get; set; }
 }
