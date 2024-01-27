@@ -47,7 +47,9 @@ public class ApplicationProfile : Profile
 
         // Module
         CreateMap<Module, ModuleInfoViewModel>();
-        CreateMap<Module, CourseModuleViewModel>().ReverseMap();
+        CreateMap<Module, CourseModuleFormModel>().ReverseMap();
+        CreateMap<Module, ModuleFormModel>().ReverseMap();
+        CreateMap<Module, ModuleDetailsViewModule>();
 
         // Category
         CreateMap<Category, CategoryServiceModel>();

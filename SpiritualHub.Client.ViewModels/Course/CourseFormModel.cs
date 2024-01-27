@@ -11,7 +11,7 @@ public class CourseFormModel : BaseFormModel
 {
     public CourseFormModel()
     {
-        this.Modules = new List<CourseModuleViewModel>();
+        this.Modules = new List<CourseModuleFormModel>();
     }
 
     [Required]
@@ -34,8 +34,8 @@ public class CourseFormModel : BaseFormModel
     [Display(Name = "Image URL")]
     public string ImageUrl { get; set; } = null!;
 
-    [Display(Name = "Publish")]
+    [Display(Name = "Publish Course?")]
     public bool IsActive { get; set; }
 
-    public IList<CourseModuleViewModel> Modules { get; set; }
+    public IList<CourseModuleFormModel> Modules { get; set; }
 }

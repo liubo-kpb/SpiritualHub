@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 using static Common.EntityValidationConstants.Module;
 
-public class CourseModuleViewModel
+public class CourseModuleFormModel
 {
     public string? Id { get; set; } = null!;
 

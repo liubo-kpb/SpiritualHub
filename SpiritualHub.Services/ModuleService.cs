@@ -16,7 +16,8 @@ public class ModuleService : IModuleService
     private readonly IDeletableRepository<Module> _moduleRepository;
     private readonly IMapper _mapper;
 
-    public ModuleService(IDeletableRepository<Module> moduleRepository,
+    public ModuleService(
+        IDeletableRepository<Module> moduleRepository,
         IMapper mapper)
     {
         _moduleRepository = moduleRepository;
@@ -71,5 +72,65 @@ public class ModuleService : IModuleService
         _moduleRepository.DeleteMultiple(modulesToDelete);
 
         return modulesToDelete;
+    }
+
+    public Task<int> GetAllCountAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<ModuleDetailsViewModule> GetCourseDetailsAsync(string id, string userId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<ModuleFormModel> GetCourseInfoAsync(string id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> ExistsAsync(string id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IEnumerable<ModuleInfoViewModel>> AllCoursesByCourseIdAsync(string courseId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<string> GetAuthorIdAsync(string moduleId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<string> CreateAsync(ModuleFormModel newCourse)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task EditAsync(ModuleFormModel updatedCourse)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteAsync(string id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task HideAsync(string id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task ShowAsync(string id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> IsActiveAsync(string moduleId)
+    {
+        throw new NotImplementedException();
     }
 }
