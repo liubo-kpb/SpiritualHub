@@ -18,7 +18,7 @@ public static class ErrorMessagesConstants
 
     public const string PhoneAlreadyRegisteredErrorMessage = "Phone number is already registered for a publisher!";
 
-    public const string PriceMustBeHigherThanZeroErrorMessage = "The Price must be equal to or higher than 0.";
+    public const string PriceMustBeZeroOrHigherErrorMessage = "The Price must be equal to or higher than 0.";
     public const string WrongDateErrorMessage = "{0} must be after {1}.";
     public const string AlreadyJoinedErrorMessage = "You've already joined this event.";
     public const string AlreadyLeftErrorMessage = "You've already left this event.";
