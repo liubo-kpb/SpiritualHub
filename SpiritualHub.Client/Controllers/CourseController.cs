@@ -13,7 +13,6 @@ using Infrastructure.Extensions;
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
-using SpiritualHub.Services;
 
 public class CourseController : BaseController<CourseViewModel, CourseDetailsViewModel, CourseFormModel, AllCoursesQueryModel, CourseSorting>
 {
@@ -147,12 +146,25 @@ public class CourseController : BaseController<CourseViewModel, CourseDetailsVie
             return RedirectToAction(nameof(All));
         }
 
-        bool isPublisher = this.User.IsAdmin() ? true : await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
-        if (!isPublisher)
+        if (!this.User.IsAdmin())
         {
-            TempData[ErrorMessage] = NotAPublisherErrorMessage;
+            string userId = this.User.GetId()!;
+            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
+            if (!isPublisher)
+            {
+                TempData[ErrorMessage] = NotAPublisherErrorMessage;
 
-            return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+            }
+
+            string authorId = await _courseService.GetAuthorIdAsync(courseModel.Id);
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
+            if (!isConnectedPublisher)
+            {
+                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
+
+                return RedirectToAction(nameof(MyPublishings));
+            }
         }
 
         try
@@ -346,8 +358,8 @@ public class CourseController : BaseController<CourseViewModel, CourseDetailsVie
 
     private async Task<bool> UserHasAccess(string id, bool isUserConnectedPublisher)
     {
-        return this.User.IsAdmin()
-                || isUserConnectedPublisher
+        return isUserConnectedPublisher
+                || this.User.IsAdmin()
                 || await _courseService.HasCourseAsync(id, this.User.GetId()!);
     }
 }

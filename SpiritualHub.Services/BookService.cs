@@ -229,8 +229,9 @@ public class BookService : IBookService
 
     public async Task<bool> HasBookAsync(string bookId, string userId)
     {
-        var book = await _bookRepository.GetBookWithReaders(bookId);
-        return SetHasBook(userId, book);
+        return await _bookRepository
+                        .AnyAsync(
+                            c => c.Id.ToString() == bookId && c.Readers.Any(r => r.Id.ToString() == userId));
     }
 
     public async Task RemoveAsync(string bookId, string userId)

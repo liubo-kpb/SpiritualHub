@@ -13,7 +13,4 @@ public interface IModuleService
     /// <param name="moduleEntity"></param>
     /// <param name="updatedModule"></param>
     void                                Edit(Module moduleEntity, CourseModuleViewModel updatedModule);
-
-    Module                              Create(CourseModuleViewModel newModule, Guid courseId);
-
 }

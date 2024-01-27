@@ -145,12 +145,25 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
             return RedirectToAction(nameof(All));
         }
 
-        bool isPublisher = this.User.IsAdmin() ? true : await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
-        if (!isPublisher)
+        if (!this.User.IsAdmin())
         {
-            TempData[ErrorMessage] = NotAPublisherErrorMessage;
+            string userId = this.User.GetId()!;
+            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
+            if (!isPublisher)
+            {
+                TempData[ErrorMessage] = NotAPublisherErrorMessage;
 
-            return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+            }
+
+            string authorId = await _bookService.GetAuthorIdAsync(bookModel.Id);
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
+            if (!isConnectedPublisher)
+            {
+                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
+
+                return RedirectToAction(nameof(MyPublishings));
+            }
         }
 
         try
@@ -316,6 +329,7 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
 
         await base.ValidateModelAsync(formModel, isUserAdmin);
     }
+
     protected override async Task<string?> CustomValidateAsync(string id)
     {
         bool isUserLoggedIn = this.User.Identity?.IsAuthenticated ?? false;

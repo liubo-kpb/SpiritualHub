@@ -292,7 +292,8 @@ public class CourseService : ICourseService
     {
         foreach (var newModule in newModules)
         {
-            var module = _moduleService.Create(newModule, course.Id);
+            var module = _mapper.Map<Module>(newModule);
+
             _moduleRepository.AddAsync(module);
             course.Modules.Add(module);
         }

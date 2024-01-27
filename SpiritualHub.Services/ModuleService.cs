@@ -23,16 +23,6 @@ public class ModuleService : IModuleService
         _mapper = mapper;
     }
 
-    public Module Create(CourseModuleViewModel newModule, Guid courseId)
-    {
-        return new Module()
-        {
-            Number = newModule.Number,
-            Name = newModule.Name,
-            CourseID = courseId,
-        };
-    }
-
     public void Edit(Module moduleEntity, CourseModuleViewModel updatedModule)
     {
         moduleEntity.Name = updatedModule.Name;
