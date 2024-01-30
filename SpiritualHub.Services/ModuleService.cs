@@ -13,11 +13,11 @@ using Data.Models;
 
 public class ModuleService : IModuleService
 {
-    private readonly IDeletableRepository<Module> _moduleRepository;
+    private readonly IModuleRepository _moduleRepository;
     private readonly IMapper _mapper;
 
     public ModuleService(
-        IDeletableRepository<Module> moduleRepository,
+        IModuleRepository moduleRepository,
         IMapper mapper)
     {
         _moduleRepository = moduleRepository;
@@ -39,7 +39,7 @@ public class ModuleService : IModuleService
                             .ToListAsync();
     }
 
-    public async Task<Module> CreateModuleAsync(CourseModuleFormModel newModule)
+    public async Task<Module> CreateAsync(CourseModuleFormModel newModule)
     {
         var module = _mapper.Map<Module>(newModule);
         await _moduleRepository.AddAsync(module);
@@ -56,8 +56,6 @@ public class ModuleService : IModuleService
         {
             module.Number = currentNumber++;
         }
-
-        modules = sortedModules;
     }
 
     public ICollection<Module> DeleteModules(ICollection<Module> moduleEntities, IEnumerable<CourseModuleFormModel> deletedModules)
@@ -74,39 +72,48 @@ public class ModuleService : IModuleService
         return modulesToDelete;
     }
 
-    public Task<int> GetAllCountAsync()
+    public async Task<int> GetAllCountAsync()
+    {
+        return await _moduleRepository.AllAsNoTracking().CountAsync();
+    }
+
+    public Task<ModuleDetailsViewModule> GetModuleDetailsAsync(string id, string userId)
     {
         throw new NotImplementedException();
     }
 
-    public Task<ModuleDetailsViewModule> GetCourseDetailsAsync(string id, string userId)
+    public Task<ModuleFormModel> GetModuleInfoAsync(string id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<ModuleFormModel> GetCourseInfoAsync(string id)
+    public async Task<bool> ExistsAsync(string id)
+    {
+        return await _moduleRepository.AnyAsync(m => m.Id.ToString() == id);
+    }
+
+    public Task<IEnumerable<ModuleInfoViewModel>> AllModulesByCourseIdAsync(string courseId)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> ExistsAsync(string id)
+    public async Task<string> GetAuthorIdAsync(string moduleId)
     {
-        throw new NotImplementedException();
+        return (await _moduleRepository.GetAuthordId(moduleId))!;
     }
 
-    public Task<IEnumerable<ModuleInfoViewModel>> AllCoursesByCourseIdAsync(string courseId)
+    public async Task<string> CreateAsync(ModuleFormModel newModule)
     {
-        throw new NotImplementedException();
-    }
+        var newModuleEntity = _mapper.Map<Module>(newModule);
+        
+        ICollection<Module> courseModules = await _moduleRepository.GetAll().Where(m => m.CourseID == newModuleEntity.CourseID).ToListAsync();
+        courseModules.Add(newModuleEntity);
+        ReorderCourseModules(courseModules);
 
-    public Task<string> GetAuthorIdAsync(string moduleId)
-    {
-        throw new NotImplementedException();
-    }
+        await _moduleRepository.AddAsync(newModuleEntity);
+        await _moduleRepository.SaveChangesAsync();
 
-    public Task<string> CreateAsync(ModuleFormModel newCourse)
-    {
-        throw new NotImplementedException();
+        return newModuleEntity.Id.ToString();
     }
 
     public Task EditAsync(ModuleFormModel updatedCourse)
@@ -131,6 +138,11 @@ public class ModuleService : IModuleService
 
     public Task<bool> IsActiveAsync(string moduleId)
     {
-        throw new NotImplementedException();
+        return _moduleRepository.AnyAsync(m => m.Id.ToString() == moduleId && m.IsActive);
+    }
+
+    public async Task<string> GetCourseIdAsync(string moduleId)
+    {
+        return (await _moduleRepository.GetCourseIdByModuleId(moduleId))!;
     }
 }

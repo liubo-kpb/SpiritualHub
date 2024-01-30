@@ -350,7 +350,7 @@ public class CourseController : BaseController<CourseViewModel, CourseDetailsVie
         if (await _courseService.IsActiveAsync(id)
             || (isUserLoggedIn && await UserHasAccess(id, isUserConnectedPublisher)))
         {
-            return null!;
+            return string.Empty;
         }
 
         return string.Format(NoEntityFoundErrorMessage, _entityName);

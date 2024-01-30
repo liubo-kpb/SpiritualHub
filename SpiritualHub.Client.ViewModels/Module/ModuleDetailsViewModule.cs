@@ -11,4 +11,6 @@ public class ModuleDetailsViewModule : ModuleInfoViewModel
     public string PreviousModuleId { get; set; } = null!;
 
     public string CourseId { get; set; } = null!;
+
+    public string AuthorId { get; set; } = null!;
 }

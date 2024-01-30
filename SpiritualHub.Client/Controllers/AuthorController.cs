@@ -429,7 +429,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
 
     protected override async Task<bool> ExistsAsync(string id)
     {
-        return await _authorService.Exists(id);
+        return await _authorService.ExistsAsync(id);
     }
 
     protected override async Task<AllAuthorsQueryModel> GetAllAsync(AllAuthorsQueryModel queryModel, string userId)

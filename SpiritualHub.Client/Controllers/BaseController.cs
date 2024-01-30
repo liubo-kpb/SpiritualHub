@@ -68,12 +68,16 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 
             return View(queryModel);
         }
+        catch (NotImplementedException e)
+        {
+            TempData[ErrorMessage] = e.Message;
+        }
         catch (Exception)
         {
             TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load {_entityName}s");
-
-            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
+
+        return RedirectToAction(nameof(HomeController.Index), "Home");
     }
 
     [AllowAnonymous]
@@ -87,16 +91,16 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             return RedirectToAction(nameof(All));
         }
 
-        string errorMessage = (await CustomValidateAsync(id))!;
-        if (!string.IsNullOrEmpty(errorMessage))
-        {
-            TempData[ErrorMessage] = errorMessage;
-
-            return RedirectToAction(nameof(All));
-        }
-
         try
         {
+            string errorMessage = (await CustomValidateAsync(id))!;
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                TempData[ErrorMessage] = errorMessage;
+
+                return RedirectToAction(nameof(All));
+            }
+
             var viewModel = await GetEntityDetails(id, this.User.GetId()!);
 
             return View(viewModel);
@@ -117,6 +121,12 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             var viewModel = await GetAllEntitiesByUserId(this.User.GetId()!);
 
             return View(viewModel);
+        }
+        catch (NotImplementedException e)
+        {
+            TempData[ErrorMessage] = e.Message;
+
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
         catch (Exception)
         {
@@ -144,6 +154,12 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 
             return View(viewModel);
         }
+        catch (NotImplementedException e)
+        {
+            TempData[ErrorMessage] = e.Message;
+
+            return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
         catch (Exception)
         {
             TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load your {_entityName}s");
@@ -165,17 +181,32 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
         }
 
-        var formModel = CreateFormModelInstance();
-
-        await GetFormDetailsAsync(formModel, userId, isUserAdmin);
-        if (!formModel.Authors.Any())
+        try
         {
-            TempData[ErrorMessage] = NoConnectedAuthorsErrorMessage;
+            var formModel = CreateFormModelInstance();
 
-            return RedirectToAction(nameof(AuthorController.All), nameof(Author));
+            await GetFormDetailsAsync(formModel, userId, isUserAdmin);
+            if (!formModel.Authors.Any() && string.IsNullOrEmpty(formModel.AuthorId))
+            {
+                TempData[ErrorMessage] = NoConnectedAuthorsErrorMessage;
+
+                return RedirectToAction(nameof(AuthorController.All), nameof(Author));
+            }
+
+            return View(nameof(Add), formModel);
         }
+        catch (NotImplementedException e)
+        {
+            TempData[ErrorMessage] = e.Message;
 
-        return View(formModel);
+            return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, "load page");
+
+            return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
     }
 
     [HttpPost]
@@ -375,7 +406,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             }
         }
 
-        bool isExistingAuthor = await _authorService.Exists(formModel.AuthorId!);
+        bool isExistingAuthor = await _authorService.ExistsAsync(formModel.AuthorId!);
         if (!isExistingAuthor)
         {
             ModelState.AddModelError(nameof(formModel.AuthorId), string.Format(NoEntityFoundErrorMessage, "author"));
@@ -392,10 +423,10 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     /// Do custom validation for Getting entity details. Returns null by default.
     /// </summary>
     /// <param name="id"></param>
-    /// <returns>Null if validation is successfull. String with error message if not.</returns>
-    protected virtual Task<string?> CustomValidateAsync(string id)
+    /// <returns>An empty string if validation is successfull. String with error message if not.</returns>
+    protected virtual async Task<string?> CustomValidateAsync(string id)
     {
-        return null!;
+        return string.Empty;
     }
 
 }

@@ -5,7 +5,7 @@ using Client.ViewModels.Module;
 
 public interface IModuleService
 {
-    Task<IList<CourseModuleFormModel>> GetModulesByCourseId(string courseId);
+    Task<IList<CourseModuleFormModel>>      GetModulesByCourseId(string courseId);
 
     /// <summary>
     /// Base edit of Module Name and Number properties.
@@ -18,23 +18,25 @@ public interface IModuleService
 
     ICollection<Module>                     DeleteModules(ICollection<Module> moduleEntities, IEnumerable<CourseModuleFormModel> deletedModules);
 
-    Task<Module>                            CreateModuleAsync(CourseModuleFormModel newModule);
+    Task<Module>                            CreateAsync(CourseModuleFormModel newModule);
 
     Task<int>                               GetAllCountAsync();
 
-    Task<ModuleDetailsViewModule>           GetCourseDetailsAsync(string id, string userId);
+    Task<ModuleDetailsViewModule>           GetModuleDetailsAsync(string id, string userId);
 
-    Task<ModuleFormModel>                   GetCourseInfoAsync(string id);
+    Task<ModuleFormModel>                   GetModuleInfoAsync(string id);
 
     Task<bool>                              ExistsAsync(string id);
 
-    Task<IEnumerable<ModuleInfoViewModel>>  AllCoursesByCourseIdAsync(string courseId);
+    Task<IEnumerable<ModuleInfoViewModel>>  AllModulesByCourseIdAsync(string moduleId);
 
     Task<string>                            GetAuthorIdAsync(string moduleId);
 
-    Task<string>                            CreateAsync(ModuleFormModel newCourse);
+    Task<string>                            GetCourseIdAsync(string moduleId);
 
-    Task                                    EditAsync(ModuleFormModel updatedCourse);
+    Task<string>                            CreateAsync(ModuleFormModel newModule);
+
+    Task                                    EditAsync(ModuleFormModel updatedModule);
 
     Task                                    DeleteAsync(string id);
 

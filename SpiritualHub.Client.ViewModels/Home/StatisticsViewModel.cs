@@ -7,6 +7,8 @@ public class StatisticsViewModel
     public int TotalEvents { get; set; }
 
     public int TotalCourses { get; set; }
+    
+    public int TotalModules { get; set; }
 
     public int TotalBooks { get; set; }
 

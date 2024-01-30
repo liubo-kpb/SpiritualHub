@@ -100,7 +100,7 @@ public class CourseService : ICourseService
         var newModules = updatedCourse.Modules.Where(m => m.IsNew);
         foreach (var newModule in newModules)
         {
-            var module = await _moduleService.CreateModuleAsync(newModule);
+            var module = await _moduleService.CreateAsync(newModule);
             course.Modules.Add(module);
         }
 

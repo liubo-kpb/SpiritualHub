@@ -20,7 +20,7 @@ public interface IAuthorService
 
     Task<AuthorDetailsViewModel>            GetAuthorDetailsAsync(string authorId, string userId);
 
-    Task<bool>                              Exists(string authorId);
+    Task<bool>                              ExistsAsync(string authorId);
 
     Task                                    EditAsync(AuthorFormModel editedAuthor);
 

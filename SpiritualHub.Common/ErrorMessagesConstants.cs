@@ -4,6 +4,8 @@ public static class ErrorMessagesConstants
 {
     public const string GeneralUnexpectedErrorMessage = "An unexpected error occurred when attempting to {0}. Please try again later!";
     public const string NoEntityFoundErrorMessage = "No such {0} found. Please try again with a valid {0}!";
+    public const string InvalidRequestErrorMessage = "Invalid request.";
+    public const string AccessDeniedErrorMessage = "You don't have access to this resource.";
 
     public const string NoConnectedAuthorsErrorMessage = "You need to be affiliated with at least one author to be able to create an event.";
     public const string NotAConnectedPublisherErrorMessage = "You need to be a publisher of the author to be able to make changes.";

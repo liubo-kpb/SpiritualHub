@@ -57,7 +57,7 @@ public static class DependancyContainer
         services.AddScoped<IRepository<ApplicationUser>, Repository<ApplicationUser>>();
         services.AddScoped<IEventRepository, EventRepository>();
         services.AddScoped<ICourseRepository, CourseRepository>();
-        services.AddScoped<IDeletableRepository<Data.Models.Module>, DeletableRepository<Data.Models.Module>>();
+        services.AddScoped<IModuleRepository, ModuleRepository>();
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IRepository<Blog>, Repository<Blog>>();
     }

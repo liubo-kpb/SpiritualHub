@@ -129,7 +129,7 @@ public class AuthorService : IAuthorService
         await _authorRepository.SaveChangesAsync();
     }
 
-    public async Task<bool> Exists(string authorId)
+    public async Task<bool> ExistsAsync(string authorId)
     {
         return await _authorRepository.AnyAsync(a => a.Id.ToString() == authorId);
     }

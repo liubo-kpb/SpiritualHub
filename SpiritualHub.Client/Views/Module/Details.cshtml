@@ -1,5 +1,20 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model ModuleDetailsViewModule
+@inject IPublisherService _publisherService
 @{
+    ViewBag.Title = "Course Details";
+
+    bool isUserLoggedIn = this.User.Identity?.IsAuthenticated ?? false;
+    bool isUserConnectedPublisher = false;
+    bool isUserAdmin = false;
+
+    if (isUserLoggedIn)
+    {
+        string userId = this.User.GetId()!;
+        isUserAdmin = this.User.IsAdmin();
+        bool isUserPublisher = await _publisherService.ExistsByUserIdAsync(userId);
+        if (isUserPublisher)
+        {
+            isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, Model.AuthorId);
+        }
+    }
 }

@@ -349,7 +349,7 @@ public class BookController : BaseController<BookViewModel, BookDetailsViewModel
         if (!(await _bookService.IsHiddenAsync(id))
             || (isUserLoggedIn && await UserHasAccess(id, isUserConnectedPublisher)))
         {
-            return null!;
+            return string.Empty;
         }
 
         return string.Format(NoEntityFoundErrorMessage, _entityName);

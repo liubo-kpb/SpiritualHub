@@ -1,5 +1,55 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model ModuleFormModel
+
+<div class="row">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form id="form" method="post">
+            <input type="hidden" asp-for="@Model.Id" />
+            <div class="form-group mb-2">
+                <label asp-for="IsActive" title="Make module visible to users"></label>
+                <input asp-for="IsActive" title="Make module visible to users" type="checkbox" value="true">
+                <input asp-for="IsActive" title="Make module visible to users" type="hidden" value="false">
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control" placeholder="Module Name...">
+                <span asp-validation-for="Name" class="small text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="Number"></label>
+                <input asp-for="Number" class="form-control" min="0" placeholder="Module Number...">
+                <span asp-validation-for="Number" class="small text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" rows="4" class="form-control" placeholder="This module..."></textarea>
+                <span asp-validation-for="Description" class="small text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="Text"></label>
+                <textarea asp-for="Text" rows="4" class="form-control" placeholder="This module..."></textarea>
+                <span asp-validation-for="Text" class="small text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="VideoUrl"></label>
+                <input asp-for="VideoUrl" class="form-control" placeholder="Your fine URL here...">
+                <span asp-validation-for="VideoUrl" class="small text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="CourseId"></label>
+                <select asp-for="CourseId" class="form-control">
+                    @foreach (var course in Model.Courses)
+                    {
+                        <option value="@course.Id">@course.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="PublisherId" class="small text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="AuthorId" type="hidden" value="@Model.AuthorId">
+            </div>
+            <div class="text-center">
+                <input class="btn btn-primary mt-3" type="submit" value="Save" />
+            </div>
+        </form>
+    </div>
+</div>
