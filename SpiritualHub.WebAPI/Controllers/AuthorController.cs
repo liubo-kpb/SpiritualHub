@@ -33,7 +33,7 @@ public class AuthorController : ControllerBase
     public async Task<IActionResult> GetConnectedEvents(string id)
     {
         var response = new CollectionResponse<EventInfoViewModel>();
-        bool exists = await _authorService.Exists(id);
+        bool exists = await _authorService.ExistsAsync(id);
         if (!exists)
         {
             response.AddError(string.Format(NoEntityFoundErrorMessage, entityName));
@@ -69,7 +69,7 @@ public class AuthorController : ControllerBase
     public async Task<IActionResult> GetConnectedCourses(string id)
     {
         var response = new CollectionResponse<CourseInfoViewModel>();
-        bool exists = await _authorService.Exists(id);
+        bool exists = await _authorService.ExistsAsync(id);
         if (!exists)
         {
             response.AddError(string.Format(NoEntityFoundErrorMessage, entityName));
@@ -105,7 +105,7 @@ public class AuthorController : ControllerBase
     public async Task<IActionResult> GetConnectedBooks(string id)
     {
         var response = new CollectionResponse<BookInfoViewModel>();
-        bool exists = await _authorService.Exists(id);
+        bool exists = await _authorService.ExistsAsync(id);
         if (!exists)
         {
             response.AddError(string.Format(NoEntityFoundErrorMessage, entityName));
@@ -141,7 +141,7 @@ public class AuthorController : ControllerBase
     public async Task<IActionResult> GetConnectedSubscriptoins(string id)
     {
         var response = new CollectionResponse<SubscriptionViewModel>();
-        bool exists = await _authorService.Exists(id);
+        bool exists = await _authorService.ExistsAsync(id);
         if (!exists)
         {
             response.AddError(string.Format(NoEntityFoundErrorMessage, entityName));

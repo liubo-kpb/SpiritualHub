@@ -15,6 +15,7 @@ public class StatisticsController : ControllerBase
     private readonly IAuthorService _authorService;
     private readonly IEventService _eventService;
     private readonly ICourseService _courseService;
+    private readonly IModuleService _moduleService;
     private readonly IBookService _bookService;
     private readonly IBlogService _blogService;
     private readonly IUserService _userService;
@@ -23,6 +24,7 @@ public class StatisticsController : ControllerBase
         IAuthorService authorService,
         IEventService eventService,
         ICourseService courseService,
+        IModuleService moduleService,
         IBookService bookService,
         IBlogService blogService,
         IUserService userService)
@@ -30,6 +32,7 @@ public class StatisticsController : ControllerBase
         _authorService = authorService;
         _eventService = eventService;
         _courseService = courseService;
+        _moduleService = moduleService;
         _bookService = bookService;
         _blogService = blogService;
         _userService = userService;
@@ -49,6 +52,7 @@ public class StatisticsController : ControllerBase
                 TotalActiveAuthors = await _authorService.GetAllCountAsync(),
                 TotalEvents = await _eventService.GetAllCountAsync(),
                 TotalCourses = await _courseService.GetAllCountAsync(),
+                TotalModules = await _moduleService.GetAllCountAsync(),
                 TotalBooks = await _bookService.GetAllCountAsync(),
                 TotalBlogPosts = await _blogService.GetAllCountAsync(),
                 TotalUsers = await _userService.GetAllCountAsync()

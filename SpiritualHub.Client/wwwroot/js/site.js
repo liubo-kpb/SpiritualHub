@@ -11,6 +11,7 @@ function statistics() {
                 $('#total_authors').text(data.model.totalActiveAuthors + " Active Authors");
                 $('#total_events').text(data.model.totalEvents + " Events");
                 $('#total_courses').text(data.model.totalCourses + " Courses");
+                $('#total_modules').text(data.model.totalModules + " Modules");
                 $('#total_books').text(data.model.totalBooks + " Books");
                 $('#total_blog-posts').text(data.model.totalBlogPosts + " Posts");
                 $('#total_users').text(data.model.totalUsers + " Users");
