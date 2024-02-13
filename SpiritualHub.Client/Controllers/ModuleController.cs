@@ -95,7 +95,7 @@ public class ModuleController : BaseController<EmptyViewModel, ModuleDetailsView
             await _moduleService.HideAsync(id);
             TempData[SuccessMessage] = string.Format(HideEntitySuccessMessage, _entityName);
 
-            return RedirectToAction(nameof(MyPublishings));
+            return RedirectToAction(nameof(Details), new { id });
         }
         catch (Exception)
         {
@@ -142,7 +142,7 @@ public class ModuleController : BaseController<EmptyViewModel, ModuleDetailsView
             await _moduleService.ShowAsync(id);
             TempData[SuccessMessage] = string.Format(ShowEntitySuccessMessage, _entityName);
 
-            return RedirectToAction(nameof(MyPublishings));
+            return RedirectToAction(nameof(Details), new { id });
         }
         catch (Exception)
         {
