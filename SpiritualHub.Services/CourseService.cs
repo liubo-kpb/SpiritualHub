@@ -135,10 +135,10 @@ public class CourseService : ICourseService
         {
             string wildCard = $"%{queryModel.SearchTerm.ToLower()}%";
             coursesQuery = coursesQuery.Where(b => EF.Functions.Like(b.Name, wildCard)
-                                            || EF.Functions.Like(b.Author.Name, wildCard)
-                                            || EF.Functions.Like(b.Author.Alias, wildCard)
-                                            || EF.Functions.Like(b.Description, wildCard)
-                                            || EF.Functions.Like(b.ShortDescription, wildCard));
+                                                || EF.Functions.Like(b.Author.Name, wildCard)
+                                                || EF.Functions.Like(b.Author.Alias, wildCard)
+                                                || EF.Functions.Like(b.Description, wildCard)
+                                                || EF.Functions.Like(b.ShortDescription, wildCard));
         }
 
         coursesQuery = queryModel.SortingOption switch

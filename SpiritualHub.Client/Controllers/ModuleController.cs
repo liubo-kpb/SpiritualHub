@@ -184,14 +184,20 @@ public class ModuleController : BaseController<EmptyViewModel, ModuleDetailsView
         throw new NotImplementedException(InvalidRequestErrorMessage);
     }
 
-    protected override Task<ModuleDetailsViewModule> GetEntityDetails(string id, string userId)
+    protected override async Task<ModuleDetailsViewModule> GetEntityDetails(string id, string userId)
     {
-        return _moduleService.GetModuleDetailsAsync(id, userId);
+        var moduleViewModel = await _moduleService.GetModuleDetailsAsync(id, userId);
+        
+        bool canModify = await CanModify();
+        moduleViewModel.NextModuleId = _moduleService.GetNextModuleId(moduleViewModel, canModify)!;
+        moduleViewModel.PreviousModuleId = _moduleService.GetPreviousModuleId(moduleViewModel, canModify)!;
+
+        return moduleViewModel;
     }
 
-    protected override Task<ModuleFormModel> GetEntityInfoAsync(string id)
+    protected override async Task<ModuleFormModel> GetEntityInfoAsync(string id)
     {
-        return _moduleService.GetModuleInfoAsync(id);
+        return await _moduleService.GetModuleInfoAsync(id);
     }
 
     protected override async Task GetFormDetailsAsync(ModuleFormModel formModel, string userId, bool isUserAdmin = false)
@@ -238,16 +244,13 @@ public class ModuleController : BaseController<EmptyViewModel, ModuleDetailsView
     protected override async Task<string?> CustomValidateAsync(string id)
     {
         bool isUserLoggedIn = this.User.Identity?.IsAuthenticated ?? false;
-        bool isUserConnectedPublisher = false;
 
         if (isUserLoggedIn)
         {
-            string userId = this.User.GetId()!;
-            bool isUserPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-            if (isUserPublisher)
+            if (await _moduleService.IsActiveAsync(id)
+                || await UserHasAccess(id))
             {
-                string authorId = await _moduleService.GetAuthorIdAsync(id);
-                isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId);
+                return string.Empty;
             }
         }
         else
@@ -255,22 +258,22 @@ public class ModuleController : BaseController<EmptyViewModel, ModuleDetailsView
             return AccessDeniedErrorMessage;
         }
 
-        if (await _moduleService.IsActiveAsync(id)
-            || (isUserLoggedIn && await UserHasAccess(id, isUserConnectedPublisher)))
-        {
-            return string.Empty;
-        }
 
         return string.Format(NoEntityFoundErrorMessage, _entityName);
     }
 
-    private async Task<bool> UserHasAccess(string id, bool isUserConnectedPublisher)
+    private async Task<bool> UserHasAccess(string id)
     {
         string courseId = await _moduleService.GetCourseIdAsync(id);
 
-        return isUserConnectedPublisher
-                || this.User.IsAdmin()
+        return await CanModify()
                 || await _courseService.HasCourseAsync(courseId, this.User.GetId()!);
+    }
+
+    private async Task<bool> CanModify()
+    {
+        return this.User.IsAdmin()
+                || await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
     }
 
     private IActionResult ReturnToHome()

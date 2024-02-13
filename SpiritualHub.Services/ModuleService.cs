@@ -82,23 +82,33 @@ public class ModuleService : IModuleService
 
         moduleViewModule.AuthorId = courseEntity!.AuthorID.ToString();
 
-        if (modules.Any(m => m.Number < moduleViewModule.Number))
-        {
-            moduleViewModule.PreviousModuleId = modules
-                                                    .FirstOrDefault(m => m.Number == moduleViewModule.Number - 1)!
-                                                    .Id
-                                                    .ToString()!;
-        }
-
-        if (modules.Any(m => m.Number > moduleViewModule.Number))
-        {
-            moduleViewModule.NextModuleId = modules
-                                                .FirstOrDefault(m => m.Number == moduleViewModule.Number + 1)!
-                                                .Id
-                                                .ToString()!;
-        }
-
         return moduleViewModule;
+    }
+
+    public string? GetNextModuleId(ModuleDetailsViewModule moduleViewModel, bool canAccess)
+    {
+        var modules = moduleViewModel.Modules.Where(m => m.Number > moduleViewModel.Number);
+        return GetModuleIdFromList(modules, canAccess);
+    }
+
+    public string? GetPreviousModuleId(ModuleDetailsViewModule moduleViewModel, bool canAccess)
+    {
+        var modules = moduleViewModel
+                        .Modules
+                        .Where(m => m.Number < moduleViewModel.Number)
+                        .OrderByDescending(m => m.Number);
+
+        return GetModuleIdFromList(modules, canAccess);
+    }
+
+    private static string? GetModuleIdFromList(IEnumerable<ModuleInfoViewModel> modules, bool canAccess)
+    {
+        if (modules.Any())
+        {
+            return modules.FirstOrDefault(m => m.IsActive || canAccess)?.Id ?? null!;
+        }
+
+        return null!;
     }
 
     public async Task<ModuleFormModel> GetModuleInfoAsync(string id)

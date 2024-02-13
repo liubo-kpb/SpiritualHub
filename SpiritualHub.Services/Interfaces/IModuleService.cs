@@ -24,6 +24,10 @@ public interface IModuleService
 
     Task<ModuleDetailsViewModule>           GetModuleDetailsAsync(string id, string userId);
 
+    string?                                 GetNextModuleId(ModuleDetailsViewModule moduleViewModel, bool canAccess);
+
+    string?                                 GetPreviousModuleId(ModuleDetailsViewModule moduleViewModel, bool canAccess);
+
     Task<ModuleFormModel>                   GetModuleInfoAsync(string id);
 
     Task<bool>                              ExistsAsync(string id);
