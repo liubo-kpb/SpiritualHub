@@ -32,4 +32,6 @@ public static class ErrorMessagesConstants
     public const string AlreadyHasCourseErrorMessage = "You already have access to this course.";
 
     public const string WrongPublisherErrorMessage = "You need to pick a publisher that is affiliated with the author!";
+
+    public const string UserRegularVideoUrlErrorMessage = "Please use regular YouTube link from the address bar!";
 }

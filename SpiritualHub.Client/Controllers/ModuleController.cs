@@ -117,7 +117,10 @@ public class ModuleController : BaseController<EmptyViewModel, ModuleDetailsView
             ModelState.AddModelError(nameof(formModel.CourseId), string.Format(NoEntityFoundErrorMessage, "course"));
         }
 
-
+        if (formModel.VideoUrl?.Contains("youtu.be") ?? false)
+        {
+            ModelState.AddModelError(nameof(formModel.VideoUrl), UserRegularVideoUrlErrorMessage);
+        }
 
         formModel.PublisherId = string.Empty;
     }
