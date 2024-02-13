@@ -145,7 +145,7 @@ public class ModuleService : IModuleService
         return newModuleEntity.Id.ToString();
     }
 
-    public Task EditAsync(ModuleFormModel updatedCourse)
+    public Task EditAsync(ModuleFormModel updatedModule)
     {
         throw new NotImplementedException();
     }
@@ -155,14 +155,14 @@ public class ModuleService : IModuleService
         throw new NotImplementedException();
     }
 
-    public Task HideAsync(string id)
+    public async Task HideAsync(string id)
     {
-        throw new NotImplementedException();
+        await ChangeModuleActivityStatus(id, false);
     }
 
-    public Task ShowAsync(string id)
+    public async Task ShowAsync(string id)
     {
-        throw new NotImplementedException();
+        await ChangeModuleActivityStatus(id, true);
     }
 
     public Task<bool> IsActiveAsync(string moduleId)
@@ -173,5 +173,13 @@ public class ModuleService : IModuleService
     public async Task<string> GetCourseIdAsync(string moduleId)
     {
         return (await _moduleRepository.GetCourseIdByModuleId(moduleId))!;
+    }
+
+    private async Task ChangeModuleActivityStatus(string id, bool newStatus)
+    {
+        var module = await _moduleRepository.GetSingleByIdAsync(id);
+        module!.IsActive = newStatus;
+
+        await _moduleRepository.SaveChangesAsync();
     }
 }

@@ -8,12 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 using ViewModels.BaseModels;
 using ViewModels.Module;
 using ViewModels.Course;
+using Infrastructure.Extensions;
 using Services.Interfaces;
 using Data.Models;
 
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
-using SpiritualHub.Client.Infrastructure.Extensions;
+using static Common.SuccessMessageConstants;
 
 public class ModuleController : BaseController<EmptyViewModel, ModuleDetailsViewModule, ModuleFormModel, EmptyQueryModel, Enum>
 {
@@ -55,6 +56,100 @@ public class ModuleController : BaseController<EmptyViewModel, ModuleDetailsView
     public override async Task<IActionResult> MyPublishings()
     {
         return ReturnToHome();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Hide(string id)
+    {
+        bool exists = await ExistsAsync(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
+
+            return RedirectToAction(nameof(All));
+        }
+
+        if (!this.User.IsAdmin())
+        {
+            string userId = this.User.GetId()!;
+            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
+            if (!isPublisher)
+            {
+                TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+            }
+
+            string authorId = await _courseService.GetAuthorIdAsync(id);
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
+            if (!isConnectedPublisher)
+            {
+                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
+
+                return RedirectToAction(nameof(MyPublishings));
+            }
+        }
+
+        try
+        {
+            await _moduleService.HideAsync(id);
+            TempData[SuccessMessage] = string.Format(HideEntitySuccessMessage, _entityName);
+
+            return RedirectToAction(nameof(MyPublishings));
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"hide the {_entityName}");
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Show(string id)
+    {
+        bool exists = await ExistsAsync(id);
+        if (!exists)
+        {
+            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
+
+            return RedirectToAction(nameof(All));
+        }
+
+        if (!this.User.IsAdmin())
+        {
+            string userId = this.User.GetId()!;
+            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
+            if (!isPublisher)
+            {
+                TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+            }
+
+            string authorId = await _courseService.GetAuthorIdAsync(id);
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
+            if (!isConnectedPublisher)
+            {
+                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
+
+                return RedirectToAction(nameof(MyPublishings));
+            }
+        }
+
+        try
+        {
+            await _moduleService.ShowAsync(id);
+            TempData[SuccessMessage] = string.Format(ShowEntitySuccessMessage, _entityName);
+
+            return RedirectToAction(nameof(MyPublishings));
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"show the {_entityName}");
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
     }
 
     protected override async Task<string> CreateAsync(ModuleFormModel newEntity)
