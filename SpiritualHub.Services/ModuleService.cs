@@ -145,9 +145,19 @@ public class ModuleService : IModuleService
         return newModuleEntity.Id.ToString();
     }
 
-    public Task EditAsync(ModuleFormModel updatedModule)
+    public async Task EditAsync(ModuleFormModel updatedModule)
     {
-        throw new NotImplementedException();
+        var moduleEntity = await _moduleRepository.GetSingleByIdAsync(updatedModule.Id!);
+
+        moduleEntity!.Number = updatedModule.Number;
+        moduleEntity.Name = updatedModule.Name;
+        moduleEntity.Description = updatedModule.Description;
+        moduleEntity.VideoUrl = updatedModule.VideoUrl!;
+        moduleEntity.Text = updatedModule.Text!;
+        moduleEntity.IsActive = updatedModule.IsActive;
+        moduleEntity.CourseID = Guid.Parse(updatedModule.CourseId);
+
+        await _moduleRepository.SaveChangesAsync();
     }
 
     public Task DeleteAsync(string id)
