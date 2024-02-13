@@ -29,7 +29,7 @@ public class ModuleFormModel : BaseFormModel
     [StringLength(DescriptionMaxLength, MinimumLength = DescriptionMinLength)]
     public string Description { get; set; } = null!;
 
-    [Display(Name = "Video URL")]
+    [Display(Name = "Video URL (YouTube or Vimeo)")]
     public string? VideoUrl { get; set; } = null!;
 
     [Display(Name = "Module Text")]

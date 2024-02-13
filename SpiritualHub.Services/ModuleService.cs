@@ -10,17 +10,21 @@ using Interfaces;
 using Client.ViewModels.Module;
 using Data.Repository.Interface;
 using Data.Models;
+using SpiritualHub.Services.Mappings;
 
 public class ModuleService : IModuleService
 {
     private readonly IModuleRepository _moduleRepository;
+    private readonly ICourseRepository _courseRepository;
     private readonly IMapper _mapper;
 
     public ModuleService(
         IModuleRepository moduleRepository,
+        ICourseRepository courseRepository,
         IMapper mapper)
     {
         _moduleRepository = moduleRepository;
+        _courseRepository = courseRepository;
         _mapper = mapper;
     }
 
@@ -77,9 +81,34 @@ public class ModuleService : IModuleService
         return await _moduleRepository.AllAsNoTracking().CountAsync();
     }
 
-    public Task<ModuleDetailsViewModule> GetModuleDetailsAsync(string id, string userId)
+    public async Task<ModuleDetailsViewModule> GetModuleDetailsAsync(string id, string userId)
     {
-        throw new NotImplementedException();
+        
+        var courseEntity = await _courseRepository.GetCourseWithModulesByModuleIdAsync(id);
+        var modules = courseEntity!.Modules.OrderBy(m => m.Number);
+
+        var moduleViewModule = _mapper.Map<ModuleDetailsViewModule>(modules.FirstOrDefault(m => m.Id.ToString() == id));
+        _mapper.MapListToViewModel(modules, moduleViewModule.Modules);
+
+        moduleViewModule.AuthorId = courseEntity!.AuthorID.ToString();
+
+        if (modules.Any(m => m.Number < moduleViewModule.Number))
+        {
+            moduleViewModule.PreviousModuleId = modules
+                                                    .FirstOrDefault(m => m.Number == moduleViewModule.Number - 1)!
+                                                    .Id
+                                                    .ToString()!;
+        }
+
+        if (modules.Any(m => m.Number > moduleViewModule.Number))
+        {
+            moduleViewModule.NextModuleId = modules
+                                                .FirstOrDefault(m => m.Number == moduleViewModule.Number + 1)!
+                                                .Id
+                                                .ToString()!;
+        }
+
+        return moduleViewModule;
     }
 
     public Task<ModuleFormModel> GetModuleInfoAsync(string id)

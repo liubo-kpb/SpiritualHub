@@ -44,4 +44,14 @@ public class CourseRepository : DeletableRepository<Course>, ICourseRepository
                                                                                         .Where(c => c.Id.ToString() == id)
                                                                                         .Select(c => c.IsActive)
                                                                                         .FirstOrDefaultAsync();
+
+    public async Task<Course?> GetCourseWithModulesByModuleIdAsync(string moduleId) => await DbSet
+                                                                                                .Include(c => c.Modules)
+                                                                                                .Where(c => c.Modules.Any(m => m.Id.ToString() == moduleId))
+                                                                                                .Select(c => new Course
+                                                                                                {
+                                                                                                    AuthorID = c.AuthorID,
+                                                                                                    Modules = c.Modules,
+                                                                                                })
+                                                                                                .FirstOrDefaultAsync();
 }

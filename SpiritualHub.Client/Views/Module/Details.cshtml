@@ -1,20 +1,122 @@
 ﻿@model ModuleDetailsViewModule
 @inject IPublisherService _publisherService
 @{
-    ViewBag.Title = "Course Details";
+    ViewBag.Title = $"Module {Model.Number}: {Model.Name}";
 
-    bool isUserLoggedIn = this.User.Identity?.IsAuthenticated ?? false;
     bool isUserConnectedPublisher = false;
-    bool isUserAdmin = false;
 
-    if (isUserLoggedIn)
+    string userId = this.User.GetId()!;
+    bool isUserAdmin = this.User.IsAdmin();
+    bool isUserPublisher = await _publisherService.ExistsByUserIdAsync(userId);
+    if (isUserPublisher)
     {
-        string userId = this.User.GetId()!;
-        isUserAdmin = this.User.IsAdmin();
-        bool isUserPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-        if (isUserPublisher)
+        isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, Model.AuthorId);
+    }
+
+    bool CanEdit() => isUserAdmin || isUserConnectedPublisher;
+
+    IHtmlContent GenerateVideoEmbedCode(string videoUrl)
+    {
+        if (videoUrl.Contains("embed"))
         {
-            isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, Model.AuthorId);
+            return new HtmlString(string.Format(IFrameHTMLCode, videoUrl));
+        }
+
+        string videoId = videoUrl.Split("/").Last();
+        if (videoUrl.Contains("youtube.com"))
+        {
+            // YouTube embed code
+            int idStartIndex = videoId.IndexOf("v=") + 2;
+            videoId = videoId.Substring(idStartIndex, GetStringLength(videoId, idStartIndex));
+
+            return new HtmlString(string.Format(IFrameHTMLCode, GetEmbedLink(EmbedLinkForYouTubeVideo, videoId)));
+        }
+        else if (videoUrl.Contains("vimeo.com"))
+        {
+            // Vimeo embed code
+            return new HtmlString(string.Format(IFrameHTMLCode, GetEmbedLink(EmbedLinkForVimeoVideo, videoId)));
+        }
+        else
+        {
+            // Unsupported video platform
+            return new HtmlString("<p>Unsupported video platform.</p>");
         }
     }
+
+    string GetEmbedLink(string platformHttp, string videoId) => string.Format(platformHttp, videoId);
+
+    int GetStringLength(string videoId, int startIndex)
+    {
+        int ampersandIndex = videoId.IndexOf('&');
+        return ampersandIndex == -1 ? videoId.Length - startIndex : ampersandIndex - startIndex;
+    }
 }
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<a asp-controller="Course" asp-action="Details" asp-route-id="@Model.CourseId" class="w-25 h-25 align-items-center">Return to Course</a>
+<hr />
+<div class="row mb-2">
+    <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-start">
+        <a class="btn btn-primary @(string.IsNullOrEmpty(Model.PreviousModuleId) ? "disabled" : string.Empty)"
+           asp-controller="Module"
+           asp-action="Details"
+           asp-route-id="@Model.PreviousModuleId"
+           title="Previous Module"><<</a>
+    </div>
+    <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-end">
+        <a class="btn btn-primary @(string.IsNullOrEmpty(Model.NextModuleId) ? "disabled" : string.Empty)"
+           asp-controller="Module"
+           asp-action="Details"
+           asp-route-id="@Model.NextModuleId"
+           title="Next Module">>></a>
+    </div>
+</div>
+<div class="container " style="display:inline">
+    <div class="row d-flex justify-content-between">
+        <div class="col-4 d-flex flex-column w-25">
+            <p></p>
+            <div class="form-inline justify-content-center">
+                @if (CanEdit())
+                {
+                    <div class="d-flex flex-row justify-content-center">
+                        <a asp-controller="Course" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                        @if (!Model.IsActive)
+                        {
+                            <form asp-controller="Course" asp-action="Show" asp-route-id="@Model.Id" method="post" class="mx-1">
+                                <input class="btn btn-primary" type="submit" value="Show" />
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-controller="Course" asp-action="Hide" asp-route-id="@Model.Id" method="post" class="mx-1">
+                                <input class="btn btn-warning" type="submit" value="Hide" />
+                            </form>
+                        }
+                        <a asp-controller="Course" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+                    </div>
+                }
+            </div>
+            <p></p>
+            <div class="list-group">
+                @foreach (var module in Model.Modules)
+                {
+                    <a class="list-group-item list-group-item-action @(module.Number == Model.Number ? "active" : string.Empty)" asp-controller="Module" asp-action="Details" asp-route-id="@module.Id">
+                        @($"Module {module.Number}: {module.Name}")
+                    </a>
+                }
+            </div>
+        </div>
+        <div class="card col-8 border-0 align-items-center w-75">
+            @if (!string.IsNullOrEmpty(Model.VideoUrl))
+            {
+                @GenerateVideoEmbedCode(Model.VideoUrl);
+                <p></p>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.Text))
+            {
+                <p style="width: 95%">@Model.Text</p>
+            }
+        </div>
+    </div>
+</div>

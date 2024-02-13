@@ -117,6 +117,8 @@ public class ModuleController : BaseController<EmptyViewModel, ModuleDetailsView
             ModelState.AddModelError(nameof(formModel.CourseId), string.Format(NoEntityFoundErrorMessage, "course"));
         }
 
+
+
         formModel.PublisherId = string.Empty;
     }
 
@@ -173,7 +175,10 @@ public class ModuleController : BaseController<EmptyViewModel, ModuleDetailsView
 
     private IActionResult ReturnToHome()
     {
-        TempData[ErrorMessage] = InvalidRequestErrorMessage;
+        if (string.IsNullOrEmpty(TempData[ErrorMessage]!.ToString()))
+        {
+            TempData[ErrorMessage] = InvalidRequestErrorMessage;
+        }
 
         return RedirectToAction(nameof(HomeController.Index), "Home");
     }

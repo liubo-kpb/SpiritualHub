@@ -110,7 +110,7 @@
                                     </h2>
                                     @if (CanEdit() || Model.UserHasCourse)
                                     {
-                                        <a asp-controller="Module" asp-action="View" asp-route-id="@module.Id" class="w-25 h-25 text-center">Go to Module >></a>
+                                        <a asp-controller="Module" asp-action="Details" asp-route-id="@module.Id" class="w-25 h-25 text-center">Go to Module >></a>
                                     }
                                 </div>
                                 <div id="collapse-@module.Number" class="accordion-collapse collapse" aria-labelledby="heading-@module.Number" data-bs-parent="#moduleAccordion">
