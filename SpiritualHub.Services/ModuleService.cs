@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-using AutoMapper.QueryableExtensions;
 using AutoMapper;
 
 using Interfaces;
@@ -34,15 +33,6 @@ public class ModuleService : IModuleService
         moduleEntity.Number = updatedModule.Number;
     }
 
-    public async Task<IList<CourseModuleFormModel>> GetModulesByCourseId(string courseId)
-    {
-        return await _moduleRepository
-                            .AllAsNoTracking()
-                            .Where(m => m.CourseID.ToString() == courseId)
-                            .ProjectTo<CourseModuleFormModel>(_mapper.ConfigurationProvider)
-                            .ToListAsync();
-    }
-
     public async Task<Module> CreateAsync(CourseModuleFormModel newModule)
     {
         var module = _mapper.Map<Module>(newModule);
@@ -51,11 +41,11 @@ public class ModuleService : IModuleService
         return module;
     }
 
-    public void ReorderCourseModules(ICollection<Module> modules)
+    public void ReorderCourseModules(IEnumerable<Module> modules, int startingNumber = 1)
     {
         var sortedModules = modules.OrderBy(m => m.Number).ThenBy(m => m.Name).ToList();
 
-        int currentNumber = 1;
+        int currentNumber = startingNumber;
         foreach (var module in sortedModules)
         {
             module.Number = currentNumber++;
@@ -83,7 +73,7 @@ public class ModuleService : IModuleService
 
     public async Task<ModuleDetailsViewModule> GetModuleDetailsAsync(string id, string userId)
     {
-        
+
         var courseEntity = await _courseRepository.GetCourseWithModulesByModuleIdAsync(id);
         var modules = courseEntity!.Modules.OrderBy(m => m.Number);
 
@@ -111,19 +101,16 @@ public class ModuleService : IModuleService
         return moduleViewModule;
     }
 
-    public Task<ModuleFormModel> GetModuleInfoAsync(string id)
+    public async Task<ModuleFormModel> GetModuleInfoAsync(string id)
     {
-        throw new NotImplementedException();
+        var module = await _moduleRepository.GetSingleByIdAsync(id);
+
+        return _mapper.Map<ModuleFormModel>(module);
     }
 
     public async Task<bool> ExistsAsync(string id)
     {
         return await _moduleRepository.AnyAsync(m => m.Id.ToString() == id);
-    }
-
-    public Task<IEnumerable<ModuleInfoViewModel>> AllModulesByCourseIdAsync(string courseId)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<string> GetAuthorIdAsync(string moduleId)
@@ -134,10 +121,6 @@ public class ModuleService : IModuleService
     public async Task<string> CreateAsync(ModuleFormModel newModule)
     {
         var newModuleEntity = _mapper.Map<Module>(newModule);
-        
-        ICollection<Module> courseModules = await _moduleRepository.GetAll().Where(m => m.CourseID == newModuleEntity.CourseID).ToListAsync();
-        courseModules.Add(newModuleEntity);
-        ReorderCourseModules(courseModules);
 
         await _moduleRepository.AddAsync(newModuleEntity);
         await _moduleRepository.SaveChangesAsync();
@@ -158,6 +141,28 @@ public class ModuleService : IModuleService
         moduleEntity.CourseID = Guid.Parse(updatedModule.CourseId);
 
         await _moduleRepository.SaveChangesAsync();
+    }
+
+    public async Task AdjustModulesNumbering(ModuleFormModel moduleForm, bool isNew = false)
+    {
+        var courseModules = GetModulesByCourseId(moduleForm.CourseId);
+
+        if (moduleForm.Number > courseModules.Count())
+        {
+            if (isNew)
+            {
+                moduleForm.Number = courseModules.Count() + 1;
+            }
+            else
+            {
+                moduleForm.Number = courseModules.Count();
+            }
+        }
+        else
+        {
+            ReorderCourseModules(courseModules.Where(m => m.Number >= moduleForm.Number && m.Id.ToString() != moduleForm.Id), moduleForm.Number + 1);
+            await _moduleRepository.SaveChangesAsync();
+        }
     }
 
     public Task DeleteAsync(string id)
@@ -191,5 +196,12 @@ public class ModuleService : IModuleService
         module!.IsActive = newStatus;
 
         await _moduleRepository.SaveChangesAsync();
+    }
+
+    private IQueryable<Module> GetModulesByCourseId(string courseId)
+    {
+        return _moduleRepository
+                            .GetAll()
+                            .Where(m => m.CourseID.ToString() == courseId);
     }
 }

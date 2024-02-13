@@ -79,20 +79,20 @@
                 @if (CanEdit())
                 {
                     <div class="d-flex flex-row justify-content-center">
-                        <a asp-controller="Course" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                        <a asp-controller="Module" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
                         @if (!Model.IsActive)
                         {
-                            <form asp-controller="Course" asp-action="Show" asp-route-id="@Model.Id" method="post" class="mx-1">
+                            <form asp-controller="Module" asp-action="Show" asp-route-id="@Model.Id" method="post" class="mx-1">
                                 <input class="btn btn-primary" type="submit" value="Show" />
                             </form>
                         }
                         else
                         {
-                            <form asp-controller="Course" asp-action="Hide" asp-route-id="@Model.Id" method="post" class="mx-1">
+                            <form asp-controller="Module" asp-action="Hide" asp-route-id="@Model.Id" method="post" class="mx-1">
                                 <input class="btn btn-warning" type="submit" value="Hide" />
                             </form>
                         }
-                        <a asp-controller="Course" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+                        <a asp-controller="Module" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
                     </div>
                 }
             </div>
@@ -100,16 +100,19 @@
             <div class="list-group">
                 @foreach (var module in Model.Modules)
                 {
-                    <a class="list-group-item list-group-item-action @(module.Number == Model.Number ? "active" : string.Empty)" asp-controller="Module" asp-action="Details" asp-route-id="@module.Id">
-                        @($"Module {module.Number}: {module.Name}")
-                    </a>
+                    if (module.IsActive || CanEdit())
+                    {
+                        <a class="list-group-item list-group-item-action @(module.Id == Model.Id ? "active" : string.Empty)" asp-controller="Module" asp-action="Details" asp-route-id="@module.Id">
+                            @($"Module {module.Number}: {module.Name}")
+                        </a>
+                    }
                 }
             </div>
         </div>
         <div class="card col-8 border-0 align-items-center w-75">
             @if (!string.IsNullOrEmpty(Model.VideoUrl))
             {
-                @GenerateVideoEmbedCode(Model.VideoUrl);
+                @GenerateVideoEmbedCode(Model.VideoUrl)
                 <p></p>
             }
 

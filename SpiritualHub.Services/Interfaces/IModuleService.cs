@@ -5,8 +5,6 @@ using Client.ViewModels.Module;
 
 public interface IModuleService
 {
-    Task<IList<CourseModuleFormModel>>      GetModulesByCourseId(string courseId);
-
     /// <summary>
     /// Base edit of Module Name and Number properties.
     /// </summary>
@@ -14,7 +12,9 @@ public interface IModuleService
     /// <param name="updatedModule"></param>
     void                                    Edit(Module moduleEntity, CourseModuleFormModel updatedModule);
 
-    void                                    ReorderCourseModules(ICollection<Module> modules);
+    void                                    ReorderCourseModules(IEnumerable<Module> modules, int startingNumber = 1);
+
+    Task                                    AdjustModulesNumbering(ModuleFormModel moduleForm, bool isNew = false);
 
     ICollection<Module>                     DeleteModules(ICollection<Module> moduleEntities, IEnumerable<CourseModuleFormModel> deletedModules);
 
@@ -27,8 +27,6 @@ public interface IModuleService
     Task<ModuleFormModel>                   GetModuleInfoAsync(string id);
 
     Task<bool>                              ExistsAsync(string id);
-
-    Task<IEnumerable<ModuleInfoViewModel>>  AllModulesByCourseIdAsync(string moduleId);
 
     Task<string>                            GetAuthorIdAsync(string moduleId);
 
