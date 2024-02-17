@@ -27,6 +27,8 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     protected readonly ICategoryService _categoryService;
     protected readonly IPublisherService _publisherService;
 
+    protected readonly IValidationService _validationService;
+
     public BaseController(
         IServiceProvider serviceProvider,
         string entityName)
@@ -34,6 +36,8 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         _authorService = serviceProvider.GetRequiredService<IAuthorService>();
         _categoryService = serviceProvider.GetRequiredService<ICategoryService>();
         _publisherService = serviceProvider.GetRequiredService<IPublisherService>();
+
+        _validationService = serviceProvider.GetRequiredService<IValidationService>();
 
         _entityName = entityName;
     }
@@ -215,21 +219,13 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     {
         string userId = this.User.GetId()!;
         bool isUserAdmin = this.User.IsAdmin();
-
         if (!isUserAdmin)
         {
-            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-            if (!isPublisher)
+            _validationService.AuthorId = newEntityForm.AuthorId!;
+            var validationResult = await _validationService.CanUseModifyActionAsync(userId, TempData);
+            if (validationResult != null)
             {
-                TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-            }
-
-            bool isConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, newEntityForm.AuthorId!);
-            if (!isConnectedPublisher)
-            {
-                ModelState.AddModelError(nameof(newEntityForm.AuthorId), string.Format(NoEntityFoundErrorMessage, "affiliated author"));
+                return validationResult;
             }
         }
 
@@ -263,36 +259,19 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     [HttpGet]
     public virtual async Task<IActionResult> Edit(string id)
     {
+        string userId = this.User.GetId()!;
+        bool isUserAdmin = this.User.IsAdmin();
+
         try
         {
             var entityFormModel = await GetEntityInfoAsync(id);
-            if (entityFormModel == null)
+
+            _validationService.AuthorId = entityFormModel?.AuthorId ?? null!;
+            var validationResult = await _validationService
+                .IsValidAction(entityFormModel != null, isUserAdmin, userId, _entityName, TempData);
+            if (validationResult != null)
             {
-                TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
-
-                return RedirectToAction(nameof(All));
-            }
-
-            string userId = this.User.GetId()!;
-            bool isUserAdmin = this.User.IsAdmin();
-
-            if (!isUserAdmin)
-            {
-                bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-                if (!isPublisher)
-                {
-                    TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-                    return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-                }
-
-                bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, entityFormModel.AuthorId!));
-                if (!isConnectedPublisher)
-                {
-                    TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
-
-                    return RedirectToAction(nameof(MyPublishings));
-                }
+                return validationResult;
             }
 
             await GetFormDetailsAsync(entityFormModel, userId, isUserAdmin);
@@ -310,33 +289,15 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     [HttpPost]
     public virtual async Task<IActionResult> Edit(TFormModel updatedEntityFrom)
     {
-        bool exists = await ExistsAsync(updatedEntityFrom.Id!);
-        if (!exists)
-        {
-            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
         string userId = this.User.GetId()!;
         bool isUserAdmin = this.User.IsAdmin();
-        if (!isUserAdmin)
+
+        _validationService.AuthorId = updatedEntityFrom.AuthorId!;
+        var validationResult = await _validationService
+            .IsValidAction(await ExistsAsync(updatedEntityFrom.Id!), isUserAdmin, userId, _entityName, TempData);
+        if (validationResult != null)
         {
-            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-            if (!isPublisher)
-            {
-                TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-            }
-
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, updatedEntityFrom.AuthorId!));
-            if (!isConnectedPublisher)
-            {
-                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
-
-                return RedirectToAction(nameof(Mine));
-            }
+            return validationResult;
         }
 
         await ValidateModelAsync(updatedEntityFrom, isUserAdmin);
