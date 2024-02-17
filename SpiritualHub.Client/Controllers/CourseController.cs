@@ -142,7 +142,7 @@ public class CourseController : ProductController<CourseViewModel, CourseDetails
             if (isUserPublisher)
             {
                 string authorId = await _courseService.GetAuthorIdAsync(id);
-                isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId);
+                isUserConnectedPublisher = await _publisherService.IsConnectedToAuthorByUserId(userId, authorId);
             }
         }
 

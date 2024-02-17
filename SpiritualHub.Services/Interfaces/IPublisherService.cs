@@ -18,13 +18,13 @@ public interface IPublisherService
 
     Task<Publisher?>                            GetPublisherAsync(string userId);
 
-    Task<bool>                                  IsConnectedToEntityByUserId<TEntityType>(string userId, string entityId);
+    Task<bool>                                  IsConnectedToAuthorByUserId(string userId, string authorId);
 
-    Task<bool>                                  IsConnectedToEntityByPublisherId<TEntityType>(string publisherId, string entityId);
+    Task<bool>                                  IsConnectedToAuthorByPublisherId(string publisherId, string authorId);
 
     Task<IEnumerable<AuthorInfoViewModel>>      GetConnectedAuthorsAsync(string userId);
 
     Task<IEnumerable<PublisherInfoViewModel>>   GetAllAsync();
 
-    Task<string>                                GetPublisherIdAsync(string userId);
+    Task<string?>                                GetPublisherIdAsync(string userId);
 }

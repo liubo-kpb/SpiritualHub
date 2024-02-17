@@ -70,15 +70,14 @@ public class PublisherService : IPublisherService
                                                                                 .GetAll()
                                                                                 .FirstOrDefaultAsync(a => a.UserID.ToString() == userId);
 
-    public async Task<string> GetPublisherIdAsync(string userId) => (await GetPublisherAsync(userId))!
-                                                                            .Id
-                                                                            .ToString();
+    public async Task<string?> GetPublisherIdAsync(string userId) => await _publisherRepository
+                                                                                .GetPublisherId(userId);
 
-    public async Task<bool> IsConnectedToEntityByPublisherId<TEntityType>(string publisherId, string entityId) => await _publisherRepository
-                                                                                                                            .IsConnectedPublisherByPublisherIdAsync<TEntityType>(publisherId, entityId);
+    public async Task<bool> IsConnectedToAuthorByPublisherId(string publisherId, string authorId) => await _publisherRepository
+                                                                                                                            .AnyAsync(p => p.Id.ToString() == publisherId && p.Authors.Any(a => a.Id.ToString() == authorId));
 
-    public async Task<bool> IsConnectedToEntityByUserId<TEntityType>(string userId, string entityId) => await _publisherRepository
-                                                                                                                    .IsConnectedPublisherByUserIdAsync<TEntityType>(userId, entityId);
+    public async Task<bool> IsConnectedToAuthorByUserId(string userId, string authorId) => await _publisherRepository
+                                                                                                                .AnyAsync(p => p.UserID.ToString() == userId && p.Authors.Any(a => a.Id.ToString() == authorId));
 
     public async Task<bool> UserHasSubscriptions(string userId) => await _subscriptionRepository
                                                                                 .AnyAsync(s => s.Subscribers

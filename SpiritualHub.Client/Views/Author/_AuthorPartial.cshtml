@@ -11,7 +11,7 @@
         isUserPublisher = await _publisherService.ExistsByUserIdAsync(userId);
         if (isUserPublisher)
         {
-            isUserConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, Model.Id);
+            isUserConnectedPublisher = await _publisherService.IsConnectedToAuthorByUserId(userId, Model.Id);
         }
     }
 }

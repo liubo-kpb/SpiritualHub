@@ -36,8 +36,6 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
 
     protected abstract Task HideAsync(string id);
 
-    protected abstract Task<string> GetAuthorIdAsync(string entityId);
-
     protected abstract Task<bool> HasEntityAsync(string id, string usedId);
 
     protected abstract string AlreadyHasEntityErrorMessage();
@@ -145,7 +143,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
             }
 
             string authorId = await GetAuthorIdAsync(id);
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToAuthorByUserId(userId, authorId));
             if (!isConnectedPublisher)
             {
                 TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
@@ -156,9 +154,9 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
 
         try
         {
-            var courseModel = await GetEntityInfoAsync(id);
+            var viewModel = await GetEntityInfoAsync(id);
 
-            return View(courseModel);
+            return View(viewModel);
         }
         catch (Exception)
         {
@@ -191,7 +189,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
             }
 
             string authorId = await GetAuthorIdAsync(detailsViewModel.Id);
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToAuthorByUserId(userId, authorId));
             if (!isConnectedPublisher)
             {
                 TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
@@ -238,7 +236,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
             }
 
             string authorId = await GetAuthorIdAsync(id);
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToAuthorByUserId(userId, authorId));
             if (!isConnectedPublisher)
             {
                 TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
@@ -291,7 +289,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
             }
 
             string authorId = await GetAuthorIdAsync(id);
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
+            bool isConnectedPublisher = (await _publisherService.IsConnectedToAuthorByUserId(userId, authorId));
             if (!isConnectedPublisher)
             {
                 TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;

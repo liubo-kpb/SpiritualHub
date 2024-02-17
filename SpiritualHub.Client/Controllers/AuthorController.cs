@@ -37,7 +37,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         }
 
         string userId = this.User.GetId()!;
-        bool isConnectedPublisher = this.User.IsAdmin() ? true : await _publisherService.IsConnectedToEntityByUserId<Author>(userId, id);
+        bool isConnectedPublisher = this.User.IsAdmin() || await _publisherService.IsConnectedToAuthorByUserId(userId, id);
         if (!isConnectedPublisher)
         {
             TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, _entityName);
@@ -62,7 +62,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         }
 
         string userId = this.User.GetId()!;
-        bool isConnectedPublisher = this.User.IsAdmin() ? true : await _publisherService.IsConnectedToEntityByUserId<Author>(userId, author.Id);
+        bool isConnectedPublisher = this.User.IsAdmin() || await _publisherService.IsConnectedToAuthorByUserId(userId, author.Id);
         if (!isConnectedPublisher)
         {
             TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, _entityName);
@@ -88,7 +88,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         }
 
         string userId = this.User.GetId()!;
-        bool isConnectedPublisher = this.User.IsAdmin() ? true : await _publisherService.IsConnectedToEntityByUserId<Author>(userId, id);
+        bool isConnectedPublisher = this.User.IsAdmin() || await _publisherService.IsConnectedToAuthorByUserId(userId, id);
         if (!isConnectedPublisher)
         {
             TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, _entityName);
@@ -113,7 +113,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         }
 
         string userId = this.User.GetId()!;
-        bool isConnectedPublisher = this.User.IsAdmin() ? true : await _publisherService.IsConnectedToEntityByUserId<Author>(userId, author.Id);
+        bool isConnectedPublisher = this.User.IsAdmin() || await _publisherService.IsConnectedToAuthorByUserId(userId, author.Id);
         if (!isConnectedPublisher)
         {
             TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, _entityName);
@@ -194,8 +194,8 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
             return RedirectToAction(nameof(All));
         }
 
-        bool isPublisher = await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
-        if (isPublisher && !this.User.IsAdmin())
+        bool isPublisher = !this.User.IsAdmin() || await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
+        if (isPublisher)
         {
             TempData[ErrorMessage] = PublishersCannotSubscribeErrorMessage;
 
@@ -237,7 +237,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         }
 
         string userId = this.User.GetId()!;
-        bool isPublisher = this.User.IsAdmin() ? true : await _publisherService.ExistsByUserIdAsync(userId);
+        bool isPublisher = this.User.IsAdmin() || await _publisherService.ExistsByUserIdAsync(userId);
         if (isPublisher)
         {
             TempData[ErrorMessage] = PublishersCannotSubscribeErrorMessage;
@@ -311,7 +311,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
                 return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
             }
 
-            bool isConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, id);
+            bool isConnectedPublisher = await _publisherService.IsConnectedToAuthorByUserId(userId, id);
             if (isConnectedPublisher)
             {
                 TempData[ErrorMessage] = AlreadyAConnectedPublisherErrorMessage;
@@ -340,7 +340,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         }
 
         string userId = this.User.GetId()!;
-        if (this.User.IsAdmin())
+        if (!this.User.IsAdmin())
         {
             bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
             if (!isPublisher)
@@ -350,7 +350,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
                 return RedirectToAction(nameof(PublisherController.Become), "Publisher");
             }
 
-            bool isConnectedPublisher = await _publisherService.IsConnectedToEntityByUserId<Author>(userId, id);
+            bool isConnectedPublisher = await _publisherService.IsConnectedToAuthorByUserId(userId, id);
             if (!isConnectedPublisher)
             {
                 TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, _entityName);
@@ -490,5 +490,10 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         {
             ModelState.AddModelError(nameof(formModel.CategoryId), string.Format(NoEntityFoundErrorMessage, "category"));
         }
+    }
+
+    protected override async Task<string> GetAuthorIdAsync(string entityId)
+    {
+        return entityId;
     }
 }
