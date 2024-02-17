@@ -255,15 +255,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
             await HideAsync(id);
             TempData[SuccessMessage] = string.Format(HideEntitySuccessMessage, _entityName);
 
-            string controllerName = ControllerContext.RouteData.Values["controller"]!.ToString()!; // Will think of a way to fix
-            if (controllerName.Contains("Module"))
-            {
-                return RedirectToAction(nameof(Details), new { id });
-            }
-            else
-            {
-                return RedirectToAction(nameof(MyPublishings));
-            }
+            return RedirectToAction(nameof(MyPublishings));
         }
         catch (NotImplementedException e)
         {
@@ -316,15 +308,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
             await ShowAsync(id);
             TempData[SuccessMessage] = string.Format(ShowEntitySuccessMessage, _entityName);
 
-            string controllerName = ControllerContext.RouteData.Values["controller"]!.ToString()!; // Will think of a way to fix
-            if (controllerName.Contains("Module"))
-            {
-                return RedirectToAction(nameof(Details), new { id });
-            }
-            else
-            {
-                return RedirectToAction(nameof(MyPublishings));
-            }
+            return RedirectToAction(nameof(MyPublishings));
         }
         catch (NotImplementedException e)
         {

@@ -12,6 +12,7 @@ using Infrastructure.Extensions;
 using Services.Interfaces;
 using Data.Models;
 
+using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
 
 public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsViewModule, ModuleFormModel, EmptyQueryModel, Enum>
@@ -39,6 +40,40 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
         _newModuleCourseId = courseId;
 
         return await Add();
+    }
+
+    public override async Task<IActionResult> Delete(ModuleDetailsViewModule detailsViewModel)
+    {
+        var result = await base.Delete(detailsViewModel);
+        if (IsRedirectToMyPublishings(result) && TempData[ErrorMessage] == null)
+        {
+            return RedirectToAction(nameof(Details), "Course", new { id = detailsViewModel.CourseId });
+        }
+
+        return result;
+    }
+
+    public override async Task<IActionResult> Show(string id)
+    {
+        var result = await base.Show(id);
+        if (IsRedirectToMyPublishings(result) && TempData[ErrorMessage] == null)
+        {
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        return result;
+    }
+
+
+    public override async Task<IActionResult> Hide(string id)
+    {
+        var result = await base.Hide(id);
+        if (IsRedirectToMyPublishings(result) && TempData[ErrorMessage] == null)
+        {
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        return result;
     }
 
     public override async Task<IActionResult> All([FromQuery] EmptyQueryModel queryModel)
@@ -101,7 +136,7 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
     protected override async Task<ModuleDetailsViewModule> GetEntityDetails(string id, string userId)
     {
         var moduleViewModel = await _moduleService.GetModuleDetailsAsync(id, userId);
-        
+
         bool canModify = await CanModify();
         moduleViewModel.NextModuleId = _moduleService.GetNextModuleId(moduleViewModel, canModify)!;
         moduleViewModel.PreviousModuleId = _moduleService.GetPreviousModuleId(moduleViewModel, canModify)!;
@@ -241,5 +276,12 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
     private async Task<string> GetCourseIdAsync(string moduleId)
     {
         return await _moduleService.GetCourseIdAsync(moduleId);
+    }
+
+    private bool IsRedirectToMyPublishings(IActionResult result)
+    {
+        var redirect = result as RedirectToActionResult;
+
+        return redirect!.ActionName == nameof(MyPublishings);
     }
 }
