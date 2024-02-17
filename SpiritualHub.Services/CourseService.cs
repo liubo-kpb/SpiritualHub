@@ -17,9 +17,11 @@ public class CourseService : ICourseService
 {
     private readonly ICourseRepository _courseRepository;
     private readonly IModuleService _moduleService;
+
     private readonly IDeletableRepository<Image> _imageRepository;
     private readonly IDeletableRepository<Rating> _ratingRepository;
     private readonly IRepository<ApplicationUser> _userRepository;
+
     private readonly IMapper _mapper;
 
     public CourseService(

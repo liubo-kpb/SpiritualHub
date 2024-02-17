@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Interfaces;
 using Data.Models;
 
-
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
 
@@ -55,8 +54,7 @@ public class ValidationService : ControllerBase, IValidationService
 
     private async Task<IActionResult?> IsUserPublisherAsync(string userId, ITempDataDictionary tempData)
     {
-        bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-        if (!isPublisher)
+        if (!await _publisherService.ExistsByUserIdAsync(userId))
         {
             tempData[ErrorMessage] = NotAPublisherErrorMessage;
 
@@ -68,8 +66,7 @@ public class ValidationService : ControllerBase, IValidationService
 
     private async Task<IActionResult?> IsUserConnectedPublisherAsync(string userId, ITempDataDictionary tempData)
     {
-        bool isConnectedPublisher = await _publisherService.IsConnectedToAuthorByUserId(userId, AuthorId);
-        if (!isConnectedPublisher)
+        if (!await _publisherService.IsConnectedToAuthorByUserId(userId, AuthorId))
         {
             tempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
 
