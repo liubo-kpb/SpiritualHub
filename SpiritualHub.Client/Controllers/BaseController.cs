@@ -54,6 +54,8 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 
     protected abstract Task EditAsync(TFormModel updatedEntityFrom);
 
+    protected abstract Task<string> GetAuthorIdAsync(string entityId);
+
     [AllowAnonymous]
     [HttpGet]
     public virtual async Task<IActionResult> All([FromQuery] TQueryModel queryModel)
@@ -185,7 +187,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             var formModel = CreateFormModelInstance();
 
             await GetFormDetailsAsync(formModel, userId, isUserAdmin);
-            if (!formModel.Authors.Any() && string.IsNullOrEmpty(formModel.AuthorId))
+            if (!formModel.Authors.Any())
             {
                 TempData[ErrorMessage] = NoConnectedAuthorsErrorMessage;
 
@@ -399,7 +401,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             {
                 ModelState.AddModelError(nameof(formModel.PublisherId), string.Format(NoEntityFoundErrorMessage, "publisher"));
             }
-            else if (!(await _publisherService.IsConnectedToEntityByPublisherId<Author>(formModel.PublisherId!, formModel.AuthorId!)))
+            else if (!(await _publisherService.IsConnectedToAuthorByPublisherId(formModel.PublisherId!, formModel.AuthorId!)))
             {
                 ModelState.AddModelError(nameof(formModel.PublisherId), WrongPublisherErrorMessage);
             }
