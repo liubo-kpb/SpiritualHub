@@ -93,12 +93,16 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
 
     public override async Task<IActionResult> Get(string id)
     {
-        return ReturnToHome();
+        TempData[ErrorMessage] = InvalidRequestErrorMessage;
+
+        return RedirectToAction(nameof(Details), new { id });
     }
 
     public override async Task<IActionResult> Remove(string id)
     {
-        return ReturnToHome();
+        TempData[ErrorMessage] = InvalidRequestErrorMessage;
+
+        return RedirectToAction(nameof(Details), new { id });
     }
 
     protected override async Task<string> CreateAsync(ModuleFormModel newEntity)

@@ -10,7 +10,6 @@ using Data.Models;
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, TQueryModel, TSortingEnum>
     : BaseController<TViewModel, TDetailsModel, TFormModel, TQueryModel, TSortingEnum>
