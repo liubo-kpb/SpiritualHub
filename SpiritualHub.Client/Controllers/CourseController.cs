@@ -120,14 +120,14 @@ public class CourseController : ProductController<CourseViewModel, CourseDetails
         return RemoveCourseSuccessMessage;
     }
 
-    protected override async Task ValidateModelAsync(CourseFormModel formModel, bool isUserAdmin)
+    protected override async Task ValidateModelAsync(CourseFormModel formModel)
     {
         if (formModel.Price < 0)
         {
             ModelState.AddModelError(nameof(formModel.Price), PriceMustBeZeroOrHigherErrorMessage);
         }
 
-        await base.ValidateModelAsync(formModel, isUserAdmin);
+        await base.ValidateModelAsync(formModel);
     }
 
     protected override async Task<string?> CustomValidateAsync(string id)

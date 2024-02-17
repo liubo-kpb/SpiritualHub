@@ -473,9 +473,9 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         await _authorService.EditAsync(updatedEntityFrom);
     }
 
-    protected override async Task GetFormDetailsAsync(AuthorFormModel formModel, string userId, bool isUserAdmin = false)
+    protected override async Task GetFormDetailsAsync(AuthorFormModel formModel, string userId)
     {
-        if (isUserAdmin && formModel.Id == null)
+        if (this.User.IsAdmin() && formModel.Id == null)
         {
             formModel.Publishers = await _publisherService.GetAllAsync();
         }
@@ -483,7 +483,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         formModel.Categories = await _categoryService.GetAllAsync();
     }
 
-    protected override async Task ValidateModelAsync(AuthorFormModel formModel, bool isUserAdmin)
+    protected override async Task ValidateModelAsync(AuthorFormModel formModel)
     {
         bool isExistingCategory = await _categoryService.ExistsAsync(formModel.CategoryId);
         if (!isExistingCategory)

@@ -129,14 +129,14 @@ public class BookController : ProductController<BookViewModel, BookDetailsViewMo
         return $"remove {_entityName} from your library";
     }
 
-    protected override async Task ValidateModelAsync(BookFormModel formModel, bool isUserAdmin)
+    protected override async Task ValidateModelAsync(BookFormModel formModel)
     {
         if (formModel.Price < 0)
         {
             ModelState.AddModelError(nameof(formModel.Price), PriceMustBeZeroOrHigherErrorMessage);
         }
 
-        await base.ValidateModelAsync(formModel, isUserAdmin);
+        await base.ValidateModelAsync(formModel);
     }
 
     protected override async Task<string?> CustomValidateAsync(string id)

@@ -139,7 +139,7 @@ public class EventController : ProductController<EventViewModel, EventDetailsVie
         };
     }
 
-    protected override async Task ValidateModelAsync(EventFormModel formModel, bool isUserAdmin)
+    protected override async Task ValidateModelAsync(EventFormModel formModel)
     {
         if (formModel.Price < 0)
         {
@@ -169,7 +169,7 @@ public class EventController : ProductController<EventViewModel, EventDetailsVie
             return;
         }
 
-        await base.ValidateModelAsync(formModel, isUserAdmin);
+        await base.ValidateModelAsync(formModel);
     }
 
     protected override string GetAction()

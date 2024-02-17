@@ -153,7 +153,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         try
         {
             var publisherId = await _publisherService.GetPublisherIdAsync(userId);
-            var viewModel = await GetEntitiesByPublisherIdAsync(publisherId, userId);
+            var viewModel = await GetEntitiesByPublisherIdAsync(publisherId!, userId);
 
             return View(viewModel);
         }
@@ -188,7 +188,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         {
             var formModel = CreateFormModelInstance();
 
-            await GetFormDetailsAsync(formModel, userId, isUserAdmin);
+            await GetFormDetailsAsync(formModel, userId);
             if (!formModel.Authors.Any())
             {
                 TempData[ErrorMessage] = NoConnectedAuthorsErrorMessage;
@@ -227,10 +227,10 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             }
         }
 
-        await ValidateModelAsync(newEntityForm, isUserAdmin);
+        await ValidateModelAsync(newEntityForm);
         if (!ModelState.IsValid)
         {
-            await GetFormDetailsAsync(newEntityForm, userId, isUserAdmin);
+            await GetFormDetailsAsync(newEntityForm, userId);
 
             return View(newEntityForm);
         }
@@ -248,7 +248,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         {
             TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"create {_entityName}");
 
-            await GetFormDetailsAsync(newEntityForm, userId, isUserAdmin);
+            await GetFormDetailsAsync(newEntityForm, userId);
 
             return View(newEntityForm);
         }
@@ -272,7 +272,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
                 return validationResult;
             }
 
-            await GetFormDetailsAsync(entityFormModel!, userId, isUserAdmin);
+            await GetFormDetailsAsync(entityFormModel!, userId);
 
             return View(entityFormModel);
         }
@@ -298,10 +298,10 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             return validationResult;
         }
 
-        await ValidateModelAsync(updatedEntityFrom, isUserAdmin);
+        await ValidateModelAsync(updatedEntityFrom);
         if (!ModelState.IsValid)
         {
-            await GetFormDetailsAsync(updatedEntityFrom, userId, isUserAdmin);
+            await GetFormDetailsAsync(updatedEntityFrom, userId);
 
             return View(updatedEntityFrom);
         }
@@ -319,7 +319,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         {
             TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"edit {_entityName}");
 
-            await GetFormDetailsAsync(updatedEntityFrom, userId, isUserAdmin);
+            await GetFormDetailsAsync(updatedEntityFrom, userId);
 
             return View(updatedEntityFrom);
         }
@@ -330,9 +330,9 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         return new TFormModel();
     }
 
-    protected virtual async Task GetFormDetailsAsync(TFormModel formModel, string userId, bool isUserAdmin = false)
+    protected virtual async Task GetFormDetailsAsync(TFormModel formModel, string userId)
     {
-        if (isUserAdmin)
+        if (this.User.IsAdmin())
         {
             formModel.Authors = await _authorService.GetAllAsync();
 
@@ -352,9 +352,9 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         formModel.Categories = await _categoryService.GetAllAsync();
     }
 
-    protected virtual async Task ValidateModelAsync(TFormModel formModel, bool isUserAdmin)
+    protected virtual async Task ValidateModelAsync(TFormModel formModel)
     {
-        if (isUserAdmin)
+        if (this.User.IsAdmin())
         {
             if (!(await _publisherService.ExistsByIdAsync(formModel.PublisherId!)))
             {

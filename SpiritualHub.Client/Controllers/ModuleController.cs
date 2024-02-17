@@ -201,13 +201,13 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
         throw new NotImplementedException(InvalidRequestErrorMessage);
     }
 
-    protected override async Task GetFormDetailsAsync(ModuleFormModel formModel, string userId, bool isUserAdmin = false)
+    protected override async Task GetFormDetailsAsync(ModuleFormModel formModel, string userId)
     {
         formModel.AuthorId ??= await _courseService.GetAuthorIdAsync(formModel.CourseId);
         formModel.Courses = await _authorService.GetConnectedEntities<Course, CourseInfoViewModel>(formModel.AuthorId!);
     }
 
-    protected override async Task ValidateModelAsync(ModuleFormModel formModel, bool isUserAdmin)
+    protected override async Task ValidateModelAsync(ModuleFormModel formModel)
     {
         bool isExistingAuthor = await _authorService.ExistsAsync(formModel.AuthorId!);
         if (!isExistingAuthor)
