@@ -175,8 +175,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     public virtual async Task<IActionResult> Add()
     {
         string userId = this.User.GetId()!;
-        bool isUserAdmin = this.User.IsAdmin();
-        bool isPublisher = isUserAdmin || await _publisherService.ExistsByUserIdAsync(userId);
+        bool isPublisher = this.User.IsAdmin() || await _publisherService.ExistsByUserIdAsync(userId);
         if (!isPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -216,8 +215,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     public virtual async Task<IActionResult> Add(TFormModel newEntityForm)
     {
         string userId = this.User.GetId()!;
-        bool isUserAdmin = this.User.IsAdmin();
-        if (!isUserAdmin)
+        if (!this.User.IsAdmin())
         {
             _validationService.AuthorId = newEntityForm.AuthorId!;
             var validationResult = await _validationService.CanUseModifyActionAsync(userId, TempData);
@@ -258,15 +256,14 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     public virtual async Task<IActionResult> Edit(string id)
     {
         string userId = this.User.GetId()!;
-        bool isUserAdmin = this.User.IsAdmin();
-
         try
         {
             var entityFormModel = await GetEntityInfoAsync(id);
 
             _validationService.AuthorId = entityFormModel?.AuthorId ?? null!;
-            var validationResult = await _validationService
-                .IsValidAction(entityFormModel != null, isUserAdmin, userId, _entityName, TempData);
+            var validationResult = await _validationService.IsValidAction(  entityFormModel != null,
+                                                                            this.User.IsAdmin(),
+                                                                            userId, _entityName, TempData);
             if (validationResult != null)
             {
                 return validationResult;
@@ -288,11 +285,11 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     public virtual async Task<IActionResult> Edit(TFormModel updatedEntityFrom)
     {
         string userId = this.User.GetId()!;
-        bool isUserAdmin = this.User.IsAdmin();
 
         _validationService.AuthorId = updatedEntityFrom.AuthorId!;
-        var validationResult = await _validationService
-            .IsValidAction(await ExistsAsync(updatedEntityFrom.Id!), isUserAdmin, userId, _entityName, TempData);
+        var validationResult = await _validationService.IsValidAction(  await ExistsAsync(updatedEntityFrom.Id!),
+                                                                        this.User.IsAdmin(),
+                                                                        userId, _entityName, TempData);
         if (validationResult != null)
         {
             return validationResult;
