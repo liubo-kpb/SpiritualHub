@@ -19,8 +19,10 @@ public class DeletableRepository<TEntity> : Repository<TEntity>, IDeletableRepos
     public void DeleteEntriesWithForeignKeys<TEntityType, TKey>(string foreignKeyColumnName, TKey entityId)
         where TEntityType : class
     {
-        var relatedEntries = Context.Set<TEntityType>().Where(e => Equals(EF.Property<TKey>(e, foreignKeyColumnName), entityId));
-        Context.Set<TEntityType>().RemoveRange(relatedEntries);
+        var context = Context.Set<TEntityType>();
+
+        var relatedEntries = context.Where(e => Equals(EF.Property<TKey>(e, foreignKeyColumnName), entityId));
+        context.RemoveRange(relatedEntries);
     }
 
     public virtual void Delete(TEntity entity)

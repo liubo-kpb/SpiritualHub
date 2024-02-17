@@ -1,12 +1,10 @@
 ﻿namespace SpiritualHub.Client.ViewModels.Event;
 
 using Author;
+using BaseModels;
 
-public class EventViewModel
+public class EventViewModel : BaseDetailsViewModel
 {
-
-    public string Id { get; set; } = null!;
-
     public string Title { get; set; } = null!;
 
     public string Description { get; set; } = null!;

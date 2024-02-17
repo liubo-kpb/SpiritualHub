@@ -17,17 +17,23 @@ public class CourseService : ICourseService
 {
     private readonly ICourseRepository _courseRepository;
     private readonly IModuleService _moduleService;
+    private readonly IDeletableRepository<Image> _imageRepository;
+    private readonly IDeletableRepository<Rating> _ratingRepository;
     private readonly IRepository<ApplicationUser> _userRepository;
     private readonly IMapper _mapper;
 
     public CourseService(
         ICourseRepository courseRepository,
         IModuleService moduleService,
+        IDeletableRepository<Image> imageRepository,
+        IDeletableRepository<Rating> ratingRepository,
         IRepository<ApplicationUser> userRepository,
         IMapper mapper)
     {
         _courseRepository = courseRepository;
         _moduleService = moduleService;
+        _imageRepository = imageRepository;
+        _ratingRepository = ratingRepository;
         _userRepository = userRepository;
         _mapper = mapper;
     }
@@ -68,8 +74,11 @@ public class CourseService : ICourseService
 
     public async Task DeleteAsync(string id)
     {
-        var course = await _courseRepository.GetCourseWithModulesAsync(id);
+        var course = await _courseRepository.GetCourseWithModulesImageAndRatingsAsync(id);
+        
         _courseRepository.Delete(course!);
+        _imageRepository.Delete(course!.Image);
+        _ratingRepository.DeleteMultiple(course!.Ratings);
 
         await _courseRepository.SaveChangesAsync();
     }
@@ -123,8 +132,8 @@ public class CourseService : ICourseService
     public async Task<FilteredCoursesServiceModel> GetAllAsync(AllCoursesQueryModel queryModel, string userId)
     {
         var coursesQuery = _courseRepository
-            .AllAsNoTracking()
-            .Where(c => (bool) c.IsActive!);
+                                .AllAsNoTracking()
+                                .Where(c => (bool) c.IsActive!);
 
         if (!string.IsNullOrWhiteSpace(queryModel.CategoryName))
         {
@@ -181,8 +190,8 @@ public class CourseService : ICourseService
     public async Task<int> GetAllCountAsync()
     {
         return await _courseRepository
-            .AllAsNoTracking()
-            .CountAsync();
+                            .AllAsNoTracking()
+                            .CountAsync();
     }
 
     public async Task GetAsync(string courseId, string userId)
@@ -288,7 +297,7 @@ public class CourseService : ICourseService
 
     private async Task ChangeCourseActivityStatusAsync(string id, bool newStatus)
     {
-        var course = await _courseRepository.GetCourseWithModulesAsync(id);
+        var course = await _courseRepository.GetCourseWithModulesImageAndRatingsAsync(id);
         course!.IsActive = newStatus;
 
         foreach (var module in course.Modules)

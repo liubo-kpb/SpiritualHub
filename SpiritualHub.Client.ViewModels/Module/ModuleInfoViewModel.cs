@@ -1,9 +1,9 @@
 ﻿namespace SpiritualHub.Client.ViewModels.Module;
 
-public class ModuleInfoViewModel
-{
-    public string Id { get; set; } = null!;
+using BaseModels;
 
+public class ModuleInfoViewModel : BaseDetailsViewModel
+{
     public string Name { get; set; } = null!;
 
     public int Number {  get; set; }

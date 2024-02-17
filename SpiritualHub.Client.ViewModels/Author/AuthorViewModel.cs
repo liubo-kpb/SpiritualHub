@@ -2,10 +2,10 @@
 
 using System.ComponentModel.DataAnnotations;
 
-public class AuthorViewModel
-{
-    public string Id { get; set; } = null!;
+using BaseModels;
 
+public class AuthorViewModel : BaseDetailsViewModel
+{
     public string Alias { get; set; } = null!;
 
     public string Name { get; set; } = null!;

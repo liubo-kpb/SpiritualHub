@@ -10,7 +10,7 @@ public interface ICourseRepository : IDeletableRepository<Course>
 
     Task<Course?> GetCourseWithStudentsAsync(string id);
 
-    Task<Course?> GetCourseWithModulesAsync(string id);
+    Task<Course?> GetCourseWithModulesImageAndRatingsAsync(string id);
 
     Task<Course?> GetCourseWithModulesByModuleIdAsync(string moduleId);
 

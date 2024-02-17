@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Interface;
 using Models;
+using System.Linq;
 
 public class ModuleRepository : DeletableRepository<Module>, IModuleRepository
 {
@@ -22,4 +23,7 @@ public class ModuleRepository : DeletableRepository<Module>, IModuleRepository
                                                                             .Where(m => m.Id.ToString() == id)
                                                                             .Select(m => m.CourseID.ToString())
                                                                             .FirstOrDefaultAsync();
+
+    public IQueryable<Module> GetModulesByCourseId(string courseId) => DbSet
+                                                                        .Where(m => m.CourseID.ToString() == courseId);
 }

@@ -275,14 +275,4 @@ public class ModuleController : BaseController<EmptyViewModel, ModuleDetailsView
         return this.User.IsAdmin()
                 || await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
     }
-
-    private IActionResult ReturnToHome()
-    {
-        if (string.IsNullOrEmpty(TempData[ErrorMessage]!.ToString()))
-        {
-            TempData[ErrorMessage] = InvalidRequestErrorMessage;
-        }
-
-        return RedirectToAction(nameof(HomeController.Index), "Home");
-    }
 }
