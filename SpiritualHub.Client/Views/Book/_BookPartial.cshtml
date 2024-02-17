@@ -32,8 +32,7 @@
                 {
                     <p></p>
                     <div class="d-flex flex-row justify-content-center">
-                        <a asp-controller="Book" asp-action="Edit" asp-route-id="@Model.Id"
-                           class="btn btn-warning">Edit</a>
+                        <a asp-controller="Book" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
                         @if (Model.IsHidden)
                         {
                             <form asp-controller="Book" asp-action="Show" asp-route-id="@Model.Id" method="post" class="mx-1">

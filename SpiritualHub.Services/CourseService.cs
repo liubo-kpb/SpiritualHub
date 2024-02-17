@@ -76,6 +76,7 @@ public class CourseService : ICourseService
     {
         var course = await _courseRepository.GetCourseWithModulesImageAndRatingsAsync(id);
         
+        // Modules are Cascade deleted.
         _courseRepository.Delete(course!);
         _imageRepository.Delete(course!.Image);
         _ratingRepository.DeleteMultiple(course!.Ratings);

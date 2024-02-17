@@ -17,7 +17,7 @@ public class RatingEntityConfiguration : IEntityTypeConfiguration<Rating>
 
         builder
             .HasMany(r => r.Authors)
-            .WithMany(a => a.Ratings)
+            .WithMany(a => a.Ratings);
 
         builder
             .HasMany(r => r.Courses)
