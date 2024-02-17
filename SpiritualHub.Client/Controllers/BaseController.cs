@@ -28,14 +28,13 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     protected readonly IPublisherService _publisherService;
 
     public BaseController(
-        IAuthorService authorService,
-        ICategoryService categoryService,
-        IPublisherService publisherService,
+        IServiceProvider serviceProvider,
         string entityName)
     {
-        _authorService = authorService;
-        _categoryService = categoryService;
-        _publisherService = publisherService;
+        _authorService = serviceProvider.GetRequiredService<IAuthorService>();
+        _categoryService = serviceProvider.GetRequiredService<ICategoryService>();
+        _publisherService = serviceProvider.GetRequiredService<IPublisherService>();
+
         _entityName = entityName;
     }
 

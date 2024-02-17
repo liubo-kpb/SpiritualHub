@@ -19,10 +19,8 @@ public class CourseController : ProductController<CourseViewModel, CourseDetails
 
     public CourseController(
         ICourseService courseService,
-        IAuthorService authorService,
-        ICategoryService categoryService,
-        IPublisherService publisherService)
-        : base(authorService, categoryService, publisherService, nameof(Course).ToLower())
+        IServiceProvider serviceProvider)   
+        : base(serviceProvider, nameof(Course).ToLower())
     {
         _courseService = courseService;
     }

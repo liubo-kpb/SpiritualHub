@@ -25,10 +25,8 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
     public ModuleController(
         IModuleService moduleService,
         ICourseService courseService,
-        IAuthorService authorService,
-        ICategoryService categoryService,
-        IPublisherService publisherService)
-        : base(authorService, categoryService, publisherService, nameof(Module).ToLower())
+        IServiceProvider serviceProvider)
+        : base(serviceProvider, nameof(Module).ToLower())
     {
         _moduleService = moduleService;
         _courseService = courseService;

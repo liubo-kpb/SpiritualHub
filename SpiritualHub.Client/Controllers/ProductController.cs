@@ -20,11 +20,9 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
     where TSortingEnum : Enum
 {
     protected ProductController(
-        IAuthorService authorService,
-        ICategoryService categoryService,
-        IPublisherService publisherService,
+        IServiceProvider serviceProvider,
         string entityName)
-        : base(authorService, categoryService, publisherService, entityName)
+        : base(serviceProvider, entityName)
     {
     }
 

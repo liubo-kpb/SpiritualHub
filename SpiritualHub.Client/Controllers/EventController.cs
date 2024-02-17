@@ -17,10 +17,8 @@ public class EventController : ProductController<EventViewModel, EventDetailsVie
 
     public EventController(
         IEventService eventService,
-        IPublisherService publisherService,
-        IAuthorService authorService,
-        ICategoryService categoryService)
-        : base (authorService, categoryService, publisherService, nameof(Event).ToLower())
+        IServiceProvider serviceProvider)
+        : base (serviceProvider, nameof(Event).ToLower())
     {
         _eventService = eventService;
     }

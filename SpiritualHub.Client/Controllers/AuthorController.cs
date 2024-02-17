@@ -17,11 +17,10 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
 {
     private readonly ISubscriptionService _subscriptionService;
 
-    public AuthorController(IAuthorService authorService,
-                            ICategoryService categoryService,
-                            IPublisherService publisherService,
-                            ISubscriptionService subscriptionService)
-        : base(authorService, categoryService, publisherService, nameof(Author).ToLower())
+    public AuthorController(
+        ISubscriptionService subscriptionService,
+        IServiceProvider serviceProvider)
+        : base(serviceProvider, nameof(Author).ToLower())
     {
         _subscriptionService = subscriptionService;
     }

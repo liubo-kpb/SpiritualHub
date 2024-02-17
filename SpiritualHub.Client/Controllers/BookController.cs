@@ -10,6 +10,7 @@ using ViewModels.Book;
 
 using static Common.ErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
+using SpiritualHub.Services;
 
 public class BookController : ProductController<BookViewModel, BookDetailsViewModel, BookFormModel, AllBooksQueryModel, BookSorting>
 {
@@ -17,10 +18,9 @@ public class BookController : ProductController<BookViewModel, BookDetailsViewMo
 
     public BookController(
         IBookService bookService,
-        IAuthorService authorService,
-        ICategoryService categoryService,
-        IPublisherService publisherService)
-        : base(authorService, categoryService, publisherService, nameof(Book).ToLower())
+        IServiceProvider serviceProvider
+    )
+        : base(serviceProvider, nameof(Book).ToLower())
     {
         _bookService = bookService;
     }

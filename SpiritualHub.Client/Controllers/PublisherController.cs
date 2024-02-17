@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using Client.ViewModels.Publisher;
 using Infrastructure.Extensions;
-using SpiritualHub.Services.Interfaces;
+using Services.Interfaces;
 
 using static Common.NotificationMessagesConstants;
 using static Common.SuccessMessageConstants;
