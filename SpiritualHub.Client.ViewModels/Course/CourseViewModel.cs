@@ -1,11 +1,10 @@
 ﻿namespace SpiritualHub.Client.ViewModels.Course;
 
+using BaseModels;
 using Author;
 
-public class CourseViewModel
+public class CourseViewModel : BaseDetailsViewModel
 {
-    public string Id { get; set; } = null!;
-
     public string Name { get; set; } = null!;
 
     public string ShortDescription { get; set; } = null!;

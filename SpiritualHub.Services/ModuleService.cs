@@ -101,16 +101,6 @@ public class ModuleService : IModuleService
         return GetModuleIdFromList(modules, canAccess);
     }
 
-    private static string? GetModuleIdFromList(IEnumerable<ModuleInfoViewModel> modules, bool canAccess)
-    {
-        if (modules.Any())
-        {
-            return modules.FirstOrDefault(m => m.IsActive || canAccess)?.Id ?? null!;
-        }
-
-        return null!;
-    }
-
     public async Task<ModuleFormModel> GetModuleInfoAsync(string id)
     {
         var module = await _moduleRepository.GetSingleByIdAsync(id);
@@ -155,7 +145,7 @@ public class ModuleService : IModuleService
 
     public async Task AdjustModulesNumbering(ModuleFormModel moduleForm, bool isNew = false)
     {
-        var courseModules = GetModulesByCourseId(moduleForm.CourseId);
+        var courseModules = _moduleRepository.GetModulesByCourseId(moduleForm.CourseId);
 
         if (moduleForm.Number > courseModules.Count())
         {
@@ -175,9 +165,13 @@ public class ModuleService : IModuleService
         }
     }
 
-    public Task DeleteAsync(string id)
+    public async Task DeleteAsync(string id)
     {
-        throw new NotImplementedException();
+        var module = await _moduleRepository.GetSingleByIdAsync(id);
+
+        _moduleRepository.Delete(module!);
+
+        await _moduleRepository.SaveChangesAsync();
     }
 
     public async Task HideAsync(string id)
@@ -208,10 +202,13 @@ public class ModuleService : IModuleService
         await _moduleRepository.SaveChangesAsync();
     }
 
-    private IQueryable<Module> GetModulesByCourseId(string courseId)
+    private static string? GetModuleIdFromList(IEnumerable<ModuleInfoViewModel> modules, bool canAccess)
     {
-        return _moduleRepository
-                            .GetAll()
-                            .Where(m => m.CourseID.ToString() == courseId);
+        if (modules.Any())
+        {
+            return modules.FirstOrDefault(m => m.IsActive || canAccess)?.Id ?? null!;
+        }
+
+        return null!;
     }
 }

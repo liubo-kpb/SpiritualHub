@@ -27,7 +27,7 @@ public static class ErrorMessagesConstants
 
     public const string SpecifyParticipationErrorMessage = "You need to specify the event's participation type.";
 
-    public const string AlreadyHasBookErrorMessage = "You already have this book.";
+    public const string AlreadyHasBookErrorMessage = "You already have this book in your library.";
 
     public const string AlreadyHasCourseErrorMessage = "You already have access to this course.";
 

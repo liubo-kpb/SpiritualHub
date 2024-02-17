@@ -17,17 +17,20 @@ public class BookService : IBookService
 {
     private readonly IBookRepository _bookRepository;
     private readonly IDeletableRepository<Image> _imageRepository;
+    private readonly IDeletableRepository<Rating> _ratingRepository;
     private readonly IRepository<ApplicationUser> _userRepository;
     private readonly IMapper _mapper;
 
     public BookService(
         IBookRepository bookRepository,
         IDeletableRepository<Image> imageRepository,
+        IDeletableRepository<Rating> ratingRepository,
         IRepository<ApplicationUser> userRepository,
         IMapper mapper)
     {
         _bookRepository = bookRepository;
         _imageRepository = imageRepository;
+        _ratingRepository = ratingRepository;
         _userRepository = userRepository;
         _mapper = mapper;
     }
@@ -75,11 +78,11 @@ public class BookService : IBookService
 
     public async Task DeleteAsync(string bookId)
     {
-        var book = await _bookRepository.GetBookWithImageAsync(bookId);
+        var book = await _bookRepository.GetBookWithImageAndRatingsAsync(bookId);
 
-        _bookRepository.DeleteEntriesWithForeignKeys<Rating, Guid>($"{nameof(Book)}ID", Guid.Parse(bookId));
         _bookRepository.Delete(book!);
         _imageRepository.Delete(book!.Image);
+        _ratingRepository.DeleteMultiple(book!.Ratings);
 
         await _bookRepository.SaveChangesAsync();
     }

@@ -13,5 +13,5 @@ public interface IEventRepository : IDeletableRepository<Event>
 
     Task<Event?> GetEventWithParticipantsAsync(string eventId);
 
-    Task<Event?> GetEventWithImageAsync(string eventId);
+    Task<Event?> GetEventWithImageAndRatingsAsync(string eventId);
 }

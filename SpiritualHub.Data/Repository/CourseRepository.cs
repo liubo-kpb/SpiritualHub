@@ -32,8 +32,10 @@ public class CourseRepository : DeletableRepository<Course>, ICourseRepository
                                                                             .Select(c => c.AuthorID.ToString())
                                                                             .FirstOrDefaultAsync();
 
-    public async Task<Course?> GetCourseWithModulesAsync(string id) => await DbSet
+    public async Task<Course?> GetCourseWithModulesImageAndRatingsAsync(string id) => await DbSet
                                                                                 .Include(c => c.Modules)
+                                                                                .Include(c => c.Image)
+                                                                                .Include(c => c.Ratings)
                                                                                 .FirstOrDefaultAsync(c => c.Id.ToString() == id);
 
     public async Task<Course?> GetCourseWithStudentsAsync(string id) => await DbSet

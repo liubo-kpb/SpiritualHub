@@ -22,8 +22,9 @@ public class BookRepository : DeletableRepository<Book>, IBookRepository
                                                                             .Include(e => e.Author)
                                                                             .FirstOrDefaultAsync(e => e.Id.ToString() == id);
 
-    public async Task<Book?> GetBookWithImageAsync(string id) => await DbSet
+    public async Task<Book?> GetBookWithImageAndRatingsAsync(string id) => await DbSet
                                                                         .Include(b => b.Image)
+                                                                        .Include (b => b.Ratings)
                                                                         .FirstOrDefaultAsync(b => b.Id.ToString() == id);
 
     public async Task<Book?> GetBookWithReaders(string id) => await DbSet

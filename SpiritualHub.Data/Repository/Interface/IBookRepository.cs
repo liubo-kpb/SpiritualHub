@@ -10,7 +10,7 @@ public interface IBookRepository : IDeletableRepository<Book>
 
     Task<Book?> GetBookWithReaders(string id);
 
-    Task<Book?> GetBookWithImageAsync(string id);
+    Task<Book?> GetBookWithImageAndRatingsAsync(string id);
 
     Task<Book?> GetBookWithAuthorAsync(string id);
 

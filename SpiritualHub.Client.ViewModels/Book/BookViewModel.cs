@@ -1,13 +1,11 @@
 ﻿namespace SpiritualHub.Client.ViewModels.Book;
 
-using ViewModels.Author;
-using ViewModels.Publisher;
+using BaseModels;
+using Author;
 
 
-public class BookViewModel
+public class BookViewModel : BaseDetailsViewModel
 {
-    public string Id { get; set; } = null!;
-
     public string Title { get; set; } = null!;
 
     public string ShortDescription { get; set; } = null!;

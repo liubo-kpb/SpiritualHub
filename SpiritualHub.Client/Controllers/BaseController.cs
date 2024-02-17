@@ -429,4 +429,13 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         return string.Empty;
     }
 
+    protected IActionResult ReturnToHome()
+    {
+        if (string.IsNullOrEmpty(TempData[ErrorMessage]?.ToString() ?? string.Empty))
+        {
+            TempData[ErrorMessage] = InvalidRequestErrorMessage;
+        }
+
+        return RedirectToAction(nameof(HomeController.Index), "Home");
+    }
 }

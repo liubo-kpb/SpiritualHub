@@ -17,17 +17,20 @@ public class EventService : IEventService
 {
     private readonly IEventRepository _eventRepository;
     private readonly IDeletableRepository<Image> _imageRepository;
+    private readonly IDeletableRepository<Rating> _ratingRepository;
     private readonly IRepository<ApplicationUser> _userRepository;
     private readonly IMapper _mapper;
 
     public EventService(
         IEventRepository eventRepository,
         IDeletableRepository<Image> imageRepository,
+        IDeletableRepository<Rating> ratingRepository,
         IRepository<ApplicationUser> userRepository,
         IMapper mapper)
     {
         _eventRepository = eventRepository;
         _imageRepository = imageRepository;
+        _ratingRepository = ratingRepository;
         _userRepository = userRepository;
         _mapper = mapper;
     }
@@ -152,11 +155,11 @@ public class EventService : IEventService
 
     public async Task DeleteAsync(string eventId)
     {
-        var eventEntity = await _eventRepository.GetEventWithImageAsync(eventId);
+        var eventEntity = await _eventRepository.GetEventWithImageAndRatingsAsync(eventId);
 
-        _eventRepository.DeleteEntriesWithForeignKeys<Rating, Guid>($"{nameof(Event)}ID", Guid.Parse(eventId));
         _eventRepository.Delete(eventEntity!);
         _imageRepository.Delete(eventEntity!.Image);
+        _ratingRepository.DeleteMultiple(eventEntity!.Ratings);
 
         await _eventRepository.SaveChangesAsync();
     }
@@ -188,7 +191,7 @@ public class EventService : IEventService
                                 .AllAsNoTracking()
                                 .Include(e => e.Author)
                                 .Include(e => e.Image)
-                                // .Include(e => e.Participants) still wondering if I should list all the signed up users for the event.
+                                // .Include(e => e.Participants) // still wondering if I should list all the signed up users for the event.
                                 .Where(e => e.PublisherID.ToString() == publisherId)
                                 .ToListAsync();
 

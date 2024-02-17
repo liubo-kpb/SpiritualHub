@@ -12,11 +12,9 @@ using Infrastructure.Extensions;
 using Services.Interfaces;
 using Data.Models;
 
-using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
-using static Common.SuccessMessageConstants;
 
-public class ModuleController : BaseController<EmptyViewModel, ModuleDetailsViewModule, ModuleFormModel, EmptyQueryModel, Enum>
+public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsViewModule, ModuleFormModel, EmptyQueryModel, Enum>
 {
     private readonly IModuleService _moduleService;
     private readonly ICourseService _courseService;
@@ -45,111 +43,27 @@ public class ModuleController : BaseController<EmptyViewModel, ModuleDetailsView
 
     public override async Task<IActionResult> All([FromQuery] EmptyQueryModel queryModel)
     {
-        return ReturnToHome();
+        return RedirectToAction(nameof(All), "Course");
     }
 
     public override async Task<IActionResult> Mine()
     {
-        return ReturnToHome();
+        return RedirectToAction(nameof(Mine), "Course");
     }
 
     public override async Task<IActionResult> MyPublishings()
     {
+        return RedirectToAction(nameof(MyPublishings), "Course");
+    }
+
+    public override async Task<IActionResult> Get(string id)
+    {
         return ReturnToHome();
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Hide(string id)
+    public override async Task<IActionResult> Remove(string id)
     {
-        bool exists = await ExistsAsync(id);
-        if (!exists)
-        {
-            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
-        if (!this.User.IsAdmin())
-        {
-            string userId = this.User.GetId()!;
-            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-            if (!isPublisher)
-            {
-                TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-            }
-
-            string authorId = await _courseService.GetAuthorIdAsync(id);
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
-            if (!isConnectedPublisher)
-            {
-                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
-
-                return RedirectToAction(nameof(MyPublishings));
-            }
-        }
-
-        try
-        {
-            await _moduleService.HideAsync(id);
-            TempData[SuccessMessage] = string.Format(HideEntitySuccessMessage, _entityName);
-
-            return RedirectToAction(nameof(Details), new { id });
-        }
-        catch (Exception)
-        {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"hide the {_entityName}");
-
-            return RedirectToAction(nameof(Details), new { id });
-        }
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Show(string id)
-    {
-        bool exists = await ExistsAsync(id);
-        if (!exists)
-        {
-            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
-        if (!this.User.IsAdmin())
-        {
-            string userId = this.User.GetId()!;
-            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-            if (!isPublisher)
-            {
-                TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-            }
-
-            string authorId = await _courseService.GetAuthorIdAsync(id);
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToEntityByUserId<Author>(userId, authorId));
-            if (!isConnectedPublisher)
-            {
-                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
-
-                return RedirectToAction(nameof(MyPublishings));
-            }
-        }
-
-        try
-        {
-            await _moduleService.ShowAsync(id);
-            TempData[SuccessMessage] = string.Format(ShowEntitySuccessMessage, _entityName);
-
-            return RedirectToAction(nameof(Details), new { id });
-        }
-        catch (Exception)
-        {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"show the {_entityName}");
-
-            return RedirectToAction(nameof(Details), new { id });
-        }
+        return ReturnToHome();
     }
 
     protected override async Task<string> CreateAsync(ModuleFormModel newEntity)
@@ -198,6 +112,56 @@ public class ModuleController : BaseController<EmptyViewModel, ModuleDetailsView
     protected override async Task<ModuleFormModel> GetEntityInfoAsync(string id)
     {
         return await _moduleService.GetModuleInfoAsync(id);
+    }
+
+    protected override Task GetAsync(string id, string userId)
+    {
+        throw new NotImplementedException(InvalidRequestErrorMessage);
+    }
+
+    protected override Task RemoveAsync(string id, string userId)
+    {
+        throw new NotImplementedException(InvalidRequestErrorMessage);
+    }
+
+    protected override async Task DeleteAsync(string id)
+    {
+        await _moduleService.DeleteAsync(id);
+    }
+
+    protected override async Task ShowAsync(string id)
+    {
+        await _moduleService.ShowAsync(id);
+    }
+
+    protected override async Task HideAsync(string id)
+    {
+        await _moduleService.HideAsync(id);
+    }
+
+    protected override async Task<string> GetAuthorIdAsync(string entityId)
+    {
+        return await _courseService.GetAuthorIdAsync(await GetCourseIdAsync(entityId));
+    }
+
+    protected override async Task<bool> HasEntityAsync(string id, string usedId)
+    {
+        return await _courseService.HasCourseAsync(await GetCourseIdAsync(id), usedId);
+    }
+
+    protected override string AlreadyHasEntityErrorMessage()
+    {
+        throw new NotImplementedException(InvalidRequestErrorMessage);
+    }
+
+    protected override string GetEntitySuccessMessage()
+    {
+        throw new NotImplementedException(InvalidRequestErrorMessage);
+    }
+
+    protected override string RemoveEntitySuccessMessage()
+    {
+        throw new NotImplementedException(InvalidRequestErrorMessage);
     }
 
     protected override async Task GetFormDetailsAsync(ModuleFormModel formModel, string userId, bool isUserAdmin = false)
@@ -264,10 +228,8 @@ public class ModuleController : BaseController<EmptyViewModel, ModuleDetailsView
 
     private async Task<bool> UserHasAccess(string id)
     {
-        string courseId = await _moduleService.GetCourseIdAsync(id);
-
         return await CanModify()
-                || await _courseService.HasCourseAsync(courseId, this.User.GetId()!);
+                || await _courseService.HasCourseAsync(await GetCourseIdAsync(id), this.User.GetId()!);
     }
 
     private async Task<bool> CanModify()
@@ -276,13 +238,8 @@ public class ModuleController : BaseController<EmptyViewModel, ModuleDetailsView
                 || await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
     }
 
-    private IActionResult ReturnToHome()
+    private async Task<string> GetCourseIdAsync(string moduleId)
     {
-        if (string.IsNullOrEmpty(TempData[ErrorMessage]!.ToString()))
-        {
-            TempData[ErrorMessage] = InvalidRequestErrorMessage;
-        }
-
-        return RedirectToAction(nameof(HomeController.Index), "Home");
+        return await _moduleService.GetCourseIdAsync(moduleId);
     }
 }
