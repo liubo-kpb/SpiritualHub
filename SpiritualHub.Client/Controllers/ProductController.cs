@@ -10,6 +10,7 @@ using Data.Models;
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, TQueryModel, TSortingEnum>
     : BaseController<TViewModel, TDetailsModel, TFormModel, TQueryModel, TSortingEnum>
@@ -254,7 +255,15 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
             await HideAsync(id);
             TempData[SuccessMessage] = string.Format(HideEntitySuccessMessage, _entityName);
 
-            return RedirectToAction(nameof(MyPublishings));
+            string controllerName = ControllerContext.RouteData.Values["controller"]!.ToString()!; // Will think of a way to fix
+            if (controllerName.Contains("Module"))
+            {
+                return RedirectToAction(nameof(Details), new { id });
+            }
+            else
+            {
+                return RedirectToAction(nameof(MyPublishings));
+            }
         }
         catch (NotImplementedException e)
         {
@@ -307,7 +316,15 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
             await ShowAsync(id);
             TempData[SuccessMessage] = string.Format(ShowEntitySuccessMessage, _entityName);
 
-            return RedirectToAction(nameof(MyPublishings));
+            string controllerName = ControllerContext.RouteData.Values["controller"]!.ToString()!; // Will think of a way to fix
+            if (controllerName.Contains("Module"))
+            {
+                return RedirectToAction(nameof(Details), new { id });
+            }
+            else
+            {
+                return RedirectToAction(nameof(MyPublishings));
+            }
         }
         catch (NotImplementedException e)
         {

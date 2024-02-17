@@ -165,9 +165,13 @@ public class ModuleService : IModuleService
         }
     }
 
-    public Task DeleteAsync(string id)
+    public async Task DeleteAsync(string id)
     {
-        throw new NotImplementedException();
+        var module = await _moduleRepository.GetSingleByIdAsync(id);
+
+        _moduleRepository.Delete(module!);
+
+        await _moduleRepository.SaveChangesAsync();
     }
 
     public async Task HideAsync(string id)

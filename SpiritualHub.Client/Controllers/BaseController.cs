@@ -431,7 +431,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 
     protected IActionResult ReturnToHome()
     {
-        if (string.IsNullOrEmpty(TempData[ErrorMessage]!.ToString()))
+        if (string.IsNullOrEmpty(TempData[ErrorMessage]?.ToString() ?? string.Empty))
         {
             TempData[ErrorMessage] = InvalidRequestErrorMessage;
         }
