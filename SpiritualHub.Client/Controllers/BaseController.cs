@@ -89,8 +89,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     [HttpGet]
     public virtual async Task<IActionResult> Details(string id)
     {
-        bool exists = await ExistsAsync(id);
-        if (!exists)
+        if (!await ExistsAsync(id))
         {
             TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
             return RedirectToAction(nameof(All));
@@ -145,8 +144,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     public virtual async Task<IActionResult> MyPublishings()
     {
         string userId = this.User.GetId()!;
-        bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-        if (!isPublisher)
+        if (!await _publisherService.ExistsByUserIdAsync(userId))
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
             return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
@@ -274,7 +272,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
                 return validationResult;
             }
 
-            await GetFormDetailsAsync(entityFormModel, userId, isUserAdmin);
+            await GetFormDetailsAsync(entityFormModel!, userId, isUserAdmin);
 
             return View(entityFormModel);
         }
