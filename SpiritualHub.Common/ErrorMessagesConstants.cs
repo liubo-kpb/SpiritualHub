@@ -17,6 +17,7 @@ public static class ErrorMessagesConstants
 
     public const string AlreadyFollowingAuthorErrorMessage = "You are already following this author.";
     public const string SelectValidSubscriptionPlan = "Please select a valid subscription plan!";
+    public const string SubscriptionAlreadySetErrorMessage = "Your plan is already set with this subscription.";
 
     public const string PhoneAlreadyRegisteredErrorMessage = "Phone number is already registered for a publisher!";
 

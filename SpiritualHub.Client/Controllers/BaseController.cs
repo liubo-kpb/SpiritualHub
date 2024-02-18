@@ -199,15 +199,13 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         catch (NotImplementedException e)
         {
             TempData[ErrorMessage] = e.Message;
-
-            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
         catch (Exception)
         {
             TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, "load page");
-
-            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
+
+        return RedirectToAction(nameof(HomeController.Index), "Home");
     }
 
     [HttpPost]

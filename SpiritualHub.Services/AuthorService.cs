@@ -16,6 +16,7 @@ using Client.ViewModels.Author;
 using Client.Infrastructure.Enums;
 
 using static Common.GeneralApplicationConstants;
+using static Common.ErrorMessagesConstants;
 
 public class AuthorService : IAuthorService
 {
@@ -249,7 +250,7 @@ public class AuthorService : IAuthorService
 
         if (HasSubscriptionWithUserIdAndSubscriptionId(author!, subscriptionId, userId))
         {
-            throw new ArgumentException("Your plan is already set with this subscription.");
+            throw new ArgumentException(SubscriptionAlreadySetErrorMessage);
         }
 
         var user = (await _userRepository.GetSingleByIdAsync(userId))!;
@@ -309,10 +310,10 @@ public class AuthorService : IAuthorService
         await _authorRepository.SaveChangesAsync();
     }
 
-    public async Task RemovePublisherAsync(string authorId, Guid publisherId)
+    public async Task RemovePublisherAsync(string authorId, string publisherId)
     {
         var author = await _authorRepository.GetAuthorWithPublishersAsync(authorId);
-        var publisherInstance = author!.Publishers.FirstOrDefault(p => p.Id == publisherId);
+        var publisherInstance = author!.Publishers.FirstOrDefault(p => p.Id.ToString() == publisherId);
 
         author.Publishers.Remove(publisherInstance!);
         await _authorRepository.SaveChangesAsync();
