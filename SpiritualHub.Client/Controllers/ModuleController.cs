@@ -201,7 +201,7 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
         throw new NotImplementedException(InvalidRequestErrorMessage);
     }
 
-    protected override async Task GetFormDetailsAsync(ModuleFormModel formModel, string userId)
+    protected override async Task GetFormDetailsAsync(ModuleFormModel formModel)
     {
         formModel.AuthorId ??= await _courseService.GetAuthorIdAsync(formModel.CourseId);
         formModel.Courses = await _authorService.GetConnectedEntities<Course, CourseInfoViewModel>(formModel.AuthorId!);

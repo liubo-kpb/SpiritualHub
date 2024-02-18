@@ -380,7 +380,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
 
         var formModel = CreateFormModelInstance();
 
-        await GetFormDetailsAsync(formModel, userId);
+        await GetFormDetailsAsync(formModel);
 
         return View(formModel);
     }
@@ -404,7 +404,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         await ValidateModelAsync(newEntityForm);
         if (!ModelState.IsValid)
         {
-            await GetFormDetailsAsync(newEntityForm, userId);
+            await GetFormDetailsAsync(newEntityForm);
 
             return View(newEntityForm);
         }
@@ -420,7 +420,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         {
             TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"create {_entityName}");
 
-            await GetFormDetailsAsync(newEntityForm, userId);
+            await GetFormDetailsAsync(newEntityForm);
 
             return View(newEntityForm);
         }
@@ -473,7 +473,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         await _authorService.EditAsync(updatedEntityFrom);
     }
 
-    protected override async Task GetFormDetailsAsync(AuthorFormModel formModel, string userId)
+    protected override async Task GetFormDetailsAsync(AuthorFormModel formModel)
     {
         if (this.User.IsAdmin() && formModel.Id == null)
         {

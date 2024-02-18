@@ -174,7 +174,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     [HttpGet]
     public virtual async Task<IActionResult> Add()
     {
-        string userId = this.User.GetId()!;
+        bool isPublisher = this.User.IsAdmin() || await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
         bool isPublisher = this.User.IsAdmin() || await _publisherService.ExistsByUserIdAsync(userId);
         if (!isPublisher)
         {
@@ -187,7 +187,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         {
             var formModel = CreateFormModelInstance();
 
-            await GetFormDetailsAsync(formModel, userId);
+            await GetFormDetailsAsync(formModel);
             if (!formModel.Authors.Any())
             {
                 TempData[ErrorMessage] = NoConnectedAuthorsErrorMessage;
@@ -246,7 +246,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         {
             TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"create {_entityName}");
 
-            await GetFormDetailsAsync(newEntityForm, userId);
+            await GetFormDetailsAsync(newEntityForm);
 
             return View(newEntityForm);
         }
@@ -269,7 +269,10 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
                 return validationResult;
             }
 
-            await GetFormDetailsAsync(entityFormModel!, userId);
+        try
+        {
+            var entityFormModel = await GetEntityInfoAsync(id);
+            await GetFormDetailsAsync(entityFormModel!);
 
             return View(entityFormModel);
         }
@@ -316,7 +319,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         {
             TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"edit {_entityName}");
 
-            await GetFormDetailsAsync(updatedEntityFrom, userId);
+            await GetFormDetailsAsync(updatedEntityFrom);
 
             return View(updatedEntityFrom);
         }
@@ -327,7 +330,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         return new TFormModel();
     }
 
-    protected virtual async Task GetFormDetailsAsync(TFormModel formModel, string userId)
+    protected virtual async Task GetFormDetailsAsync(TFormModel formModel)
     {
         if (this.User.IsAdmin())
         {
@@ -344,7 +347,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         }
         else
         {
-            formModel.Authors = await _publisherService.GetConnectedAuthorsAsync(userId);
+            formModel.Authors = await _publisherService.GetConnectedAuthorsByUserIdAsync(this.User.GetId()!);
         }
         formModel.Categories = await _categoryService.GetAllAsync();
     }
