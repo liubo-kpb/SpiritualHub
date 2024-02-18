@@ -215,6 +215,14 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     public virtual async Task<IActionResult> Add(TFormModel newEntityForm)
     {
         string userId = this.User.GetId()!;
+        await ValidateModelAsync(newEntityForm);
+        if (!ModelState.IsValid)
+        {
+            await GetFormDetailsAsync(newEntityForm);
+
+            return View(newEntityForm);
+        }
+
         if (!this.User.IsAdmin())
         {
             _validationService.AuthorId = newEntityForm.AuthorId!;
@@ -225,13 +233,6 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             }
         }
 
-        await ValidateModelAsync(newEntityForm);
-        if (!ModelState.IsValid)
-        {
-            await GetFormDetailsAsync(newEntityForm, userId);
-
-            return View(newEntityForm);
-        }
 
         try
         {
@@ -287,6 +288,14 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     [HttpPost]
     public virtual async Task<IActionResult> Edit(TFormModel updatedEntityFrom)
     {
+        await ValidateModelAsync(updatedEntityFrom);
+        if (!ModelState.IsValid)
+        {
+            await GetFormDetailsAsync(updatedEntityFrom);
+
+            return View(updatedEntityFrom);
+        }
+
         string userId = this.User.GetId()!;
 
         _validationService.AuthorId = updatedEntityFrom.AuthorId!;
@@ -298,13 +307,6 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             return validationResult;
         }
 
-        await ValidateModelAsync(updatedEntityFrom);
-        if (!ModelState.IsValid)
-        {
-            await GetFormDetailsAsync(updatedEntityFrom, userId);
-
-            return View(updatedEntityFrom);
-        }
 
         try
         {
