@@ -28,21 +28,10 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
     [HttpGet]
     public async Task<IActionResult> Activate(string id)
     {
-        bool exists = await ExistsAsync(id);
-        if (!exists)
+        var validationResult = await ValidateAction(id);
+        if (validationResult != null)
         {
-            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
-        string userId = this.User.GetId()!;
-        bool isConnectedPublisher = this.User.IsAdmin() || await _publisherService.IsConnectedToAuthorByUserId(userId, id);
-        if (!isConnectedPublisher)
-        {
-            TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(Mine));
+            return validationResult;
         }
 
         try
@@ -62,21 +51,10 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
     [HttpPost]
     public async Task<IActionResult> Activate(AuthorDetailsViewModel author)
     {
-        bool exists = await ExistsAsync(author.Id);
-        if (!exists)
+        var validationResult = await ValidateAction(author.Id);
+        if (validationResult != null)
         {
-            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
-        string userId = this.User.GetId()!;
-        bool isConnectedPublisher = this.User.IsAdmin() || await _publisherService.IsConnectedToAuthorByUserId(userId, author.Id);
-        if (!isConnectedPublisher)
-        {
-            TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(Mine));
+            return validationResult;
         }
 
         try
@@ -96,21 +74,10 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
     [HttpGet]
     public async Task<IActionResult> Disable(string id)
     {
-        bool exists = await ExistsAsync(id);
-        if (!exists)
+        var validationResult = await ValidateAction(id);
+        if (validationResult != null)
         {
-            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
-        string userId = this.User.GetId()!;
-        bool isConnectedPublisher = this.User.IsAdmin() || await _publisherService.IsConnectedToAuthorByUserId(userId, id);
-        if (!isConnectedPublisher)
-        {
-            TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(Mine));
+            return validationResult;
         }
 
         try
@@ -130,21 +97,10 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
     [HttpPost]
     public async Task<IActionResult> Disable(AuthorDetailsViewModel author)
     {
-        bool exists = await ExistsAsync(author.Id);
-        if (!exists)
+        var validationResult = await ValidateAction(author.Id);
+        if (validationResult != null)
         {
-            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
-        string userId = this.User.GetId()!;
-        bool isConnectedPublisher = this.User.IsAdmin() || await _publisherService.IsConnectedToAuthorByUserId(userId, author.Id);
-        if (!isConnectedPublisher)
-        {
-            TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(Mine));
+            return validationResult;
         }
 
         try
@@ -272,7 +228,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         }
 
         string userId = this.User.GetId()!;
-        bool isPublisher = this.User.IsAdmin() || await _publisherService.ExistsByUserIdAsync(userId);
+        bool isPublisher = !this.User.IsAdmin() || await _publisherService.ExistsByUserIdAsync(userId);
         if (isPublisher)
         {
             TempData[ErrorMessage] = PublishersCannotSubscribeErrorMessage;
@@ -375,36 +331,15 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
     [HttpPost]
     public async Task<IActionResult> RemoveConnectedPublisher(string id)
     {
-        var exists = await ExistsAsync(id);
-        if (!exists)
+        var validationResult = await ValidateAction(id);
+        if (validationResult != null)
         {
-            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
-        string userId = this.User.GetId()!;
-        if (!this.User.IsAdmin())
-        {
-            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-            if (!isPublisher)
-            {
-                TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-                return RedirectToAction(nameof(PublisherController.Become), "Publisher");
-            }
-
-            bool isConnectedPublisher = await _publisherService.IsConnectedToAuthorByUserId(userId, id);
-            if (!isConnectedPublisher)
-            {
-                TempData[ErrorMessage] = string.Format(NotAConnectedPublisherErrorMessage, _entityName);
-                return RedirectToAction(nameof(MyPublishings));
-            }
+            return validationResult;
         }
 
         try
         {
-            var publisher = await _publisherService.GetPublisherIdAsync(userId);
+            var publisher = await _publisherService.GetPublisherIdAsync(this.User.GetId()!);
             await _authorService.RemovePublisherAsync(id, publisher!);
 
             TempData[SuccessMessage] = AuthorRemoveAffilicationSuccessMessage;
@@ -421,9 +356,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
 
     public override async Task<IActionResult> Add()
     {
-        string userId = this.User.GetId()!;
-        bool isUserAdmin = this.User.IsAdmin();
-        bool isPublisher = isUserAdmin || await _publisherService.ExistsByUserIdAsync(userId);
+        bool isPublisher = this.User.IsAdmin() || await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
         if (!isPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -452,26 +385,22 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
 
     public override async Task<IActionResult> Add(AuthorFormModel newEntityForm)
     {
-        string userId = this.User.GetId()!;
-        bool isUserAdmin = this.User.IsAdmin();
-
-        if (!isUserAdmin)
-        {
-            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-            if (!isPublisher)
-            {
-                TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-            }
-        }
-
         await ValidateModelAsync(newEntityForm);
         if (!ModelState.IsValid)
         {
             await GetFormDetailsAsync(newEntityForm);
 
             return View(newEntityForm);
+        }
+
+        if (!this.User.IsAdmin())
+        {
+            _validationService.AuthorId = newEntityForm.AuthorId!;
+            var validationResult = await _validationService.ModifyPermissionsAsync(this.User.GetId()!, TempData);
+            if (validationResult != null)
+            {
+                return validationResult;
+            }
         }
 
         try

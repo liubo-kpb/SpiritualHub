@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 using ViewModels.BaseModels;
 using Infrastructure.Extensions;
-using Services.Interfaces;
-using Data.Models;
 
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
