@@ -22,7 +22,7 @@ public interface IPublisherService
 
     Task<bool>                                  IsConnectedToAuthorByPublisherId(string publisherId, string authorId);
 
-    Task<IEnumerable<AuthorInfoViewModel>>      GetConnectedAuthorsAsync(string userId);
+    Task<IEnumerable<AuthorInfoViewModel>>      GetConnectedAuthorsByUserIdAsync(string userId);
 
     Task<IEnumerable<PublisherInfoViewModel>>   GetAllAsync();
 

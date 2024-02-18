@@ -57,7 +57,7 @@ public class PublisherService : IPublisherService
         return publishersModel;
     }
 
-    public async Task<IEnumerable<AuthorInfoViewModel>> GetConnectedAuthorsAsync(string userId)
+    public async Task<IEnumerable<AuthorInfoViewModel>> GetConnectedAuthorsByUserIdAsync(string userId)
     {
         var authors = await _publisherRepository.GetConnectedAuthorsAsync(userId);
         var authorsModel = new List<AuthorInfoViewModel>();
