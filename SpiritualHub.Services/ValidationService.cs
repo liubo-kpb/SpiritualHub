@@ -12,9 +12,12 @@ using static Common.ErrorMessagesConstants;
 
 public class ValidationService : ControllerBase, IValidationService
 {
-    protected readonly IAuthorService _authorService;
-    protected readonly ICategoryService _categoryService;
-    protected readonly IPublisherService _publisherService;
+    private string _entityId = null!;
+    private Func<string, Task<string>> _getAuthorId = null!;
+
+    private readonly IAuthorService _authorService;
+    private readonly ICategoryService _categoryService;
+    private readonly IPublisherService _publisherService;
 
     public ValidationService(
         IAuthorService authorService,
@@ -28,7 +31,14 @@ public class ValidationService : ControllerBase, IValidationService
 
     public string AuthorId { get; set; } = null!;
 
-    public async Task<IActionResult?> IsValidAction(bool entityExists, bool isUserAdmin, string userId, string entityName, ITempDataDictionary tempData)
+
+    public void SetFields(string id, Func<string, Task<string>> getAuthorId)
+    {
+        _entityId = id;
+        _getAuthorId = getAuthorId;
+    }
+
+    public async Task<IActionResult?> ActionAsync(bool entityExists, bool isUserAdmin, string userId, string entityName, ITempDataDictionary tempData)
     {
         if (!entityExists)
         {
@@ -42,17 +52,17 @@ public class ValidationService : ControllerBase, IValidationService
             return null!;
         }
 
-        return await CanUseModifyActionAsync(userId, tempData);
+        return await ModifyPermissionsAsync(userId, tempData);
     }
 
-    public async Task<IActionResult?> CanUseModifyActionAsync(string userId, ITempDataDictionary tempData)
+    public async Task<IActionResult?> ModifyPermissionsAsync(string userId, ITempDataDictionary tempData)
     {
-        var result = await IsUserPublisherAsync(userId, tempData);
+        var result = await UserIsPublisherAsync(userId, tempData);
 
-        return result ?? await IsUserConnectedPublisherAsync(userId, tempData);
+        return result ?? await PublisherIsConnectionToAuthorAsync(userId, tempData);
     }
 
-    private async Task<IActionResult?> IsUserPublisherAsync(string userId, ITempDataDictionary tempData)
+    private async Task<IActionResult?> UserIsPublisherAsync(string userId, ITempDataDictionary tempData)
     {
         if (!await _publisherService.ExistsByUserIdAsync(userId))
         {
@@ -64,13 +74,14 @@ public class ValidationService : ControllerBase, IValidationService
         return null!;
     }
 
-    private async Task<IActionResult?> IsUserConnectedPublisherAsync(string userId, ITempDataDictionary tempData)
+    private async Task<IActionResult?> PublisherIsConnectionToAuthorAsync(string userId, ITempDataDictionary tempData)
     {
-        if (!await _publisherService.IsConnectedToAuthorByUserId(userId, AuthorId))
+        this.AuthorId ??= await _getAuthorId(_entityId);
+        if (!await _publisherService.IsConnectedToAuthorByUserId(userId, this.AuthorId))
         {
             tempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
 
-            return RedirectToAction("Details", nameof(Author), new { id = AuthorId});
+            return RedirectToAction("Details", nameof(Author), new { id = this.AuthorId });
         }
 
         return null!;

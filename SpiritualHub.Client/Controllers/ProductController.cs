@@ -25,7 +25,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
         : base(serviceProvider, entityName)
     {
     }
-
+    
     protected abstract Task GetAsync(string id, string userId);
 
     protected abstract Task RemoveAsync(string id, string userId);
@@ -120,129 +120,43 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
         }
     }
 
-    [HttpGet]
-    public virtual async Task<IActionResult> Delete(string id)
+    [HttpPost]
+    public virtual async Task<IActionResult> Show(string id)
     {
-        bool exists = await ExistsAsync(id);
-        if (!exists)
+        var validationResult = await ValidateAction(id);
+        if (validationResult != null)
         {
-            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
-        if (!this.User.IsAdmin())
-        {
-            string userId = this.User.GetId()!;
-            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-            if (!isPublisher)
-            {
-                TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-            }
-
-            string authorId = await GetAuthorIdAsync(id);
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToAuthorByUserId(userId, authorId));
-            if (!isConnectedPublisher)
-            {
-                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
-
-                return RedirectToAction(nameof(MyPublishings));
-            }
+            return validationResult;
         }
 
         try
         {
-            var viewModel = await GetEntityInfoAsync(id);
+            await ShowAsync(id);
+            TempData[SuccessMessage] = string.Format(ShowEntitySuccessMessage, _entityName);
 
-            return View(viewModel);
+            return RedirectToAction(nameof(MyPublishings));
+        }
+        catch (NotImplementedException e)
+        {
+            TempData[ErrorMessage] = e.Message;
+
+            return ReturnToHome();
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load the {_entityName}");
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"show the {_entityName}");
 
             return RedirectToAction(nameof(Details), new { id });
         }
     }
 
     [HttpPost]
-    public virtual async Task<IActionResult> Delete(TDetailsModel detailsViewModel)
-    {
-        bool exists = await ExistsAsync(detailsViewModel.Id);
-        if (!exists)
-        {
-            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
-        if (!this.User.IsAdmin())
-        {
-            string userId = this.User.GetId()!;
-            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-            if (!isPublisher)
-            {
-                TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-            }
-
-            string authorId = await GetAuthorIdAsync(detailsViewModel.Id);
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToAuthorByUserId(userId, authorId));
-            if (!isConnectedPublisher)
-            {
-                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
-
-                return RedirectToAction(nameof(MyPublishings));
-            }
-        }
-
-        try
-        {
-            await DeleteAsync(detailsViewModel.Id);
-            TempData[SuccessMessage] = string.Format(DeleteSuccessfulMessage, _entityName);
-
-            return RedirectToAction(nameof(MyPublishings));
-        }
-        catch (Exception)
-        {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"delete {_entityName}");
-
-            return View(new { id = detailsViewModel.Id });
-        }
-    }
-
-    [HttpPost]
     public virtual async Task<IActionResult> Hide(string id)
     {
-        bool exists = await ExistsAsync(id);
-        if (!exists)
+        var validationResult = await ValidateAction(id);
+        if (validationResult != null)
         {
-            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
-        if (!this.User.IsAdmin())
-        {
-            string userId = this.User.GetId()!;
-            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-            if (!isPublisher)
-            {
-                TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-            }
-
-            string authorId = await GetAuthorIdAsync(id);
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToAuthorByUserId(userId, authorId));
-            if (!isConnectedPublisher)
-            {
-                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
-
-                return RedirectToAction(nameof(MyPublishings));
-            }
+            return validationResult;
         }
 
         try
@@ -266,56 +180,50 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
         }
     }
 
-    [HttpPost]
-    public virtual async Task<IActionResult> Show(string id)
+    [HttpGet]
+    public virtual async Task<IActionResult> Delete(string id)
     {
-        bool exists = await ExistsAsync(id);
-        if (!exists)
+        var validationResult = await ValidateAction(id);
+        if (validationResult != null)
         {
-            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
-        if (!this.User.IsAdmin())
-        {
-            string userId = this.User.GetId()!;
-            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-            if (!isPublisher)
-            {
-                TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-            }
-
-            string authorId = await GetAuthorIdAsync(id);
-            bool isConnectedPublisher = (await _publisherService.IsConnectedToAuthorByUserId(userId, authorId));
-            if (!isConnectedPublisher)
-            {
-                TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
-
-                return RedirectToAction(nameof(MyPublishings));
-            }
+            return validationResult;
         }
 
         try
         {
-            await ShowAsync(id);
-            TempData[SuccessMessage] = string.Format(ShowEntitySuccessMessage, _entityName);
+            var viewModel = await GetEntityInfoAsync(id);
 
-            return RedirectToAction(nameof(MyPublishings));
-        }
-        catch (NotImplementedException e)
-        {
-            TempData[ErrorMessage] = e.Message;
-
-            return ReturnToHome();
+            return View(viewModel);
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"show the {_entityName}");
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load the {_entityName}");
 
             return RedirectToAction(nameof(Details), new { id });
+        }
+    }
+
+    [HttpPost]
+    public virtual async Task<IActionResult> Delete(TDetailsModel detailsViewModel)
+    {
+        var validationResult = await ValidateAction(detailsViewModel.Id);
+        if (validationResult != null)
+        {
+            return validationResult;
+        }
+
+        try
+        {
+            await DeleteAsync(detailsViewModel.Id);
+            TempData[SuccessMessage] = string.Format(DeleteSuccessfulMessage, _entityName);
+
+            return RedirectToAction(nameof(MyPublishings));
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"delete {_entityName}");
+
+            return View(new { id = detailsViewModel.Id });
         }
     }
 

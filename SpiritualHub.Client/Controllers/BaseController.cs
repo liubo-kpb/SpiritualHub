@@ -175,7 +175,6 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     public virtual async Task<IActionResult> Add()
     {
         bool isPublisher = this.User.IsAdmin() || await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
-        bool isPublisher = this.User.IsAdmin() || await _publisherService.ExistsByUserIdAsync(userId);
         if (!isPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -226,7 +225,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         if (!this.User.IsAdmin())
         {
             _validationService.AuthorId = newEntityForm.AuthorId!;
-            var validationResult = await _validationService.CanUseModifyActionAsync(userId, TempData);
+            var validationResult = await _validationService.ModifyPermissionsAsync(userId, TempData);
             if (validationResult != null)
             {
                 return validationResult;
@@ -256,19 +255,11 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     [HttpGet]
     public virtual async Task<IActionResult> Edit(string id)
     {
-        string userId = this.User.GetId()!;
-        try
+        var validationResult = await ValidateAction(id);
+        if (validationResult != null)
         {
-            var entityFormModel = await GetEntityInfoAsync(id);
-
-            _validationService.AuthorId = entityFormModel?.AuthorId ?? null!;
-            var validationResult = await _validationService.IsValidAction(  entityFormModel != null,
-                                                                            this.User.IsAdmin(),
-                                                                            userId, _entityName, TempData);
-            if (validationResult != null)
-            {
-                return validationResult;
-            }
+            return validationResult;
+        }
 
         try
         {
@@ -297,11 +288,10 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         }
 
         string userId = this.User.GetId()!;
-
         _validationService.AuthorId = updatedEntityFrom.AuthorId!;
-        var validationResult = await _validationService.IsValidAction(  await ExistsAsync(updatedEntityFrom.Id!),
-                                                                        this.User.IsAdmin(),
-                                                                        userId, _entityName, TempData);
+        var validationResult = await _validationService.ActionAsync(await ExistsAsync(updatedEntityFrom.Id!),
+                                                                                   this.User.IsAdmin(),
+                                                                                   userId, _entityName, TempData);
         if (validationResult != null)
         {
             return validationResult;
@@ -352,6 +342,15 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             formModel.Authors = await _publisherService.GetConnectedAuthorsByUserIdAsync(this.User.GetId()!);
         }
         formModel.Categories = await _categoryService.GetAllAsync();
+    }
+
+    protected async Task<IActionResult?> ValidateAction(string entityId)
+    {
+        _validationService.SetFields(entityId, GetAuthorIdAsync);
+
+        return await _validationService.ActionAsync(await ExistsAsync(entityId),
+                                                    this.User.IsAdmin(),
+                                                    this.User.GetId()!, _entityName, TempData);
     }
 
     protected virtual async Task ValidateModelAsync(TFormModel formModel)
