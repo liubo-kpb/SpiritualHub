@@ -45,9 +45,18 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
             return RedirectToAction(nameof(Mine));
         }
 
-        var author = await _authorService.GetAuthorInfoAsync(id);
+        try
+        {
+            var author = await _authorService.GetAuthorInfoAsync(id);
 
-        return View(author);
+            return View(author);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load {_entityName}");
+
+            return RedirectToAction(nameof(MyPublishings));
+        }
     }
 
     [HttpPost]
@@ -70,10 +79,18 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
             return RedirectToAction(nameof(Mine));
         }
 
-        await _authorService.ActivateAsync(author.Id);
-        TempData[SuccessMessage] = AuthorActivatedSuccessfullyMessage;
+        try
+        {
+            await _authorService.ActivateAsync(author.Id);
 
-        return RedirectToAction(nameof(All));
+            TempData[SuccessMessage] = AuthorActivatedSuccessfullyMessage;
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"activate {_entityName}");
+        }
+
+        return RedirectToAction(nameof(Details), new { id = author.Id });
     }
 
     [HttpGet]
@@ -96,9 +113,18 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
             return RedirectToAction(nameof(Mine));
         }
 
-        var author = await _authorService.GetAuthorInfoAsync(id);
+        try
+        {
+            var author = await _authorService.GetAuthorInfoAsync(id);
 
-        return View(author);
+            return View(author);
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"load {_entityName}");
+
+            return RedirectToAction(nameof(MyPublishings));
+        }
     }
 
     [HttpPost]
@@ -121,10 +147,19 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
             return RedirectToAction(nameof(Mine));
         }
 
-        await _authorService.DisableAsync(author.Id);
-        TempData[SuccessMessage] = AuthorDeactivatedSuccessfullyMessage;
+        try
+        {
+            await _authorService.DisableAsync(author.Id);
+            TempData[SuccessMessage] = AuthorDeactivatedSuccessfullyMessage;
 
-        return RedirectToAction(nameof(All));
+            return RedirectToAction(nameof(Details), new { id = author.Id });
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"disable {_entityName}");
+
+            return RedirectToAction(nameof(MyPublishings));
+        }
     }
 
     [HttpPost]
@@ -259,7 +294,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = String.Format(GeneralUnexpectedErrorMessage, "create your subscription");
+            TempData[ErrorMessage] = String.Format(GeneralUnexpectedErrorMessage, "update your subscription");
 
             return RedirectToAction(nameof(All));
         }
@@ -320,12 +355,21 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
             }
         }
 
-        var publisher = await _publisherService.GetPublisherAsync(userId);
-        await _authorService.AddPublisherAsync(id, publisher!);
+        try
+        {
+            var publisher = await _publisherService.GetPublisherAsync(userId);
+            await _authorService.AddPublisherAsync(id, publisher!);
 
-        TempData[SuccessMessage] = AuthorConnectedPublisherSuccessMessage;
+            TempData[SuccessMessage] = AuthorConnectedPublisherSuccessMessage;
 
-        return RedirectToAction(nameof(MyPublishings));
+            return RedirectToAction(nameof(MyPublishings));
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"connect with {_entityName}");
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
     }
 
     [HttpPost]
@@ -358,12 +402,21 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
             }
         }
 
-        var publisher = await _publisherService.GetPublisherAsync(userId);
-        await _authorService.RemovePublisherAsync(id, publisher!.Id);
+        try
+        {
+            var publisher = await _publisherService.GetPublisherIdAsync(userId);
+            await _authorService.RemovePublisherAsync(id, publisher!);
 
-        TempData[SuccessMessage] = AuthorRemoveAffilicationSuccessMessage;
+            TempData[SuccessMessage] = AuthorRemoveAffilicationSuccessMessage;
 
-        return RedirectToAction(nameof(MyPublishings));
+            return RedirectToAction(nameof(MyPublishings));
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"remove your connection with the {_entityName}");
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
     }
 
     public override async Task<IActionResult> Add()
@@ -378,11 +431,23 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
             return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
         }
 
-        var formModel = CreateFormModelInstance();
+        try
+        {
+            var formModel = CreateFormModelInstance();
+            await GetFormDetailsAsync(formModel);
 
-        await GetFormDetailsAsync(formModel);
+            return View(nameof(Add), formModel);
+        }
+        catch (NotImplementedException e)
+        {
+            TempData[ErrorMessage] = e.Message;
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, "load page");
+        }
 
-        return View(formModel);
+        return RedirectToAction(nameof(HomeController.Index), "Home");
     }
 
     public override async Task<IActionResult> Add(AuthorFormModel newEntityForm)
