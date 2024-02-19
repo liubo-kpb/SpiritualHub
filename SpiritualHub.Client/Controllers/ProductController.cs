@@ -125,7 +125,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
     [HttpPost]
     public virtual async Task<IActionResult> Show(string id)
     {
-        var validationResult = await ValidateModifyAction(id);
+        var validationResult = await ValidateModifyActionAsync(id);
         if (validationResult != null)
         {
             return validationResult;
@@ -155,7 +155,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
     [HttpPost]
     public virtual async Task<IActionResult> Hide(string id)
     {
-        var validationResult = await ValidateModifyAction(id);
+        var validationResult = await ValidateModifyActionAsync(id);
         if (validationResult != null)
         {
             return validationResult;
@@ -185,7 +185,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
     [HttpGet]
     public virtual async Task<IActionResult> Delete(string id)
     {
-        var validationResult = await ValidateModifyAction(id);
+        var validationResult = await ValidateModifyActionAsync(id);
         if (validationResult != null)
         {
             return validationResult;
@@ -208,7 +208,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
     [HttpPost]
     public virtual async Task<IActionResult> Delete(TDetailsModel detailsViewModel)
     {
-        var validationResult = await ValidateModifyAction(detailsViewModel.Id);
+        var validationResult = await ValidateModifyActionAsync(detailsViewModel.Id);
         if (validationResult != null)
         {
             return validationResult;

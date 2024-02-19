@@ -44,7 +44,7 @@ public class ValidationService : IValidationService
 
     public Func<string, Task<string>> GetAuthorIdFunc { get; set; } = null!;
 
-    public virtual async Task<IActionResult?> CheckModifyActionAsync(string entityId)
+    public virtual async Task<IActionResult?> CheckModifyActionAsync(string entityId, string? authorId)
     {
         var validationResult = await HandleExistsCheckAsync(entityId);
 
@@ -53,7 +53,15 @@ public class ValidationService : IValidationService
             return null!;
         }
 
-        return validationResult ?? await CheckModifyPermissionsAsync(entityId);
+        string id = entityId;
+        bool isAuthorId = false;
+        if (!string.IsNullOrEmpty(authorId))
+        {
+            id = authorId;
+            isAuthorId = true;
+        }
+
+        return validationResult ?? await CheckModifyPermissionsAsync(id, isAuthorId);
     }
 
     public virtual async Task<IActionResult> HandleExistsCheckAsync(string entityId)
@@ -62,15 +70,15 @@ public class ValidationService : IValidationService
         {
             TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, EntityName);
 
-            return RedirectToAction("All");
+            return RedirectToAction("All", ControllerName);
         }
 
         return null!;
     }
 
-    public virtual async Task<IActionResult?> CheckModifyPermissionsAsync(string entityId = null!)
+    public virtual async Task<IActionResult?> CheckModifyPermissionsAsync(string id, bool isAuthorId = false)
     {
-        return await CheckUserIsPublisherAsync() ?? await CheckPublisherIsConnectionToAuthorAsync(entityId);
+        return await CheckUserIsPublisherAsync() ?? await CheckPublisherConnectionToAuthorAsync(id, isAuthorId);
     }
 
     public virtual async Task<IActionResult?> CheckUserIsPublisherAsync()
@@ -85,21 +93,20 @@ public class ValidationService : IValidationService
         return null!;
     }
 
-    public virtual async Task<IActionResult?> CheckPublisherIsConnectionToAuthorAsync(string? entityId)
+    public virtual async Task<IActionResult?> CheckPublisherConnectionToAuthorAsync(string id, bool isAuthorId)
     {
-        this.AuthorId ??= await GetAuthorIdFunc(entityId!);
-        if (this.AuthorId == null)
+        if (!isAuthorId)
         {
-            throw new ArgumentException();
+            id = await this.GetAuthorIdFunc(id);
         }
 
-        if (!await _publisherService.IsConnectedToAuthorByUserId(this.User.GetId()!, this.AuthorId))
+        if (!await _publisherService.IsConnectedToAuthorByUserId(this.User.GetId()!, id))
         {
             TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
 
-            return RedirectToAction("Details", nameof(Author), new { id = this.AuthorId });
+            return RedirectToAction("Details", nameof(Author), new { id });
         }
-        
+
         return null!;
     }
 

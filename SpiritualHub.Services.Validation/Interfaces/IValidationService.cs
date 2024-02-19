@@ -32,7 +32,7 @@ public interface IValidationService
     /// <param name="entityName"></param>
     /// <param name="tempData"></param>
     /// <returns>Returns <see cref="IActionResult"/> based on validation result and logic.</returns>
-    Task<IActionResult?> CheckModifyActionAsync(string entityId);
+    Task<IActionResult?> CheckModifyActionAsync(string entityId, string? authorId);
 
     Task<IActionResult> HandleExistsCheckAsync(string entityId);
 
@@ -42,9 +42,9 @@ public interface IValidationService
     /// <param name="userId"></param>
     /// <param name="tempData"></param>
     /// <returns>Returns <see cref="IActionResult"/> based on validation result and logic.</returns>
-    Task<IActionResult?> CheckModifyPermissionsAsync(string entityId = null!);
+    Task<IActionResult?> CheckModifyPermissionsAsync(string id, bool isAuthorId);
 
     Task<IActionResult?> CheckUserIsPublisherAsync();
 
-    Task<IActionResult?> CheckPublisherIsConnectionToAuthorAsync(string? entityId);
+    Task<IActionResult?> CheckPublisherConnectionToAuthorAsync(string id, bool isAuthorId);
 }

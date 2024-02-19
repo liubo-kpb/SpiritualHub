@@ -226,14 +226,12 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 
         if (!this.User.IsAdmin())
         {
-            _validationService.AuthorId = newEntityForm.AuthorId!;
-            var validationResult = await _validationService.CheckModifyPermissionsAsync();
+            var validationResult = await _validationService.CheckModifyPermissionsAsync(newEntityForm.AuthorId!, true);
             if (validationResult != null)
             {
                 return validationResult;
             }
         }
-
 
         try
         {
@@ -257,7 +255,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     [HttpGet]
     public virtual async Task<IActionResult> Edit(string id)
     {
-        var validationResult = await ValidateModifyAction(id);
+        var validationResult = await ValidateModifyActionAsync(id);
         if (validationResult != null)
         {
             return validationResult;
@@ -290,8 +288,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         }
 
         string userId = this.User.GetId()!;
-        _validationService.AuthorId = updatedEntityFrom.AuthorId!;
-        var validationResult = await _validationService.CheckModifyActionAsync(updatedEntityFrom.Id!);
+        var validationResult = await ValidateModifyActionAsync(updatedEntityFrom.Id!, updatedEntityFrom.AuthorId!);
         if (validationResult != null)
         {
             return validationResult;
@@ -344,9 +341,9 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         formModel.Categories = await _categoryService.GetAllAsync();
     }
 
-    protected virtual async Task<IActionResult?> ValidateModifyAction(string entityId)
+    protected virtual async Task<IActionResult?> ValidateModifyActionAsync(string entityId, string authorId = null!)
     {
-        return await _validationService.CheckModifyActionAsync(entityId);
+        return await _validationService.CheckModifyActionAsync(entityId, authorId);
     }
 
     protected virtual async Task ValidateModelAsync(TFormModel formModel)
