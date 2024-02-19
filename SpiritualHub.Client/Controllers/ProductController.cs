@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 
 using ViewModels.BaseModels;
 using Infrastructure.Extensions;
+using Services.Validation.Interfaces;
 
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
+using static Common.ExceptionErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
 
 public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, TQueryModel, TSortingEnum>
@@ -20,7 +22,9 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
     protected ProductController(
         IServiceProvider serviceProvider,
         string entityName)
-        : base(serviceProvider, entityName)
+        : base(serviceProvider,
+               serviceProvider.GetRequiredService<IValidationService>(),
+               entityName)
     {
     }
     
@@ -121,7 +125,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
     [HttpPost]
     public virtual async Task<IActionResult> Show(string id)
     {
-        var validationResult = await ValidateAction(id);
+        var validationResult = await ValidateModifyAction(id);
         if (validationResult != null)
         {
             return validationResult;
@@ -151,7 +155,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
     [HttpPost]
     public virtual async Task<IActionResult> Hide(string id)
     {
-        var validationResult = await ValidateAction(id);
+        var validationResult = await ValidateModifyAction(id);
         if (validationResult != null)
         {
             return validationResult;
@@ -181,7 +185,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
     [HttpGet]
     public virtual async Task<IActionResult> Delete(string id)
     {
-        var validationResult = await ValidateAction(id);
+        var validationResult = await ValidateModifyAction(id);
         if (validationResult != null)
         {
             return validationResult;
@@ -204,7 +208,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
     [HttpPost]
     public virtual async Task<IActionResult> Delete(TDetailsModel detailsViewModel)
     {
-        var validationResult = await ValidateAction(detailsViewModel.Id);
+        var validationResult = await ValidateModifyAction(detailsViewModel.Id);
         if (validationResult != null)
         {
             return validationResult;
