@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 
 using Data.Models;
 using Services.Interfaces;
+using Services.Validation.Interfaces;
 using Infrastructure.Extensions;
 using ViewModels.BaseModels;
 using ViewModels.Publisher;
 
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
+using static Common.ExceptionErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
 
 [Authorize]
@@ -21,23 +23,25 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     where TQueryModel : BaseQueryModel<TViewModel, TSortingEnum>
     where TSortingEnum : Enum
 {
+    private readonly IValidationService _validationService;
+
     protected readonly string _entityName;
 
     protected readonly IAuthorService _authorService;
     protected readonly ICategoryService _categoryService;
     protected readonly IPublisherService _publisherService;
 
-    protected readonly IValidationService _validationService;
-
     public BaseController(
         IServiceProvider serviceProvider,
+        IValidationService validationService,
         string entityName)
     {
         _authorService = serviceProvider.GetRequiredService<IAuthorService>();
         _categoryService = serviceProvider.GetRequiredService<ICategoryService>();
         _publisherService = serviceProvider.GetRequiredService<IPublisherService>();
 
-        _validationService = serviceProvider.GetRequiredService<IValidationService>();
+        _validationService = validationService;
+        SetValidationServiceProperties();
 
         _entityName = entityName;
     }
@@ -223,7 +227,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         if (!this.User.IsAdmin())
         {
             _validationService.AuthorId = newEntityForm.AuthorId!;
-            var validationResult = await _validationService.ModifyPermissionsAsync(userId, TempData);
+            var validationResult = await _validationService.CheckModifyPermissionsAsync();
             if (validationResult != null)
             {
                 return validationResult;
@@ -253,7 +257,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     [HttpGet]
     public virtual async Task<IActionResult> Edit(string id)
     {
-        var validationResult = await ValidateAction(id);
+        var validationResult = await ValidateModifyAction(id);
         if (validationResult != null)
         {
             return validationResult;
@@ -287,9 +291,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 
         string userId = this.User.GetId()!;
         _validationService.AuthorId = updatedEntityFrom.AuthorId!;
-        var validationResult = await _validationService.ActionAsync(await ExistsAsync(updatedEntityFrom.Id!),
-                                                                                   this.User.IsAdmin(),
-                                                                                   userId, _entityName, TempData);
+        var validationResult = await _validationService.CheckModifyActionAsync(updatedEntityFrom.Id!);
         if (validationResult != null)
         {
             return validationResult;
@@ -342,13 +344,9 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         formModel.Categories = await _categoryService.GetAllAsync();
     }
 
-    protected async Task<IActionResult?> ValidateAction(string entityId)
+    protected virtual async Task<IActionResult?> ValidateModifyAction(string entityId)
     {
-        _validationService.SetFields(entityId, GetAuthorIdAsync);
-
-        return await _validationService.ActionAsync(await ExistsAsync(entityId),
-                                                    this.User.IsAdmin(),
-                                                    this.User.GetId()!, _entityName, TempData);
+        return await _validationService.CheckModifyActionAsync(entityId);
     }
 
     protected virtual async Task ValidateModelAsync(TFormModel formModel)
@@ -396,5 +394,15 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         }
 
         return RedirectToAction(nameof(HomeController.Index), "Home");
+    }
+
+    private void SetValidationServiceProperties()
+    {
+        _validationService.ControllerName = this.ControllerContext.RouteData.Values["controller"]!.ToString()!;
+        _validationService.User = this.User;
+        _validationService.TempData = this.TempData;
+        _validationService.EntityName = this._entityName;
+        _validationService.GetAuthorIdFunc = this.GetAuthorIdAsync;
+        _validationService.ExistsFunc = this.ExistsAsync;
     }
 }

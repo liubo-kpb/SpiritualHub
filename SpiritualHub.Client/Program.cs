@@ -9,6 +9,7 @@ using Infrastructure.ModelBinder;
 using Data;
 using Data.Models;
 using Services.Interfaces;
+using Services.Validation.Interfaces;
 using Services.Mappings;
 
 public class Program
@@ -35,6 +36,7 @@ public class Program
             .AddEntityFrameworkStores<SpiritsDbContext>();
 
         builder.Services.AddApplicationServices(typeof(IAuthorService));
+        builder.Services.AddApplicationServices(typeof(IValidationService));
         builder.Services.AddApplicationRepositories();
         builder.Services.AddAutoMapper(typeof(ApplicationProfile));
         
