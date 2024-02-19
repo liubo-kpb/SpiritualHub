@@ -10,6 +10,7 @@ using Services.Interfaces;
 using Data.Models;
 
 using static Common.ErrorMessagesConstants;
+using static Common.ExceptionErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
 using static Common.NotificationMessagesConstants;
 
