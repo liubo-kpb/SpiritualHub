@@ -7,6 +7,7 @@ using ViewModels.Author;
 using Infrastructure.Enums;
 using Infrastructure.Extensions;
 using Services.Interfaces;
+using Services.Validation.Interfaces;
 using Data.Models;
 
 using static Common.ErrorMessagesConstants;
@@ -17,19 +18,22 @@ using static Common.NotificationMessagesConstants;
 public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsViewModel, AuthorFormModel, AllAuthorsQueryModel, AuthorSorting>
 {
     private readonly ISubscriptionService _subscriptionService;
+    private readonly IAuthorValidationService _authorValidationService;
 
     public AuthorController(
         ISubscriptionService subscriptionService,
-        IServiceProvider serviceProvider)
-        : base(serviceProvider, nameof(Author).ToLower())
+        IServiceProvider serviceProvider,
+        IAuthorValidationService authorValidationService)
+        : base(serviceProvider, authorValidationService, nameof(Author).ToLower())
     {
         _subscriptionService = subscriptionService;
+        _authorValidationService = authorValidationService;
     }
 
     [HttpGet]
     public async Task<IActionResult> Activate(string id)
     {
-        var validationResult = await ValidateAction(id);
+        var validationResult = await ValidateModifyActionAsync(id, id);
         if (validationResult != null)
         {
             return validationResult;
@@ -52,7 +56,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
     [HttpPost]
     public async Task<IActionResult> Activate(AuthorDetailsViewModel author)
     {
-        var validationResult = await ValidateAction(author.Id);
+        var validationResult = await ValidateModifyActionAsync(author.Id);
         if (validationResult != null)
         {
             return validationResult;
@@ -75,7 +79,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
     [HttpGet]
     public async Task<IActionResult> Disable(string id)
     {
-        var validationResult = await ValidateAction(id);
+        var validationResult = await ValidateModifyActionAsync(id, id);
         if (validationResult != null)
         {
             return validationResult;
@@ -98,7 +102,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
     [HttpPost]
     public async Task<IActionResult> Disable(AuthorDetailsViewModel author)
     {
-        var validationResult = await ValidateAction(author.Id);
+        var validationResult = await ValidateModifyActionAsync(author.Id);
         if (validationResult != null)
         {
             return validationResult;
@@ -122,20 +126,10 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
     [HttpPost]
     public async Task<IActionResult> Follow(string id)
     {
-        bool exists = await ExistsAsync(id);
-        if (!exists)
+        var validationResult = await _authorValidationService.HandleFollowActionAsync(id);
+        if (validationResult != null)
         {
-            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
-        bool isFollowing = await _authorService.IsFollowedByUserWithId(id, this.User.GetId()!);
-        if (isFollowing)
-        {
-            TempData[ErrorMessage] = AlreadyFollowingAuthorErrorMessage;
-
-            return RedirectToAction(nameof(Mine));
+            return validationResult;
         }
 
         try
@@ -155,8 +149,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
     [HttpPost]
     public async Task<IActionResult> Unfollow(string id)
     {
-        var exists = await ExistsAsync(id);
-        if (!exists)
+        if (!await ExistsAsync(id))
         {
             TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, _entityName);
 
@@ -178,20 +171,10 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
     [HttpGet]
     public async Task<IActionResult> Subscribe(string id)
     {
-        bool exists = await ExistsAsync(id);
-        if (!exists)
+        var validationResult = await _authorValidationService.CheckSubscribeActionAsync(id);
+        if (validationResult != null)
         {
-            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
-        bool isPublisher = !this.User.IsAdmin() || await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
-        if (isPublisher)
-        {
-            TempData[ErrorMessage] = PublishersCannotSubscribeErrorMessage;
-
-            return RedirectToAction(nameof(All));
+            return validationResult;
         }
 
         try
@@ -212,34 +195,15 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
     [HttpPost]
     public async Task<IActionResult> Subscribe(AuthorSubscribeFormModel authorSubscriptionForm)
     {
-        bool exists = await ExistsAsync(authorSubscriptionForm.Id);
-        if (!exists)
+        var validationResult = await _authorValidationService.HandleSubscribeActionAsync(_subscriptionService, authorSubscriptionForm.SubscriptionId, authorSubscriptionForm.Id);
+        if (validationResult != null)
         {
-            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
-        bool isExistingSubscription = await _subscriptionService.ExistsByIdAsync(authorSubscriptionForm.SubscriptionId);
-        if (!isExistingSubscription)
-        {
-            TempData[ErrorMessage] = SelectValidSubscriptionPlan;
-
-            return View(await _authorService.GetAuthorSubscribtionsAsync(authorSubscriptionForm.Id));
-        }
-
-        string userId = this.User.GetId()!;
-        bool isPublisher = !this.User.IsAdmin() || await _publisherService.ExistsByUserIdAsync(userId);
-        if (isPublisher)
-        {
-            TempData[ErrorMessage] = PublishersCannotSubscribeErrorMessage;
-
-            return RedirectToAction(nameof(All));
+            return validationResult;
         }
 
         try
         {
-            await _authorService.SubscribeAsync(authorSubscriptionForm.Id, authorSubscriptionForm.SubscriptionId, userId);
+            await _authorService.SubscribeAsync(authorSubscriptionForm.Id, authorSubscriptionForm.SubscriptionId, this.User.GetId()!);
 
             return RedirectToAction(nameof(Mine));
         }
@@ -260,8 +224,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
     [HttpPost]
     public async Task<IActionResult> Unsubscribe(string id)
     {
-        var exists = await ExistsAsync(id);
-        if (!exists)
+        if (!await ExistsAsync(id))
         {
             TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, _entityName);
 
@@ -284,37 +247,15 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
     [HttpPost]
     public async Task<IActionResult> BecomeConnectedPublisher(string id)
     {
-        var exists = await ExistsAsync(id);
-        if (!exists)
+        var validationResult = await _authorValidationService.CheckConnectActionAsync(id);
+        if (validationResult != null)
         {
-            TempData[ErrorMessage] = String.Format(NoEntityFoundErrorMessage, _entityName);
-
-            return RedirectToAction(nameof(All));
-        }
-
-        string userId = this.User.GetId()!;
-        if (!this.User.IsAdmin())
-        {
-            bool isPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-            if (!isPublisher)
-            {
-                TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-                return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-            }
-
-            bool isConnectedPublisher = await _publisherService.IsConnectedToAuthorByUserId(userId, id);
-            if (isConnectedPublisher)
-            {
-                TempData[ErrorMessage] = AlreadyAConnectedPublisherErrorMessage;
-
-                return RedirectToAction(nameof(MyPublishings));
-            }
+            return validationResult;
         }
 
         try
         {
-            var publisher = await _publisherService.GetPublisherAsync(userId);
+            var publisher = await _publisherService.GetPublisherAsync(this.User.GetId()!);
             await _authorService.AddPublisherAsync(id, publisher!);
 
             TempData[SuccessMessage] = AuthorConnectedPublisherSuccessMessage;
@@ -332,7 +273,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
     [HttpPost]
     public async Task<IActionResult> RemoveConnectedPublisher(string id)
     {
-        var validationResult = await ValidateAction(id);
+        var validationResult = await ValidateModifyActionAsync(id);
         if (validationResult != null)
         {
             return validationResult;
@@ -349,7 +290,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         }
         catch (Exception)
         {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"remove your connection with the {_entityName}");
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"remove your affiliation with the {_entityName}");
 
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -394,14 +335,12 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
             return View(newEntityForm);
         }
 
-        if (!this.User.IsAdmin())
+        bool isPublisher = this.User.IsAdmin() || await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
+        if (!isPublisher)
         {
-            _validationService.AuthorId = newEntityForm.AuthorId!;
-            var validationResult = await _validationService.ModifyPermissionsAsync(this.User.GetId()!, TempData);
-            if (validationResult != null)
-            {
-                return validationResult;
-            }
+            TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+            return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
         }
 
         try

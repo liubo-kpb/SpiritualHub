@@ -37,6 +37,7 @@ public class Program
 
         builder.Services.AddApplicationServices(typeof(IAuthorService));
         builder.Services.AddApplicationServices(typeof(IValidationService));
+        builder.Services.AddApplicationSingletonServices();
         builder.Services.AddApplicationRepositories();
         builder.Services.AddAutoMapper(typeof(ApplicationProfile));
         

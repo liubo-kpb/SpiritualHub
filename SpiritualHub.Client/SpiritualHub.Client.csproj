@@ -33,6 +33,7 @@
     <ProjectReference Include="..\SpiritualHub.Data.Models\SpiritualHub.Data.Models.csproj" />
     <ProjectReference Include="..\SpiritualHub.Data\SpiritualHub.Data.csproj" />
     <ProjectReference Include="..\SpiritualHub.Services.Models\SpiritualHub.Services.Models.csproj" />
+    <ProjectReference Include="..\SpiritualHub.Services.Validation\SpiritualHub.Services.Validation.csproj" />
     <ProjectReference Include="..\SpiritualHub.Services\SpiritualHub.Services.csproj" />
   </ItemGroup>
 

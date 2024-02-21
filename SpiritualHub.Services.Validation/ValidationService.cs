@@ -4,11 +4,14 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 using Interfaces;
 using Services.Interfaces;
 using Data.Models;
 using Client.Infrastructure.Extensions;
+using Client.ViewModels.BaseModels;
 
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
@@ -21,11 +24,12 @@ public class ValidationService : IValidationService
     protected readonly IPublisherService _publisherService;
 
     public ValidationService(
-        IUrlHelper urlHelper,
+        IUrlHelperFactory urlHelperFactory,
+        IActionContextAccessor actionContextAccessor,
         IAuthorService authorService,
         IPublisherService publisherService)
     {
-        _urlHelper = urlHelper;
+        _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext!);
         _authorService = authorService;
         _publisherService = publisherService;
     }
@@ -40,9 +44,9 @@ public class ValidationService : IValidationService
 
     public string AuthorId { get; set; } = null!;
 
-    public Func<string, Task<bool>> ExistsFunc { get; set; } = null!;
+    public Func<string, Task<bool>> ExistsAsyncFunc { get; set; } = null!;
 
-    public Func<string, Task<string>> GetAuthorIdFunc { get; set; } = null!;
+    public Func<string, Task<string>> GetAuthorIdAsyncFunc { get; set; } = null!;
 
     public virtual async Task<IActionResult?> CheckModifyActionAsync(string entityId, string? authorId)
     {
@@ -66,7 +70,7 @@ public class ValidationService : IValidationService
 
     public virtual async Task<IActionResult> HandleExistsCheckAsync(string entityId)
     {
-        if (!await ExistsFunc(entityId))
+        if (!await ExistsAsyncFunc(entityId))
         {
             TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, EntityName);
 
@@ -97,7 +101,7 @@ public class ValidationService : IValidationService
     {
         if (!isAuthorId)
         {
-            id = await this.GetAuthorIdFunc(id);
+            id = await this.GetAuthorIdAsyncFunc(id);
         }
 
         if (!await _publisherService.IsConnectedToAuthorByUserId(this.User.GetId()!, id))
@@ -120,5 +124,10 @@ public class ValidationService : IValidationService
         }
 
         return new RedirectResult(actionUrl);
+    }
+
+    public virtual bool PublisherHasConnectedAuthors(BaseFormModel formModel)
+    {
+        return formModel.Authors.Any();
     }
 }

@@ -1,8 +1,11 @@
 ﻿namespace SpiritualHub.Services.Validation.Interfaces;
 
+using System.Security.Claims;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using System.Security.Claims;
+
+using Client.ViewModels.BaseModels;
 
 /// <summary>
 /// Validation checks when an Action is submitted. Methods return <see cref="IActionResult"/> depending on the result. Intended to return <c>null</c> if action passes validation.
@@ -19,9 +22,9 @@ public interface IValidationService
 
     string AuthorId { get; set; }
 
-    Func<string, Task<bool>> ExistsFunc { get; set; }
+    Func<string, Task<bool>> ExistsAsyncFunc { get; set; }
 
-    Func<string, Task<string>> GetAuthorIdFunc {get; set;}
+    Func<string, Task<string>> GetAuthorIdAsyncFunc {get; set;}
 
     /// <summary>
     /// Validates entity existence in the DB and user modify permissions with <see cref="CheckModifyPermissionsAsync(string, ITempDataDictionary)"/>.
@@ -47,4 +50,6 @@ public interface IValidationService
     Task<IActionResult?> CheckUserIsPublisherAsync();
 
     Task<IActionResult?> CheckPublisherConnectionToAuthorAsync(string id, bool isAuthorId);
+
+    bool                 PublisherHasConnectedAuthors(BaseFormModel formModel);
 }
