@@ -14,6 +14,8 @@ using Data.Models;
 
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
+using static Common.ExceptionErrorMessagesConstants;
+
 
 public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsViewModule, ModuleFormModel, EmptyQueryModel, Enum>
 {

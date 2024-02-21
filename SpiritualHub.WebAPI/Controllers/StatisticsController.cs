@@ -6,7 +6,7 @@ using Client.ViewModels.Home;
 using Services.Interfaces;
 using SpiritualHub.WebAPI.Responses;
 
-using static Common.ErrorMessagesConstants;
+using static Common.ExceptionErrorMessagesConstants;
 
 [ApiController]
 [Route("api/statistics")]

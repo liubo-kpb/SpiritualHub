@@ -9,6 +9,7 @@ using Services.Interfaces;
 using Data.Models;
 
 using static Common.ErrorMessagesConstants;
+using static Common.ExceptionErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
 
 public class EventController : ProductController<EventViewModel, EventDetailsViewModel, EventFormModel, AllEventsQueryModel, EventSorting>
