@@ -18,9 +18,9 @@ public interface IValidationService
 
     ITempDataDictionary TempData { get; set; }
 
-    string EntityName { get; set; }
+    public IUrlHelper UrlHelper { get; set; }
 
-    string AuthorId { get; set; }
+    string EntityName { get; set; }
 
     Func<string, Task<bool>> ExistsAsyncFunc { get; set; }
 
@@ -52,4 +52,6 @@ public interface IValidationService
     Task<IActionResult?> CheckPublisherConnectionToAuthorAsync(string id, bool isAuthorId);
 
     bool                 PublisherHasConnectedAuthors(BaseFormModel formModel);
+
+    void                 SetUrlHelper(IUrlHelper _urlHelper);
 }

@@ -4,8 +4,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 using Interfaces;
 using Services.Interfaces;
@@ -18,18 +16,14 @@ using static Common.ErrorMessagesConstants;
 
 public class ValidationService : IValidationService
 {
-    private readonly IUrlHelper _urlHelper;
-
     protected readonly IAuthorService _authorService;
     protected readonly IPublisherService _publisherService;
 
+
     public ValidationService(
-        IUrlHelperFactory urlHelperFactory,
-        IActionContextAccessor actionContextAccessor,
         IAuthorService authorService,
         IPublisherService publisherService)
     {
-        _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext!);
         _authorService = authorService;
         _publisherService = publisherService;
     }
@@ -40,9 +34,9 @@ public class ValidationService : IValidationService
 
     public ITempDataDictionary TempData { get; set; } = null!;
 
-    public string EntityName { get; set; } = null!;
+    public IUrlHelper UrlHelper { get; set; } = null!;
 
-    public string AuthorId { get; set; } = null!;
+    public string EntityName { get; set; } = null!;
 
     public Func<string, Task<bool>> ExistsAsyncFunc { get; set; } = null!;
 
@@ -117,10 +111,10 @@ public class ValidationService : IValidationService
     protected IActionResult RedirectToAction(string action, string? controller = null, object? routeValue = null)
     {
         controller ??= ControllerName;
-        string actionUrl = _urlHelper.Action(action, controller)!;
+        string actionUrl = UrlHelper.Action(action, controller)!;
         if (routeValue != null)
         {
-            actionUrl = _urlHelper.Action(action, controller, routeValue)!;
+            actionUrl = UrlHelper.Action(action, controller, routeValue)!;
         }
 
         return new RedirectResult(actionUrl);
@@ -129,5 +123,10 @@ public class ValidationService : IValidationService
     public virtual bool PublisherHasConnectedAuthors(BaseFormModel formModel)
     {
         return formModel.Authors.Any();
+    }
+
+    public void SetUrlHelper(IUrlHelper urlHelper)
+    {
+        UrlHelper = urlHelper;
     }
 }

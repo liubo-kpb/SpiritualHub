@@ -2,6 +2,8 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 using Data.Models;
 using Services.Interfaces;
@@ -9,6 +11,7 @@ using Services.Validation.Interfaces;
 using Infrastructure.Extensions;
 using ViewModels.BaseModels;
 using ViewModels.Publisher;
+using Filters;
 
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
@@ -16,6 +19,7 @@ using static Common.ExceptionErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
 
 [Authorize]
+[ServiceFilter(typeof(CustomValidationFilterAttribute))]
 public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQueryModel, TSortingEnum> : Controller
     where TViewModel : class
     where TDetailsModel : class
@@ -33,6 +37,8 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 
     public BaseController(
         IServiceProvider serviceProvider,
+        IUrlHelperFactory urlHelperFactory,
+        IActionContextAccessor actionContextAccessor,
         IValidationService validationService,
         string entityName)
     {
@@ -40,10 +46,10 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         _categoryService = serviceProvider.GetRequiredService<ICategoryService>();
         _publisherService = serviceProvider.GetRequiredService<IPublisherService>();
 
-        _validationService = validationService;
-        SetValidationServiceProperties();
-
         _entityName = entityName;
+
+        _validationService = validationService;
+        SetValidationServiceProperties(urlHelperFactory, actionContextAccessor);
     }
 
     protected abstract Task<bool> ExistsAsync(string id);
@@ -191,7 +197,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             var formModel = CreateFormModelInstance();
 
             await GetFormDetailsAsync(formModel);
-            if (!formModel.Authors.Any())
+            if (!_validationService.PublisherHasConnectedAuthors(formModel));
             {
                 TempData[ErrorMessage] = NoConnectedAuthorsErrorMessage;
 
@@ -393,13 +399,13 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         return RedirectToAction(nameof(HomeController.Index), "Home");
     }
 
-    private void SetValidationServiceProperties()
+    private void SetValidationServiceProperties(IUrlHelperFactory urlHelperFactory, IActionContextAccessor actionContextAccessor)
     {
-        _validationService.ControllerName = this.ControllerContext.RouteData.Values["controller"]!.ToString()!;
-        _validationService.User = this.User;
-        _validationService.TempData = this.TempData;
+        var controllerName = this.GetType().Name;
+        _validationService.ControllerName = controllerName.Substring(0, controllerName.IndexOf("Controller"));
         _validationService.EntityName = this._entityName;
-        _validationService.GetAuthorIdFunc = this.GetAuthorIdAsync;
-        _validationService.ExistsFunc = this.ExistsAsync;
+        _validationService.GetAuthorIdAsyncFunc = this.GetAuthorIdAsync;
+        _validationService.ExistsAsyncFunc = this.ExistsAsync;
+        _validationService.UrlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext!);
     }
 }

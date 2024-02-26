@@ -11,6 +11,8 @@ using Data.Models;
 using static Common.ErrorMessagesConstants;
 using static Common.ExceptionErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 public class EventController : ProductController<EventViewModel, EventDetailsViewModel, EventFormModel, AllEventsQueryModel, EventSorting>
 {
@@ -18,8 +20,10 @@ public class EventController : ProductController<EventViewModel, EventDetailsVie
 
     public EventController(
         IEventService eventService,
+        IUrlHelperFactory urlHelperFactory,
+        IActionContextAccessor actionContextAccessor,
         IServiceProvider serviceProvider)
-        : base (serviceProvider, nameof(Event).ToLower())
+        : base (serviceProvider, urlHelperFactory, actionContextAccessor, nameof(Event).ToLower())
     {
         _eventService = eventService;
     }

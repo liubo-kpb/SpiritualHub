@@ -2,6 +2,8 @@
 
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 using ViewModels.Author;
 using Infrastructure.Enums;
@@ -22,9 +24,11 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
 
     public AuthorController(
         ISubscriptionService subscriptionService,
+        IUrlHelperFactory urlHelperFactory,
+        IActionContextAccessor actionContextAccessor,
         IServiceProvider serviceProvider,
         IAuthorValidationService authorValidationService)
-        : base(serviceProvider, authorValidationService, nameof(Author).ToLower())
+        : base(serviceProvider, urlHelperFactory, actionContextAccessor, authorValidationService, nameof(Author).ToLower())
     {
         _subscriptionService = subscriptionService;
         _authorValidationService = authorValidationService;

@@ -12,6 +12,8 @@ using Infrastructure.Extensions;
 
 using static Common.ErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 public class CourseController : ProductController<CourseViewModel, CourseDetailsViewModel, CourseFormModel, AllCoursesQueryModel, CourseSorting>
 {
@@ -19,8 +21,10 @@ public class CourseController : ProductController<CourseViewModel, CourseDetails
 
     public CourseController(
         ICourseService courseService,
+        IUrlHelperFactory urlHelperFactory,
+        IActionContextAccessor actionContextAccessor,
         IServiceProvider serviceProvider)   
-        : base(serviceProvider, nameof(Course).ToLower())
+        : base(serviceProvider, urlHelperFactory, actionContextAccessor, nameof(Course).ToLower())
     {
         _courseService = courseService;
     }

@@ -15,7 +15,8 @@ using Data.Models;
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
 using static Common.ExceptionErrorMessagesConstants;
-
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsViewModule, ModuleFormModel, EmptyQueryModel, Enum>
 {
@@ -27,8 +28,10 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
     public ModuleController(
         IModuleService moduleService,
         ICourseService courseService,
-        IServiceProvider serviceProvider)
-        : base(serviceProvider, nameof(Module).ToLower())
+        IServiceProvider serviceProvider,
+        IUrlHelperFactory urlHelperFactory,
+        IActionContextAccessor actionContextAccessor)
+        : base(serviceProvider, urlHelperFactory, actionContextAccessor, nameof(Module).ToLower())
     {
         _moduleService = moduleService;
         _courseService = courseService;

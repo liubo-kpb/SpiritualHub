@@ -3,7 +3,9 @@ namespace SpiritualHub.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
+using Filters;
 using Infrastructure.Extensions;
 using Infrastructure.ModelBinder;
 using Data;
@@ -37,16 +39,20 @@ public class Program
 
         builder.Services.AddApplicationServices(typeof(IAuthorService));
         builder.Services.AddApplicationServices(typeof(IValidationService));
-        builder.Services.AddApplicationSingletonServices();
         builder.Services.AddApplicationRepositories();
         builder.Services.AddAutoMapper(typeof(ApplicationProfile));
-        
+
+        // Add filter services
+        builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+        builder.Services.AddScoped<CustomValidationFilterAttribute>();
+
         builder.Services.AddMemoryCache();
 
         builder.Services.AddControllersWithViews(options =>
         {
             options.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
             options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
+            options.Filters.Add(typeof(CustomValidationFilterAttribute));
         });
 
         var app = builder.Build();

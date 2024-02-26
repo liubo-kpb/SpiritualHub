@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SpiritualHub.Client.Infrastructure\SpiritualHub.Client.Infrastructure.csproj" />
     <ProjectReference Include="..\SpiritualHub.Common\SpiritualHub.Common.csproj" />
     <ProjectReference Include="..\SpiritualHub.Services\SpiritualHub.Services.csproj" />
   </ItemGroup>

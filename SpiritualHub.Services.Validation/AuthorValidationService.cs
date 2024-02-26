@@ -3,8 +3,6 @@
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
 
 using Interfaces;
 using Services.Interfaces;
@@ -17,11 +15,9 @@ using static Common.ErrorMessagesConstants;
 public class AuthorValidationService : ValidationService, IAuthorValidationService
 {
     public AuthorValidationService(
-        IUrlHelperFactory urlHelperFactory,
-        IActionContextAccessor actionContextAccessor,
         IAuthorService authorService,
         IPublisherService publisherService)
-        : base(urlHelperFactory, actionContextAccessor, authorService, publisherService)
+        : base(authorService, publisherService)
     {
     }
 

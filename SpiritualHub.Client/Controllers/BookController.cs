@@ -10,6 +10,8 @@ using ViewModels.Book;
 
 using static Common.ErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 public class BookController : ProductController<BookViewModel, BookDetailsViewModel, BookFormModel, AllBooksQueryModel, BookSorting>
 {
@@ -17,9 +19,11 @@ public class BookController : ProductController<BookViewModel, BookDetailsViewMo
 
     public BookController(
         IBookService bookService,
-        IServiceProvider serviceProvider
+        IServiceProvider serviceProvider,
+        IUrlHelperFactory urlHelperFactory,
+        IActionContextAccessor actionContextAccessor
     )
-        : base(serviceProvider, nameof(Book).ToLower())
+        : base(serviceProvider, urlHelperFactory, actionContextAccessor, nameof(Book).ToLower())
     {
         _bookService = bookService;
     }

@@ -1,12 +1,13 @@
 ﻿namespace SpiritualHub.Client.Infrastructure.Extensions;
 
-using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 using Data.Models;
 using Data.Repository;
 using Data.Repository.Interface;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 public static class DependancyContainer
 {
@@ -41,11 +42,6 @@ public static class DependancyContainer
 
             services.AddScoped(interfaceType, implementationType);
         }
-    }
-
-    public static void AddApplicationSingletonServices(this IServiceCollection services)
-    {
-        services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
     }
 
     /// <summary>

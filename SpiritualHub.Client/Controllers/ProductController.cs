@@ -1,6 +1,8 @@
 ﻿namespace SpiritualHub.Client.Controllers;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 using ViewModels.BaseModels;
 using Infrastructure.Extensions;
@@ -21,13 +23,17 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
 {
     protected ProductController(
         IServiceProvider serviceProvider,
+        IUrlHelperFactory urlHelperFactory,
+        IActionContextAccessor actionContextAccessor,
         string entityName)
         : base(serviceProvider,
+            urlHelperFactory,
+            actionContextAccessor,
                serviceProvider.GetRequiredService<IValidationService>(),
                entityName)
     {
     }
-    
+
     protected abstract Task GetAsync(string id, string userId);
 
     protected abstract Task RemoveAsync(string id, string userId);
