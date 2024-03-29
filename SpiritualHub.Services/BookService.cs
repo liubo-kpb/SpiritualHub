@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using Mappings;
 
-using Data.Repository.Interface;
+using Data.Repository.Interfaces;
 using Data.Models;
 using Interfaces;
 using Models.Book;

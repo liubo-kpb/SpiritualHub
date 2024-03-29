@@ -7,7 +7,7 @@ using AutoMapper;
 
 using Interfaces;
 using Client.ViewModels.Module;
-using Data.Repository.Interface;
+using Data.Repository.Interfaces;
 using Data.Models;
 using SpiritualHub.Services.Mappings;
 

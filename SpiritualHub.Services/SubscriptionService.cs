@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 using Interfaces;
 using Data.Models;
-using Data.Repository.Interface;
+using Data.Repository.Interfaces;
 
 public class SubscriptionService : ISubscriptionService
 {

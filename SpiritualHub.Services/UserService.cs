@@ -8,7 +8,7 @@ using AutoMapper.QueryableExtensions;
 
 using Interfaces;
 using Data.Models;
-using Data.Repository.Interface;
+using Data.Repository.Interfaces;
 using Client.ViewModels.User;
 
 public class UserService : IUserService

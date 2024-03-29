@@ -3,11 +3,10 @@
 using System.Reflection;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 using Data.Models;
 using Data.Repository;
-using Data.Repository.Interface;
+using Data.Repository.Interfaces;
 
 public static class DependancyContainer
 {

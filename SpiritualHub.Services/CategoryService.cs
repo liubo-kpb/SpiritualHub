@@ -10,7 +10,7 @@ using AutoMapper.QueryableExtensions;
 using Interfaces;
 using Mappings;
 using Data.Models;
-using Data.Repository.Interface;
+using Data.Repository.Interfaces;
 using Client.ViewModels.Category;
 
 public class CategoryService : ICategoryService

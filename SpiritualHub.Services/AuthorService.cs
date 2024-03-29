@@ -11,7 +11,7 @@ using Interfaces;
 using Mappings;
 using Models.Author;
 using Data.Models;
-using Data.Repository.Interface;
+using Data.Repository.Interfaces;
 using Client.ViewModels.Author;
 using Client.Infrastructure.Enums;
 

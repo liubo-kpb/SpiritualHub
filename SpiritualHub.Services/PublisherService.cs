@@ -9,7 +9,7 @@ using AutoMapper;
 using Interfaces;
 using Mappings;
 using Data.Models;
-using Data.Repository.Interface;
+using Data.Repository.Interfaces;
 using Client.ViewModels.Author;
 using Client.ViewModels.Publisher;
 

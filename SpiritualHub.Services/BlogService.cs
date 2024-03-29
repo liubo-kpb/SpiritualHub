@@ -3,7 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using Data.Models;
-using Data.Repository.Interface;
+using Data.Repository.Interfaces;
 using Services.Interfaces;
 
 public class BlogService : IBlogService
