@@ -3,7 +3,7 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-using Interface;
+using Interfaces;
 using Models;
 using System.Linq;
 

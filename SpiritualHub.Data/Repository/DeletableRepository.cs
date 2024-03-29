@@ -4,7 +4,7 @@ using System.Linq;
 
 using Microsoft.EntityFrameworkCore;
 
-using Interface;
+using Interfaces;
 using Data;
 
 public class DeletableRepository<TEntity> : Repository<TEntity>, IDeletableRepository<TEntity>

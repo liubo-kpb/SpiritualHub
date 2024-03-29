@@ -6,8 +6,8 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-using Interface;
-using SpiritualHub.Data;
+using Data;
+using Interfaces;
 
 public class Repository<TEntity> : IRepository<TEntity>
         where TEntity : class
@@ -54,7 +54,7 @@ public class Repository<TEntity> : IRepository<TEntity>
         entry.State = EntityState.Modified;
     }
 
-    public async Task<int> SaveChangesAsync() => await Context.SaveChangesAsync();
+    public virtual async Task<int> SaveChangesAsync() => await Context.SaveChangesAsync();
 
     public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate)
     {

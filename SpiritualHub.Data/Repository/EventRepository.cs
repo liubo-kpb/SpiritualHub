@@ -1,6 +1,6 @@
 ﻿namespace SpiritualHub.Data.Repository;
 
-using Interface;
+using Interfaces;
 using Data.Models;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;

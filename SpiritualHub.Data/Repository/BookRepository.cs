@@ -3,7 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using Models;
-using Interface;
+using Interfaces;
 
 public class BookRepository : DeletableRepository<Book>, IBookRepository
 {

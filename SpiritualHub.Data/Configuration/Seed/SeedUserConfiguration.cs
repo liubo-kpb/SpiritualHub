@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using Configuration.Seed.Interface;
+using Interfaces;
 using Models;
 
 using static Common.GeneralApplicationConstants;

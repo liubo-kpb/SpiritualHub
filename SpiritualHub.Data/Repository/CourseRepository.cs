@@ -3,7 +3,7 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-using Interface;
+using Interfaces;
 using Models;
 
 public class CourseRepository : DeletableRepository<Course>, ICourseRepository

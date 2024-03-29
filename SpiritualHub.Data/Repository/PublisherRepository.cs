@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 using Models;
-using Interface;
+using Interfaces;
 
 public class PublisherRepository : Repository<Publisher>, IPublisherRepository
 {

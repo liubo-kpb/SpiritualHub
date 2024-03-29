@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using Configuration.Seed.Interface;
+using Interfaces;
 using Models;
 
 public class SeedImageConfiguration : IEntitySeedConfiguration<Image>

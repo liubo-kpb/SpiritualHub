@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Data.Models;
-using Repository.Interface;
+using Interfaces;
 
 public class AuthorRepository : Repository<Author>, IAuthorRepository
 {

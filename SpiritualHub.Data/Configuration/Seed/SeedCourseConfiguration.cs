@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using Interface;
+using Interfaces;
 using Models;
 
 public class SeedCourseConfiguration : IEntitySeedConfiguration<Course>

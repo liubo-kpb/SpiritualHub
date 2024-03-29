@@ -1,4 +1,4 @@
-﻿namespace SpiritualHub.Data.Repository.Interface;
+﻿namespace SpiritualHub.Data.Repository.Interfaces;
 
 using Data.Models;
 
