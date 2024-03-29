@@ -10,11 +10,42 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.28" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
     <PackageReference Include="NUnit.Analyzers" Version="3.6.1" />
     <PackageReference Include="coverlet.collector" Version="3.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SpiritualHub.Client\SpiritualHub.Client.csproj" />
+    <ProjectReference Include="..\SpiritualHub.Services.Validation\SpiritualHub.Services.Validation.csproj" />
+    <ProjectReference Include="..\SpiritualHub.Services\SpiritualHub.Services.csproj" />
+    <ProjectReference Include="..\SpiritualHub.Tests.Extensions\SpiritualHub.Tests.Extensions.csproj" />
+    <ProjectReference Include="..\SpiritualHub.WebAPI\SpiritualHub.WebAPI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controller\AuthorController\" />
+    <Folder Include="Controller\BaseController\" />
+    <Folder Include="Controller\BookController\" />
+    <Folder Include="Controller\CategoryController\" />
+    <Folder Include="Controller\CourseController\" />
+    <Folder Include="Controller\EventController\" />
+    <Folder Include="Controller\ModuleController\" />
+    <Folder Include="Controller\PublisherController\" />
+    <Folder Include="Controller\ProductController\" />
+    <Folder Include="Service\BusinessService\AuthorService\" />
+    <Folder Include="Service\BusinessService\CourseService\" />
+    <Folder Include="Service\BusinessService\BlogService\" />
+    <Folder Include="Service\BusinessService\BookService\" />
+    <Folder Include="Service\BusinessService\EventService\" />
+    <Folder Include="Service\BusinessService\ModuleService\" />
+    <Folder Include="Service\BusinessService\UserService\" />
+    <Folder Include="Service\BusinessService\SubscriptionService\" />
+    <Folder Include="Service\BusinessService\PublisherService\" />
+    <Folder Include="Service\ValidationService\" />
   </ItemGroup>
 
 </Project>

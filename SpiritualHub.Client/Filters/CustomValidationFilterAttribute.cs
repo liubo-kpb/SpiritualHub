@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 using Services.Validation.Interfaces;
-using SpiritualHub.Client.Controllers;
+using Client.Controllers;
 
 public class CustomValidationFilterAttribute : ActionFilterAttribute
 {
