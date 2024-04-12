@@ -41,12 +41,6 @@ public class CategoryService : ICategoryService
                                     .GetAll()
                                     .FirstOrDefaultAsync(c => c.Id == id);
 
-        _categoryRepository.DeleteEntriesWithForeignKeys<Author, int>($"{nameof(Category)}ID", id);
-        _categoryRepository.DeleteEntriesWithForeignKeys<Event, int>($"{nameof(Category)}ID", id);
-        _categoryRepository.DeleteEntriesWithForeignKeys<Course, int>($"{nameof(Category)}ID", id);
-        _categoryRepository.DeleteEntriesWithForeignKeys<Book, int>($"{nameof(Category)}ID", id);
-        _categoryRepository.DeleteEntriesWithForeignKeys<Blog, int>($"{nameof(Category)}ID", id);
-
         _categoryRepository.Delete(category!);
         await _categoryRepository.SaveChangesAsync();
     }
