@@ -106,4 +106,12 @@ public class AuthorRepository : Repository<Author>, IAuthorRepository
                         .Include(propertyName)
                         .FirstOrDefaultAsync(a => a.Id.ToString() == id);
     }
+
+    public async Task<IList<Author>?> GetAllByPublisherId(string publisherId) => await DbSet
+                                                                                                .Include(a => a.AvatarImage)
+                                                                                                .Include(a => a.Followers)
+                                                                                                .Include(a => a.Subscriptions)
+                                                                                                .ThenInclude(s => s.Subscribers)
+                                                                                                .Where(a => a.Publishers.Any(p => p.Id.ToString() == publisherId.ToUpper()))
+                                                                                                .ToListAsync();
 }

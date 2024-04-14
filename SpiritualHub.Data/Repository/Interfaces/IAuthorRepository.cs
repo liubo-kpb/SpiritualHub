@@ -5,6 +5,8 @@ using SpiritualHub.Data.Models;
 public interface IAuthorRepository : IRepository<Author>
 {
     Task<IEnumerable<Author>?>  LastThreeAuthors();
+
+    Task<IList<Author>?>  GetAllByPublisherId(string publisherId);
     
     Task<Author?>               GetAuthorDetailsByIdAsync(string id);
     

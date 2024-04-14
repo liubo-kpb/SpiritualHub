@@ -40,19 +40,12 @@ public class AuthorService : IAuthorService
 
     public async Task<IEnumerable<AuthorViewModel>> AllAuthorsByPublisherIdAsync(string publisherId, string userId)
     {
-        var authors = await _authorRepository
-            .AllAsNoTracking()
-            .Include(a => a.AvatarImage)
-            .Include(a => a.Followers)
-            .Include(a => a.Subscriptions)
-            .ThenInclude(s => s.Subscribers)
-            .Where(a => a.Publishers.Any(p => p.Id.ToString() == publisherId.ToUpper()))
-            .ToListAsync();
+        var authors = await _authorRepository.GetAllByPublisherId(publisherId);
 
         List<AuthorViewModel> authorsModel = new List<AuthorViewModel>();
-        _mapper.MapListToViewModel(authors, authorsModel);
+        _mapper.MapListToViewModel(authors!, authorsModel);
 
-        for (int i = 0; i < authors.Count; i++)
+        for (int i = 0; i < authors!.Count; i++)
         {
             SetIsUserFollowingAndSubscribed(userId, authors[i], authorsModel[i]);
         }
@@ -361,11 +354,11 @@ public class AuthorService : IAuthorService
         return oldSubscription?.Id.ToString();
     }
 
-    private async Task FilteroutAdministratorsFromAuthorPublishers(Author? author, string role)
+    private async Task FilteroutAdministratorsFromAuthorPublishers(Author author, string role)
     {
         ICollection<Publisher> usersInRole = new List<Publisher>();
 
-        foreach (var publisher in author!.Publishers)
+        foreach (var publisher in author.Publishers)
         {
             bool isAdmin = await _userManager.IsInRoleAsync(publisher.User, role);
             if (isAdmin)
