@@ -13,6 +13,7 @@ public class MockConfiguration
 {
     protected ICategoryService _categoryService;
     protected Mock<IDeletableRepository<Category>> _categoryRepositoryMock;
+
     private IMapper _mapper;
 
     [OneTimeSetUp]
