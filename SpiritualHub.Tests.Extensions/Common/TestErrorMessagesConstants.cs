@@ -2,5 +2,5 @@
 
 public static class TestErrorMessagesConstants
 {
-    public const string NotRequiredPropertyErrorMessage = "EntityFramework did not throw an exception for a [Required] property.";
+    public const string NotDbUpdateExceptionErrorMessage = "Database did not throw an exception when updating.";
 }

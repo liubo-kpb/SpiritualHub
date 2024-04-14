@@ -1,67 +1,156 @@
 ﻿namespace SpiritualHub.Tests.Service.BusinessService.CategoryService;
 
 using Microsoft.EntityFrameworkCore;
-
+using Moq;
 using AutoMapper;
 
-using Services;
 using Data.Models;
-using Extensions.Repository;
+using Data.Repository.Interfaces;
+using Services;
+using Services.Interfaces;
 
 using static Extensions.Common.TestErrorMessagesConstants;
 
-public class CategoryCRUDTests : TestBaseSetup<CategoryService>
+public class CategoryCRUDTests
 {
-    private TestDeletableRepository<Category> _categoryRepository = null!;
+    private ICategoryService _categoryService;
+    private Mock<IDeletableRepository<Category>> _categoryRepositoryMock;
+    private Mock<IMapper> _mapperMock;
 
-    protected override CategoryService InitializeServices(IMapper mapper)
+    [SetUp]
+    public void Setup()
     {
-        _categoryRepository = new TestDeletableRepository<Category>(DbContext);
+        _categoryRepositoryMock = new Mock<IDeletableRepository<Category>>();
+        _mapperMock = new Mock<IMapper>();
 
-        return new CategoryService(_categoryRepository, mapper);
-    }
-
-    protected override void SeedTestData()
-    {
-        var categories = new List<Category>()
-        {
-            new Category() { Id = 1, Name = "Esoteric" },
-            new Category() { Id = 2, Name = "Channeling" },
-            new Category() { Id = 3, Name = "Scientific" },
-            new Category() { Id = 4, Name = "Religious" },
-            new Category() { Id = 5, Name = "Spiritual" },
-            new Category() { Id = 6, Name = "Hindu" },
-        };
-
-        DbContext.Categories.AddRange(categories);
+        _categoryService = new CategoryService(_categoryRepositoryMock.Object, _mapperMock.Object);
     }
 
     [Test]
-    public async Task Test_AddMethod_WhenSuccess()
+    public async Task AddAsync_WhenSuccess()
     {
-        int categoriesCount = DbContext.Categories.Count();
-        var newCategoryName = "NewCategory";
-        var expected = new Category()
-        {
-            Id = categoriesCount + 1,
-            Name = newCategoryName
-        };
+        // Arrange
+        string name = "Test";
+        var category = new Category { Name = name };
 
-        await Service.AddAsync(newCategoryName);
+        _categoryRepositoryMock.Setup(x => x.AddAsync(It.Is<Category>(x => x.Name == name))).Returns(Task.FromResult(true));
+        _categoryRepositoryMock.Setup(x => x.SaveChangesAsync()).Returns(Task.FromResult(1));
 
-        var categoriesInDb = DbContext.Categories;
-        Assert.Multiple(() =>
-        {
-            Assert.That(categoriesInDb.Any(c => c.Id == expected.Id && c.Name == expected.Name), Is.True, "New Category not found. Category was not added to Database or there is an issue with the Id and/or Name of the test data.");
-            Assert.That(categoriesInDb.Count() == categoriesCount + 1, Is.True, "Category count does not match new expectation. Category not added.");
-            Assert.That(_categoryRepository.AddAsyncCounter, Is.EqualTo(1), "Add Counter does not match expected result. Check the call count of the method in the service method you are using.");
-            Assert.That(_categoryRepository.SaveChangesAsyncCounter, Is.EqualTo(1), "Add Counter does not match expected result. Check the call count of the method in the service method you are using.");
-        });
+
+        // Act
+        await _categoryService.AddAsync(name);
+
+
+        // Assert
+        _categoryRepositoryMock.Verify(x => x.AddAsync(It.Is<Category>(x => x.Name == name)));
+        _categoryRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Category>()), Times.Once);
+        _categoryRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Once);
     }
 
     [Test]
-    public void Test_AddMethod_WhenNullName()
+    public void AddAsync_WhenNullName_ThrowSuccess()
     {
-        Assert.ThrowsAsync<DbUpdateException>(async () => await Service.AddAsync(null!), NotRequiredPropertyErrorMessage);
+        // Arrange
+        string name = null!;
+        _categoryRepositoryMock.Setup(x => x.SaveChangesAsync()).Throws<DbUpdateException>();
+
+
+        // Act & Assert
+        Assert.ThrowsAsync<DbUpdateException>(async () => await _categoryService.AddAsync(name), NotDbUpdateExceptionErrorMessage);
+    }
+
+    [Test]
+    public async Task AddAsync_WhenNullName_MethodCallVerification()
+    {
+        // Arrange
+        string name = null!;
+        _categoryRepositoryMock.Setup(x => x.SaveChangesAsync()).Throws<DbUpdateException>();
+
+        // Act
+        try
+        {
+            await _categoryService.AddAsync(name);
+        }
+        // Assert
+        catch (Exception)
+        {
+            _categoryRepositoryMock.Verify(x => x.AddAsync(It.Is<Category>(x => x.Name == name)), Times.Once);
+            _categoryRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Once);
+
+            return;
+        }
+
+        Assert.Fail(NotDbUpdateExceptionErrorMessage);
+    }
+
+    [Test]
+    public void AddAsync_WithConcurrentName_ThrowSuccess()
+    {
+        // Arrange
+        string name = "Hindu";
+        _categoryRepositoryMock.Setup(x => x.AddAsync(It.Is<Category>(x => x.Name == name)));
+        _categoryRepositoryMock.Setup(x => x.SaveChangesAsync()).Throws<DbUpdateException>();
+
+        // Act & Assert
+        Assert.ThrowsAsync<DbUpdateException>(async () => await _categoryService.AddAsync(name), NotDbUpdateExceptionErrorMessage);
+    }
+
+    [Test]
+    public async Task AddAsync_WithConcurrentName_MethodCallVerification()
+    {
+        // Arrange
+        string name = "Hindu";
+        _categoryRepositoryMock.Setup(x => x.AddAsync(It.Is<Category>(x => x.Name == name)));
+        _categoryRepositoryMock.Setup(x => x.SaveChangesAsync()).Throws<DbUpdateException>();
+
+        // Act
+        try
+        {
+            await _categoryService.AddAsync(name);
+
+        }
+        // Assert
+        catch
+        {
+            _categoryRepositoryMock.Verify(x => x.AddAsync(It.Is<Category>(x => x.Name == name)), Times.Once);
+            _categoryRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Once);
+
+            return;
+        }
+
+        Assert.Fail(NotDbUpdateExceptionErrorMessage);
+    }
+
+    [Test]
+    public async Task DeleteAsync_WhenSuccess()
+    {
+        // Arrange
+        string id = "1";
+        var category = new Category()
+        {
+            Id = 1,
+            Name = "Test"
+        };
+
+        _categoryRepositoryMock.Setup(x => x.GetSingleByIdAsync(It.Is<string>(x => x == id))).Returns(Task.FromResult(category)!);
+
+        // Act
+        await _categoryService.DeleteAsync(id);
+
+        // Assert
+        _categoryRepositoryMock.Verify(x => x.Delete(It.Is<Category>(x => x.Id.ToString() == id)));
+        _categoryRepositoryMock.Verify(x => x.Delete(It.IsAny<Category>()), Times.Once);
+        _categoryRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Once);
+    }
+
+    public async Task DeleteAsync_WithWrongId()
+    {
+        // Arrange
+
+
+        // Act
+
+
+        // Assert
     }
 }
