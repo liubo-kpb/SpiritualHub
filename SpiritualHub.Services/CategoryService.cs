@@ -79,7 +79,7 @@ public class CategoryService : ICategoryService
 
         if (!string.IsNullOrEmpty(searchWord))
         {
-            query = query.Where(c => EF.Functions.Like(c.Name.ToLower(), $"%{searchWord.ToLower()}%"));
+            query = query.Where(c => c.Name.ToLower().Contains(searchWord.ToLower()));
         }
 
         var categoryEntities = await query.ToListAsync();

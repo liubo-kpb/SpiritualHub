@@ -7,19 +7,25 @@ using Data.Models;
 using Data.Repository.Interfaces;
 using Services;
 using Services.Interfaces;
+using Services.Mappings;
 
 public class MockConfiguration
 {
     protected ICategoryService _categoryService;
     protected Mock<IDeletableRepository<Category>> _categoryRepositoryMock;
-    protected Mock<IMapper> _mapperMock;
+    private IMapper _mapper;
+
+    [OneTimeSetUp]
+    public void OneTimeSetup()
+    {
+        var mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile<ApplicationProfile>());
+        _mapper = new Mapper(mapperConfiguration);
+    }
 
     [SetUp]
     public void Setup()
     {
         _categoryRepositoryMock = new Mock<IDeletableRepository<Category>>();
-        _mapperMock = new Mock<IMapper>();
-
-        _categoryService = new CategoryService(_categoryRepositoryMock.Object, _mapperMock.Object);
+        _categoryService = new CategoryService(_categoryRepositoryMock.Object, _mapper);
     }
 }
