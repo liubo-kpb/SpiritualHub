@@ -1,14 +1,14 @@
 ﻿namespace SpiritualHub.Tests.Service.BusinessService.CategoryService;
 
 using System;
+using System.Linq.Expressions;
 
+using Microsoft.EntityFrameworkCore;
 using Moq;
 
 using Data.Models;
 
 using static Extensions.Common.TestErrorMessagesConstants;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 public class EditTests : MockConfiguration
 {
@@ -87,7 +87,7 @@ public class EditTests : MockConfiguration
         await _categoryService.EditAsync(id, newName);
 
         // Assert
-        Assert.That(category.Name, !Is.EqualTo(newName), EntityWasUpdatedErrorMessage);
+        Assert.That(category.Name, Is.Not.EqualTo(newName), EntityWasUpdatedErrorMessage);
         _categoryRepositoryMock.Verify(x => x.GetSingleByIdAsync(It.Is<string>(x => x == id.ToString())), Times.Never);
         _categoryRepositoryMock.Verify(x => x.Update(It.IsAny<Category>()), Times.Never);
         _categoryRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Never);
@@ -115,7 +115,7 @@ public class EditTests : MockConfiguration
         await _categoryService.EditAsync(id, concurrentName);
 
         // Assert
-        Assert.That(category.Name, !Is.EqualTo(concurrentName), EntityWasUpdatedErrorMessage);
+        Assert.That(category.Name, Is.Not.EqualTo(concurrentName), EntityWasUpdatedErrorMessage);
         _categoryRepositoryMock.Verify(x => x.GetSingleByIdAsync(It.Is<string>(x => x == id.ToString())), Times.Never);
         _categoryRepositoryMock.Verify(x => x.Update(It.Is<Category>(x => x.Equals(category))), Times.Never);
         _categoryRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Never);
