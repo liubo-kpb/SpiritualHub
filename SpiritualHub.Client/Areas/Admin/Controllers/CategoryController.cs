@@ -122,9 +122,9 @@ public class CategoryController : BaseAdminController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(string id)
     {
-        bool exists = await _categoryService.ExistsAsync(id);
+        bool exists = await _categoryService.ExistsAsync(int.Parse(id));
         if (!exists)
         {
             TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, entityName);

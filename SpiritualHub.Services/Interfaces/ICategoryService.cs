@@ -14,5 +14,5 @@ public interface ICategoryService
 
     Task                                    EditAsync(int id, string name);
 
-    Task                                    DeleteAsync(int id);
+    Task                                    DeleteAsync(string id);
 }

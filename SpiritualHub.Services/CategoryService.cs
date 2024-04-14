@@ -35,11 +35,9 @@ public class CategoryService : ICategoryService
         await _categoryRepository.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(string id)
     {
-        var category = await _categoryRepository
-                                    .GetAll()
-                                    .FirstOrDefaultAsync(c => c.Id == id);
+        var category = await _categoryRepository.GetSingleByIdAsync(id);
 
         _categoryRepository.Delete(category!);
         await _categoryRepository.SaveChangesAsync();
@@ -47,7 +45,7 @@ public class CategoryService : ICategoryService
 
     public async Task EditAsync(int id, string name)
     {
-        var category = await _categoryRepository.GetAll().FirstOrDefaultAsync(c => c.Id == id);
+        var category = await _categoryRepository.GetSingleByIdAsync(id.ToString());
 
         category!.Name = name;
 
