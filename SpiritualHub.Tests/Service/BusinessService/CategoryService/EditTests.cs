@@ -7,6 +7,8 @@ using Moq;
 using Data.Models;
 
 using static Extensions.Common.TestErrorMessagesConstants;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 public class EditTests : MockConfiguration
 {
@@ -85,9 +87,37 @@ public class EditTests : MockConfiguration
         await _categoryService.EditAsync(id, newName);
 
         // Assert
-        Assert.That(category.Name, !Is.EqualTo(newName));
+        Assert.That(category.Name, !Is.EqualTo(newName), EntityWasUpdatedErrorMessage);
         _categoryRepositoryMock.Verify(x => x.GetSingleByIdAsync(It.Is<string>(x => x == id.ToString())), Times.Never);
         _categoryRepositoryMock.Verify(x => x.Update(It.IsAny<Category>()), Times.Never);
+        _categoryRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Never);
+    }
+
+    [Test]
+    public async Task WithConcurrentName()
+    {
+        // Arrange
+        int id = 1;
+        string concurrentName = "Hindu";
+        var category = new Category()
+        {
+            Id = id,
+            Name = "old name"
+        };
+
+        _categoryRepositoryMock.Setup(x => x.GetSingleByIdAsync(It.Is<string>(x => x == id.ToString()))).Returns(Task.FromResult(category)!);
+        _categoryRepositoryMock
+            .Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Category, bool>>>()))
+            .Returns((Expression<Func<Category, bool>> predicate) => Task.FromResult(true));
+        _categoryRepositoryMock.Setup(x => x.SaveChangesAsync()).Throws<DbUpdateException>();
+
+        // Act
+        await _categoryService.EditAsync(id, concurrentName);
+
+        // Assert
+        Assert.That(category.Name, !Is.EqualTo(concurrentName), EntityWasUpdatedErrorMessage);
+        _categoryRepositoryMock.Verify(x => x.GetSingleByIdAsync(It.Is<string>(x => x == id.ToString())), Times.Never);
+        _categoryRepositoryMock.Verify(x => x.Update(It.Is<Category>(x => x.Equals(category))), Times.Never);
         _categoryRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Never);
     }
 }

@@ -6,6 +6,7 @@ using Moq;
 using Data.Models;
 
 using static Extensions.Common.TestErrorMessagesConstants;
+using System.Linq.Expressions;
 
 public class AddTests : MockConfiguration
 {
@@ -48,40 +49,21 @@ public class AddTests : MockConfiguration
     }
 
     [Test]
-    public void WithConcurrentName_ThrowSuccess()
+    public async Task WithConcurrentName()
     {
         // Arrange
         string name = "Hindu";
         _categoryRepositoryMock.Setup(x => x.AddAsync(It.Is<Category>(x => x.Name == name)));
-        _categoryRepositoryMock.Setup(x => x.SaveChangesAsync()).Throws<DbUpdateException>();
-
-        // Act & Assert
-        Assert.ThrowsAsync<DbUpdateException>(async () => await _categoryService.AddAsync(name), NotDbUpdateExceptionErrorMessage);
-    }
-
-    [Test]
-    public async Task WithConcurrentName_MethodCallTest()
-    {
-        // Arrange
-        string name = "Hindu";
-        _categoryRepositoryMock.Setup(x => x.AddAsync(It.Is<Category>(x => x.Name == name)));
+        _categoryRepositoryMock
+            .Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Category, bool>>>()))
+            .Returns((Expression<Func<Category, bool>> predicate) => Task.FromResult(true));
         _categoryRepositoryMock.Setup(x => x.SaveChangesAsync()).Throws<DbUpdateException>();
 
         // Act
-        try
-        {
-            await _categoryService.AddAsync(name);
+        await _categoryService.AddAsync(name);
 
-        }
         // Assert
-        catch
-        {
-            _categoryRepositoryMock.Verify(x => x.AddAsync(It.Is<Category>(x => x.Name == name)), Times.Once);
-            _categoryRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Once);
-
-            return;
-        }
-
-        Assert.Fail(NotDbUpdateExceptionErrorMessage);
+        _categoryRepositoryMock.Verify(x => x.AddAsync(It.Is<Category>(x => x.Name == name)), Times.Never);
+        _categoryRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Never);
     }
 }
