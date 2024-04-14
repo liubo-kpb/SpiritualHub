@@ -26,6 +26,11 @@ public class CategoryService : ICategoryService
 
     public async Task AddAsync(string name)
     {
+        if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
+        {
+            return;
+        }
+
         Category category = new Category()
         {
             Name = name,
@@ -45,6 +50,11 @@ public class CategoryService : ICategoryService
 
     public async Task EditAsync(int id, string name)
     {
+        if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
+        {
+            return;
+        }
+        
         var category = await _categoryRepository.GetSingleByIdAsync(id.ToString());
 
         category!.Name = name;
@@ -69,7 +79,6 @@ public class CategoryService : ICategoryService
         }
 
         var categoryEntities = await query.ToListAsync();
-
         var categoryModels = new List<CategoryServiceModel>();
 
         _mapper.MapListToViewModel(categoryEntities, categoryModels);
