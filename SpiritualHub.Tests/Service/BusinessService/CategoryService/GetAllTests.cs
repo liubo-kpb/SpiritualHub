@@ -18,7 +18,7 @@ public class GetAllTests : MockConfiguration
     {
 
         // Arrange
-        var categories = GenerateCategories();
+        var categories = GenerateTestCategories();
         var expected = new List<CategoryServiceModel>()
         {
             new() { Id = 1, Name = "Spiritual"},
@@ -50,7 +50,7 @@ public class GetAllTests : MockConfiguration
         }
     }
 
-    private IQueryable<Category> GenerateCategories()
+    private IQueryable<Category> GenerateTestCategories()
     {
         var list = new List<Category>()
         {

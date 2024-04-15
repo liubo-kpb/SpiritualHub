@@ -62,7 +62,7 @@ public class SeedAuthorConfiguration : IEntitySeedConfiguration<Author>
             Description = "Eckhart Tolle is widely recognized as one of the most inspiring and visionary spiritual teachers in the world today. With his international bestsellers, The Power of Now and A New Earth—translated into 52 languages—he has introduced millions to the joy and freedom of living life in the present moment. The New York Times has described him as “the most popular spiritual author in the United States”, and in 2011, Watkins Review named him “the most spiritually influential person in the world”.",
             CategoryID = 5,
             AvatarImageID = Guid.Parse("26db05ea-2b5e-44dd-bdef-4e74b9ecaa5f"),
-            IsActive = true,
+            IsActive = false,
         };
         authors.Add(author);
 

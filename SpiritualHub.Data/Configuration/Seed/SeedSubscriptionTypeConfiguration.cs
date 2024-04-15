@@ -6,7 +6,7 @@ using Interfaces;
 using Models;
 
 
-internal class SeedSubscriptionTypeConfiguration : IEntitySeedConfiguration<SubscriptionType>
+public class SeedSubscriptionTypeConfiguration : IEntitySeedConfiguration<SubscriptionType>
 {
     public void Configure(EntityTypeBuilder<SubscriptionType> builder)
     {
