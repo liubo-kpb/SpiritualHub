@@ -29,4 +29,38 @@ public class AuthorViewModel : BaseDetailsViewModel
     public int SubscriberCount { get; set; }
 
     public bool IsUserSubscribed { get; set; }
+
+    public override bool Equals(object? obj)
+    {
+        bool result = false;
+
+        if (base.Equals(obj))
+        {
+            result = true;
+        }
+        else if (obj is AuthorViewModel other)
+        {
+            if (this.Id == other.Id
+                && this.Alias == other.Alias
+                && this.Name == other.Name
+                && this.Description == other.Description
+                && this.IsActive == other.IsActive
+                && this.CategoryName == other.CategoryName
+                && this.AvatarImageUrl == other.AvatarImageUrl
+                && this.FollowerCount == other.FollowerCount
+                && this.IsUserFollowing == other.IsUserFollowing
+                && this.SubscriberCount == other.SubscriberCount
+                && this.IsUserSubscribed == other.IsUserSubscribed)
+            {
+                result = true;
+            }
+        }
+
+        return result;
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
 }
