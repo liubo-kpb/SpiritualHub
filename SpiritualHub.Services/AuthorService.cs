@@ -40,7 +40,7 @@ public class AuthorService : IAuthorService
 
     public async Task<IEnumerable<AuthorViewModel>> AllAuthorsByPublisherIdAsync(string publisherId, string userId)
     {
-        var authors = await _authorRepository.GetAllByPublisherId(publisherId);
+        var authors = await _authorRepository.GetAllByPublisherIdAsync(publisherId);
 
         List<AuthorViewModel> authorsModel = new List<AuthorViewModel>();
         _mapper.MapListToViewModel(authors!, authorsModel);
@@ -55,20 +55,13 @@ public class AuthorService : IAuthorService
 
     public async Task<IEnumerable<AuthorViewModel>> AllAuthorsByUserIdAsync(string userId)
     {
-        var authors = await _authorRepository
-            .GetAll()
-            .Include(a => a.AvatarImage)
-            .Include(a => a.Followers)
-            .Include(a => a.Subscriptions)
-            .ThenInclude(s => s.Subscribers)
-            .Where(a => a.Followers.Any(u => u.Id.ToString() == userId)
-                    || a.Subscriptions.Any(s => s.Subscribers.Any(ss => ss.Id.ToString() == userId)))
-            .ToListAsync();
+        var authors = await _authorRepository.GetAllAuthorsByUserIdAsync(userId);
+            
 
         List<AuthorViewModel> authorsModel = new List<AuthorViewModel>();
-        _mapper.MapListToViewModel(authors, authorsModel);
+        _mapper.MapListToViewModel(authors!, authorsModel);
 
-        for (int i = 0; i < authors.Count; i++)
+        for (int i = 0; i < authors!.Count; i++)
         {
             SetIsUserFollowingAndSubscribed(userId, authors[i], authorsModel[i]);
         }

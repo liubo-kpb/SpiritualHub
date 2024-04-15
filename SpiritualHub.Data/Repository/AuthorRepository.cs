@@ -107,11 +107,20 @@ public class AuthorRepository : Repository<Author>, IAuthorRepository
                         .FirstOrDefaultAsync(a => a.Id.ToString() == id);
     }
 
-    public async Task<IList<Author>?> GetAllByPublisherId(string publisherId) => await DbSet
+    public async Task<List<Author>?> GetAllByPublisherIdAsync(string publisherId) => await DbSet
                                                                                                 .Include(a => a.AvatarImage)
                                                                                                 .Include(a => a.Followers)
                                                                                                 .Include(a => a.Subscriptions)
                                                                                                 .ThenInclude(s => s.Subscribers)
                                                                                                 .Where(a => a.Publishers.Any(p => p.Id.ToString() == publisherId.ToUpper()))
                                                                                                 .ToListAsync();
+
+    public async Task<List<Author>?> GetAllAuthorsByUserIdAsync(string userId) => await DbSet
+                                                                                            .Include(a => a.AvatarImage)
+                                                                                            .Include(a => a.Followers)
+                                                                                            .Include(a => a.Subscriptions)
+                                                                                            .ThenInclude(s => s.Subscribers)
+                                                                                            .Where(a => a.Followers.Any(u => u.Id.ToString() == userId)
+                                                                                                    || a.Subscriptions.Any(s => s.Subscribers.Any(ss => ss.Id.ToString() == userId)))
+                                                                                            .ToListAsync();
 }

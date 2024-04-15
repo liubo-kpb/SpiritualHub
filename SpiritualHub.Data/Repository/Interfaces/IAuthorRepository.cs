@@ -6,7 +6,9 @@ public interface IAuthorRepository : IRepository<Author>
 {
     Task<IEnumerable<Author>?>  LastThreeAuthors();
 
-    Task<IList<Author>?>  GetAllByPublisherId(string publisherId);
+    Task<List<Author>?>         GetAllByPublisherIdAsync(string publisherId);
+
+    Task<List<Author>?>         GetAllAuthorsByUserIdAsync(string userId);
     
     Task<Author?>               GetAuthorDetailsByIdAsync(string id);
     
