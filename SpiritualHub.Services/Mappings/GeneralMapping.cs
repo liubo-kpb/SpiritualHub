@@ -2,7 +2,7 @@
 
 using AutoMapper;
 
-internal static class GeneralMapping
+public static class GeneralMapping
 {
     public static void MapListToViewModel<TEntity, TModel>(this IMapper mapper, IEnumerable<TEntity> entities, ICollection<TModel> allEntitiesModel)
     {

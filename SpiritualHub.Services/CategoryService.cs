@@ -26,9 +26,7 @@ public class CategoryService : ICategoryService
 
     public async Task AddAsync(string name)
     {
-        if (string.IsNullOrEmpty(name)
-            || string.IsNullOrWhiteSpace(name)
-            || await _categoryRepository.AnyAsync(c => c.Name == name))
+        if (string.IsNullOrWhiteSpace(name) || await _categoryRepository.AnyAsync(c => c.Name == name))
         {
             return;
         }
@@ -52,13 +50,11 @@ public class CategoryService : ICategoryService
 
     public async Task EditAsync(int id, string name)
     {
-        if (string.IsNullOrEmpty(name)
-            || string.IsNullOrWhiteSpace(name)
-            || await _categoryRepository.AnyAsync(c => c.Name == name))
+        if (string.IsNullOrWhiteSpace(name) || await _categoryRepository.AnyAsync(c => c.Name == name))
         {
             return;
         }
-        
+
         var category = await _categoryRepository.GetSingleByIdAsync(id.ToString());
 
         category!.Name = name;

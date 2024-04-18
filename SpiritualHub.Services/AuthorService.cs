@@ -141,16 +141,16 @@ public class AuthorService : IAuthorService
 
         if (!string.IsNullOrWhiteSpace(queryModel.CategoryName))
         {
-            authorsQuery = authorsQuery.Where(a => a.Category != null && a.Category!.Name == queryModel.CategoryName);
+            authorsQuery = authorsQuery.Where(a => a.Category != null && a.Category.Name.Contains(queryModel.CategoryName));
         }
 
         if (!string.IsNullOrWhiteSpace(queryModel.SearchTerm))
         {
-            string wildCard = $"%{queryModel.SearchTerm.ToLower()}%";
+            string wildCard = queryModel.SearchTerm.ToLower();
 
-            authorsQuery = authorsQuery.Where(a => EF.Functions.Like(a.Alias, wildCard)
-                                      || EF.Functions.Like(a.Name, wildCard)
-                                      || EF.Functions.Like(a.Description, wildCard));
+            authorsQuery = authorsQuery.Where(a => a.Alias.ToLower().Contains(wildCard)
+                                                || a.Name.ToLower().Contains(wildCard)
+                                                || a.Description.ToLower().Contains(wildCard));
         }
 
         authorsQuery = queryModel.SortingOption switch
@@ -199,7 +199,7 @@ public class AuthorService : IAuthorService
     public async Task<AuthorDetailsViewModel> GetAuthorDetailsAsync(string authorId, string userId)
     {
         var author = await _authorRepository.GetAuthorDetailsByIdAsync(authorId);
-        await FilteroutAdministratorsFromAuthorPublishers(author, AdminRoleName);
+        await FilteroutAdministratorsFromAuthorPublishers(author!, AdminRoleName);
 
         var authorModel = _mapper.Map<AuthorDetailsViewModel>(author);
         SetIsUserFollowingAndSubscribed(userId, author!, authorModel);
