@@ -13,11 +13,10 @@ public class AllAuthorsByUserIdTests : MockConfiguration
     public async Task WhenSuccess_FollowsAuthors()
     {
         // Arrange
-        var testAuthor = _authors[0];
         var testUser = _users[0];
+        var testAuthor = GetAuthorWithFollower(testUser);
 
         string userId = testUser.Id.ToString();
-        testAuthor.Followers.Add(testUser);
 
         var expected = new List<AuthorViewModel>()
         {
@@ -50,11 +49,7 @@ public class AllAuthorsByUserIdTests : MockConfiguration
     {
         // Arrange
         var testUser = _users[1];
-        var testAuthor = _authors[3];
-
-        var authorSubscriptionPlans = new SeedSubscriptionConfiguration().GenerateEntities().Where(s => s.AuthorID == testAuthor.Id);
-        testAuthor.Subscriptions.AddRange(authorSubscriptionPlans);
-        testAuthor.Subscriptions.First().Subscribers.Add(testUser);
+        var testAuthor = GetAuthorWithSubscriber(testUser);
 
         string userId = testUser.Id.ToString();
         _authorRepositoryMock
@@ -87,9 +82,9 @@ public class AllAuthorsByUserIdTests : MockConfiguration
     public async Task WhenSuccess_FollowsAndSubscribedToAuthors()
     {
         // Arrange
-        var testAuthorWithFollow = _authors[0];
-        var testAuthorWithSubscription = _authors[3];
         var testUser = _users[1];
+        var testAuthorWithFollow = GetAuthorWithFollower(testUser);
+        var testAuthorWithSubscription = GetAuthorWithSubscriber(testUser);
 
         var expected = new List<AuthorViewModel>()
         {
@@ -114,8 +109,6 @@ public class AllAuthorsByUserIdTests : MockConfiguration
                 SubscriberCount = 1,
             },
         };
-
-        testAuthorWithFollow.Followers.Add(testUser);
 
         var authorSubscriptionPlans = new SeedSubscriptionConfiguration().GenerateEntities().Where(s => s.AuthorID == testAuthorWithSubscription.Id);
         testAuthorWithSubscription.Subscriptions.AddRange(authorSubscriptionPlans);

@@ -138,10 +138,12 @@ public class AuthorService : IAuthorService
     public async Task<FilteredAuthorsServiceModel> GetAllAsync(AllAuthorsQueryModel queryModel, string userId)
     {
         IQueryable<Author> authorsQuery = _authorRepository.GetAll();
+        int authorsCount = authorsQuery.Count();
 
         if (!string.IsNullOrWhiteSpace(queryModel.CategoryName))
         {
-            authorsQuery = authorsQuery.Where(a => a.Category != null && a.Category.Name.Contains(queryModel.CategoryName));
+            authorsQuery = authorsQuery.Where(a => a.Category != null
+                                                && a.Category.Name.ToLower().Contains(queryModel.CategoryName.ToLower()));
         }
 
         if (!string.IsNullOrWhiteSpace(queryModel.SearchTerm))
@@ -186,7 +188,7 @@ public class AuthorService : IAuthorService
         return new FilteredAuthorsServiceModel()
         {
             Authors = authorsModel,
-            TotalAuthorsCount = authorsQuery.Count(),
+            TotalAuthorsCount = authorsCount,
         };
     }
 
@@ -353,8 +355,8 @@ public class AuthorService : IAuthorService
 
         foreach (var publisher in author.Publishers)
         {
-            bool isAdmin = await _userManager.IsInRoleAsync(publisher.User, role);
-            if (isAdmin)
+            bool isInRole = await _userManager.IsInRoleAsync(publisher.User, role);
+            if (isInRole)
             {
                 usersInRole.Add(publisher);
             }

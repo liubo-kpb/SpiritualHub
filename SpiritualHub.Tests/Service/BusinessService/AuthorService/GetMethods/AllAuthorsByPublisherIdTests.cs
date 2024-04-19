@@ -26,7 +26,7 @@ public class AllAuthorsByPublisherIdTests : MockConfiguration
                 FollowerCount = 1,
             },
             new AuthorViewModel
-            {
+            {   
                 Id = _authors[2].Id.ToString(),
                 Alias = _authors[2].Alias,
                 Name = _authors[2].Name,
@@ -79,11 +79,5 @@ public class AllAuthorsByPublisherIdTests : MockConfiguration
     {
         _authors[0].Followers.Add(_users.First(u => u.Id == _publishers[0].UserID));
         ConnectPublishers();
-    }
-
-    private void ConnectPublishers()
-    {
-        _authors[0].Publishers.Add(_publishers[0]);
-        _authors[2].Publishers.Add(_publishers[0]);
     }
 }
