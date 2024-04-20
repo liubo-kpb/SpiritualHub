@@ -27,7 +27,7 @@ public abstract class MockConfiguration
     protected IMapper _mapper;
 
     [OneTimeSetUp]
-    public void OneTimeSetup()
+    public virtual void OneTimeSetup()
     {
         var mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile<ApplicationProfile>());
         _mapper = new Mapper(mapperConfiguration);

@@ -62,4 +62,32 @@ public class Author
     public virtual ICollection<Rating> Ratings { get; set; }
 
     public virtual ICollection<Comment> Comments { get; set; }
+
+    public override bool Equals(object? obj)
+    {
+        bool result = false;
+
+        if (base.Equals(obj))
+        {
+            result = true;
+        }
+        else if (obj is Author other)
+        {
+            if (this.Id == other.Id
+                && this.Alias == other.Alias
+                && this.Name == other.Name
+                && this.Description == other.Description
+                && this.AddedOn == other.AddedOn)
+            {
+                result = true;
+            }
+        }
+
+        return result;
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
 }
