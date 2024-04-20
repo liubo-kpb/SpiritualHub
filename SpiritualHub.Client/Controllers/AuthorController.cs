@@ -398,7 +398,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
     {
         var publisher = await _publisherService.GetPublisherAsync(this.User.GetId()!);
 
-        return await _authorService.CreateAuthor(newEntity, publisher!);
+        return await _authorService.CreateAsync(newEntity, publisher!);
     }
 
     protected override async Task<AuthorFormModel> GetEntityInfoAsync(string id)
