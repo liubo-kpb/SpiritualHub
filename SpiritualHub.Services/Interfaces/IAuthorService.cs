@@ -12,7 +12,7 @@ public interface IAuthorService
 
     Task<IEnumerable<AuthorIndexViewModel>> LastThreeAuthors();
 
-    Task<string>                            CreateAuthor(AuthorFormModel newAuthor, Publisher publisher);
+    Task<string>                            CreateAsync(AuthorFormModel newAuthor, Publisher publisher);
 
     Task<IEnumerable<AuthorViewModel>>      AllAuthorsByPublisherIdAsync(string publisherId, string userId);
 
