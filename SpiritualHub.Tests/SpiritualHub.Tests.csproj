@@ -39,7 +39,6 @@
     <Folder Include="Controller\ModuleController\" />
     <Folder Include="Controller\PublisherController\" />
     <Folder Include="Controller\ProductController\" />
-    <Folder Include="Service\BusinessService\AuthorService\CRUDMethods\" />
     <Folder Include="Service\BusinessService\CourseService\" />
     <Folder Include="Service\BusinessService\BlogService\" />
     <Folder Include="Service\BusinessService\BookService\" />

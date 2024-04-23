@@ -20,9 +20,9 @@ public abstract class MockConfiguration
     protected Mock<IRepository<ApplicationUser>> _userRepositoryMock;
     protected Mock<UserManager<ApplicationUser>> _userManagerMock;
 
-    protected List<Author> _authors = new List<Author>(new SeedAuthorConfiguration().GenerateEntities());
-    protected List<Publisher> _publishers = new List<Publisher>(new SeedPublisherConfiguration().GenerateEntities());
-    protected List<ApplicationUser> _users = new List<ApplicationUser>(new SeedUserConfiguration().GenerateEntities());
+    protected List<Author> _authors = null!;
+    protected List<Publisher> _publishers = null!;
+    protected List<ApplicationUser> _users = null!;
 
     protected IMapper _mapper;
 
@@ -36,6 +36,10 @@ public abstract class MockConfiguration
     [SetUp]
     public virtual void Setup()
     {
+        _authors = new List<Author>(new SeedAuthorConfiguration().GenerateEntities());
+        _publishers = new List<Publisher>(new SeedPublisherConfiguration().GenerateEntities());
+        _users = new List<ApplicationUser>(new SeedUserConfiguration().GenerateEntities());
+
         _authorRepositoryMock = new Mock<IAuthorRepository>();
         _userRepositoryMock = new Mock<IRepository<ApplicationUser>>();
         _userManagerMock = new Mock<UserManager<ApplicationUser>>(
