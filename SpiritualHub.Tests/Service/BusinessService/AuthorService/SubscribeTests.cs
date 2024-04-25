@@ -16,24 +16,31 @@ public class SubscribeTests : MockConfiguration
 
         string authorId = testAuthor.Id.ToString();
         string userId = testUser.Id.ToString();
+        Guid oldSubscriptionId = testAuthor.Subscriptions.First(s => s.Subscribers.Any(s => s.Id == testUser.Id)).Id;
+
         string subscriptionId = testAuthor
                                     .Subscriptions
-                                    .First(s => s.Id != testAuthor
-                                                        .Subscriptions
-                                                        .First(s => s
-                                                                    .Subscribers
-                                                                    .Any(ss => ss.Id == testUser.Id))
-                                                        .Id)
+                                    .First(s => s.Id != oldSubscriptionId)
                                     .Id.ToString();
 
         _authorRepositoryMock.Setup(x => x.GetAuthorWithSubscriptionsAndSubscribersAsync(It.Is<string>(x => x == authorId))).ReturnsAsync(testAuthor);
+        _userRepositoryMock.Setup(x => x.GetSingleByIdAsync(It.Is<string>(x => x == userId))).ReturnsAsync(testUser);
+
 
         // Act
         await _authorService.SubscribeAsync(authorId, subscriptionId, userId);
+        var newSubscriptionId = testAuthor.Subscriptions.First(s => s.Subscribers.Any(s => s.Id == testUser.Id)).Id;
 
         // Assert
-        _authorRepositoryMock.Verify(x => x.GetAuthorWithSubscriptionsAndSubscribersAsync(It.Is<string>(x => x == authorId)),Times.Once);
-        _authorRepositoryMock.Verify(x => x.SaveChangesAsync(),Times.Once);
+        Assert.Multiple(() =>
+        {
+            Assert.That(newSubscriptionId, Is.Not.EqualTo(oldSubscriptionId), "Subscription was not changed.");
+            Assert.That(newSubscriptionId.ToString(), Is.EqualTo(subscriptionId), "New Subscription Id does not match delegated to method subscribtion Id.");
+            Assert.That(testAuthor.Subscriptions.Where(s => s.Id != newSubscriptionId).All(s => s.Subscribers.All(u => u.Id != testUser.Id)), Is.True, "User has more than one subscriptions.");
+        });
+        _authorRepositoryMock.Verify(x => x.GetAuthorWithSubscriptionsAndSubscribersAsync(It.Is<string>(x => x == authorId)), Times.Once);
+        _userRepositoryMock.Verify(x => x.GetSingleByIdAsync(It.Is<string>(x => x == userId)), Times.Once);
+        _authorRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Once);
     }
 
     [Test]
@@ -48,12 +55,20 @@ public class SubscribeTests : MockConfiguration
         string subscriptionId = testAuthor.Subscriptions.First().Id.ToString();
 
         _authorRepositoryMock.Setup(x => x.GetAuthorWithSubscriptionsAndSubscribersAsync(It.Is<string>(x => x == authorId))).ReturnsAsync(testAuthor);
+        _userRepositoryMock.Setup(x => x.GetSingleByIdAsync(It.Is<string>(x => x == userId))).ReturnsAsync(testUser);
 
         // Act
         await _authorService.SubscribeAsync(authorId, subscriptionId, userId);
+        var newSubscriptionId = testAuthor.Subscriptions.First(s => s.Subscribers.Any(s => s.Id == testUser.Id)).Id;
 
         // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(newSubscriptionId.ToString(), Is.EqualTo(subscriptionId), "Setting subscription has failed.");
+            Assert.That(testAuthor.Subscriptions.Where(s => s.Id != newSubscriptionId).All(s => s.Subscribers.All(u => u.Id != testUser.Id)), Is.True, "User was added to more than one subscription.");
+        });
         _authorRepositoryMock.Verify(x => x.GetAuthorWithSubscriptionsAndSubscribersAsync(It.Is<string>(x => x == authorId)), Times.Once);
+        _userRepositoryMock.Verify(x => x.GetSingleByIdAsync(It.Is<string>(x => x == userId)), Times.Once);
         _authorRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Once);
     }
 
@@ -98,6 +113,7 @@ public class SubscribeTests : MockConfiguration
         catch (ArgumentException e)
         {
             _authorRepositoryMock.Verify(x => x.GetAuthorWithSubscriptionsAndSubscribersAsync(It.Is<string>(x => x == authorId)), Times.Once);
+            _userRepositoryMock.Verify(x => x.GetSingleByIdAsync(It.Is<string>(x => x == userId)), Times.Never);
             _authorRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Never);
             Assert.That(e.Message, Is.EqualTo(expectedErroMessage));
 
