@@ -36,7 +36,7 @@ public class SubscribeTests : MockConfiguration
         {
             Assert.That(newSubscriptionId, Is.Not.EqualTo(oldSubscriptionId), "Subscription was not changed.");
             Assert.That(newSubscriptionId.ToString(), Is.EqualTo(subscriptionId), "New Subscription Id does not match delegated to method subscribtion Id.");
-            Assert.That(testAuthor.Subscriptions.Where(s => s.Id != newSubscriptionId).All(s => s.Subscribers.All(u => u.Id != testUser.Id)), Is.True, "User has more than one subscriptions.");
+            Assert.That(testAuthor.Subscriptions.Where(s => s.Id != newSubscriptionId).All(s => s.Subscribers.All(u => u.Id != testUser.Id)), "User has more than one subscriptions.");
         });
         _authorRepositoryMock.Verify(x => x.GetAuthorWithSubscriptionsAndSubscribersAsync(It.Is<string>(x => x == authorId)), Times.Once);
         _userRepositoryMock.Verify(x => x.GetSingleByIdAsync(It.Is<string>(x => x == userId)), Times.Once);
@@ -65,7 +65,7 @@ public class SubscribeTests : MockConfiguration
         Assert.Multiple(() =>
         {
             Assert.That(newSubscriptionId.ToString(), Is.EqualTo(subscriptionId), "Setting subscription has failed.");
-            Assert.That(testAuthor.Subscriptions.Where(s => s.Id != newSubscriptionId).All(s => s.Subscribers.All(u => u.Id != testUser.Id)), Is.True, "User was added to more than one subscription.");
+            Assert.That(testAuthor.Subscriptions.Where(s => s.Id != newSubscriptionId).All(s => s.Subscribers.All(u => u.Id != testUser.Id)), "User was added to more than one subscription.");
         });
         _authorRepositoryMock.Verify(x => x.GetAuthorWithSubscriptionsAndSubscribersAsync(It.Is<string>(x => x == authorId)), Times.Once);
         _userRepositoryMock.Verify(x => x.GetSingleByIdAsync(It.Is<string>(x => x == userId)), Times.Once);
