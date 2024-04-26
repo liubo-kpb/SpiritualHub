@@ -271,7 +271,7 @@ public class AuthorService : IAuthorService
 
         author!
             .Subscriptions
-            .FirstOrDefault(s => s.Subscribers.Any(sub => sub.Id.ToString() == userId))!
+            .FirstOrDefault(s => s.Subscribers.Any(sub => sub.Id.ToString() == userId))?
             .Subscribers
             .Remove(user!);
 
