@@ -39,7 +39,8 @@ public abstract class MockConfiguration
         _authors = new List<Author>(new SeedAuthorConfiguration().GenerateEntities());
         _publishers = new List<Publisher>(new SeedPublisherConfiguration().GenerateEntities());
         _users = new List<ApplicationUser>(new SeedUserConfiguration().GenerateEntities());
-
+ 
+         
         _authorRepositoryMock = new Mock<IAuthorRepository>();
         _userRepositoryMock = new Mock<IRepository<ApplicationUser>>();
         _userManagerMock = new Mock<UserManager<ApplicationUser>>(
