@@ -338,7 +338,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             }
             else
             {
-                formModel.Publishers = await _authorService.GetConnectedEntities<Publisher, PublisherInfoViewModel>(formModel.AuthorId);
+                formModel.Publishers = await _authorService.GetConnectedEntitiesAsync<Publisher, PublisherInfoViewModel>(formModel.AuthorId);
             }
         }
         else

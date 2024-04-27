@@ -303,9 +303,13 @@ public class AuthorService : IAuthorService
         await _authorRepository.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<TViewModel>> GetConnectedEntities<TEntityType, TViewModel>(string authorId)
+    public async Task<IEnumerable<TViewModel>> GetConnectedEntitiesAsync<TEntityType, TViewModel>(string authorId)
     {
         string propertyName = typeof(TEntityType).Name + 's';
+        if (propertyName == "ApplicationUsers")
+        {
+            propertyName = "Followers";
+        }
 
         var author = await _authorRepository.GetAuthorWithEntitiesAsync<TEntityType>(authorId, propertyName);
 

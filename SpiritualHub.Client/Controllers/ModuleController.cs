@@ -209,7 +209,7 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
     protected override async Task GetFormDetailsAsync(ModuleFormModel formModel)
     {
         formModel.AuthorId ??= await _courseService.GetAuthorIdAsync(formModel.CourseId);
-        formModel.Courses = await _authorService.GetConnectedEntities<Course, CourseInfoViewModel>(formModel.AuthorId!);
+        formModel.Courses = await _authorService.GetConnectedEntitiesAsync<Course, CourseInfoViewModel>(formModel.AuthorId!);
     }
 
     protected override async Task ValidateModelAsync(ModuleFormModel formModel)

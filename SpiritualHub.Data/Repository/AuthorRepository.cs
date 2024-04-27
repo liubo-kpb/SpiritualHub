@@ -88,23 +88,20 @@ public class AuthorRepository : Repository<Author>, IAuthorRepository
 
     public async Task<Author?> GetAuthorWithEntitiesAsync<TEntityType>(string id, string propertyName)
     {
-        switch (propertyName)
+        return propertyName switch
         {
-            case "Publishers":
-                return await DbSet
-                            .Include(a => a.Publishers)
-                            .ThenInclude(p => p.User)
-                            .FirstOrDefaultAsync(a => a.Id.ToString() == id);
-            case "Subscriptions":
-                return await DbSet
-                                .Include(a => a.Subscriptions)
-                                .ThenInclude(s => s.SubscriptionType)
-                                .FirstOrDefaultAsync(a => a.Id.ToString() == id);
-        }
-
-        return await DbSet
+            "Publishers" => await DbSet
+                                    .Include(a => a.Publishers)
+                                    .ThenInclude(p => p.User)
+                                    .FirstOrDefaultAsync(a => a.Id.ToString() == id),
+            "Subscriptions" => await DbSet
+                                        .Include(a => a.Subscriptions)
+                                        .ThenInclude(s => s.SubscriptionType)
+                                        .FirstOrDefaultAsync(a => a.Id.ToString() == id),
+            _ => await DbSet
                         .Include(propertyName)
-                        .FirstOrDefaultAsync(a => a.Id.ToString() == id);
+                        .FirstOrDefaultAsync(a => a.Id.ToString() == id),
+        };
     }
 
     public async Task<List<Author>?> GetAllByPublisherIdAsync(string publisherId) => await DbSet

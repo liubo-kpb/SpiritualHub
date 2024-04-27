@@ -44,7 +44,7 @@ public class AuthorController : ControllerBase
 
         try
         {
-            response.Data = (await _authorService.GetConnectedEntities<Event, EventInfoViewModel>(id))!
+            response.Data = (await _authorService.GetConnectedEntitiesAsync<Event, EventInfoViewModel>(id))!
                                                            .Where(e => e.StartDateTime > DateTime.Now.Date);
 
             if (!response.Data.Any())
@@ -80,7 +80,7 @@ public class AuthorController : ControllerBase
 
         try
         {
-            response.Data = (await _authorService.GetConnectedEntities<Course, CourseInfoViewModel>(id))!
+            response.Data = (await _authorService.GetConnectedEntitiesAsync<Course, CourseInfoViewModel>(id))!
                                                                                 .Where(c => c.IsActive);
 
             if (!response.Data.Any())
@@ -116,7 +116,7 @@ public class AuthorController : ControllerBase
 
         try
         {
-            response.Data = (await _authorService.GetConnectedEntities<Book, BookInfoViewModel>(id))!
+            response.Data = (await _authorService.GetConnectedEntitiesAsync<Book, BookInfoViewModel>(id))!
                                                                             .Where(e => !e.IsHidden);
 
             if (!response.Data.Any())
@@ -152,7 +152,7 @@ public class AuthorController : ControllerBase
 
         try
         {
-            response.Data = (await _authorService.GetConnectedEntities<Subscription, SubscriptionViewModel>(id))!
+            response.Data = (await _authorService.GetConnectedEntitiesAsync<Subscription, SubscriptionViewModel>(id))!
                                                                                         .OrderBy(s => s.Price);
 
             if (!response.Data.Any())
