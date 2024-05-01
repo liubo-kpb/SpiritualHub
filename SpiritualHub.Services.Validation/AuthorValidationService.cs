@@ -11,6 +11,7 @@ using Client.Infrastructure.Extensions;
 
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
+using SpiritualHub.Client.Infrastructure.Enums;
 
 public class AuthorValidationService : ValidationService, IAuthorValidationService
 {
@@ -64,7 +65,7 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
     {
         if (await _publisherService.IsConnectedToAuthorByUserId(this.User.GetId()!, id))
         {
-            TempData[ErrorMessage] = AlreadyAConnectedPublisherErrorMessage;
+            SetTempDataMessageAction(NotificationType.ErrorMessage, AlreadyAConnectedPublisherErrorMessage);
 
             return RedirectToAction("MyPublishings");
         }
@@ -81,7 +82,7 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
     {
         if (await _publisherService.ExistsByUserIdAsync(this.User.GetId()!))
         {
-            TempData[ErrorMessage] = PublishersCannotSubscribeErrorMessage;
+            SetTempDataMessageAction(NotificationType.ErrorMessage, PublishersCannotSubscribeErrorMessage);
 
             return RedirectToAction("Details", ControllerName, new { id });
         }
@@ -93,7 +94,7 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
     {
         if (await subscriptionService.ExistsByIdAsync(id))
         {
-            TempData[ErrorMessage] = SelectValidSubscriptionPlan;
+            SetTempDataMessageAction(NotificationType.ErrorMessage, SelectValidSubscriptionPlan);
 
             return RedirectToAction("Subscribe", ControllerName, _authorService.GetAuthorSubscribtionsAsync(authorId));
         }
@@ -105,7 +106,7 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
     {
         if (await _authorService.IsFollowedByUserWithId(id, this.User.GetId()!))
         {
-            TempData[ErrorMessage] = AlreadyFollowingAuthorErrorMessage;
+            SetTempDataMessageAction(NotificationType.ErrorMessage, AlreadyFollowingAuthorErrorMessage);
 
             return RedirectToAction("Mine");
         }

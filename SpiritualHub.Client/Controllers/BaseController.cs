@@ -9,6 +9,7 @@ using Data.Models;
 using Services.Interfaces;
 using Services.Validation.Interfaces;
 using Infrastructure.Extensions;
+using Infrastructure.Enums;
 using ViewModels.BaseModels;
 using ViewModels.Publisher;
 using Filters;
@@ -19,7 +20,7 @@ using static Common.ExceptionErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
 
 [Authorize]
-[ServiceFilter(typeof(CustomValidationFilterAttribute))]
+//[ServiceFilter(typeof(CustomValidationFilterAttribute))]
 public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQueryModel, TSortingEnum> : Controller
     where TViewModel : class
     where TDetailsModel : class
@@ -403,10 +404,32 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     private void SetValidationServiceProperties(IUrlHelperFactory urlHelperFactory, IActionContextAccessor actionContextAccessor)
     {
         var controllerName = this.GetType().Name;
-        _validationService.ControllerName = controllerName.Substring(0, controllerName.IndexOf("Controller"));
+        _validationService.ControllerName = controllerName[..controllerName.IndexOf("Controller")];
         _validationService.EntityName = this._entityName;
+        _validationService.UrlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext!);
+        
         _validationService.GetAuthorIdAsyncFunc = this.GetAuthorIdAsync;
         _validationService.ExistsAsyncFunc = this.ExistsAsync;
-        _validationService.UrlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext!);
+        _validationService.GetUserIdFunc = this.GetUserId;
+        _validationService.IsUserAdminFunc = this.IsUserAdmin;
+        _validationService.SetTempDataMessageAction = this.SetTempDataMessage;
     }
+
+    private void SetTempDataMessage(NotificationType notificationType, string message)
+    {
+        string notificationString = notificationType switch
+        {
+            NotificationType.ErrorMessage => ErrorMessage,
+            NotificationType.WarningMessage => WarningMessage,
+            NotificationType.InformationMessage => InformationMessage,
+            NotificationType.SuccessMessage => SuccessMessage,
+            _ => InformationMessage
+        };
+
+        TempData[notificationString] = message;
+    }
+
+    private string? GetUserId() => this.User.GetId();
+
+    private bool IsUserAdmin() => this.User.IsAdmin();
 }

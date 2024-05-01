@@ -13,6 +13,7 @@ using Client.ViewModels.BaseModels;
 
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
+using SpiritualHub.Client.Infrastructure.Enums;
 
 public class ValidationService : IValidationService
 {
@@ -30,8 +31,6 @@ public class ValidationService : IValidationService
 
     public string ControllerName { get; set; } = null!;
 
-    public ClaimsPrincipal User { get; set; } = null!;
-
     public ITempDataDictionary TempData { get; set; } = null!;
 
     public IUrlHelper UrlHelper { get; set; } = null!;
@@ -42,11 +41,17 @@ public class ValidationService : IValidationService
 
     public Func<string, Task<string>> GetAuthorIdAsyncFunc { get; set; } = null!;
 
+    public Func<string?> GetUserIdFunc { get; set; } = null!;
+
+    public Func<bool> IsUserAdminFunc { get; set; } = null!;
+
+    public Action<NotificationType, string> SetTempDataMessageAction { get; set; } = null!;
+
     public virtual async Task<IActionResult?> CheckModifyActionAsync(string entityId, string? authorId)
     {
         var validationResult = await HandleExistsCheckAsync(entityId);
 
-        if (this.User.IsAdmin() && validationResult == null)
+        if (IsUserAdminFunc() && validationResult == null)
         {
             return null!;
         }
@@ -66,7 +71,7 @@ public class ValidationService : IValidationService
     {
         if (!await ExistsAsyncFunc(entityId))
         {
-            TempData[ErrorMessage] = string.Format(NoEntityFoundErrorMessage, EntityName);
+            SetTempDataMessageAction(NotificationType.ErrorMessage, string.Format(NoEntityFoundErrorMessage, EntityName));
 
             return RedirectToAction("All", ControllerName);
         }
@@ -81,9 +86,9 @@ public class ValidationService : IValidationService
 
     public virtual async Task<IActionResult?> CheckUserIsPublisherAsync()
     {
-        if (!await _publisherService.ExistsByUserIdAsync(this.User.GetId()!))
+        if (!await _publisherService.ExistsByUserIdAsync(GetUserIdFunc()!))
         {
-            TempData[ErrorMessage] = NotAPublisherErrorMessage;
+            SetTempDataMessageAction(NotificationType.ErrorMessage, NotAPublisherErrorMessage);
 
             return RedirectToAction("Become", nameof(Publisher));
         }
@@ -98,9 +103,9 @@ public class ValidationService : IValidationService
             id = await this.GetAuthorIdAsyncFunc(id);
         }
 
-        if (!await _publisherService.IsConnectedToAuthorByUserId(this.User.GetId()!, id))
+        if (!await _publisherService.IsConnectedToAuthorByUserId(GetUserIdFunc()!, id))
         {
-            TempData[ErrorMessage] = NotAConnectedPublisherErrorMessage;
+            SetTempDataMessageAction(NotificationType.ErrorMessage, NotAConnectedPublisherErrorMessage);
 
             return RedirectToAction("Details", nameof(Author), new { id });
         }
@@ -123,10 +128,5 @@ public class ValidationService : IValidationService
     public virtual bool PublisherHasConnectedAuthors(BaseFormModel formModel)
     {
         return formModel.Authors.Any();
-    }
-
-    public void SetUrlHelper(IUrlHelper urlHelper)
-    {
-        UrlHelper = urlHelper;
     }
 }
