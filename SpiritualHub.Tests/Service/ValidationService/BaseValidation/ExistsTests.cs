@@ -27,6 +27,8 @@ public class ExistsTests : MockConfiguration
         Assert.Multiple(() =>
         {
             Assert.That(result, Is.Null);
+            Assert.That(_validationService.ActionUrl, Is.Null);
+            Assert.That(_validationService.RouteValue, Is.Null);
             Assert.That(actualId, Is.EqualTo(expectedId), string.Format(WrongVariableValueErrorMessage, "Id"));
         });
     }
@@ -66,7 +68,7 @@ public class ExistsTests : MockConfiguration
         {
             Assert.That(result, Is.Not.Null);
             Assert.That(_validationService.RouteValue, Is.Null);
-            Assert.That(_validationService.ActionUrl, Is.EqualTo(expectedUrl));
+            Assert.That(_validationService.ActionUrl, Is.EqualTo(expectedUrl), string.Format(WrongVariableValueErrorMessage, "Url"));
             Assert.That(actualId, Is.EqualTo(expectedId), string.Format(WrongVariableValueErrorMessage, "Id"));
             Assert.That(actualMessage, Is.EqualTo(expectedErrorMessage), string.Format(WrongVariableValueErrorMessage, "Error message"));
             Assert.That(actualType, Is.EqualTo(expectedNotificationType), string.Format(WrongVariableValueErrorMessage, "Notification Type"));

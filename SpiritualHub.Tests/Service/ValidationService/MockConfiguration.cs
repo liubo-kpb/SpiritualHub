@@ -23,8 +23,11 @@ public class MockConfiguration
     {
         _authorServiceMock = new Mock<IAuthorService>();
         _publisherServiceMock = new Mock<IPublisherService>();
-        _urlHelperMock = new Mock<IUrlHelper>();
+    }
 
+    [SetUp]
+    public virtual void Setup()
+    {
         _validationService = new TestValidationService(_authorServiceMock.Object, _publisherServiceMock.Object)
         {
             ControllerName = ControllerName,
