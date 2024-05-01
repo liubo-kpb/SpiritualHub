@@ -1,6 +1,5 @@
 ﻿namespace SpiritualHub.Services.Validation;
 
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -8,12 +7,10 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Interfaces;
 using Services.Interfaces;
 using Data.Models;
-using Client.Infrastructure.Extensions;
+using Client.Infrastructure.Enums;
 using Client.ViewModels.BaseModels;
 
-using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
-using SpiritualHub.Client.Infrastructure.Enums;
 
 public class ValidationService : IValidationService
 {
@@ -113,7 +110,7 @@ public class ValidationService : IValidationService
         return null!;
     }
 
-    protected IActionResult RedirectToAction(string action, string? controller = null, object? routeValue = null)
+    protected virtual IActionResult RedirectToAction(string action, string? controller = null, object? routeValue = null)
     {
         controller ??= ControllerName;
         string actionUrl = UrlHelper.Action(action, controller)!;

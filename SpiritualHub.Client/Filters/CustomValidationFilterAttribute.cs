@@ -22,19 +22,19 @@ public class CustomValidationFilterAttribute : ActionFilterAttribute
 
     public override Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        if (context.Controller is AuthorController authorController)
-        {
-            _authorValidationService.User = context.HttpContext.User;
-            _authorValidationService.TempData = authorController.TempData;
-        }
-        else
-        {
-            _validationService.User = context.HttpContext.User;
-            if (context.Controller is Controller controller)
-            {
-                _validationService.TempData = controller.TempData;
-            }
-        }
+        //if (context.Controller is AuthorController authorController)
+        //{
+        //    _authorValidationService.User = context.HttpContext.User;
+        //    _authorValidationService.TempData = authorController.TempData;
+        //}
+        //else
+        //{
+        //    _validationService.User = context.HttpContext.User;
+        //    if (context.Controller is Controller controller)
+        //    {
+        //        _validationService.TempData = controller.TempData;
+        //    }
+        //}
 
         return base.OnActionExecutionAsync(context, next);
     }

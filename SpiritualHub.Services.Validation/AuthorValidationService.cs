@@ -26,7 +26,7 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
     {
         var validationResult = await HandleExistsCheckAsync(authorId);
         
-        if (this.User.IsAdmin() && validationResult == null)
+        if (IsUserAdminFunc() && validationResult == null)
         {
             return null;
         }
@@ -48,7 +48,7 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
     {
         var validationResult = await HandleExistsCheckAsync(authorId);
 
-        if (this.User.IsAdmin() && validationResult == null)
+        if (IsUserAdminFunc() && validationResult == null)
         {
             return null;
         }
@@ -63,7 +63,7 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
 
     public override async Task<IActionResult?> CheckPublisherConnectionToAuthorAsync(string id, bool isAuthorId)
     {
-        if (await _publisherService.IsConnectedToAuthorByUserId(this.User.GetId()!, id))
+        if (await _publisherService.IsConnectedToAuthorByUserId(GetUserIdFunc()!, id))
         {
             SetTempDataMessageAction(NotificationType.ErrorMessage, AlreadyAConnectedPublisherErrorMessage);
 
@@ -80,7 +80,7 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
 
     private async Task<IActionResult?> CheckUserIsPublisherAsync(string id)
     {
-        if (await _publisherService.ExistsByUserIdAsync(this.User.GetId()!))
+        if (await _publisherService.ExistsByUserIdAsync(GetUserIdFunc()!))
         {
             SetTempDataMessageAction(NotificationType.ErrorMessage, PublishersCannotSubscribeErrorMessage);
 
@@ -104,7 +104,7 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
 
     private async Task<IActionResult?> CheckFollowingAsync(string id)
     {
-        if (await _authorService.IsFollowedByUserWithId(id, this.User.GetId()!))
+        if (await _authorService.IsFollowedByUserWithId(id, GetUserIdFunc()!))
         {
             SetTempDataMessageAction(NotificationType.ErrorMessage, AlreadyFollowingAuthorErrorMessage);
 

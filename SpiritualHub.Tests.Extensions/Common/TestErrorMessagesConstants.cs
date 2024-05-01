@@ -7,4 +7,6 @@ public static class TestErrorMessagesConstants
     public const string NoArgumentExceptionErrorMessage = "Method did not throw a ArgumentException.";
 
     public const string EntityWasUpdatedErrorMessage = "Entity was but shouldn't have been updated.";
+ 
+    public const string WrongVariableValueErrorMessage = "{0} does not match expected value.";
 }

@@ -2,6 +2,7 @@
 
 public enum NotificationType
 {
+    Null,
     ErrorMessage,
     WarningMessage,
     InformationMessage,
