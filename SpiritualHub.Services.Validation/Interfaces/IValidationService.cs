@@ -48,7 +48,7 @@ public interface IValidationService
     /// <param name="userId"></param>
     /// <param name="tempData"></param>
     /// <returns>Returns <see cref="IActionResult"/> based on validation result and logic.</returns>
-    Task<IActionResult?> CheckModifyPermissionsAsync(string id, bool isAuthorId);
+    Task<IActionResult?> CheckModifyPermissionsAsync(string id, bool isAuthorId = false);
 
     Task<IActionResult?> CheckUserIsPublisherAsync();
 

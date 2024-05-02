@@ -198,7 +198,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             var formModel = CreateFormModelInstance();
 
             await GetFormDetailsAsync(formModel);
-            if (!_validationService.PublisherHasConnectedAuthors(formModel));
+            if (!_validationService.PublisherHasConnectedAuthors(formModel)) ;
             {
                 TempData[ErrorMessage] = NoConnectedAuthorsErrorMessage;
 
@@ -232,13 +232,10 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             return View(newEntityForm);
         }
 
-        if (!this.User.IsAdmin())
+        var validationResult = await _validationService.CheckModifyPermissionsAsync(newEntityForm.AuthorId!, true);
+        if (validationResult != null)
         {
-            var validationResult = await _validationService.CheckModifyPermissionsAsync(newEntityForm.AuthorId!, true);
-            if (validationResult != null)
-            {
-                return validationResult;
-            }
+            return validationResult;
         }
 
         try
@@ -407,7 +404,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         _validationService.ControllerName = controllerName[..controllerName.IndexOf("Controller")];
         _validationService.EntityName = this._entityName;
         _validationService.UrlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext!);
-        
+
         _validationService.GetAuthorIdAsyncFunc = this.GetAuthorIdAsync;
         _validationService.ExistsAsyncFunc = this.ExistsAsync;
         _validationService.GetUserIdFunc = this.GetUserId;

@@ -78,6 +78,11 @@ public class ValidationService : IValidationService
 
     public virtual async Task<IActionResult?> CheckModifyPermissionsAsync(string id, bool isAuthorId = false)
     {
+        if (IsUserAdminFunc())
+        {
+            return null!;
+        }
+
         return await CheckUserIsPublisherAsync() ?? await CheckPublisherConnectionToAuthorAsync(id, isAuthorId);
     }
 
