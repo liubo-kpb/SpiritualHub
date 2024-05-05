@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 using Moq;
 
-using BaseValidation.TestClasses;
-using BaseValidation.TestClasses.Interfaces;
+using TestClasses;
+using TestClasses.Interfaces;
 using Services.Interfaces;
 
 public class MockConfiguration

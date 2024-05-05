@@ -1,4 +1,4 @@
-﻿namespace SpiritualHub.Tests.Service.ValidationService.BaseValidation.TestClasses;
+﻿namespace SpiritualHub.Tests.Service.ValidationService.TestClasses;
 
 using Microsoft.AspNetCore.Mvc;
 

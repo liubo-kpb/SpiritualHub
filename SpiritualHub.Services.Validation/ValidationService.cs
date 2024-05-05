@@ -48,7 +48,7 @@ public class ValidationService : IValidationService
     {
         var validationResult = await HandleExistsCheckAsync(entityId);
 
-        if (IsUserAdminFunc() && validationResult == null)
+        if (validationResult == null && IsUserAdminFunc())
         {
             return null!;
         }

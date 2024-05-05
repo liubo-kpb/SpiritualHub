@@ -1,4 +1,4 @@
-﻿namespace SpiritualHub.Tests.Service.ValidationService.BaseValidation.TestClasses.Interfaces;
+﻿namespace SpiritualHub.Tests.Service.ValidationService.TestClasses.Interfaces;
 
 using SpiritualHub.Services.Validation.Interfaces;
 
