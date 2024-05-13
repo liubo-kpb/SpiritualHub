@@ -75,7 +75,7 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
     {
         if (IsUserAdminFunc())
         {
-            return null!;
+            return null;
         }
         isAuthorId = true;
 
@@ -91,7 +91,7 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
             return RedirectToAction("Details", ControllerName, new { id });
         }
 
-        return null!; ;
+        return null;
     }
 
     private async Task<IActionResult?> SubscriptionExistsAsync(ISubscriptionService subscriptionService, string id, string authorId)

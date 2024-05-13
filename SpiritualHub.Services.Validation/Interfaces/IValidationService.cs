@@ -40,7 +40,7 @@ public interface IValidationService
     /// <returns>Returns <see cref="IActionResult"/> based on validation result and logic.</returns>
     Task<IActionResult?> CheckModifyActionAsync(string entityId, string? authorId);
 
-    Task<IActionResult> HandleExistsCheckAsync(string entityId);
+    Task<IActionResult?> HandleExistsCheckAsync(string entityId);
 
     /// <summary>
     /// Validates user modify permissions for respective entity and action.

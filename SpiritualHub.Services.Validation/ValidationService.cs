@@ -50,7 +50,7 @@ public class ValidationService : IValidationService
 
         if (validationResult == null && IsUserAdminFunc())
         {
-            return null!;
+            return null;
         }
 
         string id = entityId;
@@ -64,7 +64,7 @@ public class ValidationService : IValidationService
         return validationResult ?? await CheckModifyPermissionsAsync(id, isAuthorId);
     }
 
-    public virtual async Task<IActionResult> HandleExistsCheckAsync(string entityId)
+    public virtual async Task<IActionResult?> HandleExistsCheckAsync(string entityId)
     {
         if (!await ExistsAsyncFunc(entityId))
         {
@@ -73,14 +73,14 @@ public class ValidationService : IValidationService
             return RedirectToAction("All", ControllerName);
         }
 
-        return null!;
+        return null;
     }
 
     public virtual async Task<IActionResult?> CheckModifyPermissionsAsync(string id, bool isAuthorId = false)
     {
         if (IsUserAdminFunc())
         {
-            return null!;
+            return null;
         }
 
         return await CheckUserIsPublisherAsync() ?? await CheckPublisherConnectionToAuthorAsync(id, isAuthorId);
@@ -95,7 +95,7 @@ public class ValidationService : IValidationService
             return RedirectToAction("Become", nameof(Publisher));
         }
 
-        return null!;
+        return null;
     }
 
     public virtual async Task<IActionResult?> CheckPublisherConnectionToAuthorAsync(string id, bool isAuthorId)
@@ -112,7 +112,7 @@ public class ValidationService : IValidationService
             return RedirectToAction("Details", nameof(Author), new { id });
         }
 
-        return null!;
+        return null;
     }
 
     protected virtual IActionResult RedirectToAction(string action, string? controller = null, object? routeValue = null)
