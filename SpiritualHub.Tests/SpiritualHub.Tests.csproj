@@ -47,7 +47,6 @@
     <Folder Include="Service\BusinessService\UserService\" />
     <Folder Include="Service\BusinessService\SubscriptionService\" />
     <Folder Include="Service\BusinessService\PublisherService\" />
-    <Folder Include="Service\ValidationService\AuthorValidation\" />
   </ItemGroup>
 
 </Project>

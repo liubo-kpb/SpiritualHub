@@ -7,11 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Interfaces;
 using Services.Interfaces;
 using Client.ViewModels.BaseModels;
-using Client.Infrastructure.Extensions;
+using Client.Infrastructure.Enums;
 
-using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
-using SpiritualHub.Client.Infrastructure.Enums;
 
 public class AuthorValidationService : ValidationService, IAuthorValidationService
 {
@@ -75,6 +73,12 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
 
     public override async Task<IActionResult?> CheckModifyPermissionsAsync(string id, bool isAuthorId = false)
     {
+        if (IsUserAdminFunc())
+        {
+            return null!;
+        }
+        isAuthorId = true;
+
         return await CheckUserIsPublisherAsync() ?? await base.CheckPublisherConnectionToAuthorAsync(id, isAuthorId);
     }
 
@@ -92,7 +96,7 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
 
     private async Task<IActionResult?> SubscriptionExistsAsync(ISubscriptionService subscriptionService, string id, string authorId)
     {
-        if (await subscriptionService.ExistsByIdAsync(id))
+        if (!await subscriptionService.ExistsByIdAsync(id))
         {
             SetTempDataMessageAction(NotificationType.ErrorMessage, SelectValidSubscriptionPlan);
 
