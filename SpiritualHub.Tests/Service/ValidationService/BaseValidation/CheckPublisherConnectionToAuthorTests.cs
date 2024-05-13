@@ -83,7 +83,7 @@ public class CheckPublisherConnectionToAuthorTests : MockConfiguration
 
         _publisherServiceMock.Setup(x => x.IsConnectedToAuthorByUserId(It.Is<string>(x => x == userId), It.Is<string>(x => x == id))).ReturnsAsync(false);
 
-        string expectedUrl = string.Format(_url, "Details", nameof(Author));
+        string expectedUrl = string.Format(_url, nameof(Author), "Details");
         string expectedErrorMessage = NotAConnectedPublisherErrorMessage;
         var expectedNotificationType = NotificationType.ErrorMessage;
 
@@ -126,7 +126,7 @@ public class CheckPublisherConnectionToAuthorTests : MockConfiguration
 
         _publisherServiceMock.Setup(x => x.IsConnectedToAuthorByUserId(It.Is<string>(x => x == userId), It.Is<string>(x => x == authorId))).ReturnsAsync(false);
 
-        string expectedUrl = string.Format(_url, "Details", nameof(Author));
+        string expectedUrl = string.Format(_url, nameof(Author), "Details");
         string expectedErrorMessage = NotAConnectedPublisherErrorMessage;
         var expectedNotificationType = NotificationType.ErrorMessage;
 

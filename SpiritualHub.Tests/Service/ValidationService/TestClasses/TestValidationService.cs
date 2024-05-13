@@ -20,7 +20,7 @@ public class TestValidationService : ValidationService, ITestValidationService
     protected override IActionResult RedirectToAction(string action, string? controller = null, object? routeValue = null)
     {
         controller ??= ControllerName;
-        ActionUrl = $"*address*/{action}/{controller}";
+        ActionUrl = $"*address*/{controller}/{action}";
         if (routeValue != null)
         {
             RouteValue = routeValue;

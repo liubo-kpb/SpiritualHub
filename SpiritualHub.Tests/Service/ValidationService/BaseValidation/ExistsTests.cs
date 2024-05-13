@@ -39,7 +39,7 @@ public class ExistsTests : MockConfiguration
         // Arrange
         string action = "All";
 
-        string expectedUrl = string.Format(_url, action, ControllerName);
+        string expectedUrl = string.Format(_url, ControllerName, action);
         string expectedId = "testId";
         string expectedErrorMessage = string.Format(NoEntityFoundErrorMessage, _validationService.EntityName);
         var expectedNotificationType = NotificationType.ErrorMessage;

@@ -12,22 +12,16 @@ public class MockConfiguration
 {
     protected Mock<IAuthorService> _authorServiceMock;
     protected Mock<IPublisherService> _publisherServiceMock;
-    protected Mock<IUrlHelper> _urlHelperMock;
 
     protected ITestValidationService _validationService;
 
     protected const string _url = "*address*/{0}/{1}";
 
-    [OneTimeSetUp]
-    public virtual void OneTimeSetup()
-    {
-        _authorServiceMock = new Mock<IAuthorService>();
-        _publisherServiceMock = new Mock<IPublisherService>();
-    }
-
     [SetUp]
     public virtual void Setup()
     {
+        _authorServiceMock = new Mock<IAuthorService>();
+        _publisherServiceMock = new Mock<IPublisherService>();
         _validationService = new TestValidationService(_authorServiceMock.Object, _publisherServiceMock.Object)
         {
             ControllerName = ControllerName,

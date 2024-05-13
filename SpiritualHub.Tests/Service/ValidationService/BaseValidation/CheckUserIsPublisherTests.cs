@@ -38,7 +38,7 @@ public class CheckUserIsPublisherTests : MockConfiguration
         _validationService.GetUserIdFunc = () => userId;
         _publisherServiceMock.Setup(x => x.ExistsByUserIdAsync(It.Is<string>(x => x == userId))).ReturnsAsync(false);
 
-        string expectedUrl = string.Format(_url, "Become", nameof(Publisher));
+        string expectedUrl = string.Format(_url, nameof(Publisher), "Become");
         string expectedMessage = NotAPublisherErrorMessage;
         var expectedNotificationType = NotificationType.ErrorMessage;
 

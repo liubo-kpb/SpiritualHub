@@ -171,7 +171,7 @@ public class CheckModifyActionTests : MockConfiguration
         // Arrange
         string entityId = "wrongId";
 
-        string expectedUrl = string.Format(_url, "All", ControllerName);
+        string expectedUrl = string.Format(_url, ControllerName, "All");
         string expectedErrorMessage = string.Format(NoEntityFoundErrorMessage, _validationService.EntityName);
         var expectedNotificationType = NotificationType.ErrorMessage;
 
@@ -221,7 +221,7 @@ public class CheckModifyActionTests : MockConfiguration
         int expectedGetUserIdCallCount = 1;
         int expectedAdminCheckCallCount = 2;
 
-        string expectedUrl = string.Format(_url, "Become", nameof(Publisher));
+        string expectedUrl = string.Format(_url, nameof(Publisher), "Become");
         string expectedErrorMessage = NotAPublisherErrorMessage;
         var expectedNotificationType = NotificationType.ErrorMessage;
 
@@ -292,7 +292,7 @@ public class CheckModifyActionTests : MockConfiguration
         int expectedGetUserIdCallCount = 2;
         int expectedAdminCheckCallCount = 2;
 
-        string expectedUrl = string.Format(_url, "Details", nameof(Author));
+        string expectedUrl = string.Format(_url, nameof(Author), "Details");
         string expectedErrorMessage = NotAConnectedPublisherErrorMessage;
         var expectedNotificationType = NotificationType.ErrorMessage;
 
@@ -372,7 +372,7 @@ public class CheckModifyActionTests : MockConfiguration
         int expectedGetUserIdCallCount = 2;
         int expectedAdminCheckCallCount = 2;
 
-        string expectedUrl = string.Format(_url, "Details", nameof(Author));
+        string expectedUrl = string.Format(_url, nameof(Author), "Details");
         string expectedErrorMessage = NotAConnectedPublisherErrorMessage;
         var expectedNotificationType = NotificationType.ErrorMessage;
 
