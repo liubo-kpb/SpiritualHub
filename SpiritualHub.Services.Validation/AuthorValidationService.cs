@@ -23,8 +23,8 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
     public async Task<IActionResult?> CheckSubscribeActionAsync(string authorId)
     {
         var validationResult = await HandleExistsCheckAsync(authorId);
-        
-        if (IsUserAdminFunc() && validationResult == null)
+
+        if (validationResult == null && IsUserAdminFunc())
         {
             return null;
         }
@@ -46,7 +46,7 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
     {
         var validationResult = await HandleExistsCheckAsync(authorId);
 
-        if (IsUserAdminFunc() && validationResult == null)
+        if (validationResult == null && IsUserAdminFunc())
         {
             return null;
         }
@@ -82,13 +82,13 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
         return await CheckUserIsPublisherAsync() ?? await base.CheckPublisherConnectionToAuthorAsync(id, isAuthorId);
     }
 
-    private async Task<IActionResult?> CheckUserIsPublisherAsync(string id)
+    private async Task<IActionResult?> CheckUserIsPublisherAsync(string authorId)
     {
         if (await _publisherService.ExistsByUserIdAsync(GetUserIdFunc()!))
         {
             SetTempDataMessageAction(NotificationType.ErrorMessage, PublishersCannotSubscribeErrorMessage);
 
-            return RedirectToAction("Details", ControllerName, new { id });
+            return RedirectToAction("Details", ControllerName, new { id = authorId });
         }
 
         return null;
