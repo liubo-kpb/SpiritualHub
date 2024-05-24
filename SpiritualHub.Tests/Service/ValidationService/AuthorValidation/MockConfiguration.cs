@@ -11,7 +11,7 @@ public class MockConfiguration
     protected Mock<IAuthorService> _authorServiceMock;
     protected Mock<IPublisherService> _publisherServiceMock;
 
-    protected ITestAuthorValidationService _validationService;
+    protected TestAuthorValidationService _validationService;
 
     protected const string _url = "*address*/{0}/{1}";
 
