@@ -3,7 +3,6 @@
 using Moq;
 
 using TestClasses;
-using TestClasses.Interfaces;
 using Services.Interfaces;
 
 public class MockConfiguration
@@ -27,5 +26,5 @@ public class MockConfiguration
         };
     }
 
-    protected string ControllerName { get; set; } = "DefaultController";
+    protected string ControllerName { get; } = "DefaultController";
 }

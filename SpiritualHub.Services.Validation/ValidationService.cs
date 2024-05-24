@@ -14,15 +14,11 @@ using static Common.ErrorMessagesConstants;
 
 public class ValidationService : IValidationService
 {
-    protected readonly IAuthorService _authorService;
     protected readonly IPublisherService _publisherService;
 
-
     public ValidationService(
-        IAuthorService authorService,
         IPublisherService publisherService)
     {
-        _authorService = authorService;
         _publisherService = publisherService;
     }
 

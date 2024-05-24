@@ -13,11 +13,14 @@ using static Common.ErrorMessagesConstants;
 
 public class AuthorValidationService : ValidationService, IAuthorValidationService
 {
+    private readonly IAuthorService _authorService;
+
     public AuthorValidationService(
         IAuthorService authorService,
         IPublisherService publisherService)
-        : base(authorService, publisherService)
+        : base(publisherService)
     {
+        _authorService = authorService;
     }
 
     public async Task<IActionResult?> CheckSubscribeActionAsync(string authorId)
@@ -39,7 +42,7 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
 
     public async Task<IActionResult?> HandleSubscribeActionAsync(ISubscriptionService subscriptionService, string subscriptionId, string authorId)
     {
-        return await CheckSubscribeActionAsync(authorId) ?? await SubscriptionExistsAsync(subscriptionService, subscriptionId, authorId);
+        return await CheckSubscribeActionAsync(authorId) ?? await SubscriptionExistsCheckAsync(subscriptionService, subscriptionId, authorId);
     }
 
     public async Task<IActionResult?> CheckConnectActionAsync(string authorId)
@@ -94,13 +97,13 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
         return null;
     }
 
-    private async Task<IActionResult?> SubscriptionExistsAsync(ISubscriptionService subscriptionService, string id, string authorId)
+    private async Task<IActionResult?> SubscriptionExistsCheckAsync(ISubscriptionService subscriptionService, string id, string authorId)
     {
         if (!await subscriptionService.ExistsByIdAsync(id))
         {
             SetTempDataMessageAction(NotificationType.ErrorMessage, SelectValidSubscriptionPlan);
 
-            return RedirectToAction("Subscribe", ControllerName, _authorService.GetAuthorSubscribtionsAsync(authorId));
+            return RedirectToAction("Subscribe", ControllerName, await _authorService.GetAuthorSubscribtionsAsync(authorId));
         }
 
         return null;
