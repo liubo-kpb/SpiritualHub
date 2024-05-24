@@ -1,12 +1,10 @@
 ﻿namespace SpiritualHub.Services.Validation.Interfaces;
 
-using System.Security.Claims;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 using Client.ViewModels.BaseModels;
-using SpiritualHub.Client.Infrastructure.Enums;
+using Client.Infrastructure.Enums;
 
 /// <summary>
 /// Validation checks when an Action is submitted. Methods return <see cref="IActionResult"/> depending on the result. Intended to return <c>null</c> if action passes validation.
