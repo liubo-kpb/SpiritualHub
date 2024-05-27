@@ -33,17 +33,15 @@ public class TestAuthorValidationService : AuthorValidationService, ITestValidat
 
     public int ExistsCallCount { get; set; }
 
-    public string EntityId { get; set; } = null!;
-
     public bool Exists { get; set; }
 
-    public string AuthorId { get; set; }
+    public string AuthorId { get; }
 
     public string ActualEntityId { get; set; } = null!;
 
     public int GetUserIdCallCount { get; set; }
 
-    public string UserId { get; set; }
+    public string UserId { get; }
 
     public int AdminCheckCallCount { get; set; }
 

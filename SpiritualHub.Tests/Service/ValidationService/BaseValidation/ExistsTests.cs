@@ -14,13 +14,6 @@ public class ExistsTests : MockConfiguration
         string expectedId = "testId";
 
         // Act
-        string actualId = string.Empty;
-        _validationService.ExistsAsyncFunc = async (id) =>
-        {
-            actualId = id;
-            return await Task.FromResult(true);
-        };
-
         var result = await _validationService.HandleExistsCheckAsync(expectedId);
 
         // Assert
@@ -29,7 +22,7 @@ public class ExistsTests : MockConfiguration
             Assert.That(result, Is.Null);
             Assert.That(_validationService.ActionUrl, Is.Null);
             Assert.That(_validationService.RouteValue, Is.Null);
-            Assert.That(actualId, Is.EqualTo(expectedId), string.Format(WrongVariableValueErrorMessage, "Id"));
+            Assert.That(_validationService.ActualEntityId, Is.EqualTo(expectedId), string.Format(WrongVariableValueErrorMessage, "Id"));
         });
     }
 
@@ -39,28 +32,14 @@ public class ExistsTests : MockConfiguration
         // Arrange
         string action = "All";
 
+        _validationService.Exists = false;
+
         string expectedUrl = string.Format(_url, ControllerName, action);
         string expectedId = "testId";
         string expectedErrorMessage = string.Format(NoEntityFoundErrorMessage, _validationService.EntityName);
         var expectedNotificationType = NotificationType.ErrorMessage;
 
         // Act
-        string actualId = string.Empty;
-        string actualMessage = string.Empty;
-        var actualType = NotificationType.Null;
-
-        _validationService.ExistsAsyncFunc = async (id) =>
-        {
-            actualId = id;
-            return await Task.FromResult(false);
-        };
-
-        _validationService.SetTempDataMessageAction = (type, message) =>
-        {
-            actualType = type;
-            actualMessage = message;
-        };
-
         var result = await _validationService.HandleExistsCheckAsync(expectedId);
 
         // Assert
@@ -69,9 +48,9 @@ public class ExistsTests : MockConfiguration
             Assert.That(result, Is.Not.Null);
             Assert.That(_validationService.RouteValue, Is.Null);
             Assert.That(_validationService.ActionUrl, Is.EqualTo(expectedUrl), string.Format(WrongVariableValueErrorMessage, "Url"));
-            Assert.That(actualId, Is.EqualTo(expectedId), string.Format(WrongVariableValueErrorMessage, "Id"));
-            Assert.That(actualMessage, Is.EqualTo(expectedErrorMessage), string.Format(WrongVariableValueErrorMessage, "Error message"));
-            Assert.That(actualType, Is.EqualTo(expectedNotificationType), string.Format(WrongVariableValueErrorMessage, "Notification Type"));
+            Assert.That(_validationService.ActualEntityId, Is.EqualTo(expectedId), string.Format(WrongVariableValueErrorMessage, "Id"));
+            Assert.That(_validationService.ActualErrorMessage, Is.EqualTo(expectedErrorMessage), string.Format(WrongVariableValueErrorMessage, "Error message"));
+            Assert.That(_validationService.ActualNotificationType, Is.EqualTo(expectedNotificationType), string.Format(WrongVariableValueErrorMessage, "Notification Type"));
         });
     }
 }

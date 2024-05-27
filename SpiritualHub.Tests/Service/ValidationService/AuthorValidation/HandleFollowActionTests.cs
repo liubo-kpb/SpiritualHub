@@ -22,22 +22,6 @@ public class HandleFollowActionTests : MockConfiguration
         _authorServiceMock.Setup(x => x.IsFollowedByUserWithId(It.Is<string>(x => x == authorId), It.Is<string>(x => x == userId))).ReturnsAsync(false);
 
         // Act
-        int existsCheckCallCount = 0;
-        string actualId = string.Empty;
-        _validationService.ExistsAsyncFunc = (id) =>
-        {
-            existsCheckCallCount++;
-            actualId = id;
-            return Task.FromResult(true);
-        };
-
-        int getUserIdCallCount = 0;
-        _validationService.GetUserIdFunc = () =>
-        {
-            getUserIdCallCount++;
-            return userId;
-        };
-
         var result = await _validationService.HandleFollowActionAsync(authorId);
 
         // Assert
@@ -45,9 +29,9 @@ public class HandleFollowActionTests : MockConfiguration
         {
             Assert.That(result, Is.Null);
 
-            Assert.That(actualId, Is.EqualTo(authorId));
-            Assert.That(existsCheckCallCount, Is.EqualTo(expectedExistsCheckCallCount));
-            Assert.That(getUserIdCallCount, Is.EqualTo(expectedGetUserIdCallCount));
+            Assert.That(_validationService.ActualEntityId, Is.EqualTo(authorId));
+            Assert.That(_validationService.ExistsCallCount, Is.EqualTo(expectedExistsCheckCallCount));
+            Assert.That(_validationService.GetUserIdCallCount, Is.EqualTo(expectedGetUserIdCallCount));
         });
         _authorServiceMock.Verify(x => x.IsFollowedByUserWithId(It.Is<string>(x => x == authorId), It.Is<string>(x => x == userId)));
     }
@@ -57,7 +41,8 @@ public class HandleFollowActionTests : MockConfiguration
     {
         // Arrange
         string authorId = "authorId";
-        string userId = "userId";
+
+        _validationService.Exists = false;
 
         int expectedExistsCheckCallCount = 1;
         int expectedGetUserIdCallCount = 0;
@@ -66,30 +51,6 @@ public class HandleFollowActionTests : MockConfiguration
         string expectedUrl = string.Format(_url, ControllerName, "All");
 
         // Act
-        int existsCheckCallCount = 0;
-        string actualId = string.Empty;
-        _validationService.ExistsAsyncFunc = (id) =>
-        {
-            existsCheckCallCount++;
-            actualId = id;
-            return Task.FromResult(false);
-        };
-
-        int getUserIdCallCount = 0;
-        _validationService.GetUserIdFunc = () =>
-        {
-            getUserIdCallCount++;
-            return userId;
-        };
-
-        var actualType = NotificationType.Null;
-        string actualMessage = string.Empty;
-        _validationService.SetTempDataMessageAction = (type, message) =>
-        {
-            actualType = type;
-            actualMessage = message;
-        };
-
         var result = await _validationService.HandleFollowActionAsync(authorId);
 
         // Assert
@@ -99,11 +60,11 @@ public class HandleFollowActionTests : MockConfiguration
             Assert.That(_validationService.RouteValue, Is.Null);
 
             Assert.That(_validationService.ActionUrl, Is.EqualTo(expectedUrl));
-            Assert.That(actualId, Is.EqualTo(authorId));
-            Assert.That(existsCheckCallCount, Is.EqualTo(expectedExistsCheckCallCount));
-            Assert.That(getUserIdCallCount, Is.EqualTo(expectedGetUserIdCallCount));
-            Assert.That(actualType, Is.EqualTo(expectedNotificationType));
-            Assert.That(actualMessage, Is.EqualTo(expectedErrorMessage));
+            Assert.That(_validationService.ActualEntityId, Is.EqualTo(authorId));
+            Assert.That(_validationService.ExistsCallCount, Is.EqualTo(expectedExistsCheckCallCount));
+            Assert.That(_validationService.GetUserIdCallCount, Is.EqualTo(expectedGetUserIdCallCount));
+            Assert.That(_validationService.ActualNotificationType, Is.EqualTo(expectedNotificationType));
+            Assert.That(_validationService.ActualErrorMessage, Is.EqualTo(expectedErrorMessage));
         });
         _authorServiceMock.Verify(x => x.IsFollowedByUserWithId(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
@@ -124,30 +85,6 @@ public class HandleFollowActionTests : MockConfiguration
         _authorServiceMock.Setup(x => x.IsFollowedByUserWithId(It.Is<string>(x => x == authorId), It.Is<string>(x => x == userId))).ReturnsAsync(true);
 
         // Act
-        int existsCheckCallCount = 0;
-        string actualId = string.Empty;
-        _validationService.ExistsAsyncFunc = (id) =>
-        {
-            existsCheckCallCount++;
-            actualId = id;
-            return Task.FromResult(true);
-        };
-
-        int getUserIdCallCount = 0;
-        _validationService.GetUserIdFunc = () =>
-        {
-            getUserIdCallCount++;
-            return userId;
-        };
-
-        var actualType = NotificationType.Null;
-        string actualMessage = string.Empty;
-        _validationService.SetTempDataMessageAction = (type, message) =>
-        {
-            actualType = type;
-            actualMessage = message;
-        };
-
         var result = await _validationService.HandleFollowActionAsync(authorId);
 
         // Assert
@@ -157,11 +94,11 @@ public class HandleFollowActionTests : MockConfiguration
             Assert.That(_validationService.RouteValue, Is.Null);
 
             Assert.That(_validationService.ActionUrl, Is.EqualTo(expectedUrl));
-            Assert.That(actualId, Is.EqualTo(authorId));
-            Assert.That(existsCheckCallCount, Is.EqualTo(expectedExistsCheckCallCount));
-            Assert.That(getUserIdCallCount, Is.EqualTo(expectedGetUserIdCallCount));
-            Assert.That(actualType, Is.EqualTo(expectedNotificationType));
-            Assert.That(actualMessage, Is.EqualTo(expectedErrorMessage));
+            Assert.That(_validationService.ActualEntityId, Is.EqualTo(authorId));
+            Assert.That(_validationService.ExistsCallCount, Is.EqualTo(expectedExistsCheckCallCount));
+            Assert.That(_validationService.GetUserIdCallCount, Is.EqualTo(expectedGetUserIdCallCount));
+            Assert.That(_validationService.ActualNotificationType, Is.EqualTo(expectedNotificationType));
+            Assert.That(_validationService.ActualErrorMessage, Is.EqualTo(expectedErrorMessage));
         });
         _authorServiceMock.Verify(x => x.IsFollowedByUserWithId(It.Is<string>(x => x == authorId), It.Is<string>(x => x == userId)));
     }

@@ -28,29 +28,6 @@ public class HandleSubscribeActionTests : MockConfiguration
         int expectedGetUserIdCallCount = 1;
 
         // Act
-        int existsCallCount = 0;
-        string actualId = string.Empty;
-        _validationService.ExistsAsyncFunc = (id) =>
-        {
-            existsCallCount++;
-            actualId = id;
-            return Task.FromResult(true);
-        };
-
-        int adminCheckCallCount = 0;
-        _validationService.IsUserAdminFunc = () =>
-        {
-            adminCheckCallCount++;
-            return false;
-        };
-
-        int getUserIdCallCount = 0;
-        _validationService.GetUserIdFunc = () =>
-        {
-            getUserIdCallCount++;
-            return userId;
-        };
-
         var result = await _validationService.HandleSubscribeActionAsync(_subscriptionServiceMock.Object, subscruptionId, authorId);
 
         // Assert
@@ -60,10 +37,10 @@ public class HandleSubscribeActionTests : MockConfiguration
             Assert.That(_validationService.RouteValue, Is.Null);
             Assert.That(_validationService.ActionUrl, Is.Null);
 
-            Assert.That(actualId, Is.EqualTo(authorId));
-            Assert.That(existsCallCount, Is.EqualTo(expectedExistsCallCount));
-            Assert.That(adminCheckCallCount, Is.EqualTo(expectedAdminCheckCallCount));
-            Assert.That(getUserIdCallCount, Is.EqualTo(expectedGetUserIdCallCount));
+            Assert.That(_validationService.ActualEntityId, Is.EqualTo(authorId));
+            Assert.That(_validationService.ExistsCallCount, Is.EqualTo(expectedExistsCallCount));
+            Assert.That(_validationService.AdminCheckCallCount, Is.EqualTo(expectedAdminCheckCallCount));
+            Assert.That(_validationService.GetUserIdCallCount, Is.EqualTo(expectedGetUserIdCallCount));
         });
         _publisherServiceMock.Verify(x => x.ExistsByUserIdAsync(It.Is<string>(x => x == userId)));
         _subscriptionServiceMock.Verify(x => x.ExistsByIdAsync(It.Is<string>(x => x == subscruptionId)));
@@ -75,7 +52,8 @@ public class HandleSubscribeActionTests : MockConfiguration
         // Arrange
         string authorId = "authorId";
         var subscruptionId = "subscriptionId";
-        string userId = "userId";
+
+        _validationService.IsAdmin = true;
 
         int expectedExistsCallCount = 1;
         int expectedAdminCheckCallCount = 1;
@@ -84,29 +62,6 @@ public class HandleSubscribeActionTests : MockConfiguration
         _subscriptionServiceMock.Setup(x => x.ExistsByIdAsync(It.Is<string>(x => x == subscruptionId))).ReturnsAsync(true);
 
         // Act
-        int existsCallCount = 0;
-        string actualId = string.Empty;
-        _validationService.ExistsAsyncFunc = (id) =>
-        {
-            existsCallCount++;
-            actualId = id;
-            return Task.FromResult(true);
-        };
-
-        int adminCheckCallCount = 0;
-        _validationService.IsUserAdminFunc = () =>
-        {
-            adminCheckCallCount++;
-            return true;
-        };
-
-        int getUserIdCallCount = 0;
-        _validationService.GetUserIdFunc = () =>
-        {
-            getUserIdCallCount++;
-            return userId;
-        };
-
         var result = await _validationService.HandleSubscribeActionAsync(_subscriptionServiceMock.Object, subscruptionId, authorId);
 
         // Assert
@@ -116,10 +71,10 @@ public class HandleSubscribeActionTests : MockConfiguration
             Assert.That(_validationService.RouteValue, Is.Null);
             Assert.That(_validationService.ActionUrl, Is.Null);
 
-            Assert.That(actualId, Is.EqualTo(authorId));
-            Assert.That(existsCallCount, Is.EqualTo(expectedExistsCallCount));
-            Assert.That(adminCheckCallCount, Is.EqualTo(expectedAdminCheckCallCount));
-            Assert.That(getUserIdCallCount, Is.EqualTo(expectedGetUserIdCallCount));
+            Assert.That(_validationService.ActualEntityId, Is.EqualTo(authorId));
+            Assert.That(_validationService.ExistsCallCount, Is.EqualTo(expectedExistsCallCount));
+            Assert.That(_validationService.AdminCheckCallCount, Is.EqualTo(expectedAdminCheckCallCount));
+            Assert.That(_validationService.GetUserIdCallCount, Is.EqualTo(expectedGetUserIdCallCount));
         });
         _publisherServiceMock.Verify(x => x.ExistsByUserIdAsync(It.IsAny<string>()), Times.Never);
         _subscriptionServiceMock.Verify(x => x.ExistsByIdAsync(It.Is<string>(x => x == subscruptionId)));
@@ -131,7 +86,8 @@ public class HandleSubscribeActionTests : MockConfiguration
         // Arrange
         string authorId = "authorId";
         var subscruptionId = "subscriptionId";
-        string userId = "userId";
+
+        _validationService.Exists = false;
 
         int expectedExistsCallCount = 1;
         int expectedAdminCheckCallCount = 0;
@@ -143,38 +99,7 @@ public class HandleSubscribeActionTests : MockConfiguration
         string expectedUrl = string.Format(_url, ControllerName, "All");
 
         // Act
-        int existsCallCount = 0;
-        string actualId = string.Empty;
-        _validationService.ExistsAsyncFunc = (id) =>
-        {
-            existsCallCount++;
-            actualId = id;
-            return Task.FromResult(false);
-        };
-
-        int adminCheckCallCount = 0;
-        _validationService.IsUserAdminFunc = () =>
-        {
-            adminCheckCallCount++;
-            return false;
-        };
-
-        int getUserIdCallCount = 0;
-        _validationService.GetUserIdFunc = () =>
-        {
-            getUserIdCallCount++;
-            return userId;
-        };
-
-        string actualMessage = string.Empty;
-        var actualType = NotificationType.Null;
-        _validationService.SetTempDataMessageAction = (type, message) =>
-        {
-            actualMessage = message;
-            actualType = type;
-        };
-
-        var result = await _validationService.HandleSubscribeActionAsync(_subscriptionServiceMock.Object, subscruptionId, authorId);
+       var result = await _validationService.HandleSubscribeActionAsync(_subscriptionServiceMock.Object, subscruptionId, authorId);
 
         // Assert
         Assert.Multiple(() =>
@@ -183,12 +108,12 @@ public class HandleSubscribeActionTests : MockConfiguration
             Assert.That(_validationService.RouteValue, Is.Null);
             Assert.That(_validationService.ActionUrl, Is.EqualTo(expectedUrl));
 
-            Assert.That(actualId, Is.EqualTo(authorId));
-            Assert.That(existsCallCount, Is.EqualTo(expectedExistsCallCount));
-            Assert.That(adminCheckCallCount, Is.EqualTo(expectedAdminCheckCallCount));
-            Assert.That(getUserIdCallCount, Is.EqualTo(expectedGetUserIdCallCount));
-            Assert.That(actualType, Is.EqualTo(expectedNotificationType));
-            Assert.That(actualMessage, Is.EqualTo(expectedErrorMessage));
+            Assert.That(_validationService.ActualEntityId, Is.EqualTo(authorId));
+            Assert.That(_validationService.ExistsCallCount, Is.EqualTo(expectedExistsCallCount));
+            Assert.That(_validationService.AdminCheckCallCount, Is.EqualTo(expectedAdminCheckCallCount));
+            Assert.That(_validationService.GetUserIdCallCount, Is.EqualTo(expectedGetUserIdCallCount));
+            Assert.That(_validationService.ActualNotificationType, Is.EqualTo(expectedNotificationType));
+            Assert.That(_validationService.ActualErrorMessage, Is.EqualTo(expectedErrorMessage));
         });
         _publisherServiceMock.Verify(x => x.ExistsByUserIdAsync(It.IsAny<string>()), Times.Never);
         _subscriptionServiceMock.Verify(x => x.ExistsByIdAsync(It.IsAny<string>()), Times.Never);
@@ -214,37 +139,6 @@ public class HandleSubscribeActionTests : MockConfiguration
         _publisherServiceMock.Setup(x => x.ExistsByUserIdAsync(It.Is<string>(x => x == userId))).ReturnsAsync(true);
 
         // Act
-        int existsCallCount = 0;
-        string actualId = string.Empty;
-        _validationService.ExistsAsyncFunc = (id) =>
-        {
-            existsCallCount++;
-            actualId = id;
-            return Task.FromResult(true);
-        };
-
-        int adminCheckCallCount = 0;
-        _validationService.IsUserAdminFunc = () =>
-        {
-            adminCheckCallCount++;
-            return false;
-        };
-
-        int getUserIdCallCount = 0;
-        _validationService.GetUserIdFunc = () =>
-        {
-            getUserIdCallCount++;
-            return userId;
-        };
-
-        string actualMessage = string.Empty;
-        var actualType = NotificationType.Null;
-        _validationService.SetTempDataMessageAction = (type, message) =>
-        {
-            actualMessage = message;
-            actualType = type;
-        };
-
         var result = await _validationService.HandleSubscribeActionAsync(_subscriptionServiceMock.Object, subscruptionId, authorId);
 
         // Assert
@@ -254,12 +148,12 @@ public class HandleSubscribeActionTests : MockConfiguration
             Assert.That(_validationService.RouteValue, Is.Not.Null);
             Assert.That(_validationService.ActionUrl, Is.EqualTo(expectedUrl));
 
-            Assert.That(actualId, Is.EqualTo(authorId));
-            Assert.That(existsCallCount, Is.EqualTo(expectedExistsCallCount));
-            Assert.That(adminCheckCallCount, Is.EqualTo(expectedAdminCheckCallCount));
-            Assert.That(getUserIdCallCount, Is.EqualTo(expectedGetUserIdCallCount));
-            Assert.That(actualType, Is.EqualTo(expectedNotificationType));
-            Assert.That(actualMessage, Is.EqualTo(expectedErrorMessage));
+            Assert.That(_validationService.ActualEntityId, Is.EqualTo(authorId));
+            Assert.That(_validationService.ExistsCallCount, Is.EqualTo(expectedExistsCallCount));
+            Assert.That(_validationService.AdminCheckCallCount, Is.EqualTo(expectedAdminCheckCallCount));
+            Assert.That(_validationService.GetUserIdCallCount, Is.EqualTo(expectedGetUserIdCallCount));
+            Assert.That(_validationService.ActualNotificationType, Is.EqualTo(expectedNotificationType));
+            Assert.That(_validationService.ActualErrorMessage, Is.EqualTo(expectedErrorMessage));
         });
         _publisherServiceMock.Verify(x => x.ExistsByUserIdAsync(It.Is<string>(x => x == userId)));
         _subscriptionServiceMock.Verify(x => x.ExistsByIdAsync(It.IsAny<string>()), Times.Never);
@@ -288,37 +182,7 @@ public class HandleSubscribeActionTests : MockConfiguration
         var expectedNotificationType = NotificationType.ErrorMessage;
 
         // Act
-        int existsCallCount = 0;
-        string actualId = string.Empty;
-        _validationService.ExistsAsyncFunc = (id) =>
-        {
-            existsCallCount++;
-            actualId = id;
-            return Task.FromResult(true);
-        };
-
-        int adminCheckCallCount = 0;
-        _validationService.IsUserAdminFunc = () =>
-        {
-            adminCheckCallCount++;
-            return false;
-        };
-
-        int getUserIdCallCount = 0;
-        _validationService.GetUserIdFunc = () =>
-        {
-            getUserIdCallCount++;
-            return userId;
-        };
-
-        string actualMessage = string.Empty;
-        var actualType = NotificationType.Null;
-        _validationService.SetTempDataMessageAction = (type, message) =>
-        {
-            actualMessage = message;
-            actualType = type;
-        };
-
+        
         var result = await _validationService.HandleSubscribeActionAsync(_subscriptionServiceMock.Object, subscruptionId, authorId);
 
         // Assert
@@ -328,12 +192,12 @@ public class HandleSubscribeActionTests : MockConfiguration
             Assert.That(_validationService.RouteValue, Is.EqualTo(authorSubscriptions));
             Assert.That(_validationService.ActionUrl, Is.EqualTo(expectedUrl));
 
-            Assert.That(actualId, Is.EqualTo(authorId));
-            Assert.That(existsCallCount, Is.EqualTo(expectedExistsCallCount));
-            Assert.That(adminCheckCallCount, Is.EqualTo(expectedAdminCheckCallCount));
-            Assert.That(getUserIdCallCount, Is.EqualTo(expectedGetUserIdCallCount));
-            Assert.That(actualType, Is.EqualTo(expectedNotificationType));
-            Assert.That(actualMessage, Is.EqualTo(expectedErrorMessage));
+            Assert.That(_validationService.ActualEntityId, Is.EqualTo(authorId));
+            Assert.That(_validationService.ExistsCallCount, Is.EqualTo(expectedExistsCallCount));
+            Assert.That(_validationService.AdminCheckCallCount, Is.EqualTo(expectedAdminCheckCallCount));
+            Assert.That(_validationService.GetUserIdCallCount, Is.EqualTo(expectedGetUserIdCallCount));
+            Assert.That(_validationService.ActualNotificationType, Is.EqualTo(expectedNotificationType));
+            Assert.That(_validationService.ActualErrorMessage, Is.EqualTo(expectedErrorMessage));
         });
         _publisherServiceMock.Verify(x => x.ExistsByUserIdAsync(It.Is<string>(x => x == userId)));
         _subscriptionServiceMock.Verify(x => x.ExistsByIdAsync(It.Is<string>(x => x == subscruptionId)));

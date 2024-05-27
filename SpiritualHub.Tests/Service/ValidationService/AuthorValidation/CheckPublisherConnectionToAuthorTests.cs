@@ -26,15 +26,6 @@ public class CheckPublisherConnectionToAuthorTests : MockConfiguration
         var expectedNotificationType = NotificationType.ErrorMessage;
 
         // Act
-        string actualMessage = string.Empty;
-        var actualType = NotificationType.ErrorMessage;
-
-        _validationService.SetTempDataMessageAction = (type, message) =>
-        {
-            actualMessage = message;
-            actualType = type;
-        };
-
         var result = await _validationService.CheckPublisherConnectionToAuthorAsync(id, isAuthorId);
 
         // Assert
@@ -44,8 +35,8 @@ public class CheckPublisherConnectionToAuthorTests : MockConfiguration
             Assert.That(_validationService.RouteValue, Is.Null);
 
             Assert.That(_validationService.ActionUrl, Is.EqualTo(expectedUrl), string.Format(WrongVariableValueErrorMessage, "Url"));
-            Assert.That(actualMessage, Is.EqualTo(expectedErrorMessage), string.Format(WrongVariableValueErrorMessage, "Error message"));
-            Assert.That(actualType, Is.EqualTo(expectedNotificationType), string.Format(WrongVariableValueErrorMessage, "Notification Type"));
+            Assert.That(_validationService.ActualErrorMessage, Is.EqualTo(expectedErrorMessage), string.Format(WrongVariableValueErrorMessage, "Error message"));
+            Assert.That(_validationService.ActualNotificationType, Is.EqualTo(expectedNotificationType), string.Format(WrongVariableValueErrorMessage, "Notification Type"));
 
             
         });

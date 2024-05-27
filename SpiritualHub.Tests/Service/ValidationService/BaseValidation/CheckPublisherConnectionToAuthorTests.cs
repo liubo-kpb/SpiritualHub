@@ -50,13 +50,6 @@ public class CheckPublisherConnectionToAuthorTests : MockConfiguration
         _publisherServiceMock.Setup(x => x.IsConnectedToAuthorByUserId(It.Is<string>(x => x == userId), It.Is<string>(x => x == authorId))).ReturnsAsync(true);
 
         // Act
-        string actualId = string.Empty;
-        _validationService.GetAuthorIdAsyncFunc = (id) =>
-        {
-            actualId = id;
-            return Task.FromResult(authorId);
-        };
-
         var result = await _validationService.CheckPublisherConnectionToAuthorAsync(id, isAuthorId);
 
         // Assert
@@ -66,7 +59,7 @@ public class CheckPublisherConnectionToAuthorTests : MockConfiguration
             Assert.That(_validationService.ActionUrl, Is.Null);
             Assert.That(_validationService.RouteValue, Is.Null);
 
-            Assert.That(actualId, Is.EqualTo(id));
+            Assert.That(_validationService.ActualEntityId, Is.EqualTo(id));
         });
         _publisherServiceMock.Verify(x => x.IsConnectedToAuthorByUserId(It.Is<string>(x => x == userId), It.Is<string>(x => x == authorId)));
     }
@@ -79,7 +72,6 @@ public class CheckPublisherConnectionToAuthorTests : MockConfiguration
         bool isAuthorId = true;
 
         string userId = "userId";
-        _validationService.GetUserIdFunc = () => userId;
 
         _publisherServiceMock.Setup(x => x.IsConnectedToAuthorByUserId(It.Is<string>(x => x == userId), It.Is<string>(x => x == id))).ReturnsAsync(false);
 
@@ -88,15 +80,6 @@ public class CheckPublisherConnectionToAuthorTests : MockConfiguration
         var expectedNotificationType = NotificationType.ErrorMessage;
 
         // Act
-        string actualMessage = string.Empty;
-        var actualType = NotificationType.ErrorMessage;
-
-        _validationService.SetTempDataMessageAction = (type, message) =>
-        {
-            actualMessage = message;
-            actualType = type;
-        };
-
         var result = await _validationService.CheckPublisherConnectionToAuthorAsync(id, isAuthorId);
 
         // Assert
@@ -106,8 +89,8 @@ public class CheckPublisherConnectionToAuthorTests : MockConfiguration
             Assert.That(_validationService.RouteValue, Is.Not.Null);
 
             Assert.That(_validationService.ActionUrl, Is.EqualTo(expectedUrl), string.Format(WrongVariableValueErrorMessage, "Url"));
-            Assert.That(actualMessage, Is.EqualTo(expectedErrorMessage), string.Format(WrongVariableValueErrorMessage, "Error message"));
-            Assert.That(actualType, Is.EqualTo(expectedNotificationType), string.Format(WrongVariableValueErrorMessage, "Notification Type"));
+            Assert.That(_validationService.ActualErrorMessage, Is.EqualTo(expectedErrorMessage), string.Format(WrongVariableValueErrorMessage, "Error message"));
+            Assert.That(_validationService.ActualNotificationType, Is.EqualTo(expectedNotificationType), string.Format(WrongVariableValueErrorMessage, "Notification Type"));
         });
         _publisherServiceMock.Verify(x => x.IsConnectedToAuthorByUserId(It.Is<string>(x => x == userId), It.Is<string>(x => x == id)));
     }
@@ -120,7 +103,6 @@ public class CheckPublisherConnectionToAuthorTests : MockConfiguration
         bool isAuthorId = false;
 
         string userId = "userId";
-        _validationService.GetUserIdFunc = () => userId;
 
         string authorId = "authorId";
 
@@ -131,22 +113,6 @@ public class CheckPublisherConnectionToAuthorTests : MockConfiguration
         var expectedNotificationType = NotificationType.ErrorMessage;
 
         // Act
-        string actualId = string.Empty;
-        string actualMessage = string.Empty;
-        var actualType = NotificationType.ErrorMessage;
-
-        _validationService.GetAuthorIdAsyncFunc = (id) =>
-        {
-            actualId = id;
-            return Task.FromResult(authorId);
-        };
-
-        _validationService.SetTempDataMessageAction = (type, message) =>
-        {
-            actualMessage = message;
-            actualType = type;
-        };
-
         var result = await _validationService.CheckPublisherConnectionToAuthorAsync(id, isAuthorId);
 
         // Assert
@@ -156,9 +122,9 @@ public class CheckPublisherConnectionToAuthorTests : MockConfiguration
             Assert.That(_validationService.RouteValue, Is.Not.Null);
 
             Assert.That(_validationService.ActionUrl, Is.EqualTo(expectedUrl), string.Format(WrongVariableValueErrorMessage, "Url"));
-            Assert.That(actualId, Is.EqualTo(id), string.Format(WrongVariableValueErrorMessage, "Id"));
-            Assert.That(actualMessage, Is.EqualTo(expectedErrorMessage), string.Format(WrongVariableValueErrorMessage, "Error message"));
-            Assert.That(actualType, Is.EqualTo(expectedNotificationType), string.Format(WrongVariableValueErrorMessage, "Notification Type"));
+            Assert.That(_validationService.ActualEntityId, Is.EqualTo(id), string.Format(WrongVariableValueErrorMessage, "Id"));
+            Assert.That(_validationService.ActualErrorMessage, Is.EqualTo(expectedErrorMessage), string.Format(WrongVariableValueErrorMessage, "Error message"));
+            Assert.That(_validationService.ActualNotificationType, Is.EqualTo(expectedNotificationType), string.Format(WrongVariableValueErrorMessage, "Notification Type"));
         });
         _publisherServiceMock.Verify(x => x.IsConnectedToAuthorByUserId(It.Is<string>(x => x == userId), It.Is<string>(x => x == authorId)));
     }

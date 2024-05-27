@@ -10,17 +10,15 @@ public interface ITestValidationTrait
 
     int ExistsCallCount { get; set; }
 
-    string EntityId { get; set; }
-
     bool Exists { get; set; }
 
-    string AuthorId { get; set; }
+    string AuthorId { get; }
 
     string ActualEntityId { get; set; }
 
     int GetUserIdCallCount { get; set; }
 
-    string UserId { get; set; }
+    string UserId { get; }
 
     int AdminCheckCallCount { get; set; }
 

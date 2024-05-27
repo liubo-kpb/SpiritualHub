@@ -43,14 +43,6 @@ public class CheckUserIsPublisherTests : MockConfiguration
         var expectedNotificationType = NotificationType.ErrorMessage;
 
         // Act
-        string actualMessage = string.Empty;
-        var actualType = NotificationType.Null;
-        _validationService.SetTempDataMessageAction = (type, message) =>
-        {
-            actualType = type;
-            actualMessage = message;
-        };
-
         var result = await _validationService.CheckUserIsPublisherAsync();
 
         // Assert
@@ -59,8 +51,8 @@ public class CheckUserIsPublisherTests : MockConfiguration
             Assert.That(result, Is.Not.Null);
             Assert.That(_validationService.RouteValue, Is.Null);
             Assert.That(_validationService.ActionUrl, Is.EqualTo(expectedUrl));
-            Assert.That(actualMessage, Is.EqualTo(expectedMessage));
-            Assert.That(actualType, Is.EqualTo(expectedNotificationType));
+            Assert.That(_validationService.ActualErrorMessage, Is.EqualTo(expectedMessage));
+            Assert.That(_validationService.ActualNotificationType, Is.EqualTo(expectedNotificationType));
         });
         _publisherServiceMock.Verify(x => x.ExistsByUserIdAsync(It.Is<string>(x => x == userId)));
     }
