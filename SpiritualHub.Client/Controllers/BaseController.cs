@@ -198,14 +198,13 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             var formModel = CreateFormModelInstance();
 
             await GetFormDetailsAsync(formModel);
-            if (!_validationService.PublisherHasConnectedAuthors(formModel)) ;
+            if (!_validationService.PublisherHasConnectedAuthors(formModel))
             {
                 TempData[ErrorMessage] = NoConnectedAuthorsErrorMessage;
 
                 return RedirectToAction(nameof(AuthorController.All), nameof(Author));
             }
 
-            // Need to test
             return View(nameof(Add), formModel);
         }
         catch (NotImplementedException e)
