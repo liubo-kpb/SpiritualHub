@@ -12,8 +12,8 @@
 }
 
 <div class="row">
-    @foreach (var @event in Model)
+    @foreach (var eventViewModel in Model)
     {
-        <partial name="_EventPartial" model="@@event" />
+        <partial name="_EventPartial" model="eventViewModel" />
     }
 </div>
