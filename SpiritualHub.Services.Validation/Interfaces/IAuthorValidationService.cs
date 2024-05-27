@@ -13,6 +13,4 @@ public interface IAuthorValidationService : IValidationService
     Task<IActionResult?> CheckConnectActionAsync(string authorId);
 
     Task<IActionResult?> HandleFollowActionAsync(string authorId);
-
-
 }

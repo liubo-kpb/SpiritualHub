@@ -7,12 +7,12 @@ using Services.Interfaces;
 using Services.Validation;
 using Client.Infrastructure.Enums;
 
-public class TestAuthorValidationService : AuthorValidationService, ITestValidationService
+public class TestAuthorValidationService : AuthorValidationService, ITestValidationTrait
 {
     public TestAuthorValidationService(IAuthorService authorService, IPublisherService publisherService)
         : base(authorService, publisherService)
     {
-        ITestValidationService testTrait = this;
+        ITestValidationTrait testTrait = this;
 
         this.ExistsAsyncFunc = testTrait.ExistsMethodDefinition;
         this.GetAuthorIdAsyncFunc = testTrait.GetAuthorIdMethodDefinition;
@@ -22,6 +22,9 @@ public class TestAuthorValidationService : AuthorValidationService, ITestValidat
 
         this.Exists = true;
         this.IsAdmin = false;
+
+        this.AuthorId = "authorId";
+        this.UserId = "userId";
     }
 
     public string ActionUrl { get; set; } = null!;
@@ -34,13 +37,13 @@ public class TestAuthorValidationService : AuthorValidationService, ITestValidat
 
     public bool Exists { get; set; }
 
-    public string AuthorId { get; set; } = null!;
+    public string AuthorId { get; set; }
 
     public string ActualEntityId { get; set; } = null!;
 
     public int GetUserIdCallCount { get; set; }
 
-    public string UserId { get; set; } = null!;
+    public string UserId { get; set; }
 
     public int AdminCheckCallCount { get; set; }
 

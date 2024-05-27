@@ -7,12 +7,12 @@ using Services.Interfaces;
 using Services.Validation;
 using Client.Infrastructure.Enums;
 
-public class TestValidationService : ValidationService, ITestValidationService
+public class TestValidationService : ValidationService, ITestValidationTrait
 {
     public TestValidationService(IPublisherService publisherService)
         : base(publisherService)
     {
-        ITestValidationService testTrait = this;
+        ITestValidationTrait testTrait = this;
 
         this.ExistsAsyncFunc = testTrait.ExistsMethodDefinition;
         this.GetAuthorIdAsyncFunc = testTrait.GetAuthorIdMethodDefinition;
@@ -22,6 +22,11 @@ public class TestValidationService : ValidationService, ITestValidationService
 
         this.Exists = true;
         this.IsAdmin = false;
+
+        this.AuthorId = "authorId";
+        this.UserId = "userId";
+
+        this.ActualNotificationType = NotificationType.Null;
     }
 
     public string ActionUrl { get; set; } = null!;
@@ -34,13 +39,13 @@ public class TestValidationService : ValidationService, ITestValidationService
 
     public bool Exists { get; set; }
 
-    public string AuthorId { get; set; } = null!;
+    public string AuthorId { get; set; }
 
     public string ActualEntityId { get; set; } = null!;
 
     public int GetUserIdCallCount { get; set; }
 
-    public string UserId { get; set; } = null!;
+    public string UserId { get; set; }
 
     public int AdminCheckCallCount { get; set; }
 

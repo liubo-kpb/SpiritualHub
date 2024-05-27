@@ -2,7 +2,7 @@
 
 using SpiritualHub.Client.Infrastructure.Enums;
 
-public interface ITestValidationService
+public interface ITestValidationTrait
 {
     string ActionUrl { get; set; }
 
