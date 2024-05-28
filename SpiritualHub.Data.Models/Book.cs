@@ -58,4 +58,30 @@ public class Book
     public virtual ICollection<Rating> Ratings { get; set; }
 
     public virtual ICollection<ApplicationUser> Readers { get; set; }
+
+    public override bool Equals(object? obj)
+    {
+        if (base.Equals(obj))
+        {
+            return true;
+        }
+        else if (obj is Book other
+            && this.Id == other.Id
+            && this.Title == other.Title
+            && this.Description == other.Description
+            && this.ShortDescription == other.ShortDescription
+            && this.Price == other.Price
+            && this.IsHidden == other.IsHidden
+            && this.AddedOn == other.AddedOn)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
 }

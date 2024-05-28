@@ -25,4 +25,30 @@ public class BookFormModel : BaseFormModel
 
     [Display(Name = "Book Cover URL")]
     public string ImageUrl { get; set; } = null!;
+
+    public override bool Equals(object? obj)
+    {
+        if (base.Equals(obj))
+        {
+            return true;
+        }
+        else if (obj is BookFormModel other
+            && this.Id == other.Id
+            && this.Title == other.Title
+            && this.Description == other.Description
+            && this.ShortDescription == other.ShortDescription
+            && this.Price == other.Price
+            && this.IsHidden == other.IsHidden
+            && this.ImageUrl == other.ImageUrl)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
 }

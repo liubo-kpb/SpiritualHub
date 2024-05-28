@@ -1,6 +1,7 @@
 ﻿namespace SpiritualHub.Client.Controllers;
 
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 using Data.Models;
 using Services.Interfaces;
@@ -10,8 +11,6 @@ using ViewModels.Book;
 
 using static Common.ErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
 
 public class BookController : ProductController<BookViewModel, BookDetailsViewModel, BookFormModel, AllBooksQueryModel, BookSorting>
 {

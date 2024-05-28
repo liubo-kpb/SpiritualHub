@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using AutoMapper;
 
-using SpiritualHub.Data.Models;
+using Data.Models;
 using Client.ViewModels.Author;
 
 using static Extensions.Common.TestErrorMessagesConstants;

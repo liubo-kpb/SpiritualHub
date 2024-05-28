@@ -41,7 +41,6 @@
     <Folder Include="Controller\ProductController\" />
     <Folder Include="Service\BusinessService\CourseService\" />
     <Folder Include="Service\BusinessService\BlogService\" />
-    <Folder Include="Service\BusinessService\BookService\" />
     <Folder Include="Service\BusinessService\EventService\" />
     <Folder Include="Service\BusinessService\ModuleService\" />
     <Folder Include="Service\BusinessService\UserService\" />

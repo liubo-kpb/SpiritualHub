@@ -46,7 +46,7 @@ public abstract class MockConfiguration
         _userManagerMock = new Mock<UserManager<ApplicationUser>>(
             Mock.Of<IUserStore<ApplicationUser>>(),
             null!, null!, null!, null!, null!, null!, null!, null!
-        ); ;
+        );
 
         _authorService = new AuthorService(_authorRepositoryMock.Object, _userRepositoryMock.Object, _mapper, _userManagerMock.Object);
     }

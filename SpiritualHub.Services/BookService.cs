@@ -104,9 +104,9 @@ public class BookService : IBookService
         await _bookRepository.SaveChangesAsync();
     }
 
-    public Task<bool> ExistsAsync(string id)
+    public async Task<bool> ExistsAsync(string id)
     {
-        return _bookRepository.AnyAsync(b => b.Id.ToString() == id);
+        return await _bookRepository.AnyAsync(b => b.Id.ToString() == id);
     }
 
     public async Task<FilteredBooksServiceModel> GetAllAsync(AllBooksQueryModel queryModel, string userId)
@@ -251,7 +251,7 @@ public class BookService : IBookService
         return await _bookRepository.IsHiddenAsync(bookId);
     }
 
-    private static bool SetHasBook(string userId, Book? book)
+    private static bool SetHasBook(string userId, Book book)
     {
         if (book!.Readers.Any(p => p.Id.ToString() == userId))
         {
@@ -260,5 +260,4 @@ public class BookService : IBookService
 
         return false;
     }
-
 }
