@@ -1,4 +1,4 @@
-﻿namespace SpiritualHub.Tests.Service.BusinessService.BookService;
+﻿namespace SpiritualHub.Tests.Service.BusinessService.BookService.GetMethods;
 
 using MockQueryable.Moq;
 
