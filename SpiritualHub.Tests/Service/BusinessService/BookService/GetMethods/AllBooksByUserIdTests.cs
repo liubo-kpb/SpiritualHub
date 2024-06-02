@@ -1,6 +1,5 @@
 ﻿namespace SpiritualHub.Tests.Service.BusinessService.BookService.GetMethods;
 
-using Moq;
 using MockQueryable.Moq;
 
 using Client.ViewModels.Book;

@@ -12,6 +12,7 @@ using Interfaces;
 using Models.Book;
 using Client.ViewModels.Book;
 using Client.Infrastructure.Enums;
+using System.Linq;
 
 public class BookService : IBookService
 {
@@ -115,18 +116,20 @@ public class BookService : IBookService
                             .AllAsNoTracking()
                             .Where(b => !b.IsHidden);
 
+        int bookCount = booksQuery.Count();
+
         if (!string.IsNullOrWhiteSpace(queryModel.CategoryName))
         {
-            booksQuery = booksQuery.Where(b => b.Category != null && b.Category!.Name == queryModel.CategoryName);
+            booksQuery = booksQuery.Where(b => b.Category != null && b.Category!.Name.ToLower().Contains(queryModel.CategoryName.ToLower()));
         }
 
         if (!string.IsNullOrWhiteSpace(queryModel.SearchTerm))
         {
-            string wildCard = $"%{queryModel.SearchTerm.ToLower()}%";
-            booksQuery = booksQuery.Where(b => EF.Functions.Like(b.Title, wildCard)
-                                            || EF.Functions.Like(b.Author.Name, wildCard)
-                                            || EF.Functions.Like(b.Description, wildCard)
-                                            || EF.Functions.Like(b.ShortDescription, wildCard));
+            string wildCard = queryModel.SearchTerm.ToLower();
+            booksQuery = booksQuery.Where(b => b.Title.ToLower().Contains(wildCard)
+                                            || b.Author.Name.ToLower().Contains(wildCard)
+                                            || b.Description.ToLower().Contains(wildCard)
+                                            || b.ShortDescription.ToLower().Contains(wildCard));
         }
 
         booksQuery = queryModel.SortingOption switch
@@ -160,7 +163,7 @@ public class BookService : IBookService
         return new FilteredBooksServiceModel()
         {
             Books = booksModel,
-            TotalBooksCount = booksQuery.Count()
+            TotalBooksCount = bookCount
         };
     }
 
@@ -253,11 +256,6 @@ public class BookService : IBookService
 
     private static bool SetHasBook(string userId, Book book)
     {
-        if (book!.Readers.Any(p => p.Id.ToString() == userId))
-        {
-            return true;
-        }
-
-        return false;
+        return book!.Readers.Any(p => p.Id.ToString() == userId);
     }
 }
