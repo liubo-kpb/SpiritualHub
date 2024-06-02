@@ -180,7 +180,7 @@ public class BookService : IBookService
     {
         var bookEntity = await _bookRepository.GetFullBookDetailsAsync(id);
         var bookModel = _mapper.Map<BookDetailsViewModel>(bookEntity);
-        bookModel.HasBook = SetHasBook(userId, bookEntity);
+        bookModel.HasBook = SetHasBook(userId, bookEntity!);
 
         return bookModel;
     }

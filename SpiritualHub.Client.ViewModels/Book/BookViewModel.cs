@@ -23,4 +23,31 @@ public class BookViewModel : BaseDetailsViewModel
     public bool IsHidden { get; set; }
 
     public AuthorInfoViewModel Author { get; set; } = null!;
+
+    public override bool Equals(object? obj)
+    {
+        if (base.Equals(obj))
+        {
+            return true;
+        }
+        else if (obj is BookViewModel other
+            && this.Id == other.Id
+            && this.Title == other.Title
+            && this.ShortDescription == other.ShortDescription
+            && this.Price == other.Price
+            && this.AddedOn == other.AddedOn
+            && this.ImageUrl == other.ImageUrl
+            && this.CategoryName == other.CategoryName
+            && this.IsHidden == other.IsHidden)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
 }

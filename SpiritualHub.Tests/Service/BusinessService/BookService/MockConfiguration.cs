@@ -48,6 +48,14 @@ public class MockConfiguration
         _bookService = new BookService(_bookRepositoryMock.Object, _imageRepositoryMock.Object, _ratingRepositoryMock.Object, _userRepositoryMock.Object, _mapper);
     }
 
+    protected Book GetBookWithReader()
+    {
+        var book = _books.First();
+        book.Readers.Add(_users.First());
+
+        return book;
+    }
+
     private void LoadEntities()
     {
         _books = new SeedBookConfiguration().GenerateEntities().ToList();
