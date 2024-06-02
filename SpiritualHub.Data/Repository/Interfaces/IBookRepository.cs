@@ -14,5 +14,7 @@ public interface IBookRepository : IDeletableRepository<Book>
 
     Task<Book?> GetBookWithAuthorAsync(string id);
 
+    Task<string?> GetBookAuthorId(string id);
+
     Task<bool>  IsHiddenAsync(string id);
 }

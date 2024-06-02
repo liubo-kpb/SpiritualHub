@@ -176,7 +176,7 @@ public class BookService : IBookService
 
     public async Task<string> GetAuthorIdAsync(string bookId)
     {
-        return (await _bookRepository.GetBookWithAuthorAsync(bookId))!.AuthorID.ToString();
+        return (await _bookRepository.GetBookAuthorId(bookId))!;
     }
 
     public async Task<BookDetailsViewModel> GetBookDetailsAsync(string id, string userId)
