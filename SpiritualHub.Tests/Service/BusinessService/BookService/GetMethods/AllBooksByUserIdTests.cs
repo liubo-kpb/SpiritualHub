@@ -46,7 +46,6 @@ public class AllBooksByUserIdTests : MockConfiguration
 
         _bookRepositoryMock.Setup(x => x.AllAsNoTracking()).Returns(_books.AsQueryable().BuildMock());
 
-
         // Act
         var result = await _bookService.AllBooksByUserIdAsync(userId);
 

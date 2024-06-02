@@ -48,10 +48,10 @@ public class MockConfiguration
         _bookService = new BookService(_bookRepositoryMock.Object, _imageRepositoryMock.Object, _ratingRepositoryMock.Object, _userRepositoryMock.Object, _mapper);
     }
 
-    protected Book GetBookWithReader()
+    protected Book GetBookWithReader(ApplicationUser user = null!)
     {
         var book = _books.First();
-        book.Readers.Add(_users.First());
+        book.Readers.Add(user ?? _users.First());
 
         return book;
     }
