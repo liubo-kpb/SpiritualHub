@@ -43,15 +43,17 @@ public class ModuleService : IModuleService
         return newModuleEntity.Id.ToString();
     }
 
-    public void ReorderCourseModules(IEnumerable<Module> modules, int startingNumber = 1)
+    public ICollection<Module> ReorderCourseModules(IEnumerable<Module> modules, int startingNumber = 1)
     {
-        var sortedModules = modules.OrderBy(m => m.Number).ThenBy(m => m.Name).ToList();
+        var sortedModules = modules.Where(m => m.Number >= startingNumber - 1).OrderBy(m => m.Number).ThenBy(m => m.Name).ToList();
 
         int currentNumber = startingNumber;
         foreach (var module in sortedModules)
         {
             module.Number = currentNumber++;
         }
+
+        return sortedModules;
     }
 
     public ICollection<Module> DeleteModules(ICollection<Module> moduleEntities, IEnumerable<CourseModuleFormModel> deletedModules)
@@ -138,21 +140,22 @@ public class ModuleService : IModuleService
     public async Task AdjustModulesNumbering(ModuleFormModel moduleForm, bool isNew = false)
     {
         var courseModules = _moduleRepository.GetModulesByCourseId(moduleForm.CourseId);
+        int modulesCount = courseModules.Count();
 
-        if (moduleForm.Number > courseModules.Count())
+        if (moduleForm.Number > modulesCount)
         {
             if (isNew)
             {
-                moduleForm.Number = courseModules.Count() + 1;
+                moduleForm.Number = modulesCount + 1;
             }
             else
             {
-                moduleForm.Number = courseModules.Count();
+                moduleForm.Number = modulesCount;
             }
         }
         else
         {
-            ReorderCourseModules(courseModules.Where(m => m.Number >= moduleForm.Number && m.Id.ToString() != moduleForm.Id), moduleForm.Number + 1);
+            ReorderCourseModules(courseModules.Where(m => m.Id.ToString() != moduleForm.Id), moduleForm.Number + 1);
             await _moduleRepository.SaveChangesAsync();
         }
     }

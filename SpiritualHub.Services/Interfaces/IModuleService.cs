@@ -12,7 +12,7 @@ public interface IModuleService
     /// <param name="updatedModule"></param>
     void                                    Edit(Module moduleEntity, CourseModuleFormModel updatedModule);
 
-    void                                    ReorderCourseModules(IEnumerable<Module> modules, int startingNumber = 1);
+    ICollection<Module>                     ReorderCourseModules(IEnumerable<Module> modules, int startingNumber = 1);
 
     Task                                    AdjustModulesNumbering(ModuleFormModel moduleForm, bool isNew = false);
 
