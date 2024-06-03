@@ -18,8 +18,6 @@ public interface IModuleService
 
     ICollection<Module>                     DeleteModules(ICollection<Module> moduleEntities, IEnumerable<CourseModuleFormModel> deletedModules);
 
-    Task<Module>                            CreateAsync(CourseModuleFormModel newModule);
-
     Task<int>                               GetAllCountAsync();
 
     Task<ModuleDetailsViewModule>           GetModuleDetailsAsync(string id, string userId);

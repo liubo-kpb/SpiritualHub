@@ -33,14 +33,6 @@ public class ModuleService : IModuleService
         moduleEntity.Number = updatedModule.Number;
     }
 
-    public async Task<Module> CreateAsync(CourseModuleFormModel newModule)
-    {
-        var module = _mapper.Map<Module>(newModule);
-        await _moduleRepository.AddAsync(module);
-
-        return module;
-    }
-
     public async Task<string> CreateAsync(ModuleFormModel newModule)
     {
         var newModuleEntity = _mapper.Map<Module>(newModule);

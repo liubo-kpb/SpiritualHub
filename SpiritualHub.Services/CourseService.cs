@@ -112,7 +112,7 @@ public class CourseService : ICourseService
         var newModules = updatedCourse.Modules.Where(m => m.IsNew);
         foreach (var newModule in newModules)
         {
-            var module = await _moduleService.CreateAsync(newModule);
+            var module = _mapper.Map<Module>(newModule);
             course.Modules.Add(module);
         }
 
