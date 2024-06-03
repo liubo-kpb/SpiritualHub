@@ -8,7 +8,6 @@ using Client.ViewModels.Book;
 using Services.Mappings;
 using Data.Configuration.Seed;
 using Data.Models;
-using SpiritualHub.Client.ViewModels.Author;
 
 public class GetAllTests : MockConfiguration
 {
@@ -58,6 +57,7 @@ public class GetAllTests : MockConfiguration
         Assert.Multiple(() =>
         {
             Assert.That(result.Books, Is.EqualTo(expectedList));
+            Assert.That(result.Books.Any(b => b.IsHidden), Is.False);
             Assert.That(result.TotalBooksCount, Is.EqualTo(queryModel.TotalEntitiesCount));
         });
         _bookRepositoryMock.Verify(x => x.AllAsNoTracking(), Times.Once);

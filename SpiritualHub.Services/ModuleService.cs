@@ -41,6 +41,16 @@ public class ModuleService : IModuleService
         return module;
     }
 
+    public async Task<string> CreateAsync(ModuleFormModel newModule)
+    {
+        var newModuleEntity = _mapper.Map<Module>(newModule);
+
+        await _moduleRepository.AddAsync(newModuleEntity);
+        await _moduleRepository.SaveChangesAsync();
+
+        return newModuleEntity.Id.ToString();
+    }
+
     public void ReorderCourseModules(IEnumerable<Module> modules, int startingNumber = 1)
     {
         var sortedModules = modules.OrderBy(m => m.Number).ThenBy(m => m.Name).ToList();
@@ -116,16 +126,6 @@ public class ModuleService : IModuleService
     public async Task<string> GetAuthorIdAsync(string moduleId)
     {
         return (await _moduleRepository.GetAuthordId(moduleId))!;
-    }
-
-    public async Task<string> CreateAsync(ModuleFormModel newModule)
-    {
-        var newModuleEntity = _mapper.Map<Module>(newModule);
-
-        await _moduleRepository.AddAsync(newModuleEntity);
-        await _moduleRepository.SaveChangesAsync();
-
-        return newModuleEntity.Id.ToString();
     }
 
     public async Task EditAsync(ModuleFormModel updatedModule)
