@@ -66,7 +66,7 @@ public class CourseService : ICourseService
         var courseEntity = _mapper.Map<Course>(newCourse);
         courseEntity.Image.Name = courseEntity.Name;
 
-        _moduleService.ReorderCourseModules(courseEntity.Modules);
+        courseEntity.Modules = _moduleService.ReorderCourseModules(courseEntity.Modules);
 
         await _courseRepository.AddAsync(courseEntity);
         await _courseRepository.SaveChangesAsync();
@@ -122,7 +122,7 @@ public class CourseService : ICourseService
             _moduleService.Edit(moduleEntity!, updatedModule);
         }
 
-        _moduleService.ReorderCourseModules(course.Modules);
+        course.Modules = _moduleService.ReorderCourseModules(course.Modules);
 
         await _courseRepository.SaveChangesAsync();
     }

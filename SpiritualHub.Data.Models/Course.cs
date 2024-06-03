@@ -62,4 +62,29 @@ public class Course
     public virtual ICollection<Rating> Ratings { get; set; }
 
     public virtual ICollection<ApplicationUser> Students { get; set; }
+
+    public override bool Equals(object? obj)
+    {
+        if (base.Equals(obj))
+        {
+            return true;
+        }
+        else if (obj is Course other
+            && this.Id == other.Id
+            && this.Name == other.Name
+            && this.ShortDescription == other.ShortDescription
+            && this.Description == other.Description
+            && this.Price == other.Price
+            && this.IsActive == other.IsActive)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
 }
