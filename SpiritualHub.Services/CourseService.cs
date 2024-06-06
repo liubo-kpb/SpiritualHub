@@ -265,12 +265,6 @@ public class CourseService : ICourseService
             c => c.Id.ToString() == courseId && c.Students.Any(s => s.Id.ToString() == userId));
     }
 
-    public async Task HideAsync(string id)
-    {
-        await ChangeCourseActivityStatusAsync(id, false);
-    }
-
-
     public async Task RemoveAsync(string courseId, string userId)
     {
         var course = await _courseRepository.GetCourseWithStudentsAsync(courseId);
@@ -278,6 +272,11 @@ public class CourseService : ICourseService
 
         course!.Students.Remove(user!);
         await _userRepository.SaveChangesAsync();
+    }
+
+    public async Task HideAsync(string id)
+    {
+        await ChangeCourseActivityStatusAsync(id, false);
     }
 
     public async Task ShowAsync(string id)
