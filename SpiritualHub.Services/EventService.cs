@@ -127,7 +127,7 @@ public class EventService : IEventService
 
     public async Task<EventFormModel> GetEventInfoAsync(string id)
     {
-        var eventEntity = await _eventRepository.GetEventInfo(id);
+        var eventEntity = await _eventRepository.GetEventInfoAsync(id);
         var eventModel = _mapper.Map<EventFormModel>(eventEntity);
 
         return eventModel;
@@ -135,7 +135,7 @@ public class EventService : IEventService
 
     public async Task EditAsync(EventFormModel updatedEvent)
     {
-        var eventEntity = await _eventRepository.GetEventInfo(updatedEvent.Id!);
+        var eventEntity = await _eventRepository.GetEventInfoAsync(updatedEvent.Id!);
 
         eventEntity!.Title = updatedEvent.Title;
         eventEntity!.Description = updatedEvent.Description;

@@ -7,7 +7,7 @@ public interface IEventRepository : IDeletableRepository<Event>
 {
     Task<Event?> GetFullEventDetails(string id);
 
-    Task<Event?> GetEventInfo(string id);
+    Task<Event?> GetEventInfoAsync(string id);
 
     Task<Event?> GetEventWithAuthorAsync(string eventId);
 

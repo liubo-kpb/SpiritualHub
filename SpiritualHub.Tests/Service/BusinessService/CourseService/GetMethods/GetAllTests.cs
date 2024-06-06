@@ -155,10 +155,11 @@ public class GetAllTests : MockConfiguration
     private void AssignCourseForeignEntities()
     {
         var categoryList = new SeedCategoryConfiguration().GenerateEntities();
+        var authorList = new SeedAuthorConfiguration().GenerateEntities();
         foreach (var course in _courses)
         {
             course.Category = categoryList.FirstOrDefault(c => c.Id == course.CategoryID);
-            course.Author = _authors.FirstOrDefault(a => a.Id == course.AuthorID)!;
+            course.Author = authorList.FirstOrDefault(a => a.Id == course.AuthorID)!;
         }
     }
 }

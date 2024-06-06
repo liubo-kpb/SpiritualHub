@@ -67,4 +67,34 @@ public class Event
     public virtual ICollection<Rating> Ratings { get; set; }
 
     public virtual ICollection<ApplicationUser> Participants { get; set; }
+
+
+    public override bool Equals(object? obj)
+    {
+        if (base.Equals(obj))
+        {
+            return true;
+        }
+        else if (obj is Event other
+            && this.Id == other.Id
+            && this.Title == other.Title
+            && this.Description == other.Description
+            && this.Price == other.Price
+            && this.CreatedOn == other.CreatedOn
+            && this.StartDateTime == other.StartDateTime
+            && this.EndDateTime == other.EndDateTime
+            && this.LocationName == other.LocationName
+            && this.LocationUrl == other.LocationUrl
+            && this.IsOnline == other.IsOnline)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
 }

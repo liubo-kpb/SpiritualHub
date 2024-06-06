@@ -152,10 +152,11 @@ public class GetAllTests : MockConfiguration
     private void AssignBookForeignEntities()
     {
         var categoryList = new SeedCategoryConfiguration().GenerateEntities();
+        var authorList = new SeedAuthorConfiguration().GenerateEntities();
         foreach (var book in _books)
         {
             book.Category = categoryList.FirstOrDefault(c => c.Id == book.CategoryID);
-            book.Author = _authors.FirstOrDefault(a => a.Id == book.AuthorID)!;
+            book.Author = authorList.FirstOrDefault(a => a.Id == book.AuthorID)!;
         }
     }
 
