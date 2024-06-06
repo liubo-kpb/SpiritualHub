@@ -14,10 +14,6 @@ public class CourseEntityConfiguration : IEntityTypeConfiguration<Course>
                 .HasDefaultValueSql("GETDATE()");
 
         builder
-                .Property(c => c.IsActive)
-                .HasDefaultValue(true);
-
-        builder
             .HasOne(c => c.Author)
             .WithMany(a => a.Courses)
             .HasForeignKey(c => c.AuthorID)
