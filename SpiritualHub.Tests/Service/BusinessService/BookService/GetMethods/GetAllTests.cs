@@ -61,7 +61,6 @@ public class GetAllTests : MockConfiguration
             Assert.That(result.TotalBooksCount, Is.EqualTo(queryModel.TotalEntitiesCount));
         });
         _bookRepositoryMock.Verify(x => x.AllAsNoTracking(), Times.Once);
-
     }
 
     [Test]

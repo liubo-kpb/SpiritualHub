@@ -37,7 +37,7 @@ public class Course
 
     public DateTime AddedOn { get; set; }
 
-    public bool? IsActive { get; set; }
+    public bool IsActive { get; set; } = true;
 
     [Required]
     public Guid AuthorID { get; set; }

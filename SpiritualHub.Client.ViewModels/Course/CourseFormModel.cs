@@ -35,7 +35,7 @@ public class CourseFormModel : BaseFormModel
     public string ImageUrl { get; set; } = null!;
 
     [Display(Name = "Publish Course?")]
-    public bool IsActive { get; set; }
+    public bool IsActive { get; set; } = true;
 
     public IList<CourseModuleFormModel> Modules { get; set; }
 

@@ -136,21 +136,23 @@ public class CourseService : ICourseService
     {
         var coursesQuery = _courseRepository
                                 .AllAsNoTracking()
-                                .Where(c => (bool) c.IsActive!);
+                                .Where(c => c.IsActive);
+
+        int courseCount = coursesQuery.Count();
 
         if (!string.IsNullOrWhiteSpace(queryModel.CategoryName))
         {
-            coursesQuery = coursesQuery.Where(b => b.Category != null && b.Category!.Name == queryModel.CategoryName);
+            coursesQuery = coursesQuery.Where(c => c.Category != null && c.Category!.Name == queryModel.CategoryName);
         }
 
         if (!string.IsNullOrWhiteSpace(queryModel.SearchTerm))
         {
             string wildCard = $"%{queryModel.SearchTerm.ToLower()}%";
-            coursesQuery = coursesQuery.Where(b => EF.Functions.Like(b.Name, wildCard)
-                                                || EF.Functions.Like(b.Author.Name, wildCard)
-                                                || EF.Functions.Like(b.Author.Alias, wildCard)
-                                                || EF.Functions.Like(b.Description, wildCard)
-                                                || EF.Functions.Like(b.ShortDescription, wildCard));
+            coursesQuery = coursesQuery.Where(c => c.Name.ToLower().Contains(wildCard)
+                                                || c.Author.Name.ToLower().Contains(wildCard)
+                                                || c.Author.Alias.ToLower().Contains(wildCard)
+                                                || c.Description.ToLower().Contains(wildCard)
+                                                || c.ShortDescription.ToLower().Contains(wildCard));
         }
 
         coursesQuery = queryModel.SortingOption switch
@@ -186,7 +188,7 @@ public class CourseService : ICourseService
         return new FilteredCoursesServiceModel()
         {
             Courses = coursesModel,
-            TotalCoursesCount = coursesQuery.Count(),
+            TotalCoursesCount = courseCount,
         };
     }
 

@@ -75,4 +75,10 @@ public class DeleteTests : MockConfiguration
 
         Assert.Fail(NoNullReferenceExceptionErrorMessage);
     }
+
+    public override void OneTimeSetup()
+    {
+        GenerateEntities = false;
+        base.OneTimeSetup();
+    }
 }
