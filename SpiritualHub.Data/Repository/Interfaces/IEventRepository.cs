@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 public interface IEventRepository : IDeletableRepository<Event>
 {
-    Task<Event?> GetFullEventDetails(string id);
+    Task<Event?> GetFullEventDetailsAsync(string id);
 
     Task<Event?> GetEventInfoAsync(string id);
 
@@ -14,4 +14,6 @@ public interface IEventRepository : IDeletableRepository<Event>
     Task<Event?> GetEventWithParticipantsAsync(string eventId);
 
     Task<Event?> GetEventWithImageAndRatingsAsync(string eventId);
+
+    Task<string?> GetAuthorIdAsync(string id);
 }

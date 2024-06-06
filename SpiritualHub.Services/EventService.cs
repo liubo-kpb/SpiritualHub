@@ -41,19 +41,21 @@ public class EventService : IEventService
                             .GetAll()
                             .Where(e => e.StartDateTime > DateTime.Now);
 
+        int eventCount = eventsQuery.Count();
+
         if (!string.IsNullOrWhiteSpace(queryModel.CategoryName))
         {
-            eventsQuery = eventsQuery.Where(e => e.Category != null && e.Category!.Name == queryModel.CategoryName);
+            eventsQuery = eventsQuery.Where(e => e.Category != null && e.Category.Name.ToLower().Contains(queryModel.CategoryName.ToLower()));
         }
 
         if (!string.IsNullOrWhiteSpace(queryModel.SearchTerm))
         {
-            string wildCard = $"%{queryModel.SearchTerm.ToLower()}%";
+            string wildCard = queryModel.SearchTerm.ToLower();
 
-            eventsQuery = eventsQuery.Where(e => EF.Functions.Like(e.Title, wildCard)
-                                      || EF.Functions.Like(e.Description, wildCard)
-                                      || EF.Functions.Like(e.LocationName != null ? e.LocationName! : "", wildCard)
-                                      || EF.Functions.Like(e.Author.Name, wildCard));
+            eventsQuery = eventsQuery.Where(e => e.Title.ToLower().Contains(wildCard)
+                                              || e.Description.ToLower().Contains(wildCard)
+                                              || (e.LocationName != null && e.LocationName.ToLower().Contains(wildCard))
+                                              || e.Author.Name.ToLower().Contains(wildCard));
         }
 
         eventsQuery = queryModel.SortingOption switch
@@ -93,13 +95,13 @@ public class EventService : IEventService
         return new FilteredEventsServiceModel()
         {
             Events = eventsModel,
-            TotalEventsCount = eventsQuery.Count(),
+            TotalEventsCount = eventCount,
         };
     }
 
     public async Task<EventDetailsViewModel> GetEventDetailsAsync(string id, string userId)
     {
-        var eventEntity = await _eventRepository.GetFullEventDetails(id);
+        var eventEntity = await _eventRepository.GetFullEventDetailsAsync(id);
         var eventModel = _mapper.Map<EventDetailsViewModel>(eventEntity);
 
         SetIsUserJoined(userId, eventEntity!, eventModel);
@@ -201,8 +203,7 @@ public class EventService : IEventService
         return eventsModel;
     }
 
-    public async Task<string> GetAuthorIdAsync(string eventId) => (await _eventRepository.GetEventWithAuthorAsync(eventId))!
-                                                                                                .AuthorID.ToString();
+    public async Task<string> GetAuthorIdAsync(string eventId) => (await _eventRepository.GetAuthorIdAsync(eventId))!;
 
     public async Task<bool> IsJoinedAsync(string eventId, string userId)
     {

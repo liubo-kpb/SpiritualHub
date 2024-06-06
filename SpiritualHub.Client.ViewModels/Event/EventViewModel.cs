@@ -47,4 +47,32 @@ public class EventViewModel : BaseDetailsViewModel
     }
 
     public AuthorInfoViewModel Author { get; set; } = null!;
+
+    public override bool Equals(object? obj)
+    {
+        if (base.Equals(obj))
+        {
+            return true;
+        }
+        else if (obj is EventViewModel other
+            && this.Id == other.Id
+            && this.Title == other.Title
+            && this.Description == other.Description
+            && this.Price == other.Price
+            && this.StartDateTime == other.StartDateTime
+            && this.EndDateTime == other.EndDateTime
+            && this.LocationName == other.LocationName
+            && this.LocationUrl == other.LocationUrl
+            && this.IsOnline == other.IsOnline)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
 }

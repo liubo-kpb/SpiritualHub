@@ -49,7 +49,7 @@ public class MockConfiguration
         _eventService = new EventService(_eventRepositoryMock.Object, _imageRepositoryMock.Object, _ratingRepositoryMock.Object, _userRepositoryMock.Object, _mapper);
     }
 
-    protected Event GetCourseWithStudent(ApplicationUser user = null!)
+    protected Event GetEventWithParticipant(ApplicationUser user = null!)
     {
         var course = _events.First();
         course.Participants.Add(user ?? _users.First());
