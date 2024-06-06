@@ -203,8 +203,8 @@ public class CourseService : ICourseService
     {
         var course = await _courseRepository.GetSingleByIdAsync(courseId);
         var user = await _userRepository.GetSingleByIdAsync(userId);
-
-        user!.Courses.Add(course!);
+        
+        course!.Students.Add(user!);
         await _courseRepository.SaveChangesAsync();
     }
 
