@@ -9,7 +9,7 @@ using Interfaces;
 using Client.ViewModels.Module;
 using Data.Repository.Interfaces;
 using Data.Models;
-using SpiritualHub.Services.Mappings;
+using Services.Mappings;
 
 public class ModuleService : IModuleService
 {
