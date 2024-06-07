@@ -34,7 +34,7 @@ public class EditTests : MockConfiguration
         });
         _courseRepositoryMock.Verify(x => x.GetCourseInfoAsync(It.Is<string>(x => x == courseFormModel.Id)));
 
-        _moduleServiceMock.Verify(x => x.DeleteModules(It.IsAny<ICollection<Module>>(), It.IsAny<IEnumerable<CourseModuleFormModel>>()), Times.Never);
+        _moduleServiceMock.Verify(x => x.DeleteMultiple(It.IsAny<ICollection<Module>>(), It.IsAny<IEnumerable<CourseModuleFormModel>>()), Times.Never);
         _moduleServiceMock.Verify(x => x.Edit(It.IsAny<Module>(), It.IsAny<CourseModuleFormModel>()), Times.Never);
         _moduleServiceMock.Verify(x => x.ReorderCourseModules(It.IsAny<ICollection<Module>>(), It.IsAny<int>()), Times.Once);
 
@@ -70,7 +70,7 @@ public class EditTests : MockConfiguration
         }
 
         _courseRepositoryMock.Setup(x => x.GetCourseInfoAsync(It.Is<string>(x => x == courseFormModel.Id))).ReturnsAsync(courseEntity);
-        _moduleServiceMock.Setup(x => x.DeleteModules(It.IsAny<ICollection<Module>>(), It.IsAny<IEnumerable<CourseModuleFormModel>>())).Returns(new List<Module>());
+        _moduleServiceMock.Setup(x => x.DeleteMultiple(It.IsAny<ICollection<Module>>(), It.IsAny<IEnumerable<CourseModuleFormModel>>())).Returns(new List<Module>());
 
         // Act
         await _courseService.EditAsync(courseFormModel);
@@ -78,7 +78,7 @@ public class EditTests : MockConfiguration
         // Assert
         _courseRepositoryMock.Verify(x => x.GetCourseInfoAsync(It.Is<string>(x => x == courseFormModel.Id)));
 
-        _moduleServiceMock.Verify(x => x.DeleteModules(It.IsAny<ICollection<Module>>(), It.IsAny<IEnumerable<CourseModuleFormModel>>()), Times.Once);
+        _moduleServiceMock.Verify(x => x.DeleteMultiple(It.IsAny<ICollection<Module>>(), It.IsAny<IEnumerable<CourseModuleFormModel>>()), Times.Once);
         _moduleServiceMock.Verify(x => x.Edit(It.IsAny<Module>(), It.IsAny<CourseModuleFormModel>()), Times.Once);
         _moduleServiceMock.Verify(x => x.ReorderCourseModules(It.IsAny<ICollection<Module>>(), It.IsAny<int>()), Times.Once);
 
@@ -117,7 +117,7 @@ public class EditTests : MockConfiguration
         {
             _courseRepositoryMock.Verify(x => x.GetCourseInfoAsync(It.Is<string>(x => x == courseFormModel.Id)), Times.Once);
 
-            _moduleServiceMock.Verify(x => x.DeleteModules(It.IsAny<ICollection<Module>>(), It.IsAny<IEnumerable<CourseModuleFormModel>>()), Times.Never);
+            _moduleServiceMock.Verify(x => x.DeleteMultiple(It.IsAny<ICollection<Module>>(), It.IsAny<IEnumerable<CourseModuleFormModel>>()), Times.Never);
             _moduleServiceMock.Verify(x => x.Edit(It.IsAny<Module>(), It.IsAny<CourseModuleFormModel>()), Times.Never);
             _moduleServiceMock.Verify(x => x.ReorderCourseModules(It.IsAny<ICollection<Module>>(), It.IsAny<int>()), Times.Never);
 

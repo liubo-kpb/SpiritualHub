@@ -4,11 +4,12 @@ using System.ComponentModel.DataAnnotations;
 
 using BaseModels;
 using Course;
+using Interfaces;
 
 using static Common.EntityValidationConstants.Module;
 
 
-public class ModuleFormModel : BaseFormModel
+public class ModuleFormModel : BaseFormModel, IModuleBaseFormModel
 {
     public ModuleFormModel()
         : base()
@@ -43,4 +44,30 @@ public class ModuleFormModel : BaseFormModel
     public string CourseId { get; set; } = null!;
 
     public IEnumerable<CourseInfoViewModel> Courses { get; set; }
+
+    public override bool Equals(object? obj)
+    {
+        if (base.Equals(obj))
+        {
+            return true;
+        }
+        else if (obj is ModuleFormModel other
+            && this.Id == other.Id
+            && this.Number == other.Number
+            && this.Name == other.Name
+            && this.Description == other.Description
+            && this.VideoUrl == other.VideoUrl
+            && this.Text == other.Text
+            && this.IsActive == other.IsActive)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
 }

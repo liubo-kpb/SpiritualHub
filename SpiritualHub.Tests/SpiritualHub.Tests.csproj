@@ -41,7 +41,8 @@
     <Folder Include="Controller\ProductController\" />
     <Folder Include="Service\BusinessService\BlogService\" />
     <Folder Include="Service\BusinessService\EventService\CRUDMethods\" />
-    <Folder Include="Service\BusinessService\ModuleService\" />
+    <Folder Include="Service\BusinessService\ModuleService\CRUDMethods\" />
+    <Folder Include="Service\BusinessService\ModuleService\GetMethods\" />
     <Folder Include="Service\BusinessService\UserService\" />
     <Folder Include="Service\BusinessService\SubscriptionService\" />
     <Folder Include="Service\BusinessService\PublisherService\" />

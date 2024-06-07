@@ -45,7 +45,7 @@ public class PublisherService : IPublisherService
                                                                 .AnyAsync(p => p.Id.ToString() == Id);
 
     public async Task<bool> ExistsByUserIdAsync(string Id) => await _publisherRepository
-                                                                .AnyAsync(u => u.UserID.ToString() == Id);
+                                                                .AnyAsync(p => p.UserID.ToString() == Id);
 
     public async Task<IEnumerable<PublisherInfoViewModel>> GetAllAsync()
     {
