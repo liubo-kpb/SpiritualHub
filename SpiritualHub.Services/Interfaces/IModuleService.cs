@@ -2,6 +2,7 @@
 
 using Data.Models;
 using Client.ViewModels.Module;
+using SpiritualHub.Client.ViewModels.Module.Interfaces;
 
 public interface IModuleService
 {
@@ -10,13 +11,13 @@ public interface IModuleService
     /// </summary>
     /// <param name="moduleEntity"></param>
     /// <param name="updatedModule"></param>
-    void                                    Edit(Module moduleEntity, CourseModuleFormModel updatedModule);
+    void                                    Edit(Module moduleEntity, IModuleBaseFormModel updatedModule);
 
     ICollection<Module>                     ReorderCourseModules(IEnumerable<Module> modules, int startingNumber = 1);
 
     Task                                    AdjustModulesNumbering(ModuleFormModel moduleForm, bool isNew = false);
 
-    ICollection<Module>                     DeleteModules(ICollection<Module> moduleEntities, IEnumerable<CourseModuleFormModel> deletedModules);
+    ICollection<Module>                     DeleteMultiple(ICollection<Module> moduleEntities, IEnumerable<CourseModuleFormModel> deletedModules);
 
     Task<int>                               GetAllCountAsync();
 

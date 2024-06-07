@@ -6,10 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 
 using Interfaces;
+using Mappings;
 using Client.ViewModels.Module;
+using Client.ViewModels.Module.Interfaces;
 using Data.Repository.Interfaces;
 using Data.Models;
-using Services.Mappings;
 
 public class ModuleService : IModuleService
 {
@@ -27,10 +28,24 @@ public class ModuleService : IModuleService
         _mapper = mapper;
     }
 
-    public void Edit(Module moduleEntity, CourseModuleFormModel updatedModule)
+    public void Edit(Module moduleEntity, IModuleBaseFormModel updatedModule)
     {
         moduleEntity.Name = updatedModule.Name;
         moduleEntity.Number = updatedModule.Number;
+    }
+
+    public async Task EditAsync(ModuleFormModel updatedModule)
+    {
+        var moduleEntity = await _moduleRepository.GetSingleByIdAsync(updatedModule.Id!);
+
+        this.Edit(moduleEntity!, updatedModule);
+        moduleEntity!.Description = updatedModule.Description;
+        moduleEntity.VideoUrl = updatedModule.VideoUrl!;
+        moduleEntity.Text = updatedModule.Text!;
+        moduleEntity.IsActive = updatedModule.IsActive;
+        moduleEntity.CourseID = Guid.Parse(updatedModule.CourseId);
+
+        await _moduleRepository.SaveChangesAsync();
     }
 
     public async Task<string> CreateAsync(ModuleFormModel newModule)
@@ -56,18 +71,31 @@ public class ModuleService : IModuleService
         return sortedModules;
     }
 
-    public ICollection<Module> DeleteModules(ICollection<Module> moduleEntities, IEnumerable<CourseModuleFormModel> deletedModules)
+    public ICollection<Module> DeleteMultiple(ICollection<Module> moduleEntities, IEnumerable<CourseModuleFormModel> deletedModules)
     {
         ICollection<Module> modulesToDelete = new List<Module>();
         foreach (var module in deletedModules)
         {
             var moduleEntity = moduleEntities.FirstOrDefault(m => m.Id.ToString() == module.Id)!;
-            modulesToDelete.Add(moduleEntity);
+            
+            if (moduleEntity != null)
+            {
+                modulesToDelete.Add(moduleEntity);
+            }
         }
 
         _moduleRepository.DeleteMultiple(modulesToDelete);
 
         return modulesToDelete;
+    }
+
+    public async Task DeleteAsync(string id)
+    {
+        var module = await _moduleRepository.GetSingleByIdAsync(id);
+
+        _moduleRepository.Delete(module!);
+
+        await _moduleRepository.SaveChangesAsync();
     }
 
     public async Task<int> GetAllCountAsync()
@@ -77,7 +105,6 @@ public class ModuleService : IModuleService
 
     public async Task<ModuleDetailsViewModule> GetModuleDetailsAsync(string id, string userId)
     {
-
         var courseEntity = await _courseRepository.GetCourseWithModulesByModuleIdAsync(id);
         var modules = courseEntity!.Modules.OrderBy(m => m.Number);
 
@@ -122,21 +149,6 @@ public class ModuleService : IModuleService
         return (await _moduleRepository.GetAuthordId(moduleId))!;
     }
 
-    public async Task EditAsync(ModuleFormModel updatedModule)
-    {
-        var moduleEntity = await _moduleRepository.GetSingleByIdAsync(updatedModule.Id!);
-
-        moduleEntity!.Number = updatedModule.Number;
-        moduleEntity.Name = updatedModule.Name;
-        moduleEntity.Description = updatedModule.Description;
-        moduleEntity.VideoUrl = updatedModule.VideoUrl!;
-        moduleEntity.Text = updatedModule.Text!;
-        moduleEntity.IsActive = updatedModule.IsActive;
-        moduleEntity.CourseID = Guid.Parse(updatedModule.CourseId);
-
-        await _moduleRepository.SaveChangesAsync();
-    }
-
     public async Task AdjustModulesNumbering(ModuleFormModel moduleForm, bool isNew = false)
     {
         var courseModules = _moduleRepository.GetModulesByCourseId(moduleForm.CourseId);
@@ -158,15 +170,6 @@ public class ModuleService : IModuleService
             ReorderCourseModules(courseModules.Where(m => m.Id.ToString() != moduleForm.Id), moduleForm.Number + 1);
             await _moduleRepository.SaveChangesAsync();
         }
-    }
-
-    public async Task DeleteAsync(string id)
-    {
-        var module = await _moduleRepository.GetSingleByIdAsync(id);
-
-        _moduleRepository.Delete(module!);
-
-        await _moduleRepository.SaveChangesAsync();
     }
 
     public async Task HideAsync(string id)

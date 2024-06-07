@@ -103,7 +103,7 @@ public class CourseService : ICourseService
         var deletedModules = updatedCourse.Modules.Where(m => m.IsDeleted);
         if (deletedModules.Any())
         {
-            var removedModules = _moduleService.DeleteModules(course.Modules, deletedModules);
+            var removedModules = _moduleService.DeleteMultiple(course.Modules, deletedModules);
 
             updatedCourse.Modules = updatedCourse.Modules.Except(deletedModules).ToList();
             course.Modules = course.Modules.Except(removedModules).ToList();
