@@ -42,10 +42,10 @@ public class CourseRepository : DeletableRepository<Course>, ICourseRepository
                                                                                 .Include(c => c.Students)
                                                                                 .FirstOrDefaultAsync(c => c.Id.ToString() == id);
 
-    public async Task<bool> CheckCourseActivityStatusAsync(string id) => (bool) await DbSet
-                                                                                        .Where(c => c.Id.ToString() == id)
-                                                                                        .Select(c => c.IsActive)
-                                                                                        .FirstOrDefaultAsync();
+    public async Task<bool> CheckCourseActivityStatusAsync(string id) => await DbSet
+                                                                                .Where(c => c.Id.ToString() == id)
+                                                                                .Select(c => c.IsActive)
+                                                                                .FirstOrDefaultAsync();
 
     public async Task<Course?> GetCourseWithModulesByModuleIdAsync(string moduleId) => await DbSet
                                                                                                 .Include(c => c.Modules)

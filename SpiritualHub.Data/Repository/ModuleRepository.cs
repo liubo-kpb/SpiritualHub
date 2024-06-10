@@ -1,11 +1,12 @@
 ﻿namespace SpiritualHub.Data.Repository;
 
+using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.EntityFrameworkCore;
 
 using Interfaces;
 using Models;
-using System.Linq;
 
 public class ModuleRepository : DeletableRepository<Module>, IModuleRepository
 {
@@ -14,7 +15,6 @@ public class ModuleRepository : DeletableRepository<Module>, IModuleRepository
     }
 
     public async Task<string?> GetAuthordId(string id) => await DbSet
-                                                                    .Include(m => m.Course)
                                                                     .Where(m => m.Id.ToString() == id)
                                                                     .Select(m => m.Course.AuthorID.ToString())
                                                                     .FirstOrDefaultAsync();
