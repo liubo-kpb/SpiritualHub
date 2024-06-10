@@ -11,7 +11,7 @@ public class Course
     public Course()
     {
         this.Id = Guid.NewGuid();
-        this.Modules = new HashSet<Module>();
+        this.Modules = new List<Module>();
         this.Ratings = new HashSet<Rating>();
         this.Students = new HashSet<ApplicationUser>();
     }

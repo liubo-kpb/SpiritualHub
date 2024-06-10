@@ -58,17 +58,15 @@ public class ModuleService : IModuleService
         return newModuleEntity.Id.ToString();
     }
 
-    public ICollection<Module> ReorderCourseModules(IEnumerable<Module> modules, int startingNumber = 1)
+    public void ReorderCourseModules(IEnumerable<Module> modulesToReorder, int startingNumber = 1)
     {
-        var sortedModules = modules.Where(m => m.Number >= startingNumber - 1).OrderBy(m => m.Number).ThenBy(m => m.Name).ToList();
+        var sortedModules = modulesToReorder.OrderBy(m => m.Number).ThenBy(m => m.Name).ToList();
 
         int currentNumber = startingNumber;
         foreach (var module in sortedModules)
         {
             module.Number = currentNumber++;
         }
-
-        return sortedModules;
     }
 
     public ICollection<Module> DeleteMultiple(ICollection<Module> moduleEntities, IEnumerable<CourseModuleFormModel> deletedModules)
@@ -167,7 +165,7 @@ public class ModuleService : IModuleService
         }
         else
         {
-            ReorderCourseModules(courseModules.Where(m => m.Id.ToString() != moduleForm.Id), moduleForm.Number + 1);
+            ReorderCourseModules(courseModules.Where(m => m.Id.ToString() != moduleForm.Id && m.Number >= moduleForm.Number), moduleForm.Number + 1);
             await _moduleRepository.SaveChangesAsync();
         }
     }
