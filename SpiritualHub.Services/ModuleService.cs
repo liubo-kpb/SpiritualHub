@@ -101,7 +101,7 @@ public class ModuleService : IModuleService
         return await _moduleRepository.AllAsNoTracking().CountAsync();
     }
 
-    public async Task<ModuleDetailsViewModule> GetModuleDetailsAsync(string id, string userId)
+    public async Task<ModuleDetailsViewModule> GetModuleDetailsAsync(string id)
     {
         var courseEntity = await _courseRepository.GetCourseWithModulesByModuleIdAsync(id);
         var modules = courseEntity!.Modules.OrderBy(m => m.Number);

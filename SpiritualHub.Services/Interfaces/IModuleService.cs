@@ -21,7 +21,7 @@ public interface IModuleService
 
     Task<int>                               GetAllCountAsync();
 
-    Task<ModuleDetailsViewModule>           GetModuleDetailsAsync(string id, string userId);
+    Task<ModuleDetailsViewModule>           GetModuleDetailsAsync(string id);
 
     string?                                 GetNextModuleId(ModuleDetailsViewModule moduleViewModel, bool canAccess);
 

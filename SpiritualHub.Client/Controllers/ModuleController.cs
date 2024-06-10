@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 using ViewModels.BaseModels;
 using ViewModels.Module;
@@ -15,8 +17,6 @@ using Data.Models;
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
 using static Common.ExceptionErrorMessagesConstants;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsViewModule, ModuleFormModel, EmptyQueryModel, Enum>
 {
@@ -66,7 +66,6 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
 
         return result;
     }
-
 
     public override async Task<IActionResult> Hide(string id)
     {
@@ -120,31 +119,11 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
         await _moduleService.EditAsync(updatedEntityFrom);
     }
 
-    protected override async Task<bool> ExistsAsync(string id)
-    {
-        return await _moduleService.ExistsAsync(id);
-    }
-
-    protected override Task<EmptyQueryModel> GetAllAsync(EmptyQueryModel queryModel, string userId)
-    {
-        throw new NotImplementedException(InvalidRequestErrorMessage);
-    }
-
-    protected override Task<IEnumerable<EmptyViewModel>> GetAllEntitiesByUserId(string userId)
-    {
-        throw new NotImplementedException(InvalidRequestErrorMessage);
-    }
-
-    protected override Task<IEnumerable<EmptyViewModel>> GetEntitiesByPublisherIdAsync(string publisherId, string userId)
-    {
-        throw new NotImplementedException(InvalidRequestErrorMessage);
-    }
-
     protected override async Task<ModuleDetailsViewModule> GetEntityDetails(string id, string userId)
     {
-        var moduleViewModel = await _moduleService.GetModuleDetailsAsync(id, userId);
+        var moduleViewModel = await _moduleService.GetModuleDetailsAsync(id);
 
-        bool canModify = await CanModify();
+        bool canModify = await CanModify(moduleViewModel.AuthorId);
         moduleViewModel.NextModuleId = _moduleService.GetNextModuleId(moduleViewModel, canModify)!;
         moduleViewModel.PreviousModuleId = _moduleService.GetPreviousModuleId(moduleViewModel, canModify)!;
 
@@ -154,16 +133,6 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
     protected override async Task<ModuleFormModel> GetEntityInfoAsync(string id)
     {
         return await _moduleService.GetModuleInfoAsync(id);
-    }
-
-    protected override Task GetAsync(string id, string userId)
-    {
-        throw new NotImplementedException(InvalidRequestErrorMessage);
-    }
-
-    protected override Task RemoveAsync(string id, string userId)
-    {
-        throw new NotImplementedException(InvalidRequestErrorMessage);
     }
 
     protected override async Task DeleteAsync(string id)
@@ -179,31 +148,6 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
     protected override async Task HideAsync(string id)
     {
         await _moduleService.HideAsync(id);
-    }
-
-    protected override async Task<string> GetAuthorIdAsync(string entityId)
-    {
-        return await _courseService.GetAuthorIdAsync(await GetCourseIdAsync(entityId));
-    }
-
-    protected override async Task<bool> HasEntityAsync(string id, string usedId)
-    {
-        return await _courseService.HasCourseAsync(await GetCourseIdAsync(id), usedId);
-    }
-
-    protected override string AlreadyHasEntityErrorMessage()
-    {
-        throw new NotImplementedException(InvalidRequestErrorMessage);
-    }
-
-    protected override string GetEntitySuccessMessage()
-    {
-        throw new NotImplementedException(InvalidRequestErrorMessage);
-    }
-
-    protected override string RemoveEntitySuccessMessage()
-    {
-        throw new NotImplementedException(InvalidRequestErrorMessage);
     }
 
     protected override async Task GetFormDetailsAsync(ModuleFormModel formModel)
@@ -264,20 +208,34 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
             return AccessDeniedErrorMessage;
         }
 
-
         return string.Format(NoEntityFoundErrorMessage, _entityName);
+    }
+
+    protected override async Task<string> GetAuthorIdAsync(string entityId)
+    {
+        return await _courseService.GetAuthorIdAsync(await GetCourseIdAsync(entityId));
+    }
+
+    protected override async Task<bool> HasEntityAsync(string id, string usedId)
+    {
+        return await _courseService.HasCourseAsync(await GetCourseIdAsync(id), usedId);
+    }
+
+    protected override async Task<bool> ExistsAsync(string id)
+    {
+        return await _moduleService.ExistsAsync(id);
     }
 
     private async Task<bool> UserHasAccess(string id)
     {
-        return await CanModify()
+        return await CanModify(await _moduleService.GetAuthorIdAsync(id))
                 || await _courseService.HasCourseAsync(await GetCourseIdAsync(id), this.User.GetId()!);
     }
 
-    private async Task<bool> CanModify()
+    private async Task<bool> CanModify(string authorId)
     {
         return this.User.IsAdmin()
-                || await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
+                || (await _publisherService.ExistsByUserIdAsync(this.User.GetId()!) && await _publisherService.IsConnectedToAuthorByUserId(this.User.GetId()!, authorId));
     }
 
     private async Task<string> GetCourseIdAsync(string moduleId)
@@ -290,5 +248,45 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
         var redirect = result as RedirectToActionResult;
 
         return redirect!.ActionName == nameof(MyPublishings);
+    }
+
+    protected override Task<EmptyQueryModel> GetAllAsync(EmptyQueryModel queryModel, string userId)
+    {
+        throw new NotImplementedException(InvalidRequestErrorMessage);
+    }
+
+    protected override Task<IEnumerable<EmptyViewModel>> GetAllEntitiesByUserId(string userId)
+    {
+        throw new NotImplementedException(InvalidRequestErrorMessage);
+    }
+
+    protected override Task<IEnumerable<EmptyViewModel>> GetEntitiesByPublisherIdAsync(string publisherId, string userId)
+    {
+        throw new NotImplementedException(InvalidRequestErrorMessage);
+    }
+
+    protected override Task GetAsync(string id, string userId)
+    {
+        throw new NotImplementedException(InvalidRequestErrorMessage);
+    }
+
+    protected override Task RemoveAsync(string id, string userId)
+    {
+        throw new NotImplementedException(InvalidRequestErrorMessage);
+    }
+
+    protected override string AlreadyHasEntityErrorMessage()
+    {
+        throw new NotImplementedException(InvalidRequestErrorMessage);
+    }
+
+    protected override string GetEntitySuccessMessage()
+    {
+        throw new NotImplementedException(InvalidRequestErrorMessage);
+    }
+
+    protected override string RemoveEntitySuccessMessage()
+    {
+        throw new NotImplementedException(InvalidRequestErrorMessage);
     }
 }

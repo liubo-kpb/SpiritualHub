@@ -19,7 +19,6 @@ public class MockConfiguration
     protected IMapper _mapper;
 
     protected List<Module> _modules = null!;
-    protected List<ApplicationUser> _users = null!;
 
     protected bool GenerateEntities { get; set; } = true;
 
@@ -47,6 +46,5 @@ public class MockConfiguration
     private void LoadEntities()
     {
         _modules = new SeedModuleConfiguration().GenerateEntities().ToList();
-        _users = new SeedUserConfiguration().GenerateEntities().ToList();
     }
 }
