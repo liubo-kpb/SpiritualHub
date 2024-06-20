@@ -16,6 +16,7 @@ public class Module
     public Guid Id { get; set; }
 
     [Required]
+    [Range(0, int.MaxValue)]
     public int Number { get; set; }
 
     [Required]

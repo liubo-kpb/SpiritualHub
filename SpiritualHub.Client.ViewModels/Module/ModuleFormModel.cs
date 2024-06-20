@@ -18,6 +18,7 @@ public class ModuleFormModel : BaseFormModel, IModuleBaseFormModel
     }
 
     [Display(Name = "Module Order Number")]
+    [Range(0, int.MaxValue)]
     public int Number { get; set; }
 
     [Required]

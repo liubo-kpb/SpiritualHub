@@ -58,13 +58,18 @@ public class ModuleService : IModuleService
         return newModuleEntity.Id.ToString();
     }
 
-    public void ReorderCourseModules(IEnumerable<Module> modulesToReorder, int startingNumber = 1)
+    public void ReorderCourseModules(IEnumerable<Module> modulesToReorder, int skipnumber = int.MinValue)
     {
         var sortedModules = modulesToReorder.OrderBy(m => m.Number).ThenBy(m => m.Name).ToList();
 
-        int currentNumber = startingNumber;
+        int currentNumber = 1;
         foreach (var module in sortedModules)
         {
+            if (currentNumber == skipnumber)
+            {
+                currentNumber++;
+            }
+
             module.Number = currentNumber++;
         }
     }
@@ -75,7 +80,7 @@ public class ModuleService : IModuleService
         foreach (var module in deletedModules)
         {
             var moduleEntity = moduleEntities.FirstOrDefault(m => m.Id.ToString() == module.Id)!;
-            
+
             if (moduleEntity != null)
             {
                 modulesToDelete.Add(moduleEntity);
@@ -152,32 +157,29 @@ public class ModuleService : IModuleService
         var courseModules = _moduleRepository.GetModulesByCourseId(moduleForm.CourseId);
         int modulesCount = courseModules.Count();
 
+        if (moduleForm.Number > modulesCount && isNew)
+        {
+            moduleForm.Number = modulesCount + 1;
+            return;
+        }
+
         if (moduleForm.Number > modulesCount)
         {
-            if (isNew)
-            {
-                moduleForm.Number = modulesCount + 1;
-            }
-            else
-            {
-                moduleForm.Number = modulesCount;
-            }
+            moduleForm.Number = modulesCount;
         }
-        else
-        {
-            ReorderCourseModules(courseModules.Where(m => m.Id.ToString() != moduleForm.Id && m.Number >= moduleForm.Number), moduleForm.Number + 1);
-            await _moduleRepository.SaveChangesAsync();
-        }
+
+        ReorderCourseModules(courseModules.Where(m => m.Id.ToString() != moduleForm.Id), moduleForm.Number);
+        await _moduleRepository.SaveChangesAsync();
     }
 
     public async Task HideAsync(string id)
     {
-        await ChangeModuleActivityStatus(id, false);
+        await ChangeModuleActivityStatusAsync(id, false);
     }
 
     public async Task ShowAsync(string id)
     {
-        await ChangeModuleActivityStatus(id, true);
+        await ChangeModuleActivityStatusAsync(id, true);
     }
 
     public Task<bool> IsActiveAsync(string moduleId)
@@ -190,7 +192,7 @@ public class ModuleService : IModuleService
         return (await _moduleRepository.GetCourseIdByModuleId(moduleId))!;
     }
 
-    private async Task ChangeModuleActivityStatus(string id, bool newStatus)
+    private async Task ChangeModuleActivityStatusAsync(string id, bool newStatus)
     {
         var module = await _moduleRepository.GetSingleByIdAsync(id);
         module!.IsActive = newStatus;

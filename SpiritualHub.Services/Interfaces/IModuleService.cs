@@ -13,7 +13,12 @@ public interface IModuleService
     /// <param name="updatedModule"></param>
     void                                    Edit(Module moduleEntity, IModuleBaseFormModel updatedModule);
 
-    void                                    ReorderCourseModules(IEnumerable<Module> modules, int startingNumber = 1);
+    /// <summary>
+    /// Reorder modules when there is a change in the module numbering of a course. 
+    /// </summary>
+    /// <param name="modules"></param>
+    /// <param name="skipNumber">Intended for when there is a module placed in the middle of the list by its number.</param>
+    void                                    ReorderCourseModules(IEnumerable<Module> modules, int skipNumber = int.MinValue);
 
     Task                                    AdjustModulesNumbering(ModuleFormModel moduleForm, bool isNew = false);
 
