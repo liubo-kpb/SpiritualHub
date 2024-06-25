@@ -20,7 +20,7 @@ public interface IModuleService
     /// <param name="skipNumber">Intended for when there is a module placed in the middle of the list by its number.</param>
     void                                    ReorderCourseModules(IEnumerable<Module> modules, int skipNumber = int.MinValue);
 
-    Task                                    AdjustModulesNumbering(ModuleFormModel moduleForm, bool isNew = false);
+    Task                                    AdjustModulesNumberingAsync(ModuleFormModel moduleForm, bool isNew = false);
 
     ICollection<Module>                     DeleteMultiple(ICollection<Module> moduleEntities, IEnumerable<CourseModuleFormModel> deletedModules);
 

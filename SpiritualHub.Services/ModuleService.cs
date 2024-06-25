@@ -152,7 +152,7 @@ public class ModuleService : IModuleService
         return (await _moduleRepository.GetAuthordId(moduleId))!;
     }
 
-    public async Task AdjustModulesNumbering(ModuleFormModel moduleForm, bool isNew = false)
+    public async Task AdjustModulesNumberingAsync(ModuleFormModel moduleForm, bool isNew = false)
     {
         var courseModules = _moduleRepository.GetModulesByCourseId(moduleForm.CourseId);
         int modulesCount = courseModules.Count();

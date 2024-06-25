@@ -109,13 +109,13 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
 
     protected override async Task<string> CreateAsync(ModuleFormModel newEntity)
     {
-        await _moduleService.AdjustModulesNumbering(newEntity, true);
+        await _moduleService.AdjustModulesNumberingAsync(newEntity, true);
         return await _moduleService.CreateAsync(newEntity);
     }
 
     protected override async Task EditAsync(ModuleFormModel updatedEntityFrom)
     {
-        await _moduleService.AdjustModulesNumbering(updatedEntityFrom);
+        await _moduleService.AdjustModulesNumberingAsync(updatedEntityFrom);
         await _moduleService.EditAsync(updatedEntityFrom);
     }
 

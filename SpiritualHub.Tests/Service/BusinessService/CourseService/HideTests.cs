@@ -54,7 +54,6 @@ public class HideTests : MockConfiguration
             {
                 Assert.That(module.IsActive, Is.False);
             }
-
         });
         _courseRepositoryMock.Verify(x => x.GetCourseWithModulesImageAndRatingsAsync(It.Is<string>(x => x == courseId)), Times.Once);
         _courseRepositoryMock.Verify(x => x.SaveChangesAsync());

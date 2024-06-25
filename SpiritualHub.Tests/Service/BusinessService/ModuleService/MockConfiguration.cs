@@ -20,7 +20,7 @@ public class MockConfiguration
 
     protected List<Module> _modules = null!;
 
-    protected bool GenerateEntities { get; set; } = true;
+    protected virtual bool GenerateEntities { get; set; } = true;
 
     [OneTimeSetUp]
     public virtual void OneTimeSetup()
