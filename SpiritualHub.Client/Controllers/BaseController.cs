@@ -12,7 +12,6 @@ using Infrastructure.Extensions;
 using Infrastructure.Enums;
 using ViewModels.BaseModels;
 using ViewModels.Publisher;
-using Filters;
 
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
@@ -20,7 +19,6 @@ using static Common.ExceptionErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
 
 [Authorize]
-//[ServiceFilter(typeof(CustomValidationFilterAttribute))]
 public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQueryModel, TSortingEnum> : Controller
     where TViewModel : class
     where TDetailsModel : class

@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\ViewModels\" />
+    <Folder Include="Filters\" />
   </ItemGroup>
 
   <ItemGroup>
