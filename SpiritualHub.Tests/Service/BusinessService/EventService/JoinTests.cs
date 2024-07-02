@@ -57,7 +57,7 @@ public class JoinTests : MockConfiguration
     }
 
     [Test]
-    public async Task WhenFail_WrongCourseId_ThrowTest()
+    public void WhenFail_WrongCourseId_ThrowTest()
     {
         // Arrange
         var eventId = "wrongId";
