@@ -28,6 +28,4 @@ public class AuthorFormModel : BaseFormModel
     [Required]
     [Display(Name = "Author Image URL:")]
     public string AvatarImageUrl { get; set; } = null!;
-
-    public override string? AuthorId => Id!;
 }

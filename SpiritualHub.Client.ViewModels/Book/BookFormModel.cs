@@ -6,7 +6,7 @@ using BaseModels;
 
 using static Common.EntityValidationConstants.Book;
 
-public class BookFormModel : BaseFormModel
+public class BookFormModel : ProductFormModel
 {
     [StringLength(TitleMaxLength, MinimumLength = TitleMinLength)]
     public string Title { get; set; } = null!;

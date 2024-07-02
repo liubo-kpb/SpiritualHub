@@ -9,7 +9,7 @@ using Interfaces;
 using static Common.EntityValidationConstants.Module;
 
 
-public class ModuleFormModel : BaseFormModel, IModuleBaseFormModel
+public class ModuleFormModel : ProductFormModel, IModuleBaseFormModel
 {
     public ModuleFormModel()
         : base()

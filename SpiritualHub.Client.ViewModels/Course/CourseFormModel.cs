@@ -7,7 +7,7 @@ using Module;
 
 using static Common.EntityValidationConstants.Course;
 
-public class CourseFormModel : BaseFormModel
+public class CourseFormModel : ProductFormModel
 {
     public CourseFormModel()
     {

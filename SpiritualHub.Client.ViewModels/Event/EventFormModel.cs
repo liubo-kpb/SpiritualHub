@@ -6,7 +6,7 @@ using ViewModels.BaseModels;
 
 using static Common.EntityValidationConstants.Event;
 
-public class EventFormModel : BaseFormModel
+public class EventFormModel : ProductFormModel
 {
     public EventFormModel()
     {

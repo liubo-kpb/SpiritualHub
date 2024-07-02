@@ -14,8 +14,8 @@ public class BaseQueryModel<TViewModel, TSortingEnum>
         this.Categories = new HashSet<string>();
         this.EntityViewModels = new HashSet<TViewModel>();
 
-        CurrentPage = DefaultPage;
-        EntitiesPerPage = EntitiesPerPageConstant;
+        this.CurrentPage = DefaultPage;
+        this.EntitiesPerPage = EntitiesPerPageConstant;
     }
 
     [Display(Name = "Category")]
