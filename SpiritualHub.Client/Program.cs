@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 
-using Filters;
 using Infrastructure.Extensions;
 using Infrastructure.ModelBinder;
 using Data;
@@ -44,7 +43,7 @@ public class Program
 
         // Add filter services
         builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-        builder.Services.AddScoped<CustomValidationFilterAttribute>();
+        // builder.Services.AddScoped<CustomValidationFilterAttribute>();
 
         builder.Services.AddMemoryCache();
 
@@ -52,7 +51,7 @@ public class Program
         {
             options.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
             options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
-            options.Filters.Add(typeof(CustomValidationFilterAttribute));
+            // options.Filters.Add(typeof(CustomValidationFilterAttribute));
         });
 
         var app = builder.Build();
