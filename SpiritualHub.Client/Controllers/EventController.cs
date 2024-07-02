@@ -65,7 +65,7 @@ public class EventController : ProductController<EventViewModel, EventDetailsVie
         return queryModel;
     }
 
-    protected override async Task<IEnumerable<EventViewModel>> GetAllEntitiesByUserId(string userId)
+    protected override async Task<IEnumerable<EventViewModel>> GetAllEntitiesByUserIdAsync(string userId)
     {
         return await _eventService.AllEventsByUserIdAsync(userId);
     }

@@ -47,7 +47,7 @@ public class BookController : ProductController<BookViewModel, BookDetailsViewMo
         return await _bookService.GetBookDetailsAsync(id, userId);
     }
 
-    protected override async Task<IEnumerable<BookViewModel>> GetAllEntitiesByUserId(string userId)
+    protected override async Task<IEnumerable<BookViewModel>> GetAllEntitiesByUserIdAsync(string userId)
     {
         return await _bookService.AllBooksByUserIdAsync(userId);
     }

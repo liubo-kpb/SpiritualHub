@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 
 using ViewModels.BaseModels;
+using ViewModels.Publisher;
 using Infrastructure.Extensions;
 using Services.Validation.Interfaces;
+using Data.Models;
 
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
@@ -17,7 +19,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
     : BaseController<TViewModel, TDetailsModel, TFormModel, TQueryModel, TSortingEnum>
     where TViewModel : class
     where TDetailsModel : BaseDetailsViewModel
-    where TFormModel : BaseFormModel, new()
+    where TFormModel : ProductFormModel, new()
     where TQueryModel : BaseQueryModel<TViewModel, TSortingEnum>
     where TSortingEnum : Enum
 {
@@ -29,8 +31,8 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
         : base(serviceProvider,
             urlHelperFactory,
             actionContextAccessor,
-               serviceProvider.GetRequiredService<IValidationService>(),
-               entityName)
+            serviceProvider.GetRequiredService<IValidationService>(),
+            entityName)
     {
     }
 
@@ -94,7 +96,6 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
             return RedirectToAction(nameof(Details), new { id });
         }
     }
-
 
     [HttpPost]
     public virtual async Task<IActionResult> Remove(string id)
@@ -232,6 +233,76 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
             TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"delete {_entityName}");
 
             return View(new { id = detailsViewModel.Id });
+        }
+    }
+
+    public override async Task<IActionResult> Add()
+    {
+        bool isPublisher = this.User.IsAdmin() || await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
+        if (!isPublisher)
+        {
+            TempData[ErrorMessage] = NotAPublisherErrorMessage;
+
+            return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
+        }
+
+        try
+        {
+            var formModel = CreateFormModelInstance();
+
+            await GetFormDetailsAsync(formModel);
+            if (!formModel.Authors.Any())
+            {
+                TempData[ErrorMessage] = NoConnectedAuthorsErrorMessage;
+
+                return RedirectToAction(nameof(AuthorController.All), nameof(Author));
+            }
+
+            return View(nameof(Add), formModel);
+        }
+        catch (NotImplementedException e)
+        {
+            TempData[ErrorMessage] = e.Message;
+        }
+        catch (Exception)
+        {
+            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, "load page");
+        }
+
+        return RedirectToAction(nameof(HomeController.Index), "Home");
+    }
+
+    protected override async Task GetFormDetailsAsync(TFormModel formModel, bool getAllPublishers = false)
+    {
+        if (this.User.IsAdmin())
+        {
+            formModel.Authors = await _authorService.GetAllAsync();
+
+            if (formModel.AuthorId == null)
+            {
+                getAllPublishers = true;
+            }
+            else
+            {
+                formModel.Publishers = await _authorService.GetConnectedEntitiesAsync<Publisher, PublisherInfoViewModel>(formModel.AuthorId);
+            }
+        }
+        else
+        {
+            formModel.Authors = await _publisherService.GetConnectedAuthorsByUserIdAsync(this.User.GetId()!);
+        }
+
+        await base.GetFormDetailsAsync(formModel, getAllPublishers);
+    }
+
+    protected override async Task ValidateModelAsync(TFormModel formModel)
+    {
+        await base.ValidateModelAsync(formModel);
+
+        bool isExistingAuthor = await _authorService.ExistsAsync(formModel.AuthorId);
+        if (!isExistingAuthor)
+        {
+            ModelState.AddModelError(nameof(formModel.AuthorId), string.Format(NoEntityFoundErrorMessage, "author"));
         }
     }
 

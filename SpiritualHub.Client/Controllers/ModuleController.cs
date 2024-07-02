@@ -150,7 +150,7 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
         await _moduleService.HideAsync(id);
     }
 
-    protected override async Task GetFormDetailsAsync(ModuleFormModel formModel)
+    protected override async Task GetFormDetailsAsync(ModuleFormModel formModel, bool callBase = false)
     {
         formModel.AuthorId ??= await _courseService.GetAuthorIdAsync(formModel.CourseId);
         formModel.Courses = await _authorService.GetConnectedEntitiesAsync<Course, CourseInfoViewModel>(formModel.AuthorId!);
@@ -255,7 +255,7 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
         throw new NotImplementedException(InvalidRequestErrorMessage);
     }
 
-    protected override Task<IEnumerable<EmptyViewModel>> GetAllEntitiesByUserId(string userId)
+    protected override Task<IEnumerable<EmptyViewModel>> GetAllEntitiesByUserIdAsync(string userId)
     {
         throw new NotImplementedException(InvalidRequestErrorMessage);
     }

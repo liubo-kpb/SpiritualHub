@@ -11,7 +11,6 @@ using Services.Validation.Interfaces;
 using Infrastructure.Extensions;
 using Infrastructure.Enums;
 using ViewModels.BaseModels;
-using ViewModels.Publisher;
 
 using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
@@ -57,7 +56,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 
     protected abstract Task<TDetailsModel> GetEntityDetails(string id, string userId);
 
-    protected abstract Task<IEnumerable<TViewModel>> GetAllEntitiesByUserId(string userId);
+    protected abstract Task<IEnumerable<TViewModel>> GetAllEntitiesByUserIdAsync(string userId);
 
     protected abstract Task<IEnumerable<TViewModel>> GetEntitiesByPublisherIdAsync(string publisherId, string userId);
 
@@ -75,7 +74,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     {
         try
         {
-            queryModel = await GetAllAsync(queryModel, this.User.GetId()!);
+            queryModel = await GetAllAsync(queryModel, GetUserId()!);
 
             var categories = await _categoryService.GetAllAsync();
             queryModel.Categories = categories.Select(c => c.Name);
@@ -114,7 +113,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
                 return RedirectToAction(nameof(All));
             }
 
-            var viewModel = await GetEntityDetails(id, this.User.GetId()!);
+            var viewModel = await GetEntityDetails(id, GetUserId()!);
 
             return View(viewModel);
         }
@@ -131,7 +130,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     {
         try
         {
-            var viewModel = await GetAllEntitiesByUserId(this.User.GetId()!);
+            var viewModel = await GetAllEntitiesByUserIdAsync(GetUserId()!);
 
             return View(viewModel);
         }
@@ -152,7 +151,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     [HttpGet]
     public virtual async Task<IActionResult> MyPublishings()
     {
-        string userId = this.User.GetId()!;
+        string userId = GetUserId()!;
         if (!await _publisherService.ExistsByUserIdAsync(userId))
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -183,7 +182,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     [HttpGet]
     public virtual async Task<IActionResult> Add()
     {
-        bool isPublisher = this.User.IsAdmin() || await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
+        bool isPublisher = IsUserAdmin() || await _publisherService.ExistsByUserIdAsync(GetUserId()!);
         if (!isPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -194,14 +193,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         try
         {
             var formModel = CreateFormModelInstance();
-
             await GetFormDetailsAsync(formModel);
-            if (!_validationService.PublisherHasConnectedAuthors(formModel))
-            {
-                TempData[ErrorMessage] = NoConnectedAuthorsErrorMessage;
-
-                return RedirectToAction(nameof(AuthorController.All), nameof(Author));
-            }
 
             return View(nameof(Add), formModel);
         }
@@ -220,7 +212,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     [HttpPost]
     public virtual async Task<IActionResult> Add(TFormModel newEntityForm)
     {
-        string userId = this.User.GetId()!;
+        string userId = GetUserId()!;
         await ValidateModelAsync(newEntityForm);
         if (!ModelState.IsValid)
         {
@@ -229,7 +221,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             return View(newEntityForm);
         }
 
-        var validationResult = await _validationService.CheckModifyPermissionsAsync(newEntityForm.AuthorId!, true);
+        var validationResult = await _validationService.CheckModifyPermissionsAsync(await GetAuthorIdAsync(newEntityForm.Id!), true);
         if (validationResult != null)
         {
             return validationResult;
@@ -289,13 +281,12 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             return View(updatedEntityFrom);
         }
 
-        string userId = this.User.GetId()!;
-        var validationResult = await ValidateModifyActionAsync(updatedEntityFrom.Id!, updatedEntityFrom.AuthorId!);
+        string userId = GetUserId()!;
+        var validationResult = await ValidateModifyActionAsync(updatedEntityFrom.Id!, await GetAuthorIdAsync(updatedEntityFrom.Id!));
         if (validationResult != null)
         {
             return validationResult;
         }
-
 
         try
         {
@@ -321,25 +312,13 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         return new TFormModel();
     }
 
-    protected virtual async Task GetFormDetailsAsync(TFormModel formModel)
+    protected virtual async Task GetFormDetailsAsync(TFormModel formModel, bool getAllPublishers = true)
     {
-        if (this.User.IsAdmin())
+        if (getAllPublishers && IsUserAdmin())
         {
-            formModel.Authors = await _authorService.GetAllAsync();
+            formModel.Publishers = await _publisherService.GetAllAsync();
+        }
 
-            if (formModel.AuthorId == null)
-            {
-                formModel.Publishers = await _publisherService.GetAllAsync();
-            }
-            else
-            {
-                formModel.Publishers = await _authorService.GetConnectedEntitiesAsync<Publisher, PublisherInfoViewModel>(formModel.AuthorId);
-            }
-        }
-        else
-        {
-            formModel.Authors = await _publisherService.GetConnectedAuthorsByUserIdAsync(this.User.GetId()!);
-        }
         formModel.Categories = await _categoryService.GetAllAsync();
     }
 
@@ -350,22 +329,16 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 
     protected virtual async Task ValidateModelAsync(TFormModel formModel)
     {
-        if (this.User.IsAdmin())
+        if (IsUserAdmin())
         {
             if (!(await _publisherService.ExistsByIdAsync(formModel.PublisherId!)))
             {
                 ModelState.AddModelError(nameof(formModel.PublisherId), string.Format(NoEntityFoundErrorMessage, "publisher"));
             }
-            else if (!(await _publisherService.IsConnectedToAuthorByPublisherId(formModel.PublisherId!, formModel.AuthorId!)))
+            else if (!(await _publisherService.IsConnectedToAuthorByPublisherId(formModel.PublisherId!, await GetAuthorIdAsync(formModel.Id!))))
             {
                 ModelState.AddModelError(nameof(formModel.PublisherId), WrongPublisherErrorMessage);
             }
-        }
-
-        bool isExistingAuthor = await _authorService.ExistsAsync(formModel.AuthorId!);
-        if (!isExistingAuthor)
-        {
-            ModelState.AddModelError(nameof(formModel.AuthorId), string.Format(NoEntityFoundErrorMessage, "author"));
         }
 
         bool isExistingCategory = await _categoryService.ExistsAsync(formModel.CategoryId);

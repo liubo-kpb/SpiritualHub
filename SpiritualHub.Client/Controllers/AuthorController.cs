@@ -300,35 +300,6 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         }
     }
 
-    public override async Task<IActionResult> Add()
-    {
-        bool isPublisher = this.User.IsAdmin() || await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
-        if (!isPublisher)
-        {
-            TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-            return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-        }
-
-        try
-        {
-            var formModel = CreateFormModelInstance();
-            await GetFormDetailsAsync(formModel);
-
-            return View(nameof(Add), formModel);
-        }
-        catch (NotImplementedException e)
-        {
-            TempData[ErrorMessage] = e.Message;
-        }
-        catch (Exception)
-        {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, "load page");
-        }
-
-        return RedirectToAction(nameof(HomeController.Index), "Home");
-    }
-
     public override async Task<IActionResult> Add(AuthorFormModel newEntityForm)
     {
         await ValidateModelAsync(newEntityForm);
@@ -384,7 +355,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         return await _authorService.GetAuthorDetailsAsync(id, userId);
     }
 
-    protected override async Task<IEnumerable<AuthorViewModel>> GetAllEntitiesByUserId(string userId)
+    protected override async Task<IEnumerable<AuthorViewModel>> GetAllEntitiesByUserIdAsync(string userId)
     {
         return await _authorService.AllAuthorsByUserIdAsync(userId);
     }
@@ -411,14 +382,10 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         await _authorService.EditAsync(updatedEntityFrom);
     }
 
-    protected override async Task GetFormDetailsAsync(AuthorFormModel formModel)
+    protected override async Task GetFormDetailsAsync(AuthorFormModel formModel, bool getAllPublishers = false)
     {
-        if (this.User.IsAdmin() && formModel.Id == null)
-        {
-            formModel.Publishers = await _publisherService.GetAllAsync();
-        }
-
-        formModel.Categories = await _categoryService.GetAllAsync();
+        getAllPublishers = formModel.Id == null;
+        await base.GetFormDetailsAsync(formModel, getAllPublishers);
     }
 
     protected override async Task ValidateModelAsync(AuthorFormModel formModel)

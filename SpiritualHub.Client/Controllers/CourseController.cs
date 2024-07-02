@@ -2,7 +2,8 @@
 
 using System.Collections.Generic;
 
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 using Services.Interfaces;
 using Data.Models;
@@ -12,8 +13,6 @@ using Infrastructure.Extensions;
 
 using static Common.ErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
 
 public class CourseController : ProductController<CourseViewModel, CourseDetailsViewModel, CourseFormModel, AllCoursesQueryModel, CourseSorting>
 {
@@ -23,7 +22,7 @@ public class CourseController : ProductController<CourseViewModel, CourseDetails
         ICourseService courseService,
         IUrlHelperFactory urlHelperFactory,
         IActionContextAccessor actionContextAccessor,
-        IServiceProvider serviceProvider)   
+        IServiceProvider serviceProvider)
         : base(serviceProvider, urlHelperFactory, actionContextAccessor, nameof(Course).ToLower())
     {
         _courseService = courseService;
@@ -54,7 +53,7 @@ public class CourseController : ProductController<CourseViewModel, CourseDetails
         return queryModel;
     }
 
-    protected override async Task<IEnumerable<CourseViewModel>> GetAllEntitiesByUserId(string userId)
+    protected override async Task<IEnumerable<CourseViewModel>> GetAllEntitiesByUserIdAsync(string userId)
     {
         return await _courseService.AllCoursesByUserIdAsync(userId);
     }
