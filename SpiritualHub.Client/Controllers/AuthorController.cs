@@ -19,10 +19,12 @@ using static Common.NotificationMessagesConstants;
 
 public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsViewModel, AuthorFormModel, AllAuthorsQueryModel, AuthorSorting>
 {
+    private readonly IAuthorService _authorService;
     private readonly ISubscriptionService _subscriptionService;
     private readonly IAuthorValidationService _authorValidationService;
 
     public AuthorController(
+        IAuthorService authorService,
         ISubscriptionService subscriptionService,
         IUrlHelperFactory urlHelperFactory,
         IActionContextAccessor actionContextAccessor,
@@ -30,6 +32,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         IAuthorValidationService authorValidationService)
         : base(serviceProvider, urlHelperFactory, actionContextAccessor, authorValidationService, nameof(Author).ToLower())
     {
+        _authorService = authorService;
         _subscriptionService = subscriptionService;
         _authorValidationService = authorValidationService;
     }

@@ -29,7 +29,6 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 
     protected readonly string _entityName;
 
-    protected readonly IAuthorService _authorService;
     protected readonly ICategoryService _categoryService;
     protected readonly IPublisherService _publisherService;
 
@@ -40,7 +39,6 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         IValidationService validationService,
         string entityName)
     {
-        _authorService = serviceProvider.GetRequiredService<IAuthorService>();
         _categoryService = serviceProvider.GetRequiredService<ICategoryService>();
         _publisherService = serviceProvider.GetRequiredService<IPublisherService>();
 
@@ -355,7 +353,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     /// <returns>An empty string if validation is successfull. String with error message if not.</returns>
     protected virtual async Task<string?> CustomValidateAsync(string id)
     {
-        return string.Empty;
+        return await Task.FromResult(string.Empty);
     }
 
     protected IActionResult ReturnToHome()
