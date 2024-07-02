@@ -122,9 +122,4 @@ public class ValidationService : IValidationService
 
         return new RedirectResult(actionUrl);
     }
-
-    public virtual bool PublisherHasConnectedAuthors(BaseFormModel formModel)
-    {
-        return formModel.Authors.Any();
-    }
 }

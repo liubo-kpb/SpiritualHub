@@ -57,11 +57,6 @@ public class AuthorValidationService : ValidationService, IAuthorValidationServi
         return validationResult ?? await CheckUserIsPublisherAsync() ?? await this.CheckPublisherConnectionToAuthorAsync(authorId, true);
     }
 
-    public override bool PublisherHasConnectedAuthors(BaseFormModel formModel)
-    {
-        return true;
-    }
-
     public override async Task<IActionResult?> CheckPublisherConnectionToAuthorAsync(string id, bool isAuthorId)
     {
         if (await _publisherService.IsConnectedToAuthorByUserId(GetUserIdFunc()!, id))

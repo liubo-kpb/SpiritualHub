@@ -51,6 +51,4 @@ public interface IValidationService
     Task<IActionResult?> CheckUserIsPublisherAsync();
 
     Task<IActionResult?> CheckPublisherConnectionToAuthorAsync(string id, bool isAuthorId);
-
-    bool                 PublisherHasConnectedAuthors(BaseFormModel formModel);
 }
