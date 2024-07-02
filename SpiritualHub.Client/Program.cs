@@ -43,7 +43,6 @@ public class Program
 
         // Add filter services
         builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-        // builder.Services.AddScoped<CustomValidationFilterAttribute>();
 
         builder.Services.AddMemoryCache();
 
@@ -51,7 +50,6 @@ public class Program
         {
             options.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
             options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
-            // options.Filters.Add(typeof(CustomValidationFilterAttribute));
         });
 
         var app = builder.Build();
