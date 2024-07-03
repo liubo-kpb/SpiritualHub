@@ -1,15 +1,18 @@
 ﻿namespace SpiritualHub.Tests.Controller.BaseController;
 
+using System.Security.Claims;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+
 using Moq;
 
 using Services.Interfaces;
 using Services.Validation.Interfaces;
-using System.Security.Claims;
+using Client.Infrastructure.Extensions;
 
 public class MockConfiguration
 {

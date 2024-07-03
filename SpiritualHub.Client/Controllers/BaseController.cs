@@ -347,7 +347,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     }
 
     /// <summary>
-    /// Do custom validation for Getting entity details. Returns null by default.
+    /// Do custom validation for Getting entity details.
     /// </summary>
     /// <param name="id"></param>
     /// <returns>An empty string if validation is successfull. String with error message if not.</returns>

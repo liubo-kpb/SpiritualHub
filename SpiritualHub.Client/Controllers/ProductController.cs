@@ -14,6 +14,7 @@ using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
 using static Common.ExceptionErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
+using SpiritualHub.Services.Interfaces;
 
 public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, TQueryModel, TSortingEnum>
     : BaseController<TViewModel, TDetailsModel, TFormModel, TQueryModel, TSortingEnum>
@@ -23,6 +24,8 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
     where TQueryModel : BaseQueryModel<TViewModel, TSortingEnum>
     where TSortingEnum : Enum
 {
+    protected readonly IAuthorService _authorService;
+
     protected ProductController(
         IServiceProvider serviceProvider,
         IUrlHelperFactory urlHelperFactory,
@@ -34,6 +37,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
             serviceProvider.GetRequiredService<IValidationService>(),
             entityName)
     {
+        _authorService = serviceProvider.GetRequiredService<IAuthorService>();
     }
 
     protected abstract Task GetAsync(string id, string userId);
