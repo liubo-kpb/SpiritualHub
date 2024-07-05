@@ -57,7 +57,7 @@ internal class TestBaseController
 
     public int GetAllEntitiesByUserIdAsyncCounter { get; set; }
 
-    public int GetAllEntitiesByPublisherIdAsyncCounter { get; set; }
+    public int GetEntitiesByPublisherIdAsyncCounter { get; set; }
 
     public int GetEntityDetailsAsyncCounter { get; set; }
 
@@ -117,7 +117,7 @@ internal class TestBaseController
 
     protected override async Task<IEnumerable<EmptyViewModel>> GetEntitiesByPublisherIdAsync(string publisherId, string userId)
     {
-        GetAllEntitiesByPublisherIdAsyncCounter++;
+        GetEntitiesByPublisherIdAsyncCounter++;
 
         ThrowException();
 
