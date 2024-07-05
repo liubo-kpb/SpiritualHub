@@ -13,6 +13,7 @@ using Infrastructure.Extensions;
 
 using static Common.ErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
+using SpiritualHub.Services;
 
 public class CourseController : ProductController<CourseViewModel, CourseDetailsViewModel, CourseFormModel, AllCoursesQueryModel, CourseSorting>
 {
@@ -133,24 +134,12 @@ public class CourseController : ProductController<CourseViewModel, CourseDetails
         await base.ValidateModelAsync(formModel);
     }
 
-    protected override async Task<string?> CustomValidateAsync(string id)
+    protected override async Task<string> CustomValidateAsync(string id)
     {
         bool isUserLoggedIn = this.User.Identity?.IsAuthenticated ?? false;
-        bool isUserConnectedPublisher = false;
-
-        if (isUserLoggedIn)
-        {
-            string userId = this.User.GetId()!;
-            bool isUserPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-            if (isUserPublisher)
-            {
-                string authorId = await _courseService.GetAuthorIdAsync(id);
-                isUserConnectedPublisher = await _publisherService.IsConnectedToAuthorByUserId(userId, authorId);
-            }
-        }
 
         if (await _courseService.IsActiveAsync(id)
-            || (isUserLoggedIn && await UserHasAccess(id, isUserConnectedPublisher)))
+            || (isUserLoggedIn && await UserHasAccess(id)))
         {
             return string.Empty;
         }
@@ -158,10 +147,9 @@ public class CourseController : ProductController<CourseViewModel, CourseDetails
         return string.Format(NoEntityFoundErrorMessage, _entityName);
     }
 
-    private async Task<bool> UserHasAccess(string id, bool isUserConnectedPublisher)
+    private async Task<bool> UserHasAccess(string id)
     {
-        return isUserConnectedPublisher
-                || this.User.IsAdmin()
-                || await _courseService.HasCourseAsync(id, this.User.GetId()!);
+        return await _courseService.HasCourseAsync(id, GetUserId()!)
+            || await ValidateModifyPermissionsAsync(id);
     }
 }

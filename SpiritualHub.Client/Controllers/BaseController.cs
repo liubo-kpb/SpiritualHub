@@ -103,7 +103,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 
         try
         {
-            string errorMessage = (await CustomValidateAsync(id))!;
+            string errorMessage = await CustomValidateAsync(id);
             if (!string.IsNullOrEmpty(errorMessage))
             {
                 TempData[ErrorMessage] = errorMessage;
@@ -325,6 +325,11 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         return await _validationService.CheckModifyActionAsync(entityId, authorId);
     }
 
+    protected virtual async Task<bool> ValidateModifyPermissionsAsync(string id)
+    {
+        return await _validationService.CanModifyAsync(id);
+    }
+
     protected virtual async Task ValidateModelAsync(TFormModel formModel)
     {
         if (IsUserAdmin())
@@ -351,7 +356,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     /// </summary>
     /// <param name="id"></param>
     /// <returns>An empty string if validation is successfull. String with error message if not.</returns>
-    protected virtual async Task<string?> CustomValidateAsync(string id)
+    protected virtual async Task<string> CustomValidateAsync(string id)
     {
         return await Task.FromResult(string.Empty);
     }
@@ -394,7 +399,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
         TempData[notificationString] = message;
     }
 
-    private string? GetUserId() => this.User.GetId();
+    protected virtual string? GetUserId() => this.User.GetId();
 
-    private bool IsUserAdmin() => this.User.IsAdmin();
+    protected virtual bool IsUserAdmin() => this.User.IsAdmin();
 }

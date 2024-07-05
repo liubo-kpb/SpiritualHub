@@ -142,24 +142,12 @@ public class BookController : ProductController<BookViewModel, BookDetailsViewMo
         await base.ValidateModelAsync(formModel);
     }
 
-    protected override async Task<string?> CustomValidateAsync(string id)
+    protected override async Task<string> CustomValidateAsync(string id)
     {
         bool isUserLoggedIn = this.User.Identity?.IsAuthenticated ?? false;
-        bool isUserConnectedPublisher = false;
-
-        if (isUserLoggedIn)
-        {
-            string userId = this.User.GetId()!;
-            bool isUserPublisher = await _publisherService.ExistsByUserIdAsync(userId);
-            if (isUserPublisher)
-            {
-                string authorId = await _bookService.GetAuthorIdAsync(id);
-                isUserConnectedPublisher = await _publisherService.IsConnectedToAuthorByUserId(userId, authorId);
-            }
-        }
 
         if (!(await _bookService.IsHiddenAsync(id))
-            || (isUserLoggedIn && await UserHasAccess(id, isUserConnectedPublisher)))
+            || (isUserLoggedIn && await UserHasAccess(id)))
         {
             return string.Empty;
         }
@@ -167,10 +155,9 @@ public class BookController : ProductController<BookViewModel, BookDetailsViewMo
         return string.Format(NoEntityFoundErrorMessage, _entityName);
     }
 
-    private async Task<bool> UserHasAccess(string id, bool isUserConnectedPublisher)
+    private async Task<bool> UserHasAccess(string id)
     {
-        return this.User.IsAdmin()
-                || isUserConnectedPublisher
-                || await _bookService.HasBookAsync(id, this.User.GetId()!);
+        return await _bookService.HasBookAsync(id, GetUserId()!)
+            || await ValidateModifyPermissionsAsync(id);
     }
 }

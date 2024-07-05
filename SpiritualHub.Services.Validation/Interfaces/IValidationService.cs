@@ -3,7 +3,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-using Client.ViewModels.BaseModels;
 using Client.Infrastructure.Enums;
 
 /// <summary>
@@ -47,6 +46,8 @@ public interface IValidationService
     /// <param name="tempData"></param>
     /// <returns>Returns <see cref="IActionResult"/> based on validation result and logic.</returns>
     Task<IActionResult?> CheckModifyPermissionsAsync(string id, bool isAuthorId = false);
+
+    Task<bool>           CanModifyAsync(string id);
 
     Task<IActionResult?> CheckUserIsPublisherAsync();
 

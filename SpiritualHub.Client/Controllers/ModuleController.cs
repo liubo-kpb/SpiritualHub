@@ -191,7 +191,7 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
         };
     }
 
-    protected override async Task<string?> CustomValidateAsync(string id)
+    protected override async Task<string> CustomValidateAsync(string id)
     {
         bool isUserLoggedIn = this.User.Identity?.IsAuthenticated ?? false;
 
@@ -228,14 +228,8 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
 
     private async Task<bool> UserHasAccess(string id)
     {
-        return await CanModify(await _moduleService.GetAuthorIdAsync(id))
-                || await _courseService.HasCourseAsync(await GetCourseIdAsync(id), this.User.GetId()!);
-    }
-
-    private async Task<bool> CanModify(string authorId)
-    {
-        return this.User.IsAdmin()
-                || (await _publisherService.ExistsByUserIdAsync(this.User.GetId()!) && await _publisherService.IsConnectedToAuthorByUserId(this.User.GetId()!, authorId));
+        return await _courseService.HasCourseAsync(await GetCourseIdAsync(id), GetUserId()!)
+            || await ValidateModifyPermissionsAsync(await _moduleService.GetAuthorIdAsync(id));
     }
 
     private async Task<string> GetCourseIdAsync(string moduleId)

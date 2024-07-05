@@ -1,6 +1,7 @@
 ﻿namespace SpiritualHub.Services.Validation;
 
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
@@ -8,7 +9,6 @@ using Interfaces;
 using Services.Interfaces;
 using Data.Models;
 using Client.Infrastructure.Enums;
-using Client.ViewModels.BaseModels;
 
 using static Common.ErrorMessagesConstants;
 
@@ -121,5 +121,12 @@ public class ValidationService : IValidationService
         }
 
         return new RedirectResult(actionUrl);
+    }
+
+    public async Task<bool> CanModifyAsync(string id)
+    {
+        return IsUserAdminFunc()
+            || (await _publisherService.ExistsByUserIdAsync(GetUserIdFunc()!)
+                && await _publisherService.IsConnectedToAuthorByUserId(GetUserIdFunc()!, await GetAuthorIdAsyncFunc(id)));
     }
 }

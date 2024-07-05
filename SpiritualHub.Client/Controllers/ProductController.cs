@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 
 using ViewModels.BaseModels;
 using ViewModels.Publisher;
-using Infrastructure.Extensions;
+using Services.Interfaces;
 using Services.Validation.Interfaces;
 using Data.Models;
 
@@ -14,7 +14,6 @@ using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
 using static Common.ExceptionErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
-using SpiritualHub.Services.Interfaces;
 
 public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, TQueryModel, TSortingEnum>
     : BaseController<TViewModel, TDetailsModel, TFormModel, TQueryModel, TSortingEnum>
@@ -68,8 +67,8 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
             return RedirectToAction(nameof(All));
         }
 
-        string userId = this.User.GetId()!;
-        if (!this.User.IsAdmin())
+        string userId = GetUserId()!;
+        if (!IsUserAdmin())
         {
             bool hasEntity = await HasEntityAsync(id, userId);
             if (hasEntity)
@@ -114,7 +113,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
 
         try
         {
-            await RemoveAsync(id, this.User.GetId()!);
+            await RemoveAsync(id, GetUserId()!);
             TempData[SuccessMessage] = RemoveEntitySuccessMessage();
 
             return RedirectToAction(nameof(Mine));
@@ -242,7 +241,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
 
     public override async Task<IActionResult> Add()
     {
-        bool isPublisher = this.User.IsAdmin() || await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
+        bool isPublisher = IsUserAdmin() || await _publisherService.ExistsByUserIdAsync(GetUserId()!);
         if (!isPublisher)
         {
             TempData[ErrorMessage] = NotAPublisherErrorMessage;
@@ -278,7 +277,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
 
     protected override async Task GetFormDetailsAsync(TFormModel formModel, bool getAllPublishers = false)
     {
-        if (this.User.IsAdmin())
+        if (IsUserAdmin())
         {
             formModel.Authors = await _authorService.GetAllAsync();
 
@@ -293,7 +292,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
         }
         else
         {
-            formModel.Authors = await _publisherService.GetConnectedAuthorsByUserIdAsync(this.User.GetId()!);
+            formModel.Authors = await _publisherService.GetConnectedAuthorsByUserIdAsync(GetUserId()!);
         }
 
         await base.GetFormDetailsAsync(formModel, getAllPublishers);
