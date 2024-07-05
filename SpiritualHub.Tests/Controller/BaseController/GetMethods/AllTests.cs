@@ -7,7 +7,7 @@ using Moq;
 using Client.ViewModels.BaseModels;
 using Client.ViewModels.Category;
 
-using static Extensions.Common.TestErrorMessagesConstants;
+using static Extensions.Common.TestMessageConstants;
 
 using static Common.NotificationMessagesConstants;
 using static Common.ExceptionErrorMessagesConstants;
@@ -15,6 +15,8 @@ using static Common.ExceptionErrorMessagesConstants;
 [TestFixture]
 public class AllTests : MockConfiguration
 {
+    private const int EXPECTED_CALL_COUNT = 1;
+
     [Test]
     public async Task All_ReturnsViewResult()
     {

@@ -97,7 +97,11 @@ internal class TestProductController
         return "Removed Entity";
     }
 
-    // Irrelevant code. BaseController methods are tested in TestBaseController.cs
+    /// <summary>
+    /// Irrelevant code. BaseController methods are tested in <see cref="BaseController.TestBaseController"/>.
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    #region BaseController.cs methods
     protected override Task<bool> ExistsAsync(string id)
     {
         throw new NotImplementedException(NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE);
@@ -142,4 +146,5 @@ internal class TestProductController
     {
         throw new NotImplementedException(NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE);
     }
+    #endregion
 }

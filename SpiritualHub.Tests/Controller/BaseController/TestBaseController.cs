@@ -11,7 +11,7 @@ using Services.Validation.Interfaces;
 using Client.Controllers;
 using Client.ViewModels.BaseModels;
 
-using static Extensions.Common.TestErrorMessagesConstants;
+using static Extensions.Common.TestMessageConstants;
 
 internal class TestBaseController
     : BaseController<EmptyViewModel, BaseDetailsViewModel, BaseFormModel, BaseQueryModel<EmptyViewModel, Enum>, Enum>
@@ -22,10 +22,11 @@ internal class TestBaseController
         this.IsAdmin = false;
         this.ThrowExceptionFlag = false;
         this.ThrowNotImplementedExceptionFlag = false;
+        this.ExistsAsyncResult = true;
+        this.CanAccessEntityDetials = true;
     }
 
-    public bool IsAdmin { get; set; }
-
+    #region Flags and Counters
     public bool ThrowExceptionFlag { get; set; }
 
     public int ThrowExceptionCounter { get; set; }
@@ -34,13 +35,21 @@ internal class TestBaseController
 
     public int ThrowNotImplementedExceptionCounter { get; set; }
 
+    public bool CanAccessEntityDetials { get; set; }
+
+    public int ValidateAccessibilityAsyncCounter { get; set; }
+    #endregion
+
+    #region Abstract Method Counters
+    public bool IsAdmin { get; set; }
+
     public int CreateAsyncCounter { get; set; }
 
     public int EditAsyncCounter { get; set; }
 
     public int ExistsAsyncCounter { get; set; }
 
-    public bool ExistsAsyncResult { get; set; } = true;
+    public bool ExistsAsyncResult { get; set; }
 
     public int GetAllAsyncCounter { get; set; }
 
@@ -53,6 +62,7 @@ internal class TestBaseController
     public int GetEntityDetailsAsyncCounter { get; set; }
 
     public int GetEntityInfoAsyncCounter { get; set; }
+    #endregion
 
     protected override async Task<string> CreateAsync(BaseFormModel newEntity)
     {
@@ -75,9 +85,6 @@ internal class TestBaseController
     protected override async Task<bool> ExistsAsync(string id)
     {
         ExistsAsyncCounter++;
-
-        ThrowException();
-
         return await Task.FromResult(ExistsAsyncResult);
     }
 
@@ -149,6 +156,13 @@ internal class TestBaseController
 
             throw new NotImplementedException(TestErrorMessageForExceptions);
         }
+    }
+
+    protected override Task<string> ValidateAccessibilityAsync(string id)
+    {
+        ValidateAccessibilityAsyncCounter++;
+
+        return Task.FromResult(CanAccessEntityDetials ? string.Empty : MethodErrorMessage);
     }
 
     protected override string? GetUserId() => "userId";

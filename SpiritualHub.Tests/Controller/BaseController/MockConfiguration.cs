@@ -15,7 +15,7 @@ using Services.Validation.Interfaces;
 
 public class MockConfiguration
 {
-    protected const int EXPECTED_CALL_COUNT = 1;
+    protected const string AUTHOR_ID = "AuthorId";
 
     protected Mock<IPublisherService> _publisherServiceMock;
     protected Mock<ICategoryService> _categoryServiceMock;
