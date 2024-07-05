@@ -20,7 +20,7 @@ public class MyPublishingsTests : MockConfiguration
     {
         // Arrange
         var viewModel = new List<EmptyViewModel>();
-        _publisherServiceMock.Setup(x => x.ExistsByUserIdAsync(It.Is<string>(x => x == "userId"))).ReturnsAsync(true);
+        _publisherServiceMock.Setup(x => x.ExistsByUserIdAsync(It.Is<string>(x => x == Controller.UserId))).ReturnsAsync(true);
 
         // Act
         var result = await Controller.MyPublishings();
@@ -33,7 +33,7 @@ public class MyPublishingsTests : MockConfiguration
             Assert.That(((ViewResult) result).Model, Is.EqualTo(viewModel));
         });
 
-        _publisherServiceMock.Verify(p => p.ExistsByUserIdAsync(It.Is<string>(x => x == "userId")), Times.Once);
+        _publisherServiceMock.Verify(p => p.ExistsByUserIdAsync(It.Is<string>(x => x == Controller.UserId)), Times.Once);
     }
 
     [Test]
@@ -55,7 +55,7 @@ public class MyPublishingsTests : MockConfiguration
             Assert.That(((RedirectToActionResult) result).ControllerName, Is.EqualTo("Publisher"));
         });
 
-        _publisherServiceMock.Verify(p => p.ExistsByUserIdAsync(It.Is<string>(x => x == "userId")), Times.Once);
+        _publisherServiceMock.Verify(p => p.ExistsByUserIdAsync(It.Is<string>(x => x == Controller.UserId)), Times.Once);
     }
 
     [Test]
@@ -63,7 +63,7 @@ public class MyPublishingsTests : MockConfiguration
     {
         // Arrange
         Controller.ThrowNotImplementedExceptionFlag = true;
-        _publisherServiceMock.Setup(x => x.ExistsByUserIdAsync(It.Is<string>(x => x == "userId"))).ReturnsAsync(true);
+        _publisherServiceMock.Setup(x => x.ExistsByUserIdAsync(It.Is<string>(x => x == Controller.UserId))).ReturnsAsync(true);
 
         // Act
         var result = await Controller.MyPublishings();
@@ -78,7 +78,7 @@ public class MyPublishingsTests : MockConfiguration
             Assert.That(((RedirectToActionResult) result).ControllerName, Is.EqualTo("Home"));
         });
 
-        _publisherServiceMock.Verify(p => p.ExistsByUserIdAsync(It.Is<string>(x => x == "userId")), Times.Once);
+        _publisherServiceMock.Verify(p => p.ExistsByUserIdAsync(It.Is<string>(x => x == Controller.UserId)), Times.Once);
     }
 
     [Test]
@@ -86,7 +86,7 @@ public class MyPublishingsTests : MockConfiguration
     {
         // Arrange
         Controller.ThrowExceptionFlag = true;
-        _publisherServiceMock.Setup(x => x.ExistsByUserIdAsync(It.Is<string>(x => x == "userId"))).ReturnsAsync(true);
+        _publisherServiceMock.Setup(x => x.ExistsByUserIdAsync(It.Is<string>(x => x == Controller.UserId))).ReturnsAsync(true);
 
         // Act
         var result = await Controller.MyPublishings();
@@ -100,7 +100,7 @@ public class MyPublishingsTests : MockConfiguration
             Assert.That(((RedirectToActionResult) result).ActionName, Is.EqualTo("All"));
         });
 
-        _publisherServiceMock.Verify(p => p.ExistsByUserIdAsync(It.Is<string>(x => x == "userId")), Times.Once);
+        _publisherServiceMock.Verify(p => p.ExistsByUserIdAsync(It.Is<string>(x => x == Controller.UserId)), Times.Once);
     }
 
     private void AssertCounters(int expectedGetEntitiesByPublisherIdCounter)

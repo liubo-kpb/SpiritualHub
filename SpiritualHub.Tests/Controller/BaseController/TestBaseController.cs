@@ -26,6 +26,8 @@ internal class TestBaseController
         this.CanAccessEntityDetials = true;
     }
 
+    public string UserId => "userId";
+
     #region Flags and Counters
     public bool ThrowExceptionFlag { get; set; }
 
@@ -38,6 +40,8 @@ internal class TestBaseController
     public bool CanAccessEntityDetials { get; set; }
 
     public int ValidateAccessibilityAsyncCounter { get; set; }
+
+    public int CreateFormModelCounter { get; set; }
     #endregion
 
     #region Abstract Method Counters
@@ -142,6 +146,15 @@ internal class TestBaseController
         return await Task.FromResult(new BaseFormModel());
     }
 
+    protected override BaseFormModel CreateFormModelInstance()
+    {
+        CreateFormModelCounter++;
+
+        ThrowException();
+
+        return base.CreateFormModelInstance();
+    }
+
     private void ThrowException()
     {
         if (ThrowExceptionFlag)
@@ -165,7 +178,7 @@ internal class TestBaseController
         return Task.FromResult(CanAccessEntityDetials ? string.Empty : MethodErrorMessage);
     }
 
-    protected override string? GetUserId() => "userId";
+    protected override string? GetUserId() => UserId;
 
     protected override bool IsUserAdmin() => IsAdmin;
 }
