@@ -15,7 +15,7 @@ using static Common.NotificationMessagesConstants;
 using static Extensions.Common.TestMessageConstants;
 using static Extensions.Common.TestErrorMessagesConstants;
 
-public class HttpGetAddTests : MockConfiguration
+public class AddTests : MockConfiguration
 {
     [Test]
     public async Task Add_WhenSuccess_UserIsAdmin()
