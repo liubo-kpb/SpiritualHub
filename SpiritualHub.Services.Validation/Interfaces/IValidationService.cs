@@ -47,7 +47,7 @@ public interface IValidationService
     /// <returns>Returns <see cref="IActionResult"/> based on validation result and logic.</returns>
     Task<IActionResult?> CheckModifyPermissionsAsync(string id, bool isAuthorId = false);
 
-    Task<bool>           CanModifyAsync(string id);
+    Task<bool>           CanModifyAsync(string id, bool isAuthorId);
 
     Task<IActionResult?> CheckUserIsPublisherAsync();
 

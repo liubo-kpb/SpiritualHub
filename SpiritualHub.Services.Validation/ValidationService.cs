@@ -123,10 +123,10 @@ public class ValidationService : IValidationService
         return new RedirectResult(actionUrl);
     }
 
-    public async Task<bool> CanModifyAsync(string id)
+    public async Task<bool> CanModifyAsync(string id, bool isAuthorId)
     {
         return IsUserAdminFunc()
             || (await _publisherService.ExistsByUserIdAsync(GetUserIdFunc()!)
-                && await _publisherService.IsConnectedToAuthorByUserId(GetUserIdFunc()!, await GetAuthorIdAsyncFunc(id)));
+                && await _publisherService.IsConnectedToAuthorByUserId(GetUserIdFunc()!, isAuthorId ? id : await GetAuthorIdAsyncFunc(id)));
     }
 }
