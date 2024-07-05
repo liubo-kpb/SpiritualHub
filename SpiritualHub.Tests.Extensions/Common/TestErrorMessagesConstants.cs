@@ -9,6 +9,4 @@ public static class TestErrorMessagesConstants
     public const string EntityWasUpdatedErrorMessage = "Entity was but shouldn't have been updated.";
  
     public const string WrongVariableValueErrorMessage = "{0} does not match expected value.";
-
-    public const string TestErrorMessageForExceptions = "Test error message.";
 }
