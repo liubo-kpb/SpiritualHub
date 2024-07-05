@@ -13,6 +13,8 @@ using System.Collections.Generic;
 internal class TestProductController
     : ProductController<BaseDetailsViewModel, BaseDetailsViewModel, ProductFormModel, BaseQueryModel<BaseDetailsViewModel, Enum>, Enum>
 {
+    private const string NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE = "Methods are being tested in namespace SpiritualHub.Tests.Controller.BaseController;";
+
     public TestProductController(IServiceProvider serviceProvider, IUrlHelperFactory urlHelperFactory, IActionContextAccessor actionContextAccessor, string entityName)
         : base(serviceProvider, urlHelperFactory, actionContextAccessor, entityName)
     {
@@ -98,46 +100,46 @@ internal class TestProductController
     // Irrelevant code. BaseController methods are tested in TestBaseController.cs
     protected override Task<bool> ExistsAsync(string id)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException(NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE);
     }
 
     protected override Task<BaseQueryModel<BaseDetailsViewModel, Enum>> GetAllAsync(BaseQueryModel<BaseDetailsViewModel, Enum> queryModel, string userId)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException(NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE);
     }
 
     protected override Task<BaseDetailsViewModel> GetEntityDetails(string id, string userId)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException(NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE);
     }
 
     protected override Task<IEnumerable<BaseDetailsViewModel>> GetAllEntitiesByUserIdAsync(string userId)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException(NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE);
     }
 
     protected override Task<IEnumerable<BaseDetailsViewModel>> GetEntitiesByPublisherIdAsync(string publisherId, string userId)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException(NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE);
     }
 
     protected override Task<string> CreateAsync(ProductFormModel newEntity)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException(NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE);
     }
 
     protected override Task<ProductFormModel> GetEntityInfoAsync(string id)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException(NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE);
     }
 
     protected override Task EditAsync(ProductFormModel updatedEntityFrom)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException(NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE);
     }
 
     protected override Task<string> GetAuthorIdAsync(string entityId)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException(NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE);
     }
 }

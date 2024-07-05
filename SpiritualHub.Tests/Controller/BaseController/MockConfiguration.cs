@@ -12,11 +12,11 @@ using Moq;
 
 using Services.Interfaces;
 using Services.Validation.Interfaces;
-using Client.Infrastructure.Extensions;
 
 public class MockConfiguration
 {
-    protected Mock<IAuthorService> _authorServiceMock;
+    protected const int EXPECTED_CALL_COUNT = 1;
+
     protected Mock<IPublisherService> _publisherServiceMock;
     protected Mock<ICategoryService> _categoryServiceMock;
     protected Mock<IValidationService> _validationServiceMock;
@@ -28,13 +28,11 @@ public class MockConfiguration
     [SetUp]
     public virtual void Setup()
     {
-        _authorServiceMock = new Mock<IAuthorService>();
         _publisherServiceMock = new Mock<IPublisherService>();
         _categoryServiceMock = new Mock<ICategoryService>();
         _validationServiceMock = new Mock<IValidationService>();
 
         var serviceProviderMock = new Mock<IServiceProvider>();
-        serviceProviderMock.Setup(x => x.GetService(typeof(IAuthorService))).Returns(_authorServiceMock.Object);
         serviceProviderMock.Setup(x => x.GetService(typeof(IPublisherService))).Returns(_publisherServiceMock.Object);
         serviceProviderMock.Setup(x => x.GetService(typeof(ICategoryService))).Returns(_categoryServiceMock.Object);
 

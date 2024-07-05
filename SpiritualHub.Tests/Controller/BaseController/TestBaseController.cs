@@ -19,14 +19,18 @@ internal class TestBaseController
     public TestBaseController(IServiceProvider serviceProvider, IUrlHelperFactory urlHelperFactory, IActionContextAccessor actionContextAccessor, IValidationService validationService, string entityName)
         : base(serviceProvider, urlHelperFactory, actionContextAccessor, validationService, entityName)
     {
-
+        this.IsAdmin = false;
+        this.ThrowExceptionFlag = false;
+        this.ThrowNotImplementedExceptionFlag = false;
     }
 
-    public bool ThrowExceptionFlag { get; set; } = false;
+    public bool IsAdmin { get; set; }
+
+    public bool ThrowExceptionFlag { get; set; }
 
     public int ThrowExceptionCounter { get; set; }
 
-    public bool ThrowNotImplementedExceptionFlag { get; set; } = false;
+    public bool ThrowNotImplementedExceptionFlag { get; set; }
 
     public int ThrowNotImplementedExceptionCounter { get; set; }
 
@@ -146,4 +150,8 @@ internal class TestBaseController
             throw new NotImplementedException(TestErrorMessageForExceptions);
         }
     }
+
+    protected override string? GetUserId() => "userId";
+
+    protected override bool IsUserAdmin() => IsAdmin;
 }

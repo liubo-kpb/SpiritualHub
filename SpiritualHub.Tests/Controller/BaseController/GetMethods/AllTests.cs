@@ -27,7 +27,11 @@ public class AllTests : MockConfiguration
         var result = await Controller.All(queryModel);
 
         // Assert
-        Assert.That(result, Is.InstanceOf<ViewResult>());
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.InstanceOf<ViewResult>());
+            Assert.That(Controller.GetAllAsyncCounter, Is.EqualTo(EXPECTED_CALL_COUNT));
+        });
     }
 
     [Test]
@@ -42,10 +46,14 @@ public class AllTests : MockConfiguration
         var result = await Controller.All(queryModel);
 
         // Assert
-        Assert.That(result, Is.InstanceOf<ViewResult>());
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.InstanceOf<ViewResult>());
+            Assert.That(Controller.GetAllAsyncCounter, Is.EqualTo(EXPECTED_CALL_COUNT));
 
-        var model = ((ViewResult) result).ViewData.Model as BaseQueryModel<EmptyViewModel, Enum>;
-        Assert.That(model!.Categories, Is.EqualTo(categories.Select(c => c.Name)));
+            var model = ((ViewResult) result).ViewData.Model as BaseQueryModel<EmptyViewModel, Enum>;
+            Assert.That(model!.Categories, Is.EqualTo(categories.Select(c => c.Name)));
+        });
         _categoryServiceMock.Verify(c => c.GetAllAsync(It.Is<string>(x => x == null)));
     }
 
@@ -64,6 +72,8 @@ public class AllTests : MockConfiguration
         // Assert
         Assert.Multiple(() =>
         {
+            Assert.That(Controller.GetAllAsyncCounter, Is.EqualTo(EXPECTED_CALL_COUNT));
+            Assert.That(Controller.ThrowExceptionCounter, Is.EqualTo(EXPECTED_CALL_COUNT));
             Assert.That(Controller.TempData[ErrorMessage], Is.EqualTo(expectedErrorMessage));
             Assert.That(result, Is.InstanceOf<RedirectToActionResult>());
             Assert.That(((RedirectToActionResult) result).ActionName, Is.EqualTo("Index"));
@@ -86,6 +96,8 @@ public class AllTests : MockConfiguration
         // Assert
         Assert.Multiple(() =>
         {
+            Assert.That(Controller.GetAllAsyncCounter, Is.EqualTo(EXPECTED_CALL_COUNT));
+            Assert.That(Controller.ThrowNotImplementedExceptionCounter, Is.EqualTo(EXPECTED_CALL_COUNT));
             Assert.That(Controller.TempData[ErrorMessage], Is.EqualTo(expectedErrorMessage));
             Assert.That(result, Is.InstanceOf<RedirectToActionResult>());
             Assert.That(((RedirectToActionResult) result).ActionName, Is.EqualTo("Index"));
