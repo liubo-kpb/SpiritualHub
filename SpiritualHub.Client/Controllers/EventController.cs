@@ -23,7 +23,7 @@ public class EventController : ProductController<EventViewModel, EventDetailsVie
         IUrlHelperFactory urlHelperFactory,
         IActionContextAccessor actionContextAccessor,
         IServiceProvider serviceProvider)
-        : base (serviceProvider, urlHelperFactory, actionContextAccessor, nameof(Event).ToLower())
+        : base(serviceProvider, urlHelperFactory, actionContextAccessor, nameof(Event).ToLower())
     {
         _eventService = eventService;
     }
@@ -159,6 +159,10 @@ public class EventController : ProductController<EventViewModel, EventDetailsVie
         if (formModel.StartDateTime > formModel.EndDateTime)
         {
             ModelState.AddModelError(nameof(formModel.EndDateTime), string.Format(WrongDateErrorMessage, "End date", "start date"));
+        }
+        else if (formModel.EndDateTime <= DateTime.Now)
+        {
+            ModelState.AddModelError(nameof(formModel.EndDateTime), string.Format(WrongDateErrorMessage, "End date", "today's date"));
         }
 
         if (!formModel.IsOnline &&

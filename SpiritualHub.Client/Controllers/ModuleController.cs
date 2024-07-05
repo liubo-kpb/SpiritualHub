@@ -123,7 +123,7 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
     {
         var moduleViewModel = await _moduleService.GetModuleDetailsAsync(id);
 
-        bool canModify = await CanModify(moduleViewModel.AuthorId);
+        bool canModify = await ValidateModifyPermissionsAsync(moduleViewModel.AuthorId, true);
         moduleViewModel.NextModuleId = _moduleService.GetNextModuleId(moduleViewModel, canModify)!;
         moduleViewModel.PreviousModuleId = _moduleService.GetPreviousModuleId(moduleViewModel, canModify)!;
 
@@ -191,7 +191,7 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
         };
     }
 
-    protected override async Task<string> CustomValidateAsync(string id)
+    protected override async Task<string> ValidateAccessibilityAsync(string id)
     {
         bool isUserLoggedIn = this.User.Identity?.IsAuthenticated ?? false;
 
@@ -231,7 +231,6 @@ public class ModuleController : ProductController<EmptyViewModel, ModuleDetailsV
         return await _courseService.HasCourseAsync(await GetCourseIdAsync(id), GetUserId()!)
             || await ValidateModifyPermissionsAsync(await _moduleService.GetAuthorIdAsync(id));
     }
-
     private async Task<string> GetCourseIdAsync(string moduleId)
     {
         return await _moduleService.GetCourseIdAsync(moduleId);

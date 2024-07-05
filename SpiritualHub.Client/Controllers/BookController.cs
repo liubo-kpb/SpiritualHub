@@ -142,7 +142,7 @@ public class BookController : ProductController<BookViewModel, BookDetailsViewMo
         await base.ValidateModelAsync(formModel);
     }
 
-    protected override async Task<string> CustomValidateAsync(string id)
+    protected override async Task<string> ValidateAccessibilityAsync(string id)
     {
         bool isUserLoggedIn = this.User.Identity?.IsAuthenticated ?? false;
 

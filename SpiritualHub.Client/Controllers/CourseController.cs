@@ -134,7 +134,7 @@ public class CourseController : ProductController<CourseViewModel, CourseDetails
         await base.ValidateModelAsync(formModel);
     }
 
-    protected override async Task<string> CustomValidateAsync(string id)
+    protected override async Task<string> ValidateAccessibilityAsync(string id)
     {
         bool isUserLoggedIn = this.User.Identity?.IsAuthenticated ?? false;
 
