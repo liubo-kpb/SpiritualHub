@@ -16,7 +16,12 @@ using static Extensions.Common.TestMessageConstants;
 internal class TestBaseController
     : BaseController<EmptyViewModel, BaseDetailsViewModel, BaseFormModel, BaseQueryModel<EmptyViewModel, Enum>, Enum>
 {
-    public TestBaseController(IServiceProvider serviceProvider, IUrlHelperFactory urlHelperFactory, IActionContextAccessor actionContextAccessor, IValidationService validationService, string entityName)
+    public TestBaseController(
+        IServiceProvider serviceProvider,
+        IUrlHelperFactory urlHelperFactory,
+        IActionContextAccessor actionContextAccessor,
+        IValidationService validationService,
+        string entityName)
         : base(serviceProvider, urlHelperFactory, actionContextAccessor, validationService, entityName)
     {
         this.IsAdmin = false;
@@ -27,6 +32,8 @@ internal class TestBaseController
     }
 
     public string UserId => "userId";
+
+    public string EntityId => "Id";
 
     #region Flags and Counters
     public bool ThrowExceptionFlag { get; set; }
@@ -74,7 +81,7 @@ internal class TestBaseController
 
         ThrowException();
 
-        return await Task.FromResult("Success");
+        return await Task.FromResult(EntityId);
     }
 
     protected override async Task EditAsync(BaseFormModel updatedEntityFrom)
