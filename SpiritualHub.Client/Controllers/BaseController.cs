@@ -25,7 +25,6 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     where TQueryModel : BaseQueryModel<TViewModel, TSortingEnum>
     where TSortingEnum : Enum
 {
-
     protected readonly string _entityName;
 
     protected readonly ICategoryService _categoryService;
@@ -343,8 +342,6 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     {
         if (IsUserAdmin() && !(await _publisherService.ExistsByIdAsync(formModel.PublisherId!)))
         {
-            formModel.PublisherId = null!;
-
             ModelState.AddModelError(nameof(formModel.PublisherId), string.Format(NoEntityFoundErrorMessage, "publisher"));
         }
 
@@ -356,7 +353,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     }
 
     /// <summary>
-    /// Do custom validation for Getting entity details.
+    /// Custom validation for Getting entity details.
     /// </summary>
     /// <param name="id"></param>
     /// <returns>An empty string if validation is successfull. String with error message if not.</returns>
