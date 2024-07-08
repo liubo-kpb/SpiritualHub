@@ -341,16 +341,11 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 
     protected virtual async Task ValidateModelAsync(TFormModel formModel)
     {
-        if (IsUserAdmin())
+        if (IsUserAdmin() && !(await _publisherService.ExistsByIdAsync(formModel.PublisherId!)))
         {
-            if (!(await _publisherService.ExistsByIdAsync(formModel.PublisherId!)))
-            {
-                ModelState.AddModelError(nameof(formModel.PublisherId), string.Format(NoEntityFoundErrorMessage, "publisher"));
-            }
-            else if (!(await _publisherService.IsConnectedToAuthorByPublisherId(formModel.PublisherId!, await GetAuthorIdAsync(formModel.Id!))))
-            {
-                ModelState.AddModelError(nameof(formModel.PublisherId), WrongPublisherErrorMessage);
-            }
+            formModel.PublisherId = null!;
+
+            ModelState.AddModelError(nameof(formModel.PublisherId), string.Format(NoEntityFoundErrorMessage, "publisher"));
         }
 
         bool isExistingCategory = await _categoryService.ExistsAsync(formModel.CategoryId);

@@ -303,6 +303,11 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
     {
         await base.ValidateModelAsync(formModel);
 
+        if (IsUserAdmin() && formModel.PublisherId != null && !(await _publisherService.IsConnectedToAuthorByPublisherId(formModel.PublisherId!, formModel.AuthorId)))
+        {
+            ModelState.AddModelError(nameof(formModel.PublisherId), WrongPublisherErrorMessage);
+        }
+
         bool isExistingAuthor = await _authorService.ExistsAsync(formModel.AuthorId);
         if (!isExistingAuthor)
         {
