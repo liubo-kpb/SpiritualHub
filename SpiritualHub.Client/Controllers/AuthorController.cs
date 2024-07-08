@@ -303,41 +303,6 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
         }
     }
 
-    public override async Task<IActionResult> Add(AuthorFormModel newEntityForm)
-    {
-        await ValidateModelAsync(newEntityForm);
-        if (!ModelState.IsValid)
-        {
-            await GetFormDetailsAsync(newEntityForm);
-
-            return View(newEntityForm);
-        }
-
-        bool isPublisher = this.User.IsAdmin() || await _publisherService.ExistsByUserIdAsync(this.User.GetId()!);
-        if (!isPublisher)
-        {
-            TempData[ErrorMessage] = NotAPublisherErrorMessage;
-
-            return RedirectToAction(nameof(PublisherController.Become), nameof(Publisher));
-        }
-
-        try
-        {
-            string id = await CreateAsync(newEntityForm);
-            TempData[SuccessMessage] = string.Format(CreationSuccessfulMessage, _entityName);
-
-            return RedirectToAction(nameof(Details), new { id });
-        }
-        catch (Exception)
-        {
-            TempData[ErrorMessage] = string.Format(GeneralUnexpectedErrorMessage, $"create {_entityName}");
-
-            await GetFormDetailsAsync(newEntityForm);
-
-            return View(newEntityForm);
-        }
-    }
-
     protected override async Task<bool> ExistsAsync(string id)
     {
         return await _authorService.ExistsAsync(id);
@@ -370,7 +335,7 @@ public class AuthorController : BaseController<AuthorViewModel, AuthorDetailsVie
 
     protected override async Task<string> CreateAsync(AuthorFormModel newEntity)
     {
-        var publisher = await _publisherService.GetPublisherAsync(this.User.GetId()!);
+        var publisher = await _publisherService.GetPublisherAsync(newEntity.PublisherId!);
 
         return await _authorService.CreateAsync(newEntity, publisher!);
     }

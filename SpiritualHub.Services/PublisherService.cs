@@ -66,9 +66,9 @@ public class PublisherService : IPublisherService
         return authorsModel;
     }
 
-    public async Task<Publisher?> GetPublisherAsync(string userId) => await _publisherRepository
+    public async Task<Publisher?> GetPublisherAsync(string publisherId) => await _publisherRepository
                                                                                 .GetAll()
-                                                                                .FirstOrDefaultAsync(a => a.UserID.ToString() == userId);
+                                                                                .FirstOrDefaultAsync(a => a.Id.ToString() == publisherId);
 
     public async Task<string?> GetPublisherIdAsync(string userId) => await _publisherRepository
                                                                                 .GetPublisherId(userId);

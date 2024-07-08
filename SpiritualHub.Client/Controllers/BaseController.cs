@@ -210,7 +210,6 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     [HttpPost]
     public virtual async Task<IActionResult> Add(TFormModel newEntityForm)
     {
-        string userId = GetUserId()!;
         await ValidateModelAsync(newEntityForm);
         if (!ModelState.IsValid)
         {
@@ -227,7 +226,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 
         try
         {
-            newEntityForm.PublisherId ??= await _publisherService.GetPublisherIdAsync(userId);
+            newEntityForm.PublisherId ??= await _publisherService.GetPublisherIdAsync(GetUserId()!);
 
             string id = await CreateAsync(newEntityForm);
             TempData[SuccessMessage] = string.Format(CreationSuccessfulMessage, _entityName);
@@ -327,6 +326,11 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 
     protected virtual async Task<IActionResult?> ValidateAddActionAsync(TFormModel newEntityForm)
     {
+        if (IsUserAdmin())
+        {
+            return null;
+        }
+
         return await _validationService.CheckUserIsPublisherAsync();
     }
 
