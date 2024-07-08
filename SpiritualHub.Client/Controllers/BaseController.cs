@@ -25,12 +25,12 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     where TQueryModel : BaseQueryModel<TViewModel, TSortingEnum>
     where TSortingEnum : Enum
 {
-    private readonly IValidationService _validationService;
 
     protected readonly string _entityName;
 
     protected readonly ICategoryService _categoryService;
     protected readonly IPublisherService _publisherService;
+    protected readonly IValidationService _validationService;
 
     public BaseController(
         IServiceProvider serviceProvider,
@@ -219,7 +219,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             return View(newEntityForm);
         }
 
-        var validationResult = await _validationService.CheckModifyPermissionsAsync(await GetAuthorIdAsync(newEntityForm.Id!), true);
+        var validationResult = await ValidateAddActionAsync(newEntityForm);
         if (validationResult != null)
         {
             return validationResult;
@@ -323,6 +323,11 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
     protected virtual async Task<IActionResult?> ValidateModifyActionAsync(string entityId, string authorId = null!)
     {
         return await _validationService.CheckModifyActionAsync(entityId, authorId);
+    }
+
+    protected virtual async Task<IActionResult?> ValidateAddActionAsync(TFormModel newEntityForm)
+    {
+        return await _validationService.CheckUserIsPublisherAsync();
     }
 
     protected virtual async Task<bool> ValidateModifyPermissionsAsync(string id, bool isAuthorId = false)

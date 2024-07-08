@@ -14,6 +14,7 @@ using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
 using static Common.ExceptionErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
+using SpiritualHub.Services.Validation;
 
 public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, TQueryModel, TSortingEnum>
     : BaseController<TViewModel, TDetailsModel, TFormModel, TQueryModel, TSortingEnum>
@@ -307,6 +308,11 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
         {
             ModelState.AddModelError(nameof(formModel.AuthorId), string.Format(NoEntityFoundErrorMessage, "author"));
         }
+    }
+
+    protected override async Task<IActionResult?> ValidateAddActionAsync(TFormModel newEntityForm)
+    {
+        return await _validationService.CheckModifyPermissionsAsync(newEntityForm.AuthorId, true);
     }
 
     protected virtual string GetAction()
