@@ -116,6 +116,7 @@ public class AddTests : MockConfiguration
         Assert.Multiple(() =>
         {
             AssertCounters(1);
+            Assert.That(Controller.ThrowNotImplementedExceptionCounter, Is.EqualTo(1));
             AssertTempData(TestErrorMessageForExceptions);
             Assert.That(result, Is.InstanceOf<RedirectToActionResult>());
             Assert.That(((RedirectToActionResult) result).ActionName, Is.EqualTo("Index"));
@@ -127,7 +128,6 @@ public class AddTests : MockConfiguration
     public async Task Add_WhenExceptionThrown_ReturnsRedirectToAction()
     {
         // Arrange
-        Controller.IsAdmin = true;
         Controller.ThrowExceptionFlag = true;
 
         // Act
@@ -137,6 +137,7 @@ public class AddTests : MockConfiguration
         Assert.Multiple(() =>
         {
             AssertCounters(1);
+            Assert.That(Controller.ThrowExceptionCounter, Is.EqualTo(1));
             AssertTempData(string.Format(GeneralUnexpectedErrorMessage, "load page"));
             Assert.That(result, Is.InstanceOf<RedirectToActionResult>());
             Assert.That(((RedirectToActionResult) result).ActionName, Is.EqualTo("Index"));
@@ -146,7 +147,7 @@ public class AddTests : MockConfiguration
 
     private void AssertCounters(int expectedCreateFormModelInstanceCounter)
     {
-        Assert.That(Controller.CreateFormModelCounter, Is.EqualTo(expectedCreateFormModelInstanceCounter), string.Format(WrongVariableValueErrorMessage, "CreateFormModelCounter"));
+        Assert.That(Controller.CreateFormModelCounter, Is.EqualTo(expectedCreateFormModelInstanceCounter), string.Format(WrongVariableValueErrorMessage, nameof(Controller.CreateFormModelCounter)));
     }
 
     private void AssertTempData(string expectedMessage)
