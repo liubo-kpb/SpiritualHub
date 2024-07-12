@@ -121,8 +121,6 @@ internal class TestBaseController
     {
         GetAuthorIdAsyncCounter++;
 
-        ThrowException();
-
         return await Task.FromResult("AuthorId");
     }
 
