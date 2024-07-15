@@ -58,6 +58,8 @@ internal class TestProductController
 
     public int RemoveAsyncCounter { get; set; }
 
+    public int GetEntityInfoCounter { get; set; }
+
     public int DeleteAsyncCounter { get; set; }
 
     public int ShowAsyncCounter { get; set; }
@@ -136,10 +138,6 @@ internal class TestProductController
     }
     #endregion
 
-    /// <summary>
-    /// Irrelevant code. BaseController methods are tested in <see cref="BaseController.TestBaseController"/>.
-    /// </summary>
-    /// <exception cref="NotImplementedException"></exception>
     #region BaseController.cs methods
     protected override Task<bool> ExistsAsync(string id)
     {
@@ -148,6 +146,17 @@ internal class TestProductController
         return Task.FromResult(ExistsFlag);
     }
 
+    protected override Task<ProductFormModel> GetEntityInfoAsync(string id)
+    {
+        GetEntityInfoCounter++;
+        ThrowException();
+        return Task.FromResult(new ProductFormModel());
+    }
+
+    /// <summary>
+    /// Irrelevant code. BaseController methods are tested in <see cref="BaseController.TestBaseController"/>.
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
     protected override Task<BaseQueryModel<BaseDetailsViewModel, Enum>> GetAllAsync(BaseQueryModel<BaseDetailsViewModel, Enum> queryModel, string userId)
     {
         throw new NotImplementedException(NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE);
@@ -169,11 +178,6 @@ internal class TestProductController
     }
 
     protected override Task<string> CreateAsync(ProductFormModel newEntity)
-    {
-        throw new NotImplementedException(NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE);
-    }
-
-    protected override Task<ProductFormModel> GetEntityInfoAsync(string id)
     {
         throw new NotImplementedException(NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE);
     }
