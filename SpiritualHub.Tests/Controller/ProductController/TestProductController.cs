@@ -1,6 +1,7 @@
 ﻿namespace SpiritualHub.Tests.Controller.ProductController;
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -8,17 +9,50 @@ using Microsoft.AspNetCore.Mvc.Routing;
 
 using Client.Controllers;
 using Client.ViewModels.BaseModels;
-using System.Collections.Generic;
+
+using static Extensions.Common.TestMessageConstants;
 
 internal class TestProductController
     : ProductController<BaseDetailsViewModel, BaseDetailsViewModel, ProductFormModel, BaseQueryModel<BaseDetailsViewModel, Enum>, Enum>
 {
-    private const string NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE = "Methods are being tested in namespace SpiritualHub.Tests.Controller.BaseController;";
+    private const string NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE = "Methods are being tested in namespace SpiritualHub.Tests.Controller.BaseController.";
 
     public TestProductController(IServiceProvider serviceProvider, IUrlHelperFactory urlHelperFactory, IActionContextAccessor actionContextAccessor, string entityName)
         : base(serviceProvider, urlHelperFactory, actionContextAccessor, entityName)
     {
+        this.HasEntityAsyncFlag = false;
+        this.ExistsFlag = true;
+        this.IsAdmin = false;
+        this.ThrowExceptionFlag = false;
+        this.ThrowNotImplementedExceptionFlag = false;
     }
+
+    public string UserId => "userId";
+
+    public string AlreadyHasEntityMessage => "AlreadyHasEntityErrorMessage";
+
+    public string GotEntityMessage => $"Got {_entityName}";
+
+    public string RemovedEntityMessage => $"Removed {_entityName}";
+
+    #region Flags and Counters
+    public bool IsAdmin { get; set; }
+
+    public bool ThrowExceptionFlag { get; set; }
+
+    public int ThrowExceptionCounter { get; set; }
+
+    public bool ThrowNotImplementedExceptionFlag { get; set; }
+
+    public int ThrowNotImplementedExceptionCounter { get; set; }
+
+    public int ValidateAccessibilityAsyncCounter { get; set; }
+    #endregion
+
+    #region Abstract methods flags and counters
+    public bool ExistsFlag { get; set; }
+
+    public int ExistsCounter { get; set; }
 
     public int GetAsyncCounter { get; set; }
 
@@ -30,72 +64,77 @@ internal class TestProductController
 
     public int HideAsyncCounter { get; set; }
 
+    public bool HasEntityAsyncFlag { get; set; }
+
     public int HasEntityAsyncCounter { get; set; }
 
-    public int AlreadyHasEntityErrorMessageCounter { get; set; }
+    public int AlreadyHasEntityCounter { get; set; }
 
     public int GetEntitySuccessMessageCounter { get; set; }
 
     public int RemoveEntitySuccessMessageCounter { get; set; }
+    #endregion
 
+    #region Abstract methods from ProductController
     protected override async Task GetAsync(string id, string userId)
     {
         GetAsyncCounter++;
+        ThrowException();
         await Task.CompletedTask;
     }
 
     protected override async Task RemoveAsync(string id, string userId)
     {
         RemoveAsyncCounter++;
+        ThrowException();
         await Task.CompletedTask;
-
     }
 
     protected override async Task DeleteAsync(string id)
     {
-        await Task.CompletedTask;
         DeleteAsyncCounter++;
+        ThrowException();
+        await Task.CompletedTask;
     }
 
     protected override async Task ShowAsync(string id)
     {
-        await Task.CompletedTask;
         ShowAsyncCounter++;
+        ThrowException();
+        await Task.CompletedTask;
     }
 
     protected override async Task HideAsync(string id)
     {
-        await Task.CompletedTask;
         HideAsyncCounter++;
+        ThrowException();
+        await Task.CompletedTask;
     }
 
     protected override async Task<bool> HasEntityAsync(string id, string usedId)
     {
         HasEntityAsyncCounter++;
-
-        return await Task.FromResult(true);
+        return await Task.FromResult(HasEntityAsyncFlag);
     }
 
     protected override string AlreadyHasEntityErrorMessage()
     {
-        AlreadyHasEntityErrorMessageCounter++;
-
-        return "AlreadyHasEntityErrorMessage";
+        AlreadyHasEntityCounter++;
+        return AlreadyHasEntityMessage;
     }
 
     protected override string GetEntitySuccessMessage()
     {
         GetEntitySuccessMessageCounter++;
-
-        return "Got Entity";
+        return GotEntityMessage;
     }
 
     protected override string RemoveEntitySuccessMessage()
     {
         RemoveEntitySuccessMessageCounter++;
-
-        return "Removed Entity";
+        return RemovedEntityMessage;
     }
+    #endregion
 
     /// <summary>
     /// Irrelevant code. BaseController methods are tested in <see cref="BaseController.TestBaseController"/>.
@@ -104,7 +143,9 @@ internal class TestProductController
     #region BaseController.cs methods
     protected override Task<bool> ExistsAsync(string id)
     {
-        throw new NotImplementedException(NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE);
+        ExistsCounter++;
+
+        return Task.FromResult(ExistsFlag);
     }
 
     protected override Task<BaseQueryModel<BaseDetailsViewModel, Enum>> GetAllAsync(BaseQueryModel<BaseDetailsViewModel, Enum> queryModel, string userId)
@@ -147,4 +188,24 @@ internal class TestProductController
         throw new NotImplementedException(NOT_IMPLEMENTED_EXCEPTION_ERROR_MESSAGE);
     }
     #endregion
+
+    private void ThrowException()
+    {
+        if (ThrowExceptionFlag)
+        {
+            ThrowExceptionCounter++;
+
+            throw new Exception();
+        }
+        else if (ThrowNotImplementedExceptionFlag)
+        {
+            ThrowNotImplementedExceptionCounter++;
+
+            throw new NotImplementedException(TestErrorMessageForExceptions);
+        }
+    }
+
+    protected override string? GetUserId() => UserId;
+
+    protected override bool IsUserAdmin() => IsAdmin;
 }

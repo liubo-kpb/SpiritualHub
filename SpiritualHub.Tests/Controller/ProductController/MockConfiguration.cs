@@ -1,20 +1,21 @@
 ﻿namespace SpiritualHub.Tests.Controller.ProductController;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 using Moq;
 
 using Services.Interfaces;
 using Services.Validation.Interfaces;
 
-internal class MockConfiguration
+public class MockConfiguration
 {
-    // TBD: Review Configurations!
-    private Mock<IAuthorService> _authorServiceMock;
-    private Mock<IPublisherService> _publisherServiceMock;
-    private Mock<ICategoryService> _categoryServiceMock;
-    private Mock<IValidationService> _validationServiceMock;
+    protected Mock<IAuthorService> _authorServiceMock;
+    protected Mock<IPublisherService> _publisherServiceMock;
+    protected Mock<ICategoryService> _categoryServiceMock;
+    protected Mock<IValidationService> _validationServiceMock;
 
     internal TestProductController Controller { get; set; } = null!;
 
@@ -34,7 +35,11 @@ internal class MockConfiguration
         serviceProviderMock.Setup(x => x.GetService(typeof(IAuthorService))).Returns(_authorServiceMock.Object);
         serviceProviderMock.Setup(x => x.GetService(typeof(IPublisherService))).Returns(_publisherServiceMock.Object);
         serviceProviderMock.Setup(x => x.GetService(typeof(ICategoryService))).Returns(_categoryServiceMock.Object);
+        serviceProviderMock.Setup(x => x.GetService(typeof(IValidationService))).Returns(_validationServiceMock.Object);
 
-        Controller = new TestProductController(serviceProviderMock.Object, urlHelperFactoryMock.Object, actionContextAccessorMock.Object, EntityName);
+        Controller = new TestProductController(serviceProviderMock.Object, urlHelperFactoryMock.Object, actionContextAccessorMock.Object, EntityName)
+        {
+            TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>()),
+        };
     }
 }
