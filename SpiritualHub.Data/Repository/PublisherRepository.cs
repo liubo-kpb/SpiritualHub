@@ -17,9 +17,10 @@ public class PublisherRepository : Repository<Publisher>, IPublisherRepository
                                                                                     .Include(p => p.User)
                                                                                     .ToListAsync();
 
-    public async Task<IEnumerable<Author>> GetConnectedAuthorsAsync(string userId) => (await DbSet.Include(p => p.Authors)
-                                                                                                  .FirstOrDefaultAsync(p => p.UserID.ToString() == userId))!
-                                                                                                  .Authors;
+    public async Task<IEnumerable<Author>?> GetConnectedAuthorsAsync(string userId) => await DbSet.Include(p => p.Authors)
+                                                                                                  .Where(p => p.UserID.ToString() == userId)
+                                                                                                  .Select(p => p.Authors)
+                                                                                                  .FirstOrDefaultAsync();
 
     public async Task<string?> GetPublisherId(string userId) => await DbSet
                                                                 .Where(p => p.UserID.ToString() == userId)
