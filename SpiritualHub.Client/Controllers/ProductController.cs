@@ -14,7 +14,6 @@ using static Common.NotificationMessagesConstants;
 using static Common.ErrorMessagesConstants;
 using static Common.ExceptionErrorMessagesConstants;
 using static Common.SuccessMessageConstants;
-using SpiritualHub.Services.Validation;
 
 public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, TQueryModel, TSortingEnum>
     : BaseController<TViewModel, TDetailsModel, TFormModel, TQueryModel, TSortingEnum>
@@ -303,13 +302,12 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
     {
         await base.ValidateModelAsync(formModel);
 
-        if (IsUserAdmin() && !ModelState.ContainsKey(nameof(formModel.PublisherId)) && !(await _publisherService.IsConnectedToAuthorByPublisherId(formModel.PublisherId!, formModel.AuthorId)))
+        if (IsUserAdmin() && !ModelState.ContainsKey(nameof(formModel.PublisherId)) && !await _publisherService.IsConnectedToAuthorByPublisherId(formModel.PublisherId!, formModel.AuthorId))
         {
             ModelState.AddModelError(nameof(formModel.PublisherId), WrongPublisherErrorMessage);
         }
 
-        bool isExistingAuthor = await _authorService.ExistsAsync(formModel.AuthorId);
-        if (!isExistingAuthor)
+        if (!await _authorService.ExistsAsync(formModel.AuthorId))
         {
             ModelState.AddModelError(nameof(formModel.AuthorId), string.Format(NoEntityFoundErrorMessage, "author"));
         }

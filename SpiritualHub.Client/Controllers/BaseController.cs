@@ -340,13 +340,12 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 
     protected virtual async Task ValidateModelAsync(TFormModel formModel)
     {
-        if (IsUserAdmin() && !(await _publisherService.ExistsByIdAsync(formModel.PublisherId!)))
+        if (IsUserAdmin() && !await _publisherService.ExistsByIdAsync(formModel.PublisherId!))
         {
             ModelState.AddModelError(nameof(formModel.PublisherId), string.Format(NoEntityFoundErrorMessage, "publisher"));
         }
 
-        bool isExistingCategory = await _categoryService.ExistsAsync(formModel.CategoryId);
-        if (!isExistingCategory)
+        if (!await _categoryService.ExistsAsync(formModel.CategoryId))
         {
             ModelState.AddModelError(nameof(formModel.CategoryId), string.Format(NoEntityFoundErrorMessage, "category"));
         }
@@ -388,7 +387,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
 
     private void SetTempDataMessage(NotificationType notificationType, string message)
     {
-        string notificationString = notificationType switch
+        string key = notificationType switch
         {
             NotificationType.ErrorMessage => ErrorMessage,
             NotificationType.WarningMessage => WarningMessage,
@@ -397,7 +396,7 @@ public abstract class BaseController<TViewModel, TDetailsModel, TFormModel, TQue
             _ => InformationMessage
         };
 
-        TempData[notificationString] = message;
+        TempData[key] = message;
     }
 
     protected virtual string? GetUserId() => this.User.GetId();
