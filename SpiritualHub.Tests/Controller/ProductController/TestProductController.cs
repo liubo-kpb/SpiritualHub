@@ -75,6 +75,8 @@ internal class TestProductController
     public int GetEntitySuccessMessageCounter { get; set; }
 
     public int RemoveEntitySuccessMessageCounter { get; set; }
+
+    public int CreateFormModelCounter { get; set; }
     #endregion
 
     #region Abstract methods from ProductController
@@ -151,6 +153,13 @@ internal class TestProductController
         GetEntityInfoCounter++;
         ThrowException();
         return Task.FromResult(new ProductFormModel());
+    }
+
+    protected override ProductFormModel CreateFormModelInstance()
+    {
+        CreateFormModelCounter++;
+        ThrowException();
+        return new ProductFormModel();
     }
 
     /// <summary>

@@ -258,7 +258,7 @@ public abstract class ProductController<TViewModel, TDetailsModel, TFormModel, T
             {
                 TempData[ErrorMessage] = NoConnectedAuthorsErrorMessage;
 
-                return RedirectToAction(nameof(AuthorController.All), nameof(Author));
+                return RedirectToAction(nameof(All), nameof(Author));
             }
 
             return View(nameof(Add), formModel);
